@@ -1,7 +1,5 @@
 import { Request, Response } from 'express'
-import type { InPrisonCourse, InPrisonCourseRecords } from 'viewModels'
 import { parseISO, startOfDay } from 'date-fns'
-import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidGoalResponse } from '../../testsupport/actionPlanResponseTestDataBuilder'
 import GoalStatusValue from '../../enums/goalStatusValue'
@@ -11,6 +9,7 @@ import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilde
 import aValidInductionSchedule from '../../testsupport/inductionScheduleTestDataBuilder'
 import { Result } from '../../utils/result/result'
 import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
+import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -19,20 +18,7 @@ describe('overviewController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
-
-  const inPrisonCourses: InPrisonCourseRecords = {
-    problemRetrievingData: false,
-    prisonNumber,
-    totalRecords: 2,
-    coursesByStatus: {
-      COMPLETED: [aValidMathsInPrisonCourse()],
-      IN_PROGRESS: [aValidEnglishInPrisonCourse()],
-      WITHDRAWN: [],
-      TEMPORARILY_WITHDRAWN: [],
-    },
-    coursesCompletedInLast12Months: [],
-  }
-
+  const curiousInPrisonCourses = validInPrisonCourseRecords()
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 
   const inProgressGoal = {
@@ -68,7 +54,7 @@ describe('overviewController', () => {
   beforeEach(() => {
     res.locals = {
       prisonerSummary,
-      curiousInPrisonCourses: inPrisonCourses,
+      curiousInPrisonCourses,
       prisonerFunctionalSkills,
       allGoalsForPrisoner: {
         prisonNumber,
@@ -98,12 +84,7 @@ describe('overviewController', () => {
       tab: 'overview',
       prisonerSummary,
       prisonerFunctionalSkills,
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: true,
-        hasWithdrawnOrInProgressCourses: true,
-      },
+      curiousInPrisonCourses,
       induction: {
         problemRetrievingData: false,
         isPostInduction: true,
@@ -157,19 +138,6 @@ describe('overviewController', () => {
 
   it('should get overview view for pre induction with no reviews, goals and no courses', async () => {
     // Given
-    res.locals.curiousInPrisonCourses = {
-      problemRetrievingData: false,
-      prisonNumber,
-      totalRecords: 0,
-      coursesByStatus: {
-        COMPLETED: [],
-        IN_PROGRESS: [],
-        WITHDRAWN: [],
-        TEMPORARILY_WITHDRAWN: [],
-      },
-      coursesCompletedInLast12Months: [],
-    } as InPrisonCourseRecords
-
     res.locals.allGoalsForPrisoner = {
       prisonNumber,
       goals: {
@@ -195,12 +163,7 @@ describe('overviewController', () => {
       tab: 'overview',
       prisonerSummary,
       prisonerFunctionalSkills,
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
-        hasCoursesCompletedMoreThan12MonthsAgo: false,
-        hasWithdrawnOrInProgressCourses: false,
-      },
+      curiousInPrisonCourses,
       induction: {
         problemRetrievingData: false,
         isPostInduction: false,
@@ -254,19 +217,6 @@ describe('overviewController', () => {
 
   it('should get overview view when there is an error retrieving the action plan', async () => {
     // Given
-    res.locals.curiousInPrisonCourses = {
-      problemRetrievingData: false,
-      prisonNumber,
-      totalRecords: 0,
-      coursesByStatus: {
-        COMPLETED: [],
-        IN_PROGRESS: [],
-        WITHDRAWN: [],
-        TEMPORARILY_WITHDRAWN: [],
-      },
-      coursesCompletedInLast12Months: [],
-    } as InPrisonCourseRecords
-
     res.locals.allGoalsForPrisoner = {
       prisonNumber,
       goals: {
@@ -288,12 +238,7 @@ describe('overviewController', () => {
       tab: 'overview',
       prisonerSummary,
       prisonerFunctionalSkills,
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: false,
-        hasWithdrawnOrInProgressCourses: false,
-      },
+      curiousInPrisonCourses,
       induction: {
         problemRetrievingData: false,
         isPostInduction: true,
@@ -358,12 +303,7 @@ describe('overviewController', () => {
       tab: 'overview',
       prisonerSummary,
       prisonerFunctionalSkills,
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: true,
-        hasWithdrawnOrInProgressCourses: true,
-      },
+      curiousInPrisonCourses,
       induction: {
         problemRetrievingData: true,
         isPostInduction: undefined as boolean,
@@ -401,154 +341,6 @@ describe('overviewController', () => {
         problemRetrievingData: false,
         inductionDueDate: startOfDay('2024-12-10'),
         inductionStatus: 'INDUCTION_OVERDUE',
-      },
-      prisonNamesById: expect.objectContaining({
-        status: 'fulfilled',
-        value: prisonNamesById,
-      }),
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-  })
-
-  it('should get overview view when there is an error retrieving the curious in-prison courses', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
-
-    res.locals.curiousInPrisonCourses = { problemRetrievingData: true }
-
-    const expectedView = {
-      tab: 'overview',
-      prisonerSummary,
-      prisonerFunctionalSkills,
-      inPrisonCourses: {
-        problemRetrievingData: true,
-        coursesCompletedInLast12Months: undefined as Array<InPrisonCourse>,
-        hasCoursesCompletedMoreThan12MonthsAgo: undefined as boolean,
-        hasWithdrawnOrInProgressCourses: undefined as boolean,
-      },
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: true,
-      },
-      prisonerGoals: {
-        problemRetrievingData: false,
-        counts: {
-          totalGoals: 3,
-          activeGoals: 1,
-          archivedGoals: 1,
-          completedGoals: 1,
-        },
-        lastUpdatedBy: inProgressGoal.updatedByDisplayName,
-        lastUpdatedDate: inProgressGoal.updatedAt,
-        lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
-      },
-      sessionHistory: {
-        counts: {
-          inductionSessions: 1,
-          reviewSessions: 1,
-          totalCompletedSessions: 2,
-        },
-        lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
-        lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
-        lastSessionConductedBy: 'Alex Smith',
-        problemRetrievingData: false,
-      },
-      actionPlanReview: {
-        problemRetrievingData: false,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: startOfDay('2024-10-15'),
-        exemptionReason: undefined as string,
-      },
-      inductionSchedule: {
-        problemRetrievingData: false,
-        inductionDueDate: startOfDay('2024-12-10'),
-        inductionStatus: 'GOALS_OVERDUE',
-      },
-      prisonNamesById: expect.objectContaining({
-        status: 'fulfilled',
-        value: prisonNamesById,
-      }),
-    }
-
-    // When
-    await controller.getOverviewView(req, res, next)
-
-    // Then
-    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
-  })
-
-  it('should get overview view when there is an error retrieving the curious functional skills', async () => {
-    // Given
-    res.locals.induction = {
-      problemRetrievingData: false,
-      inductionDto: aValidInductionDto(),
-    }
-
-    res.locals.actionPlanReviews = aValidActionPlanReviews()
-
-    res.locals.prisonerFunctionalSkills = {
-      problemRetrievingData: true,
-    }
-
-    const expectedView = {
-      tab: 'overview',
-      prisonerSummary,
-      prisonerFunctionalSkills: {
-        problemRetrievingData: true,
-      },
-      inPrisonCourses: {
-        problemRetrievingData: false,
-        coursesCompletedInLast12Months: inPrisonCourses.coursesCompletedInLast12Months,
-        hasCoursesCompletedMoreThan12MonthsAgo: true,
-        hasWithdrawnOrInProgressCourses: true,
-      },
-      induction: {
-        problemRetrievingData: false,
-        isPostInduction: true,
-      },
-      prisonerGoals: {
-        problemRetrievingData: false,
-        counts: {
-          totalGoals: 3,
-          activeGoals: 1,
-          archivedGoals: 1,
-          completedGoals: 1,
-        },
-        lastUpdatedBy: inProgressGoal.updatedByDisplayName,
-        lastUpdatedDate: inProgressGoal.updatedAt,
-        lastUpdatedAtPrisonName: inProgressGoal.updatedAtPrisonName,
-      },
-      sessionHistory: {
-        counts: {
-          inductionSessions: 1,
-          reviewSessions: 1,
-          totalCompletedSessions: 2,
-        },
-        lastSessionConductedAt: parseISO('2023-06-19T09:39:44.000Z'),
-        lastSessionConductedAtPrison: 'Moorland (HMP & YOI)',
-        lastSessionConductedBy: 'Alex Smith',
-        problemRetrievingData: false,
-      },
-      actionPlanReview: {
-        problemRetrievingData: false,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: startOfDay('2024-10-15'),
-        exemptionReason: undefined as string,
-      },
-      inductionSchedule: {
-        problemRetrievingData: false,
-        inductionDueDate: startOfDay('2024-12-10'),
-        inductionStatus: 'GOALS_OVERDUE',
       },
       prisonNamesById: expect.objectContaining({
         status: 'fulfilled',

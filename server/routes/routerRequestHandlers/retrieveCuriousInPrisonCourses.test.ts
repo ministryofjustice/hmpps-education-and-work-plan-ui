@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
-import type { InPrisonCourseRecords } from 'viewModels'
 import CuriousService from '../../services/curiousService'
-import { aValidEnglishInPrisonCourse, aValidMathsInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 import retrieveCuriousInPrisonCourses from './retrieveCuriousInPrisonCourses'
+import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 jest.mock('../../services/curiousService')
 
@@ -29,25 +28,14 @@ describe('retrieveCuriousInPrisonCourses', () => {
 
   it('should retrieve prisoner In Prison Courses', async () => {
     // Given
-    const expectedInPrisonCourses: InPrisonCourseRecords = {
-      problemRetrievingData: false,
-      prisonNumber,
-      totalRecords: 2,
-      coursesByStatus: {
-        COMPLETED: [aValidMathsInPrisonCourse()],
-        IN_PROGRESS: [aValidEnglishInPrisonCourse()],
-        WITHDRAWN: [],
-        TEMPORARILY_WITHDRAWN: [],
-      },
-      coursesCompletedInLast12Months: [],
-    }
+    const expectedInPrisonCourses = validInPrisonCourseRecords()
     curiousService.getPrisonerInPrisonCourses.mockResolvedValue(expectedInPrisonCourses)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber, username)
+    expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber)
     expect(res.locals.curiousInPrisonCourses).toEqual(expectedInPrisonCourses)
     expect(next).toHaveBeenCalled()
   })

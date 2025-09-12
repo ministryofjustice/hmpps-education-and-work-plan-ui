@@ -1,12 +1,6 @@
 import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
-import type { InPrisonCourseRecords } from 'viewModels'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import {
-  aValidEnglishInPrisonCourse,
-  aValidEnglishInPrisonCourseCompletedWithinLast12Months,
-  aValidMathsInPrisonCourse,
-} from '../../testsupport/inPrisonCourseTestDataBuilder'
 import EducationAndTrainingController from './educationAndTrainingController'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
@@ -14,6 +8,7 @@ import aValidInductionSchedule from '../../testsupport/inductionScheduleTestData
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 import { Result } from '../../utils/result/result'
 import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
+import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 
 describe('educationAndTrainingController', () => {
   const controller = new EducationAndTrainingController()
@@ -26,18 +21,7 @@ describe('educationAndTrainingController', () => {
     inductionDto: aValidInductionDto(),
   }
 
-  const inPrisonCourses: InPrisonCourseRecords = {
-    problemRetrievingData: false,
-    prisonNumber,
-    totalRecords: 3,
-    coursesByStatus: {
-      COMPLETED: [aValidMathsInPrisonCourse(), aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
-      IN_PROGRESS: [aValidEnglishInPrisonCourse()],
-      WITHDRAWN: [],
-      TEMPORARILY_WITHDRAWN: [],
-    },
-    coursesCompletedInLast12Months: [aValidEnglishInPrisonCourseCompletedWithinLast12Months()],
-  }
+  const inPrisonCourses = validInPrisonCourseRecords()
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const educationDto = aValidEducationDto()
   const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })

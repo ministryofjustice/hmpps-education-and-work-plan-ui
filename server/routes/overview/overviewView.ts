@@ -1,5 +1,4 @@
-import type { ActionPlanReviews, InductionSchedule, InPrisonCourseRecords, PrisonerGoals } from 'viewModels'
-import { startOfToday, sub } from 'date-fns'
+import type { ActionPlanReviews, InductionSchedule, PrisonerGoals } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type { OverviewViewRenderArgs } from './overviewViewTypes'
 import { toActionPlanReviewScheduleView, toInductionScheduleView } from './overviewViewFunctions'
@@ -7,7 +6,6 @@ import { Result } from '../../utils/result/result'
 
 export default class OverviewView {
   constructor(
-    private readonly inPrisonCourses: InPrisonCourseRecords,
     private readonly inductionSchedule: InductionSchedule,
     private readonly actionPlanReviews: ActionPlanReviews,
     private readonly prisonerGoals: PrisonerGoals,
@@ -20,20 +18,6 @@ export default class OverviewView {
 
   get renderArgs(): OverviewViewRenderArgs {
     const prisonNamesById = this.prisonNamesById.isFulfilled() ? this.prisonNamesById.getOrThrow() : {}
-
-    const today = startOfToday()
-    const twelveMonthsAgo = sub(today, { months: 12 })
-    const hasCoursesCompletedMoreThan12MonthsAgo = !this.inPrisonCourses.problemRetrievingData
-      ? this.inPrisonCourses.coursesByStatus.COMPLETED.some(
-          inPrisonCourse => inPrisonCourse.courseCompletionDate < twelveMonthsAgo,
-        )
-      : undefined
-    const hasWithdrawnOrInProgressCourses = !this.inPrisonCourses.problemRetrievingData
-      ? this.inPrisonCourses.coursesByStatus.WITHDRAWN.length +
-          this.inPrisonCourses.coursesByStatus.TEMPORARILY_WITHDRAWN.length +
-          this.inPrisonCourses.coursesByStatus.IN_PROGRESS.length >
-        0
-      : undefined
 
     const allPrisonerGoals = [
       ...this.prisonerGoals.goals.ACTIVE,
@@ -74,12 +58,6 @@ export default class OverviewView {
     }
 
     return {
-      inPrisonCourses: {
-        problemRetrievingData: this.inPrisonCourses.problemRetrievingData,
-        coursesCompletedInLast12Months: this.inPrisonCourses.coursesCompletedInLast12Months,
-        hasWithdrawnOrInProgressCourses,
-        hasCoursesCompletedMoreThan12MonthsAgo,
-      },
       sessionHistory: {
         problemRetrievingData: !this.actionPlanReviews
           ? this.induction.problemRetrievingData

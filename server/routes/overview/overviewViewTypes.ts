@@ -1,14 +1,7 @@
-import type { InPrisonCourse } from 'viewModels'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
 
 type OverviewViewRenderArgs = {
-  inPrisonCourses: {
-    problemRetrievingData: boolean
-    coursesCompletedInLast12Months: Array<InPrisonCourse>
-    hasWithdrawnOrInProgressCourses: boolean
-    hasCoursesCompletedMoreThan12MonthsAgo: boolean
-  }
   prisonerGoals: {
     problemRetrievingData: boolean
     counts: {

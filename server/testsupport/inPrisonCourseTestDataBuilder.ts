@@ -4,7 +4,6 @@ import type { InPrisonCourse } from 'viewModels'
 const aValidEnglishInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
-    prisonName: 'Moorland (HMP & YOI)',
     courseName: 'GCSE English',
     courseCode: '008ENGL06',
     courseStartDate: startOfDay('2021-06-01'),
@@ -19,7 +18,6 @@ const aValidEnglishInPrisonCourse = (): InPrisonCourse => {
 const aValidMathsInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'WDI',
-    prisonName: 'Wakefield (HMP)',
     courseName: 'GCSE Maths',
     courseCode: '246674',
     courseStartDate: startOfDay('2016-05-18'),
@@ -34,7 +32,6 @@ const aValidMathsInPrisonCourse = (): InPrisonCourse => {
 const aValidWoodWorkingInPrisonCourse = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
-    prisonName: 'Moorland (HMP & YOI)',
     courseName: 'City & Guilds Wood Working',
     courseCode: '008WOOD06',
     courseStartDate: startOfDay('2021-06-01'),
@@ -49,7 +46,6 @@ const aValidWoodWorkingInPrisonCourse = (): InPrisonCourse => {
 const aValidEnglishInPrisonCourseCompletedWithinLast12Months = (): InPrisonCourse => {
   return {
     prisonId: 'MDI',
-    prisonName: 'Moorland (HMP & YOI)',
     courseName: 'GCSE English',
     courseCode: '008ENGL06',
     courseStartDate: startOfDay('2023-10-01'),
