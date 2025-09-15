@@ -11,7 +11,7 @@ context(`Change links on the Check Your Answers page when creating a review`, ()
   beforeEach(() => {
     cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubGetSessionSummary')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')

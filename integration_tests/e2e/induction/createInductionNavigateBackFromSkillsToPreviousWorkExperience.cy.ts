@@ -44,7 +44,7 @@ context('Create induction having navigated back from Skills to Previous Work Exp
     cy.signInAsUserWithManagerAuthorityToArriveOnSessionSummaryPage()
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
-    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerAssessments', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerQualifications', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)

@@ -234,6 +234,6 @@ const signInWithAuthority = (authority: 'MANAGER' | 'CONTRIBUTOR' | 'ALL' | 'VIE
   cy.task('stubCiagInductionList')
   cy.task('stubActionPlansList')
   cy.task('getPrisonerById')
-  cy.task('stubLearnerProfile')
+  cy.task('stubLearnerAssessments')
   cy.signIn()
 }

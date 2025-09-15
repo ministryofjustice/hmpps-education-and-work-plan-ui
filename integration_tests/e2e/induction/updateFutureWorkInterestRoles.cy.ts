@@ -14,7 +14,7 @@ context('Update future work interest roles within an Induction', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubUpdateInduction')
     cy.task('stubGetInduction')

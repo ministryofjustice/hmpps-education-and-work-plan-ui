@@ -25,7 +25,7 @@ context('Create a prisoners pre-prison education', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation404Error')

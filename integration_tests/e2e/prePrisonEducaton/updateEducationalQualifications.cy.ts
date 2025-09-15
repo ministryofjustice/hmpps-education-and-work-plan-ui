@@ -16,7 +16,7 @@ context('Update educational qualifications within a prisoners Education before t
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation')
@@ -26,7 +26,7 @@ context('Update educational qualifications within a prisoners Education before t
 
   it('should display the Qualifications List page given Curious is unavailable for both Functional Skills and In-Prison Courses & Qualifications', () => {
     // Given
-    cy.task('stubLearnerProfile401Error') // Functional Skills from come the Learner Profile
+    cy.task('stubLearnerAssessments500Error') // Functional Skills from come the Learner Assessments
     cy.task('stubLearnerQualifications500Error') // In-Prison Courses & Qualifications come from the Learner Qualifications
 
     const prisonNumber = 'G6115VJ'

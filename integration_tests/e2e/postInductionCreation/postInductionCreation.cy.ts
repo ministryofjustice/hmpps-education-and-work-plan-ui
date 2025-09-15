@@ -18,7 +18,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.task('stubPrisonerList')
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
   })
 

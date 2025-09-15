@@ -10,7 +10,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
