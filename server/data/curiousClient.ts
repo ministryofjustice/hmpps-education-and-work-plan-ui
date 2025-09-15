@@ -1,10 +1,5 @@
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import type {
-  AllAssessmentDTO,
-  AllQualificationsDTO,
-  LearnerEducationPagedResponse,
-  LearnerProfile,
-} from 'curiousApiClient'
+import type { AllAssessmentDTO, AllQualificationsDTO, LearnerProfile } from 'curiousApiClient'
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import restClientErrorHandler from './restClientErrorHandler'
 import config from '../config'
@@ -22,22 +17,6 @@ export default class CuriousClient extends RestClient {
     return this.get<Array<LearnerProfile>>(
       {
         path: `/learnerProfile/${prisonNumber}`,
-        errorHandler: restClientErrorHandler({ ignore404: true }),
-      },
-      asSystem('CURIOUS_API'),
-    )
-  }
-
-  /**
-   * @deprecated - this method calls a Curious 1 endpoint. Use a method that calls a suitable Curious 2 endpoint instead
-   */
-  async getLearnerEducationPage(prisonNumber: string, page = 0): Promise<LearnerEducationPagedResponse> {
-    return this.get<LearnerEducationPagedResponse>(
-      {
-        path: `/learnerEducation/${prisonNumber}`,
-        query: {
-          page,
-        },
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
       asSystem('CURIOUS_API'),
