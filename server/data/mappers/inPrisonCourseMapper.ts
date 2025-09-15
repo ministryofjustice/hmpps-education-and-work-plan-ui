@@ -1,8 +1,8 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { LearnerEducation } from 'curiousApiClient'
+import type { LearnerEducationDTO } from 'curiousApiClient'
 import type { InPrisonCourse } from 'viewModels'
 
-const toInPrisonCourse = (apiLearnerEducation: LearnerEducation): InPrisonCourse => {
+const toInPrisonCourse = (apiLearnerEducation: LearnerEducationDTO): InPrisonCourse => {
   return {
     prisonId: apiLearnerEducation.establishmentId,
     courseCode: apiLearnerEducation.courseCode,

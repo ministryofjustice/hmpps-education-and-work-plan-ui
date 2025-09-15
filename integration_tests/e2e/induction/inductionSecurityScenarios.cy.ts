@@ -11,7 +11,7 @@ context('Security tests for creating and updating Inductions', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
   })
 
   describe('Creating Inductions', () => {

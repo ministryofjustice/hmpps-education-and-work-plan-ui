@@ -43,7 +43,7 @@ export const services = () => {
   )
   const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
   const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
-  const curiousService = new CuriousService(curiousClient, prisonService)
+  const curiousService = new CuriousService(curiousClient)
   const prisonerListService = new PrisonerListService(
     hmppsAuthClient,
     prisonerSearchService,

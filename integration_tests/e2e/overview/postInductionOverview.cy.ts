@@ -11,7 +11,7 @@ context('Prisoner Overview page - Post Induction', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('getActionPlan')
   })
 

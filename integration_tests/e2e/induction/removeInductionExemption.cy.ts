@@ -22,7 +22,7 @@ context('Remove exemption from Induction', () => {
     cy.task('getActionPlan404Error', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubLearnerProfile', prisonNumber)
-    cy.task('stubLearnerEducation', prisonNumber)
+    cy.task('stubLearnerQualifications', prisonNumber)
     cy.task('stubGetInduction404Error', prisonNumber)
     cy.task('stubGetEducation404Error', prisonNumber)
     cy.task('stubGetActionPlanReviews404Error', prisonNumber)

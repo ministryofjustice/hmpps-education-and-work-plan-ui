@@ -13,7 +13,7 @@ context('In Prison Courses and Qualifications', () => {
 
     it('should display completed In Prison courses', () => {
       // Given
-      cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months') // Stub learner education has 1 completed course - GCSE Maths
+      cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months') // Stub learner qualificiation has 1 completed course - GCSE Maths
 
       cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
       const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -27,7 +27,7 @@ context('In Prison Courses and Qualifications', () => {
 
     it('should display in-progress In Prison courses', () => {
       // Given
-      cy.task('stubLearnerEducation') // Stub learner education has 1 in progress course - GCSE English
+      cy.task('stubLearnerQualifications') // Stub learner qualifications has 1 in progress course - GCSE English
 
       cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
       const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -41,7 +41,7 @@ context('In Prison Courses and Qualifications', () => {
 
     it('should display withdrawn In Prison courses', () => {
       // Given
-      cy.task('stubLearnerEducationWithWithdrawnCourses') // Stub learner education has 1 withdrawn course (GCSE Maths) and 1 temporarily withdrawn course (Bricklaying)
+      cy.task('stubLearnerQualificationsWithWithdrawnCourses') // Stub learner qualifications has 1 withdrawn course (GCSE Maths) and 1 temporarily withdrawn course (Bricklaying)
 
       cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
       const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -57,7 +57,7 @@ context('In Prison Courses and Qualifications', () => {
 
     it('should display no courses messages given prisoner with no In Prison course data', () => {
       // Given
-      cy.task('stubLearnerEducationWithNoCourses')
+      cy.task('stubLearnerQualificationsWithNoCourses')
 
       cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
 
@@ -74,9 +74,9 @@ context('In Prison Courses and Qualifications', () => {
         .hasNoWithdrawnCourses()
     })
 
-    it('should display curious unavailable message given curious is unavailable for the learner education', () => {
+    it('should display curious unavailable message given curious is unavailable for the learner qualifications', () => {
       // Given
-      cy.task('stubLearnerEducation401Error')
+      cy.task('stubLearnerQualifications500Error')
 
       cy.visit(`/plan/${prisonNumber}/in-prison-courses-and-qualifications`)
 
@@ -106,7 +106,7 @@ context('In Prison Courses and Qualifications', () => {
 
       it('should display completed In Prison courses', () => {
         // Given
-        cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months', prisonNumber) // Stub learner education has 1 completed course - GCSE Maths
+        cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months', prisonNumber) // Stub learner qualifications has 1 completed course - GCSE Maths
 
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
         const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -120,7 +120,7 @@ context('In Prison Courses and Qualifications', () => {
 
       it('should display in-progress In Prison courses', () => {
         // Given
-        cy.task('stubLearnerEducation', prisonNumber) // Stub learner education has 1 in progress course - GCSE English
+        cy.task('stubLearnerQualifications', prisonNumber) // Stub learner qualifications has 1 in progress course - GCSE English
 
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
         const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -134,7 +134,7 @@ context('In Prison Courses and Qualifications', () => {
 
       it('should display withdrawn In Prison courses', () => {
         // Given
-        cy.task('stubLearnerEducationWithWithdrawnCourses', prisonNumber) // Stub learner education has 1 withdrawn course (GCSE Maths) and 1 temporarily withdrawn course (Bricklaying)
+        cy.task('stubLearnerQualificationsWithWithdrawnCourses', prisonNumber) // Stub learner qualifications has 1 withdrawn course (GCSE Maths) and 1 temporarily withdrawn course (Bricklaying)
 
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
         const inPrisonCoursePage = Page.verifyOnPage(InPrisonCoursesAndQualificationsPage)
@@ -150,7 +150,7 @@ context('In Prison Courses and Qualifications', () => {
 
       it('should display no courses messages given prisoner with no In Prison course data', () => {
         // Given
-        cy.task('stubLearnerEducationWithNoCourses', prisonNumber)
+        cy.task('stubLearnerQualificationsWithNoCourses', prisonNumber)
 
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
 
@@ -168,12 +168,12 @@ context('In Prison Courses and Qualifications', () => {
       })
     })
 
-    it('should display curious unavailable message given curious is unavailable for the learner education', () => {
+    it('should display curious unavailable message given curious is unavailable for the learner qualifications', () => {
       // Given
       const prisonNumber = 'G9981UK'
       cy.task('getPrisonerById', prisonNumber)
 
-      cy.task('stubLearnerEducation401Error', prisonNumber)
+      cy.task('stubLearnerQualifications500Error', prisonNumber)
 
       cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
 
@@ -204,7 +204,7 @@ context('In Prison Courses and Qualifications', () => {
         cy.task('reset')
         cy.task('stubSignIn', { roles: ['ROLE_SOME_NON_PLP_ROLE', 'ROLE_POM'] }) // Users with POM role can see restricted patients (prisoners with prisonId OUT) as long as their caseload ID matches prisoners supporting prison ID
         cy.task('stubLearnerProfile')
-        cy.task('stubLearnerEducation')
+        cy.task('stubLearnerQualifications')
         cy.signIn()
       })
 
@@ -227,7 +227,7 @@ context('In Prison Courses and Qualifications', () => {
         const prisonNumber = 'A8520DZ' // Prisoner is OUT (eg: hospital) and their supporting prison is Brixton (BXI) which is not one of the user's caseloads
         cy.task('getPrisonerById', prisonNumber)
         cy.task('stubLearnerProfile', prisonNumber)
-        cy.task('stubLearnerEducation', prisonNumber)
+        cy.task('stubLearnerQualifications', prisonNumber)
 
         // When
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
@@ -245,7 +245,7 @@ context('In Prison Courses and Qualifications', () => {
         const prisonNumber = 'G0577GL' // Prisoner is OUT (eg: hospital) and their supporting prison is Pentonville (PVI) which is not one of the user's caseloads
         cy.task('getPrisonerById', prisonNumber)
         cy.task('stubLearnerProfile', prisonNumber)
-        cy.task('stubLearnerEducation', prisonNumber)
+        cy.task('stubLearnerQualifications', prisonNumber)
 
         // When
         cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)

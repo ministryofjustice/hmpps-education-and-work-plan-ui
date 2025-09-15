@@ -24,7 +24,7 @@ context(`Review a prisoner's plan`, () => {
     cy.task('getPrisonerById')
     cy.task('stubGetAllPrisons')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubGetActionPlanReviews')

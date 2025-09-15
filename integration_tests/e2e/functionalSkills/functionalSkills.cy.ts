@@ -13,7 +13,7 @@ context(`Display a prisoner's functional skills`, () => {
     cy.task('getPrisonerById')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
   })
 
@@ -51,7 +51,7 @@ context(`Display a prisoner's functional skills`, () => {
   it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
     // Given
     cy.task('stubLearnerProfile401Error')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'

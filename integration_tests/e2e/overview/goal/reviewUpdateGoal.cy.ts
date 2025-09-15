@@ -22,7 +22,7 @@ context('Review updated goal', () => {
     cy.task('getActionPlan')
     cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('updateGoal')
   })
 

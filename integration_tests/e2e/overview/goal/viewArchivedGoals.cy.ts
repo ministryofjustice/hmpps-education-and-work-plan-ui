@@ -15,7 +15,7 @@ context('View archived goals', () => {
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
   })
 
   it('should be able to navigate to the view archived goals page from the overview page', () => {

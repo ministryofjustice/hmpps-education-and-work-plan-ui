@@ -14,7 +14,7 @@ context('Update highest level of education within a prisoners Education before t
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation')
     cy.task('stubUpdateEducation')
