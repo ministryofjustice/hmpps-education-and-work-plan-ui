@@ -1,8 +1,7 @@
-import type { LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
+import type { LearnerProfile } from 'curiousApiClient'
 import nock from 'nock'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import CuriousClient from './curiousClient'
-import { learnerEducationPagedResponsePage1Of1 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 import { anAllAssessmentDTO } from '../testsupport/curiousAssessmentsTestDataBuilder'
 import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
 import config from '../config'
@@ -110,76 +109,6 @@ describe('curiousClient', () => {
 
       // When
       const actual = await curiousClient.getLearnerProfile(prisonNumber).catch(e => e)
-
-      // Then
-      expect(nock.isDone()).toBe(true)
-      expect(actual).toEqual(expectedError)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
-    })
-  })
-
-  describe('getLearnerEducationPage', () => {
-    it('should get learner eduction page', async () => {
-      // Given
-      const page = 0
-
-      const learnerEducationPage1Of1: LearnerEducationPagedResponse =
-        learnerEducationPagedResponsePage1Of1(prisonNumber)
-      curiousApi
-        .get(`/learnerEducation/${prisonNumber}?page=${page}`)
-        .matchHeader('authorization', `Bearer ${systemToken}`)
-        .reply(200, learnerEducationPage1Of1)
-
-      // When
-      const actual = await curiousClient.getLearnerEducationPage(prisonNumber, page)
-
-      // Then
-      expect(actual).toEqual(learnerEducationPage1Of1)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
-      expect(nock.isDone()).toBe(true)
-    })
-
-    it('should not get learner education page given the API returns a 404', async () => {
-      // Given
-      const page = 0
-
-      const expectedResponseBody = {
-        errorCode: 'VC4004',
-        errorMessage: 'Not found',
-        httpStatusCode: 404,
-      }
-      curiousApi
-        .get(`/learnerEducation/${prisonNumber}?page=${page}`)
-        .matchHeader('authorization', `Bearer ${systemToken}`)
-        .reply(404, expectedResponseBody)
-
-      // When
-      const actual = await curiousClient.getLearnerEducationPage(prisonNumber, page)
-
-      // Then
-      expect(nock.isDone()).toBe(true)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
-      expect(actual).toBeNull()
-    })
-
-    it('should not get learner education page given the API returns an error response', async () => {
-      // Given
-      const page = 0
-
-      const apiErrorResponse = {
-        errorCode: 'VC4001',
-        errorMessage: 'Invalid token',
-        httpStatusCode: 401,
-      }
-      curiousApi
-        .get(`/learnerEducation/${prisonNumber}?page=${page}`)
-        .matchHeader('authorization', `Bearer ${systemToken}`)
-        .reply(401, apiErrorResponse)
-
-      const expectedError = new Error('Unauthorized')
-
-      // When
-      const actual = await curiousClient.getLearnerEducationPage(prisonNumber, page).catch(e => e)
 
       // Then
       expect(nock.isDone()).toBe(true)
