@@ -1,5 +1,10 @@
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import type { AllAssessmentDTO, LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
+import type {
+  AllAssessmentDTO,
+  AllQualificationsDTO,
+  LearnerEducationPagedResponse,
+  LearnerProfile,
+} from 'curiousApiClient'
 import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import restClientErrorHandler from './restClientErrorHandler'
 import config from '../config'
@@ -51,6 +56,23 @@ export default class CuriousClient extends RestClient {
     return this.get<AllAssessmentDTO>(
       {
         path: `/learnerAssessments/v2/${prisonNumber}`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem('CURIOUS_API'),
+    )
+  }
+
+  /**
+   * Calls the Curious V2 endpoint to get all In-Prison courses & qualifications for a given prisoner
+   * The returned data includes courses and qualifications as recorded in both Curious 1 and Curious 2.
+   *
+   * @param prisonNumber
+   * @return AllQualificationsDTO
+   */
+  async getQualificationsByPrisonNumber(prisonNumber: string): Promise<AllQualificationsDTO> {
+    return this.get<AllQualificationsDTO>(
+      {
+        path: `/learnerQualifications/v2/${prisonNumber}`,
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
       asSystem('CURIOUS_API'),

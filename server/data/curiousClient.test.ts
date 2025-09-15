@@ -1,15 +1,16 @@
 import type { LearnerEducationPagedResponse, LearnerProfile } from 'curiousApiClient'
 import nock from 'nock'
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import CuriousClient from './curiousClient'
-import config from '../config'
 import { learnerEducationPagedResponsePage1Of1 } from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
 import { anAllAssessmentDTO } from '../testsupport/curiousAssessmentsTestDataBuilder'
+import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
+import config from '../config'
+
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 
 describe('curiousClient', () => {
-  const mockAuthenticationClient = {
-    getToken: jest.fn(),
-  } as unknown as jest.Mocked<AuthenticationClient>
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const curiousClient = new CuriousClient(mockAuthenticationClient)
 
   const prisonNumber = 'A1234BC'
@@ -244,6 +245,71 @@ describe('curiousClient', () => {
 
       // When
       const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('getQualificationsByPrisonNumber', () => {
+    it('should get qualifications for a prisoner', async () => {
+      // Given
+      const expectedResponse = anAllQualificationsDTO()
+      curiousApi
+        .get(`/learnerQualifications/v2/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedResponse)
+
+      // When
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber)
+
+      // Then
+      expect(actual).toEqual(expectedResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should return null given API returns a not found error', async () => {
+      // Given
+      const apiErrorResponse = {
+        status: 404,
+        userMessage: 'Not found',
+        developerMessage: 'Not found',
+      }
+
+      curiousApi
+        .get(`/learnerQualifications/v2/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, apiErrorResponse)
+
+      // When
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should rethrow error given API returns an error', async () => {
+      // Given
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      curiousApi
+        .get(`/learnerQualifications/v2/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
+
+      // When
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber).catch(e => e)
 
       // Then
       expect(actual).toEqual(expectedError)

@@ -8,6 +8,7 @@ declare module 'curiousApiClient' {
 
   export type LearnerEducationPagedResponse = components['schemas']['LearnerEducationPage']
   export type LearnerEducation = components['schemas']['LearnerEducationDTO']
+  export type LearnerEducationDTO = components['schemas']['LearnerEducationDTO']
 
   // Data types for the Curious V2 endpoints
   // ---------------------------------------
@@ -23,4 +24,8 @@ declare module 'curiousApiClient' {
   export type LearnerAssessmentsDTO = components['schemas']['LearnerAssessmentsDTO']
   export type LearnerAssessmentsFunctionalSkillsDTO = components['schemas']['LearnerAssessmentsFunctionalSkillsDTO']
   export type LearnerAssessmentsAlnDTO = components['schemas']['LearnerAssessmentsAlnDTO']
+
+  // Curious V2 Course & Qualifications Types
+  export type AllQualificationsDTO = components['schemas']['AllQualificationsDTO']
+  export type LearnerQualificationsDTO = components['schemas']['LearnerQualificationsDTO']
 }
