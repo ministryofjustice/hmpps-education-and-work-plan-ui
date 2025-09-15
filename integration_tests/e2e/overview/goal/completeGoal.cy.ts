@@ -24,7 +24,7 @@ context('Complete a goal', () => {
     cy.task('getActionPlan')
     cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetAllPrisons')
     cy.task('completeGoal', { prisonNumber, goalReference })
   })

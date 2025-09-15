@@ -1,137 +1,25 @@
 import { parseISO, startOfDay } from 'date-fns'
 import type { InPrisonCourse } from 'viewModels'
 import { toInPrisonCourse, toCourseStatus } from './inPrisonCourseMapper'
-import {
-  aValidEnglishLearnerEducation,
-  aValidMathsLearnerEducation,
-} from '../../testsupport/learnerEducationTestDataBuilder'
+import { aLearnerEducationDTO } from '../../testsupport/curiousQualificationsTestDataBuilder'
 
 describe('inPrisonCourseMapper', () => {
   describe('toInPrisonCourse', () => {
-    it('should map a Curious LearnerEducation to an InPrisonCourse view model given LearnerEducation does not have an actualEndDate value', () => {
+    it('should map a Curious LearnerEducationDTO to an InPrisonCourse', () => {
       // Given
-      const apiLearnerEducation = { ...aValidEnglishLearnerEducation() }
+      const apiLearnerEducation = aLearnerEducationDTO()
 
       const expectedInPrisonCourse: InPrisonCourse = {
-        prisonId: 'MDI',
-        courseCode: '008ENGL06',
-        courseName: 'GCSE English',
-        courseStartDate: startOfDay(parseISO('2021-06-01')),
-        courseStatus: 'IN_PROGRESS',
-        courseCompletionDate: null,
-        coursePlannedEndDate: startOfDay(parseISO('2021-08-06')),
-        isAccredited: false,
-        grade: null,
+        prisonId: 'BXI',
+        courseCode: '101448',
+        courseName: 'Certificate of Management',
+        courseStartDate: startOfDay(parseISO('2023-10-13')),
+        courseStatus: 'COMPLETED',
+        courseCompletionDate: startOfDay(parseISO('2024-01-24')),
+        coursePlannedEndDate: startOfDay(parseISO('2023-12-29')),
+        isAccredited: true,
+        grade: 'Achieved',
         withdrawalReason: null,
-        source: 'CURIOUS',
-      }
-
-      // When
-      const actual = toInPrisonCourse(apiLearnerEducation)
-
-      // Then
-      expect(actual).toEqual(expectedInPrisonCourse)
-    })
-
-    it('should map a Curious LearnerEducation to an InPrisonCourse view model given LearnerEducation has an actualEndDate value', () => {
-      // Given
-      const apiLearnerEducation = { ...aValidMathsLearnerEducation() }
-      apiLearnerEducation.learningActualEndDate = '2016-07-15'
-      apiLearnerEducation.outcome = undefined
-      apiLearnerEducation.outcomeGrade = undefined
-
-      const expectedInPrisonCourse: InPrisonCourse = {
-        prisonId: 'WDI',
-        courseCode: '246674',
-        courseName: 'GCSE Maths',
-        courseStartDate: startOfDay(parseISO('2016-05-18')),
-        courseStatus: 'WITHDRAWN',
-        courseCompletionDate: startOfDay(parseISO('2016-07-15')),
-        coursePlannedEndDate: startOfDay(parseISO('2016-12-23')),
-        isAccredited: true,
-        grade: null,
-        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-        source: 'CURIOUS',
-      }
-
-      // When
-      const actual = toInPrisonCourse(apiLearnerEducation)
-
-      // Then
-      expect(actual).toEqual(expectedInPrisonCourse)
-    })
-
-    it('should map a Curious LearnerEducation to an InPrisonCourse view model given LearnerEducation has an outcome and outcome grade', () => {
-      // Given
-      const apiLearnerEducation = { ...aValidMathsLearnerEducation() }
-      apiLearnerEducation.outcome = 'Passed'
-      apiLearnerEducation.outcomeGrade = 'A'
-
-      const expectedInPrisonCourse: InPrisonCourse = {
-        prisonId: 'WDI',
-        courseCode: '246674',
-        courseName: 'GCSE Maths',
-        courseStartDate: startOfDay(parseISO('2016-05-18')),
-        courseStatus: 'WITHDRAWN',
-        courseCompletionDate: startOfDay(parseISO('2016-07-15')),
-        coursePlannedEndDate: startOfDay(parseISO('2016-12-23')),
-        isAccredited: true,
-        grade: 'A', // expect grade to be the value of outcomeGrade (as preference over outcome)
-        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-        source: 'CURIOUS',
-      }
-
-      // When
-      const actual = toInPrisonCourse(apiLearnerEducation)
-
-      // Then
-      expect(actual).toEqual(expectedInPrisonCourse)
-    })
-
-    it('should map a Curious LearnerEducation to an InPrisonCourse view model given LearnerEducation has an outcome but no outcome grade', () => {
-      // Given
-      const apiLearnerEducation = { ...aValidMathsLearnerEducation() }
-      apiLearnerEducation.outcome = 'Passed'
-      apiLearnerEducation.outcomeGrade = undefined
-
-      const expectedInPrisonCourse: InPrisonCourse = {
-        prisonId: 'WDI',
-        courseCode: '246674',
-        courseName: 'GCSE Maths',
-        courseStartDate: startOfDay(parseISO('2016-05-18')),
-        courseStatus: 'WITHDRAWN',
-        courseCompletionDate: startOfDay(parseISO('2016-07-15')),
-        coursePlannedEndDate: startOfDay(parseISO('2016-12-23')),
-        isAccredited: true,
-        grade: 'Passed', // expect grade to be the value of outcome (because there is no outcome grade)
-        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-        source: 'CURIOUS',
-      }
-
-      // When
-      const actual = toInPrisonCourse(apiLearnerEducation)
-
-      // Then
-      expect(actual).toEqual(expectedInPrisonCourse)
-    })
-
-    it('should map a Curious LearnerEducation to an InPrisonCourse view model given LearnerEducation has neither outcome or outcome grade', () => {
-      // Given
-      const apiLearnerEducation = { ...aValidMathsLearnerEducation() }
-      apiLearnerEducation.outcome = undefined
-      apiLearnerEducation.outcomeGrade = undefined
-
-      const expectedInPrisonCourse: InPrisonCourse = {
-        prisonId: 'WDI',
-        courseCode: '246674',
-        courseName: 'GCSE Maths',
-        courseStartDate: startOfDay(parseISO('2016-05-18')),
-        courseStatus: 'WITHDRAWN',
-        courseCompletionDate: startOfDay(parseISO('2016-07-15')),
-        coursePlannedEndDate: startOfDay(parseISO('2016-12-23')),
-        isAccredited: true,
-        grade: null, // expect grade to be null (because there is no outcome grade or outcome)
-        withdrawalReason: 'Significant ill health causing them to be unable to attend education',
         source: 'CURIOUS',
       }
 

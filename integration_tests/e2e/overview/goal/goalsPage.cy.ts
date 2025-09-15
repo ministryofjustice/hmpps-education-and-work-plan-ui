@@ -14,7 +14,7 @@ context('View goals', () => {
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
   })
 
   it('should be able to navigate to the view archived goals tab and have it load archived goals only', () => {

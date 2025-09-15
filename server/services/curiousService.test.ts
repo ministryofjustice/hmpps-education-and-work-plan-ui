@@ -1,28 +1,21 @@
-import { startOfDay, startOfToday, sub } from 'date-fns'
-import type { LearnerEducationPagedResponse } from 'curiousApiClient'
+import { startOfDay } from 'date-fns'
 import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
 import CuriousClient from '../data/curiousClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import {
-  learnerEducationPagedResponse,
-  learnerEducationPagedResponsePage1Of1,
-  learnerEducationPagedResponsePage1Of2,
-  learnerEducationPagedResponsePage2Of2,
-} from '../testsupport/learnerEducationPagedResponseTestDataBuilder'
-import {
   aLearnerLatestAssessmentV1DTO,
   aLearnerLddInfoExternalV1DTO,
   anAllAssessmentDTO,
 } from '../testsupport/curiousAssessmentsTestDataBuilder'
+import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
 
 jest.mock('../data/curiousClient')
 jest.mock('../data/hmppsAuthClient')
-jest.mock('./prisonService')
 
 describe('curiousService', () => {
   const curiousClient = new CuriousClient(null) as jest.Mocked<CuriousClient>
-  const curiousService = new CuriousService(curiousClient, null)
+  const curiousService = new CuriousService(curiousClient)
 
   const prisonNumber = 'A1234BC'
 
@@ -168,153 +161,29 @@ describe('curiousService', () => {
   describe('getPrisonerInPrisonCourses', () => {
     it('should get In Prison Courses', async () => {
       // Given
-      const learnerEducationPage1Of1: LearnerEducationPagedResponse = learnerEducationPagedResponse(prisonNumber)
-      curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
+      const allPrisonerQualifications = anAllQualificationsDTO()
+      curiousClient.getQualificationsByPrisonNumber.mockResolvedValue(allPrisonerQualifications)
 
       const expected: InPrisonCourseRecords = {
-        totalRecords: 5,
+        totalRecords: 1,
         coursesByStatus: {
           COMPLETED: [
             {
-              courseCode: '008ENGL06',
-              courseCompletionDate: startOfDay('2021-12-13'),
-              courseName: 'GCSE English',
-              courseStartDate: startOfDay('2021-06-01'),
+              courseCode: '101448',
+              courseCompletionDate: startOfDay('2024-01-24'),
+              courseName: 'Certificate of Management',
+              courseStartDate: startOfDay('2023-10-13'),
               courseStatus: 'COMPLETED',
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              grade: null,
-              isAccredited: false,
-              prisonId: 'MDI',
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
-            {
-              courseCode: '008WOOD06',
-              courseCompletionDate: sub(startOfToday(), { months: 3 }),
-              courseName: 'City & Guilds Wood Working',
-              courseStartDate: startOfDay('2021-06-01'),
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              courseStatus: 'COMPLETED',
-              grade: null,
-              isAccredited: false,
-              prisonId: 'MDI',
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
-          ],
-          IN_PROGRESS: [
-            {
-              courseCode: '008ENGL06',
-              courseName: 'GCSE English',
-              courseStartDate: startOfDay('2021-06-01'),
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              prisonId: 'MDI',
-              courseStatus: 'IN_PROGRESS',
-              courseCompletionDate: null,
-              isAccredited: false,
-              grade: null,
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
-          ],
-          WITHDRAWN: [
-            {
-              courseCode: '246674',
-              courseName: 'GCSE Maths',
-              courseStartDate: startOfDay('2016-05-18'),
-              prisonId: 'WDI',
-              courseStatus: 'WITHDRAWN',
-              courseCompletionDate: startOfDay('2016-07-15'),
-              coursePlannedEndDate: startOfDay('2016-12-23'),
+              coursePlannedEndDate: startOfDay('2023-12-29'),
+              grade: 'Achieved',
               isAccredited: true,
-              grade: 'No achievement',
-              withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-              source: 'CURIOUS',
-            },
-          ],
-          TEMPORARILY_WITHDRAWN: [
-            {
-              courseCode: '246674',
-              courseCompletionDate: startOfDay('2016-07-15'),
-              courseName: 'GCSE Maths',
-              courseStartDate: startOfDay('2016-05-18'),
-              coursePlannedEndDate: startOfDay('2016-12-23'),
-              courseStatus: 'TEMPORARILY_WITHDRAWN',
-              grade: 'No achievement',
-              isAccredited: true,
-              prisonId: 'WDI',
-              withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-              source: 'CURIOUS',
-            },
-          ],
-        },
-        coursesCompletedInLast12Months: [
-          {
-            courseCode: '008WOOD06',
-            courseCompletionDate: sub(startOfToday(), { months: 3 }),
-            courseName: 'City & Guilds Wood Working',
-            courseStartDate: startOfDay('2021-06-01'),
-            coursePlannedEndDate: startOfDay('2021-08-06'),
-            courseStatus: 'COMPLETED',
-            grade: null,
-            isAccredited: false,
-            prisonId: 'MDI',
-            withdrawalReason: null,
-            source: 'CURIOUS',
-          },
-        ],
-        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
-        hasWithdrawnOrInProgressCourses: expect.any(Function),
-      }
-
-      // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
-
-      // Then
-      expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-    })
-
-    it('should get In Prison Courses given there is only 1 page of data in Curious for the prisoner', async () => {
-      // Given
-      const learnerEducationPage1Of1: LearnerEducationPagedResponse =
-        learnerEducationPagedResponsePage1Of1(prisonNumber)
-      curiousClient.getLearnerEducationPage.mockResolvedValue(learnerEducationPage1Of1)
-
-      const expected: InPrisonCourseRecords = {
-        totalRecords: 2,
-        coursesByStatus: {
-          COMPLETED: [],
-          IN_PROGRESS: [
-            {
-              courseCode: '008ENGL06',
-              courseName: 'GCSE English',
-              courseStartDate: startOfDay('2021-06-01'),
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              prisonId: 'MDI',
-              courseStatus: 'IN_PROGRESS',
-              courseCompletionDate: null,
-              isAccredited: false,
-              grade: null,
+              prisonId: 'BXI',
               withdrawalReason: null,
               source: 'CURIOUS',
             },
           ],
-          WITHDRAWN: [
-            {
-              courseCode: '246674',
-              courseName: 'GCSE Maths',
-              courseStartDate: startOfDay('2016-05-18'),
-              prisonId: 'WDI',
-              courseStatus: 'WITHDRAWN',
-              courseCompletionDate: startOfDay('2016-07-15'),
-              coursePlannedEndDate: startOfDay('2016-12-23'),
-              isAccredited: true,
-              grade: 'No achievement',
-              withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-              source: 'CURIOUS',
-            },
-          ],
+          IN_PROGRESS: [],
+          WITHDRAWN: [],
           TEMPORARILY_WITHDRAWN: [],
         },
         coursesCompletedInLast12Months: [],
@@ -327,123 +196,29 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
-    it('should get In Prison Courses given there are 2 pages of data in Curious for the prisoner', async () => {
-      // Given
-      const learnerEducationPage1Of2: LearnerEducationPagedResponse =
-        learnerEducationPagedResponsePage1Of2(prisonNumber)
-      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
-      const learnerEducationPage2Of2: LearnerEducationPagedResponse =
-        learnerEducationPagedResponsePage2Of2(prisonNumber)
-      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage2Of2)
-
-      const expected: InPrisonCourseRecords = {
-        totalRecords: 3,
-        coursesByStatus: {
-          COMPLETED: [],
-          IN_PROGRESS: [
-            {
-              courseCode: '008ENGL06',
-              courseName: 'GCSE English',
-              courseStartDate: startOfDay('2021-06-01'),
-              prisonId: 'MDI',
-              courseStatus: 'IN_PROGRESS',
-              courseCompletionDate: null,
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              isAccredited: false,
-              grade: null,
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
-            {
-              courseCode: '008WOOD06',
-              courseName: 'City & Guilds Wood Working',
-              courseStartDate: startOfDay('2021-06-01'),
-              coursePlannedEndDate: startOfDay('2021-08-06'),
-              prisonId: 'MDI',
-              courseStatus: 'IN_PROGRESS',
-              courseCompletionDate: null,
-              isAccredited: false,
-              grade: null,
-              withdrawalReason: null,
-              source: 'CURIOUS',
-            },
-          ],
-          WITHDRAWN: [
-            {
-              courseCode: '246674',
-              courseName: 'GCSE Maths',
-              courseStartDate: startOfDay('2016-05-18'),
-              prisonId: 'WDI',
-              courseStatus: 'WITHDRAWN',
-              courseCompletionDate: startOfDay('2016-07-15'),
-              coursePlannedEndDate: startOfDay('2016-12-23'),
-              isAccredited: true,
-              grade: 'No achievement',
-              withdrawalReason: 'Significant ill health causing them to be unable to attend education',
-              source: 'CURIOUS',
-            },
-          ],
-          TEMPORARILY_WITHDRAWN: [],
-        },
-        coursesCompletedInLast12Months: [],
-        hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
-        hasWithdrawnOrInProgressCourses: expect.any(Function),
-      }
-
-      // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
-
-      // Then
-      expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 1)
-    })
-
-    it('should rethrow error given the curious API request for page 1 returns an error response', async () => {
+    it('should rethrow error given the curious API returns an error response', async () => {
       // Given
       const curiousApiError = {
         message: 'Internal Server Error',
         status: 500,
         text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
       }
-      curiousClient.getLearnerEducationPage.mockRejectedValue(curiousApiError)
+      curiousClient.getQualificationsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
       const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber).catch(error => error)
 
       // Then
       expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-    })
-
-    it('should rethrow error given the Curious API request for page 2 returns an error response', async () => {
-      // Given
-      const learnerEducationPage1Of2: LearnerEducationPagedResponse =
-        learnerEducationPagedResponsePage1Of2(prisonNumber)
-      curiousClient.getLearnerEducationPage.mockResolvedValueOnce(learnerEducationPage1Of2)
-
-      const curiousApiError = {
-        message: 'Internal Server Error',
-        status: 500,
-        text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
-      }
-      curiousClient.getLearnerEducationPage.mockRejectedValueOnce(curiousApiError)
-
-      // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber).catch(error => error)
-
-      // Then
-      expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 1)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
     it('should handle retrieval of In Prison Courses given Curious API client returns null indicating not found error for the learner education', async () => {
       // Given
-      curiousClient.getLearnerEducationPage.mockResolvedValue(null)
+      curiousClient.getQualificationsByPrisonNumber.mockResolvedValue(null)
 
       const expected: InPrisonCourseRecords = {
         totalRecords: 0,
@@ -463,7 +238,7 @@ describe('curiousService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getLearnerEducationPage).toHaveBeenCalledWith(prisonNumber, 0)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
   })
 })

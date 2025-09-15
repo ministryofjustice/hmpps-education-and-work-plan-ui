@@ -12,7 +12,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
@@ -102,7 +102,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
-    cy.task('stubLearnerEducationWithCompletedCoursesInLast12Months')
+    cy.task('stubLearnerQualificationsWithCompletedCoursesInLast12Months')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -119,7 +119,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
-    cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months')
+    cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -136,7 +136,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
-    cy.task('stubLearnerEducationWithWithdrawnAndInProgressCourses')
+    cy.task('stubLearnerQualificationsWithWithdrawnAndInProgressCourses')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -153,7 +153,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
-    cy.task('stubLearnerEducationWithNoCourses')
+    cy.task('stubLearnerQualificationsWithNoCourses')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -187,7 +187,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.signIn()
 
     // When
-    cy.task('stubLearnerEducation401Error')
+    cy.task('stubLearnerQualifications500Error')
     cy.visit(`/plan/${prisonNumber}/view/overview`)
 
     // Then
@@ -282,7 +282,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       // Given
       cy.signIn()
       cy.task('stubLearnerProfileConnectionTimeoutError')
-      cy.task('stubLearnerEducationConnectionTimeoutError')
+      cy.task('stubLearnerQualificationsConnectionTimeoutError')
 
       // When
       cy.visit(`/plan/${prisonNumber}/view/overview`)

@@ -15,7 +15,7 @@ context('Update in-prison work interests within an Induction', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('stubUpdateInduction')
     cy.signIn()

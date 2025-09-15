@@ -1,10 +1,11 @@
 import { startOfToday, sub } from 'date-fns'
 import type { InPrisonCourseRecords } from 'viewModels'
-import type { LearnerEducation } from 'curiousApiClient'
+import type { AllQualificationsDTO, LearnerEducationDTO } from 'curiousApiClient'
 import { toInPrisonCourse } from './inPrisonCourseMapper'
 
-const toInPrisonCourseRecords = (apiLearnerEducations: Array<LearnerEducation>): InPrisonCourseRecords => {
-  const allCourses = apiLearnerEducations.map(learnerEducation => toInPrisonCourse(learnerEducation))
+const toInPrisonCourseRecords = (allPrisonerQualifications: AllQualificationsDTO): InPrisonCourseRecords => {
+  const curiousV1Courses = (allPrisonerQualifications?.v1 || []) as Array<LearnerEducationDTO>
+  const allCourses = curiousV1Courses.map(learnerEducation => toInPrisonCourse(learnerEducation))
 
   const completedCourses = [...allCourses].filter(inPrisonCourse => inPrisonCourse.courseStatus === 'COMPLETED')
   const inProgressCourses = [...allCourses].filter(inPrisonCourse => inPrisonCourse.courseStatus === 'IN_PROGRESS')

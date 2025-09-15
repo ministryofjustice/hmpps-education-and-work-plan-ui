@@ -15,7 +15,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('stubGetEducation')
     cy.task('stubGetAllPrisons')
@@ -88,11 +88,11 @@ context('Prisoner Overview page - Education And Training tab', () => {
   })
 
   describe('should retrieve and render In Prison Courses from Curious API data', () => {
-    // In Prison Courses come from the Curious API /learnerEducation
+    // In Prison Courses come from the Curious API /learnerQualifications
 
     it('should display In Prison Courses completed in the last 12 months', () => {
       // Given
-      cy.task('stubLearnerEducationWithCompletedCoursesInLast12Months') // Learner education stub has GCSE Maths completed in last 12 months
+      cy.task('stubLearnerQualificationsWithCompletedCoursesInLast12Months') // Learner qualifications stub has GCSE Maths completed in last 12 months
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -112,7 +112,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     it('should display message and view all link if prisoner has no completed courses within last 12 months but does have older courses', () => {
       // Given
-      cy.task('stubLearnerEducationWithCompletedCoursesOlderThanLast12Months')
+      cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -132,7 +132,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
 
     it('should display message but not display view all link if prisoner has no completed courses', () => {
       // Given
-      cy.task('stubLearnerEducationWithNoCourses')
+      cy.task('stubLearnerQualificationsWithNoCourses')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -150,9 +150,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .doesNotHaveLinkToViewAllCourses()
     })
 
-    it('should not display In Prison courses given curious API returns a 404 for the learner education', () => {
+    it('should not display In Prison courses given curious API returns a 404 for the learner qualifications', () => {
       // Given
-      cy.task('stubLearnerEducation404Error')
+      cy.task('stubLearnerQualifications404Error')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -170,9 +170,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .doesNotHaveLinkToViewAllCourses()
     })
 
-    it('should display curious unavailable message given curious is unavailable for the learner education', () => {
+    it('should display curious unavailable message given curious is unavailable for the learner qualifications', () => {
       // Given
-      cy.task('stubLearnerEducation401Error')
+      cy.task('stubLearnerQualifications500Error')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'

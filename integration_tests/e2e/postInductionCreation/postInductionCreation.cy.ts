@@ -19,7 +19,7 @@ context(`Show the relevant screen after an Induction has been created`, () => {
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('stubLearnerProfile')
-    cy.task('stubLearnerEducation')
+    cy.task('stubLearnerQualifications')
   })
 
   it('should display the Create Goal page given the prisoner does not have an Action Plan with goals', () => {
