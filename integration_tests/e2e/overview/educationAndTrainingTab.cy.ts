@@ -14,7 +14,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubGetInduction')
     cy.task('stubGetEducation')
@@ -23,11 +23,11 @@ context('Prisoner Overview page - Education And Training tab', () => {
   })
 
   describe('should retrieve and render Functional Skills from Curious API data', () => {
-    // Functional skills come from the Curious API /learnerProfile
+    // Functional skills come from the Curious API /learnerAssessments
 
     it('should display Functional Skills', () => {
       // Given
-      cy.task('stubLearnerProfile') // Learner profile stub has Maths and Digital Literacy, but not English
+      cy.task('stubLearnerAssessments') // Learner Assessments stub has Maths and Digital Literacy, but not English
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -46,9 +46,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
     })
 
-    it('should display message saying no assessment scores for Maths and English are recorded given curious API returns a 404 for the learner profile', () => {
+    it('should display message saying no assessment scores for Maths and English are recorded given curious API returns a 404 for the learner assessments', () => {
       // Given
-      cy.task('stubLearnerProfile404Error') // Curious 404 for /learnerProfile means there are no Functional Skills recprded for the prisoner
+      cy.task('stubLearnerAssessments404Error') // Curious 404 for /learnerAssessments means there are no Functional Skills recorded for the prisoner
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'
@@ -66,9 +66,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('MATHS') // English & Maths are always displayed, even if not in the returned data
     })
 
-    it('should display curious unavailable message given curious is unavailable for the learner profile', () => {
+    it('should display curious unavailable message given curious is unavailable for the learner assessments', () => {
       // Given
-      cy.task('stubLearnerProfile401Error')
+      cy.task('stubLearnerAssessments500Error')
 
       cy.signIn()
       const prisonNumber = 'G6115VJ'

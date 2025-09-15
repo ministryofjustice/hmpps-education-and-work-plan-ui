@@ -7,7 +7,6 @@ jest.mock('../../services/curiousService')
 
 describe('retrieveCuriousFunctionalSkills', () => {
   const curiousService = new CuriousService(null) as jest.Mocked<CuriousService>
-  const requestHandler = retrieveCuriousFunctionalSkills(curiousService)
 
   const prisonNumber = 'A1234GC'
 
@@ -24,8 +23,10 @@ describe('retrieveCuriousFunctionalSkills', () => {
     } as unknown as Request
   })
 
-  it('should retrieve prisoner functional skills', async () => {
+  it('should retrieve prisoner functional skills from Curious 1 and Curious 2', async () => {
     // Given
+    const requestHandler = retrieveCuriousFunctionalSkills(curiousService, { useCurious1ApiForFunctionalSkills: true })
+
     const expectedFunctionalSkills = validFunctionalSkills()
     curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
 
@@ -35,7 +36,28 @@ describe('retrieveCuriousFunctionalSkills', () => {
     // Then
     expect(res.locals.prisonerFunctionalSkills.isFulfilled()).toEqual(true)
     expect(res.locals.prisonerFunctionalSkills.value).toEqual(expectedFunctionalSkills)
-    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber)
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, {
+      useCurious1ApiForFunctionalSkills: true,
+    })
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('should retrieve prisoner functional skills only from Curious 2', async () => {
+    // Given
+    const requestHandler = retrieveCuriousFunctionalSkills(curiousService, { useCurious1ApiForFunctionalSkills: false })
+
+    const expectedFunctionalSkills = validFunctionalSkills()
+    curiousService.getPrisonerFunctionalSkills.mockResolvedValue(expectedFunctionalSkills)
+
+    // When
+    await requestHandler(req, res, next)
+
+    // Then
+    expect(res.locals.prisonerFunctionalSkills.isFulfilled()).toEqual(true)
+    expect(res.locals.prisonerFunctionalSkills.value).toEqual(expectedFunctionalSkills)
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, {
+      useCurious1ApiForFunctionalSkills: false,
+    })
     expect(next).toHaveBeenCalled()
   })
 })

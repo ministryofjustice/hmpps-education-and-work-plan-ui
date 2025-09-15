@@ -17,7 +17,7 @@ context('Prevent out of sequence navigation to pages in the Create Induction jou
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
-    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerAssessments', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerQualifications', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)

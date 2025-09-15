@@ -14,7 +14,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/functional-skills', [
     retrievePrisonNamesById(prisonService),
-    retrieveCuriousFunctionalSkills(curiousService),
+    retrieveCuriousFunctionalSkills(curiousService, { useCurious1ApiForFunctionalSkills: true }),
     asyncMiddleware(functionalSkillsController.getFunctionalSkillsView),
   ])
 }

@@ -24,7 +24,7 @@ context('Prisoner Overview page - Work and Interests tab', () => {
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('getActionPlan')
   })

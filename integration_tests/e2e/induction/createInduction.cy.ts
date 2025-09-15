@@ -54,7 +54,7 @@ context('Create an Induction', () => {
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
-    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerAssessments', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerQualifications', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)
@@ -334,7 +334,7 @@ context('Create an Induction', () => {
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
-    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerAssessments', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerQualifications', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetEducation404Error', prisonNumberForPrisonerWithNoInduction)
@@ -473,7 +473,7 @@ context('Create an Induction', () => {
     const prisonNumberForPrisonerWithNoInduction = 'A00001A'
     cy.task('getActionPlan', prisonNumberForPrisonerWithNoInduction)
     cy.task('getPrisonerById', prisonNumberForPrisonerWithNoInduction)
-    cy.task('stubLearnerProfile', prisonNumberForPrisonerWithNoInduction)
+    cy.task('stubLearnerAssessments', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubLearnerQualifications', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubGetInduction404Error', prisonNumberForPrisonerWithNoInduction)
     cy.task('stubCreateInduction', prisonNumberForPrisonerWithNoInduction)

@@ -22,7 +22,7 @@ context('Unarchive a goal', () => {
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ARCHIVED })
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('unarchiveGoal')
   })

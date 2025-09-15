@@ -18,10 +18,18 @@ export default class CuriousService {
     }
   }
 
-  async getPrisonerFunctionalSkills(prisonNumber: string): Promise<FunctionalSkills> {
+  async getPrisonerFunctionalSkills(
+    prisonNumber: string,
+    options: { useCurious1ApiForFunctionalSkills: boolean } = { useCurious1ApiForFunctionalSkills: false },
+  ): Promise<FunctionalSkills> {
     try {
-      const learnerProfiles = (await this.curiousClient.getLearnerProfile(prisonNumber)) || []
-      return toFunctionalSkills(learnerProfiles)
+      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      const learnerProfiles =
+        options.useCurious1ApiForFunctionalSkills === true
+          ? (await this.curiousClient.getLearnerProfile(prisonNumber)) || []
+          : null
+
+      return toFunctionalSkills(allPrisonerAssessments, learnerProfiles)
     } catch (error) {
       logger.error('Error retrieving functional skills data from Curious', error)
       throw error

@@ -14,7 +14,7 @@ context('Update factors affecting the ability to work within an Induction', () =
     cy.task('stubCiagInductionList')
     cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
-    cy.task('stubLearnerProfile')
+    cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('stubUpdateInduction')
     cy.task('stubGetInduction')

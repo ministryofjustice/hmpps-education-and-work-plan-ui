@@ -100,61 +100,137 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerFunctionalSkills', () => {
-    it('should get prisoner functional skills given a known prison number', async () => {
-      // Given
-      const learnerProfiles = [aValidLearnerProfile()]
-      curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
+    describe('get functional skills from both Curious 1 and Curious 2', () => {
+      const allAssessments = anAllAssessmentDTO()
+      curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
-      const expectedFunctionalSkills: FunctionalSkills = {
-        assessments: [
-          {
-            assessmentDate: startOfDay('2012-02-16'),
-            grade: 'Level 1',
-            prisonId: 'MDI',
-            type: 'ENGLISH',
-          },
-        ],
-      }
+      it('should get prisoner functional skills given a known prison number', async () => {
+        // Given
+        const learnerProfiles = [aValidLearnerProfile()]
+        curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
-      // When
-      const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
+        const expectedFunctionalSkills: FunctionalSkills = {
+          assessments: [
+            {
+              assessmentDate: startOfDay('2012-02-16'),
+              grade: 'Level 1',
+              prisonId: 'MDI',
+              type: 'ENGLISH',
+            },
+          ],
+        }
 
-      // Then
-      expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+        // When
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, {
+          useCurious1ApiForFunctionalSkills: true,
+        })
+
+        // Then
+        expect(actual).toEqual(expectedFunctionalSkills)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      })
+
+      it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the learner profile', async () => {
+        // Given
+        curiousClient.getLearnerProfile.mockResolvedValue(null)
+
+        const expectedFunctionalSkills: FunctionalSkills = {
+          assessments: [],
+        }
+
+        // When
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, {
+          useCurious1ApiForFunctionalSkills: true,
+        })
+
+        // Then
+        expect(actual).toEqual(expectedFunctionalSkills)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      })
+
+      it('should rethrow error given Curious API returns an unexpected error', async () => {
+        // Given
+        const curiousApiError = {
+          message: 'Internal Server Error',
+          status: 500,
+          text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
+        }
+        curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
+
+        // When
+        const actual = await curiousService
+          .getPrisonerFunctionalSkills(prisonNumber, { useCurious1ApiForFunctionalSkills: true })
+          .catch(error => error)
+
+        // Then
+        expect(actual).toEqual(curiousApiError)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+      })
     })
 
-    it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the learner profile', async () => {
-      // Given
-      curiousClient.getLearnerProfile.mockResolvedValue(null)
+    describe('get functional skills only from Curious 2', () => {
+      it('should get prisoner functional skills given a known prison number', async () => {
+        // Given
+        const allAssessments = anAllAssessmentDTO()
+        curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
-      const expectedFunctionalSkills: FunctionalSkills = {
-        assessments: [],
-      }
+        const expectedFunctionalSkills: FunctionalSkills = {
+          assessments: [
+            {
+              assessmentDate: startOfDay('2012-02-16'),
+              grade: 'Level 1',
+              prisonId: 'MDI',
+              type: 'ENGLISH',
+            },
+          ],
+        }
 
-      // When
-      const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
+        // When
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
 
-      // Then
-      expect(actual).toEqual(expectedFunctionalSkills)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
-    })
+        // Then
+        expect(actual).toEqual(expectedFunctionalSkills)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
+      })
 
-    it('should rethrow error given Curious API returns an unexpected error', async () => {
-      // Given
-      const curiousApiError = {
-        message: 'Internal Server Error',
-        status: 500,
-        text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
-      }
-      curiousClient.getLearnerProfile.mockRejectedValue(curiousApiError)
+      it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the assessments', async () => {
+        // Given
+        curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(null)
 
-      // When
-      const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber).catch(error => error)
+        const expectedFunctionalSkills: FunctionalSkills = {
+          assessments: [],
+        }
 
-      // Then
-      expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+        // When
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
+
+        // Then
+        expect(actual).toEqual(expectedFunctionalSkills)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
+      })
+
+      it('should rethrow error given Curious API returns an unexpected error', async () => {
+        // Given
+        const curiousApiError = {
+          message: 'Internal Server Error',
+          status: 500,
+          text: { errorCode: 'VC5000', errorMessage: 'Internal server error', httpStatusCode: 500 },
+        }
+        curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
+
+        // When
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber).catch(error => error)
+
+        // Then
+        expect(actual).toEqual(curiousApiError)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
+      })
     })
   })
 
