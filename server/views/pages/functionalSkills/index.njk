@@ -26,7 +26,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds app-u-print-full-width">
         <span class="govuk-caption-l">Learning and work progress</span>
-        <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills</h1>
+        <h1 class="govuk-heading-l">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s functional skills initial assessment results</h1>
       </div>
       <div class="govuk-grid-column-one-third">
         {% include "../../partials/printThisPage.njk" %}
@@ -49,10 +49,12 @@
           {% set mathsSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) %}
           {% set digitalSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) %}
 
-          <p class="govuk-hint">Information from Curious. These scores are from a person's induction assessment.<br/>For recent functional skills qualifications, go to in-prison courses and qualifications.</p>
+          <p class="govuk-hint">Information from Curious. These results are from a person's induction assessment.
+            For recent functional skills qualifications, go to
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/in-prison-courses-and-qualifications" data-qa="view-all-in-prison-courses-link">in-prison courses and qualifications</a>.
+          </p>
 
-          <h2 class="govuk-heading-m">English functional skills assessment scores</h2>
-
+          <h2 class="govuk-heading-m">English skills</h2>
           {% if englishSkills.length > 0 %}
             {{ sortableTable({
               id: "english-skills",
@@ -60,11 +62,10 @@
               assessments: englishSkills
             }) }}
           {% else %}
-            <p class="govuk-body">No English functional skill assessment scores recorded in Curious.</p>
+            <p class="govuk-body">No English functional skill assessment result recorded in Curious.</p>
           {% endif %}
 
-          <h2 class="govuk-heading-m">Maths functional skills assessment scores</h2>
-
+          <h2 class="govuk-heading-m">Maths skills</h2>
           {% if mathsSkills.length > 0 %}
             {{ sortableTable({
               id: "maths-skills",
@@ -72,11 +73,10 @@
               assessments: mathsSkills
             }) }}
           {% else %}
-            <p class="govuk-body">No Maths functional skill assessment scores recorded in Curious.</p>
+            <p class="govuk-body">No Maths functional skill assessment result recorded in Curious.</p>
           {% endif %}
 
-          <h2 class="govuk-heading-m">Digital functional skills assessment scores</h2>
-
+          <h2 class="govuk-heading-m">Digital skills</h2>
           {% if digitalSkills.length > 0 %}
             {{ sortableTable({
               id: "digital-skills",
@@ -84,8 +84,14 @@
               assessments: digitalSkills
             }) }}
           {% else %}
-            <p class="govuk-body">No Digital functional skill assessment scores recorded in Curious.</p>
+            <p class="govuk-body">No Digital functional skill assessment result recorded in Curious.</p>
           {% endif %}
+
+          <h2 class="govuk-heading-m">Reading scores</h2>
+          <p class="govuk-body">No Reading assessment result recorded in Curious.</p>
+
+          <h2 class="govuk-heading-m">ESOL scores</h2>
+          <p class="govuk-body">No ESOL assessment result recorded in Curious.</p>
 
         {% else %}
 

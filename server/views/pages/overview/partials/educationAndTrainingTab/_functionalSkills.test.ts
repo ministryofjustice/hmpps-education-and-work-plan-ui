@@ -34,22 +34,6 @@ const templateParams = {
 }
 
 describe('Education and Training tab view - Functional Skills', () => {
-  it('should render content', () => {
-    // Given
-    const params = {
-      ...templateParams,
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('#latest-functional-skills-table')).not.toBeUndefined()
-    const functionalSkillsRows = $('#latest-functional-skills-table tbody tr')
-    expect(functionalSkillsRows.length).toEqual(2) // English and Maths are always shown, even if the prisoner has not taken those assessments
-  })
-
   it('should render content saying curious is unavailable given Functional Skills promise is not resolved', () => {
     // Given
     const params = {
@@ -88,16 +72,12 @@ describe('Education and Training tab view - Functional Skills', () => {
 
     // Then
     const functionalSkillsRows = $('#latest-functional-skills-table tbody tr')
-    expect(functionalSkillsRows.length).toEqual(2) // English and Maths are always shown, even if the prisoner has not taken those assessments
+    expect(functionalSkillsRows.length).toEqual(1)
     expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('English skills')
     expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual('Moorland (HMP & YOI)')
     expect(functionalSkillsRows.eq(0).find('td').eq(2).text().trim()).toEqual('16 February 2012')
     expect(functionalSkillsRows.eq(0).find('td').eq(3).text().trim()).toEqual('Level 1')
-
-    expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills')
-    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
+    expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(0)
   })
 
   it('should render Functional Skill assessments given prisoner has no assessments in Curious', () => {
@@ -115,20 +95,11 @@ describe('Education and Training tab view - Functional Skills', () => {
     const $ = cheerio.load(content)
 
     // Then
-    const functionalSkillsRows = $('#latest-functional-skills-table tbody tr')
-    expect(functionalSkillsRows.length).toEqual(2) // English and Maths are always shown, even if the prisoner has not taken those assessments
-    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('English skills')
-    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
-
-    expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills')
-    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
+    expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(1)
+    expect($('#latest-functional-skills-table').length).toEqual(0)
   })
 
-  it('should render Functional Skill assessments given prisoner only has a digital skills assessment in Curious', () => {
+  it('should render Functional Skill assessments given prisoner has several assessments in Curious', () => {
     const params = {
       ...templateParams,
       prisonerFunctionalSkills: Result.fulfilled(
@@ -138,6 +109,30 @@ describe('Education and Training tab view - Functional Skills', () => {
               type: 'DIGITAL_LITERACY',
               assessmentDate: startOfDay('2012-02-16'),
               grade: 'Level 1',
+              prisonId: 'BXI',
+            }),
+            aValidAssessment({
+              type: 'DIGITAL_LITERACY',
+              assessmentDate: startOfDay('2024-08-02'),
+              grade: 'Level 2',
+              prisonId: 'BXI',
+            }),
+            aValidAssessment({
+              type: 'MATHS',
+              assessmentDate: startOfDay('2024-08-02'),
+              grade: 'Level 1',
+              prisonId: 'BXI',
+            }),
+            aValidAssessment({
+              type: 'ENGLISH',
+              assessmentDate: startOfDay('2024-04-18'),
+              grade: 'Level 1',
+              prisonId: 'BXI',
+            }),
+            aValidAssessment({
+              type: 'ENGLISH',
+              assessmentDate: startOfDay('2024-09-22'),
+              grade: 'Level 2',
               prisonId: 'BXI',
             }),
           ],
@@ -151,20 +146,22 @@ describe('Education and Training tab view - Functional Skills', () => {
 
     // Then
     const functionalSkillsRows = $('#latest-functional-skills-table tbody tr')
-    expect(functionalSkillsRows.length).toEqual(3) // English and Maths are always shown, even if the prisoner has not taken those assessments
+    expect(functionalSkillsRows.length).toEqual(3) // Expect 1 row for the most recent of each type
     expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('English skills')
-    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
+    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual('Brixton (HMP)')
+    expect(functionalSkillsRows.eq(0).find('td').eq(2).text().trim()).toEqual('22 September 2024')
+    expect(functionalSkillsRows.eq(0).find('td').eq(3).text().trim()).toEqual('Level 2')
 
     expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills')
-    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
+    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual('Brixton (HMP)')
+    expect(functionalSkillsRows.eq(1).find('td').eq(2).text().trim()).toEqual('2 August 2024')
+    expect(functionalSkillsRows.eq(1).find('td').eq(3).text().trim()).toEqual('Level 1')
 
     expect(functionalSkillsRows.eq(2).find('td').eq(0).text().trim()).toEqual('Digital skills')
     expect(functionalSkillsRows.eq(2).find('td').eq(1).text().trim()).toEqual('Brixton (HMP)')
-    expect(functionalSkillsRows.eq(2).find('td').eq(2).text().trim()).toEqual('16 February 2012')
-    expect(functionalSkillsRows.eq(2).find('td').eq(3).text().trim()).toEqual('Level 1')
+    expect(functionalSkillsRows.eq(2).find('td').eq(2).text().trim()).toEqual('2 August 2024')
+    expect(functionalSkillsRows.eq(2).find('td').eq(3).text().trim()).toEqual('Level 2')
+
+    expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(0)
   })
 })

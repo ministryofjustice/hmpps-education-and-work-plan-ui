@@ -43,10 +43,9 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .activeTabIs('Education and training')
         .hasFunctionalSkillWithAssessmentScoreDisplayed('MATHS')
         .hasFunctionalSkillWithAssessmentScoreDisplayed('DIGITAL_LITERACY')
-        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
     })
 
-    it('should display message saying no assessment scores for Maths and English are recorded given curious API returns a 404 for the learner assessments', () => {
+    it('should display message saying no assessment scores given curious API returns a 404 for the learner assessments', () => {
       // Given
       cy.task('stubLearnerAssessments404Error') // Curious 404 for /learnerAssessments means there are no Functional Skills recorded for the prisoner
 
@@ -62,8 +61,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('ENGLISH') // English & Maths are always displayed, even if not in the returned data
-        .hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed('MATHS') // English & Maths are always displayed, even if not in the returned data
+        .hasNoFunctionalSkillsRecorded()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner assessments', () => {
@@ -82,7 +80,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       // Then
       educationAndTrainingPage //
         .activeTabIs('Education and training')
-        .doesNotHaveFunctionalSkillsDisplayed()
+        .doesNotHaveFunctionalSkillsTableDisplayed()
         .hasCuriousUnavailableMessageDisplayed()
     })
   })
