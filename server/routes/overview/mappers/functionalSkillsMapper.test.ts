@@ -1,12 +1,13 @@
 import { parseISO, startOfDay } from 'date-fns'
 import type { AllAssessmentDTO, LearnerProfile } from 'curiousApiClient'
-import type { FunctionalSkills } from 'viewModels'
+import type { Assessment } from 'viewModels'
 import toFunctionalSkills from './functionalSkillsMapper'
 import {
   aLearnerAssessmentV1DTO,
   aLearnerLatestAssessmentV1DTO,
   anAllAssessmentDTO,
 } from '../../../testsupport/curiousAssessmentsTestDataBuilder'
+import aValidAssessment from '../../../testsupport/assessmentTestDataBuilder'
 
 describe('functionalSkillsMapper', () => {
   describe('Map to functional skills from the Curious 1 assessments data as precedence over the Curious 2 assessments', () => {
@@ -47,26 +48,29 @@ describe('functionalSkillsMapper', () => {
         },
       ]
 
-      const expected: FunctionalSkills = {
+      const expected = {
         assessments: [
-          {
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2012-02-16')),
             grade: 'Level 1',
             prisonId: 'MDI',
             type: 'ENGLISH',
-          },
-          {
+            source: 'CURIOUS1',
+          }),
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2012-02-18')),
             grade: 'Level 2',
             prisonId: 'MDI',
             type: 'MATHS',
-          },
-          {
+            source: 'CURIOUS1',
+          }),
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2022-08-29')),
             grade: 'Level 3',
             prisonId: 'DNI',
             type: 'DIGITAL_LITERACY',
-          },
+            source: 'CURIOUS1',
+          }),
         ],
       }
 
@@ -81,8 +85,8 @@ describe('functionalSkillsMapper', () => {
       // Given
       const learnerProfiles: Array<LearnerProfile> = []
 
-      const expected: FunctionalSkills = {
-        assessments: [],
+      const expected = {
+        assessments: [] as Array<Assessment>,
       }
 
       // When
@@ -93,7 +97,7 @@ describe('functionalSkillsMapper', () => {
     })
   })
 
-  describe('Map to functional skills from Curious 2 assessments', () => {
+  describe('Map to functional skills from Curious 2 assessments data', () => {
     it('should map to functional skills given assessments contain v1 functional skills assessments', () => {
       // Given
       const prisonNumber = 'G6123VU'
@@ -130,26 +134,29 @@ describe('functionalSkillsMapper', () => {
         ],
       })
 
-      const expected: FunctionalSkills = {
+      const expected = {
         assessments: [
-          {
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2012-02-16')),
             grade: 'Level 1',
             prisonId: 'MDI',
             type: 'ENGLISH',
-          },
-          {
+            source: 'CURIOUS1',
+          }),
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2012-02-18')),
             grade: 'Level 2',
             prisonId: 'MDI',
             type: 'MATHS',
-          },
-          {
+            source: 'CURIOUS1',
+          }),
+          aValidAssessment({
             assessmentDate: startOfDay(parseISO('2022-08-29')),
             grade: 'Level 3',
             prisonId: 'DNI',
             type: 'DIGITAL_LITERACY',
-          },
+            source: 'CURIOUS1',
+          }),
         ],
       }
 
@@ -164,8 +171,8 @@ describe('functionalSkillsMapper', () => {
       // Given
       const allAssessments: AllAssessmentDTO = null
 
-      const expected: FunctionalSkills = {
-        assessments: [],
+      const expected = {
+        assessments: [] as Array<Assessment>,
       }
 
       // When
@@ -181,8 +188,8 @@ describe('functionalSkillsMapper', () => {
         v1Assessments: null,
       })
 
-      const expected: FunctionalSkills = {
-        assessments: [],
+      const expected = {
+        assessments: [] as Array<Assessment>,
       }
 
       // When
@@ -202,8 +209,8 @@ describe('functionalSkillsMapper', () => {
         ],
       })
 
-      const expected: FunctionalSkills = {
-        assessments: [],
+      const expected = {
+        assessments: [] as Array<Assessment>,
       }
 
       // When

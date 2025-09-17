@@ -1,7 +1,7 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { InPrisonCourse } from 'viewModels'
 import { toInPrisonCourse, toCourseStatus } from './inPrisonCourseMapper'
 import { aLearnerEducationDTO } from '../../testsupport/curiousQualificationsTestDataBuilder'
+import { aValidInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 
 describe('inPrisonCourseMapper', () => {
   describe('toInPrisonCourse', () => {
@@ -9,7 +9,7 @@ describe('inPrisonCourseMapper', () => {
       // Given
       const apiLearnerEducation = aLearnerEducationDTO()
 
-      const expectedInPrisonCourse: InPrisonCourse = {
+      const expectedInPrisonCourse = aValidInPrisonCourse({
         prisonId: 'BXI',
         courseCode: '101448',
         courseName: 'Certificate of Management',
@@ -20,8 +20,8 @@ describe('inPrisonCourseMapper', () => {
         isAccredited: true,
         grade: 'Achieved',
         withdrawalReason: null,
-        source: 'CURIOUS',
-      }
+        source: 'CURIOUS1',
+      })
 
       // When
       const actual = toInPrisonCourse(apiLearnerEducation)
