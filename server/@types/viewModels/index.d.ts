@@ -87,8 +87,11 @@ declare module 'viewModels' {
   export interface Assessment {
     prisonId: string
     type: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
-    grade: string
     assessmentDate: Date
+    level: string
+    levelBanding: string | null
+    referral: string | null
+    nextStep: string | null
     source: 'CURIOUS1' | 'CURIOUS2'
   }
 
