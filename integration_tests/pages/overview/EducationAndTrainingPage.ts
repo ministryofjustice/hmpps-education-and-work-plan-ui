@@ -27,20 +27,17 @@ export default class EducationAndTrainingPage extends Page {
   ): EducationAndTrainingPage {
     this.functionalSkillsTable().should('be.visible')
     this.functionalSkillRow(expectedType).should('be.visible')
-    this.noAssessmentScoreMessageForFunctionalSkill(expectedType).should('not.exist')
+    this.noFunctionalSkillsMessage().should('not.exist')
     return this
   }
 
-  hasFunctionalSkillWithNoAssessmentScoreMessageDisplayed(
-    expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY',
-  ): EducationAndTrainingPage {
-    this.functionalSkillsTable().should('be.visible')
-    this.functionalSkillRow(expectedType).should('be.visible')
-    this.noAssessmentScoreMessageForFunctionalSkill(expectedType).should('be.visible')
+  hasNoFunctionalSkillsRecorded(): EducationAndTrainingPage {
+    this.noFunctionalSkillsMessage().should('be.visible')
+    this.doesNotHaveFunctionalSkillsTableDisplayed()
     return this
   }
 
-  doesNotHaveFunctionalSkillsDisplayed(): EducationAndTrainingPage {
+  doesNotHaveFunctionalSkillsTableDisplayed(): EducationAndTrainingPage {
     this.functionalSkillsTable().should('not.exist')
     return this
   }
@@ -162,11 +159,10 @@ export default class EducationAndTrainingPage extends Page {
 
   functionalSkillsTable = (): PageElement => cy.get('#latest-functional-skills-table')
 
+  noFunctionalSkillsMessage = (): PageElement => cy.get('[data-qa=no-functional-skills-in-curious-message]')
+
   functionalSkillRow = (expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'): PageElement =>
     cy.get(`[data-qa=functional-skill-${expectedType}]`)
-
-  noAssessmentScoreMessageForFunctionalSkill = (expectedType: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'): PageElement =>
-    cy.get(`[data-qa=no-assessment-score-for-functional-skill-for-${expectedType}]`)
 
   completedInPrisonCoursesInLast12MonthsTable = (): PageElement =>
     cy.get('#completed-in-prison-courses-in-last-12-months-table')

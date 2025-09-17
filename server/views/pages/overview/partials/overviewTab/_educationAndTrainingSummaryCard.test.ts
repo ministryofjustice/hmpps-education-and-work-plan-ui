@@ -106,15 +106,12 @@ describe('_educationAndTrainingSummaryCard', () => {
 
     // Then
     const functionalSkillsRows = $('[data-qa="functional-skills-table-body"] tr')
-    expect(functionalSkillsRows.length).toEqual(2)
-    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('English skills')
+    expect(functionalSkillsRows.length).toEqual(1)
+    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('Maths skills Level 2')
     expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual(
-      'No functional skill assessment scores recorded in Curious',
-    )
-    expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills Level 2')
-    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual(
       'Assessed on 15 January 2023, Brixton (HMP)',
     )
+    expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(0)
 
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)
     expect($('[data-qa="completed-courses-table-body"] tr').length).toEqual(1)
@@ -128,6 +125,28 @@ describe('_educationAndTrainingSummaryCard', () => {
     expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(0)
     expect($('[data-qa="no-courses-completed-yet-message"]').length).toEqual(0)
     expect($('[data-qa="no-courses-recorded-message"]').length).toEqual(0)
+
+    expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
+  })
+
+  it('should render no functional skills message given prisoner has no functional skills at all', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      prisonerFunctionalSkills: Result.fulfilled(
+        validFunctionalSkills({
+          assessments: [],
+        }),
+      ),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="no-functional-skills-in-curious-message"]').length).toEqual(1)
+    expect($('[data-qa="functional-skills-table-body"]').length).toEqual(0)
 
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
