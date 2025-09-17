@@ -5,7 +5,7 @@ import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTe
 import formatDate from '../../../../../filters/formatDateFilter'
 import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFunctionalSkillTypeFilter'
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
-import aValidAssessment from '../../../../../testsupport/assessmentTestDataBuilder'
+import { aValidCurious1Assessment } from '../../../../../testsupport/assessmentTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
@@ -55,10 +55,10 @@ describe('Education and Training tab view - Functional Skills', () => {
       prisonerFunctionalSkills: Result.fulfilled(
         validFunctionalSkills({
           assessments: [
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'ENGLISH',
               assessmentDate: startOfDay('2012-02-16'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'MDI',
             }),
           ],
@@ -105,34 +105,34 @@ describe('Education and Training tab view - Functional Skills', () => {
       prisonerFunctionalSkills: Result.fulfilled(
         validFunctionalSkills({
           assessments: [
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'DIGITAL_LITERACY',
               assessmentDate: startOfDay('2012-02-16'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'BXI',
             }),
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'DIGITAL_LITERACY',
               assessmentDate: startOfDay('2024-08-02'),
-              grade: 'Level 2',
+              level: 'Level 2',
               prisonId: 'BXI',
             }),
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'MATHS',
               assessmentDate: startOfDay('2024-08-02'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'BXI',
             }),
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'ENGLISH',
               assessmentDate: startOfDay('2024-04-18'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'BXI',
             }),
-            aValidAssessment({
+            aValidCurious1Assessment({
               type: 'ENGLISH',
               assessmentDate: startOfDay('2024-09-22'),
-              grade: 'Level 2',
+              level: 'Level 2',
               prisonId: 'BXI',
             }),
           ],

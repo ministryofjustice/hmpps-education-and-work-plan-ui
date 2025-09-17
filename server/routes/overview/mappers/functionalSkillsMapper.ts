@@ -48,16 +48,22 @@ const toFunctionalSkills = (
 const assessmentRecordedInCurious1 = (prisonId: string, assessment: AssemmentDto): Assessment => ({
   prisonId,
   type: toAssessmentType(assessment.qualificationType),
-  grade: assessment.qualificationGrade,
   assessmentDate: dateOrNull(assessment.assessmentDate),
+  level: assessment.qualificationGrade,
+  levelBanding: null,
+  referral: null,
+  nextStep: null,
   source: 'CURIOUS1',
 })
 
 const learnerAssessmentV1DtoRecordedInCurious1 = (v1LearnerAssessment: LearnerAssessmentV1DTO): Assessment => ({
   prisonId: v1LearnerAssessment.establishmentId,
   type: toAssessmentType(v1LearnerAssessment.qualification.qualificationType),
-  grade: v1LearnerAssessment.qualification.qualificationGrade,
   assessmentDate: dateOrNull(v1LearnerAssessment.qualification.assessmentDate),
+  level: v1LearnerAssessment.qualification.qualificationGrade,
+  levelBanding: null,
+  referral: null,
+  nextStep: null,
   source: 'CURIOUS1',
 })
 

@@ -9,7 +9,7 @@ import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPro
 import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
 import { aValidInPrisonCourse } from '../../../../../testsupport/inPrisonCourseTestDataBuilder'
-import aValidAssessment from '../../../../../testsupport/assessmentTestDataBuilder'
+import { aValidCurious1Assessment } from '../../../../../testsupport/assessmentTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -63,19 +63,17 @@ describe('_educationAndTrainingSummaryCard', () => {
       prisonerFunctionalSkills: Result.fulfilled(
         validFunctionalSkills({
           assessments: [
-            aValidAssessment({
+            aValidCurious1Assessment({
               prisonId: 'LEI',
               type: 'MATHS',
-              grade: 'Level 1',
+              level: 'Level 1',
               assessmentDate: parseISO('2022-01-15T00:00:00Z'),
-              source: 'CURIOUS1',
             }),
-            aValidAssessment({
+            aValidCurious1Assessment({
               prisonId: 'BXI',
               type: 'MATHS',
-              grade: 'Level 2',
+              level: 'Level 2',
               assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-              source: 'CURIOUS1',
             }),
           ],
         }),

@@ -45,7 +45,7 @@ Data supplied to this template:
             {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
               <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
                 <td class="govuk-table__cell">
-                  <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }} {{ functionalSkillAssessment.grade }}</span>
+                  <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }} {{ functionalSkillAssessment.level }}</span>
                 </td>
                 <td class="govuk-table__cell">
                   {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}

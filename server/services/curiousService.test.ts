@@ -9,7 +9,7 @@ import {
   anAllAssessmentDTO,
 } from '../testsupport/curiousAssessmentsTestDataBuilder'
 import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
-import aValidAssessment from '../testsupport/assessmentTestDataBuilder'
+import { aValidCurious1Assessment } from '../testsupport/assessmentTestDataBuilder'
 import { aValidInPrisonCourse } from '../testsupport/inPrisonCourseTestDataBuilder'
 
 jest.mock('../data/curiousClient')
@@ -113,12 +113,11 @@ describe('curiousService', () => {
 
         const expectedFunctionalSkills = {
           assessments: [
-            aValidAssessment({
+            aValidCurious1Assessment({
               assessmentDate: startOfDay('2012-02-16'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'MDI',
               type: 'ENGLISH',
-              source: 'CURIOUS1',
             }),
           ],
         }
@@ -182,12 +181,11 @@ describe('curiousService', () => {
 
         const expectedFunctionalSkills = {
           assessments: [
-            aValidAssessment({
+            aValidCurious1Assessment({
               assessmentDate: startOfDay('2012-02-16'),
-              grade: 'Level 1',
+              level: 'Level 1',
               prisonId: 'MDI',
               type: 'ENGLISH',
-              source: 'CURIOUS1',
             }),
           ],
         }

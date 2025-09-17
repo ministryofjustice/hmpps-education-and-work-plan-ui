@@ -7,7 +7,7 @@ import {
   aLearnerLatestAssessmentV1DTO,
   anAllAssessmentDTO,
 } from '../../../testsupport/curiousAssessmentsTestDataBuilder'
-import aValidAssessment from '../../../testsupport/assessmentTestDataBuilder'
+import { aValidCurious1Assessment } from '../../../testsupport/assessmentTestDataBuilder'
 
 describe('functionalSkillsMapper', () => {
   describe('Map to functional skills from the Curious 1 assessments data as precedence over the Curious 2 assessments', () => {
@@ -50,26 +50,23 @@ describe('functionalSkillsMapper', () => {
 
       const expected = {
         assessments: [
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2012-02-16')),
-            grade: 'Level 1',
+            level: 'Level 1',
             prisonId: 'MDI',
             type: 'ENGLISH',
-            source: 'CURIOUS1',
           }),
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2012-02-18')),
-            grade: 'Level 2',
+            level: 'Level 2',
             prisonId: 'MDI',
             type: 'MATHS',
-            source: 'CURIOUS1',
           }),
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2022-08-29')),
-            grade: 'Level 3',
+            level: 'Level 3',
             prisonId: 'DNI',
             type: 'DIGITAL_LITERACY',
-            source: 'CURIOUS1',
           }),
         ],
       }
@@ -136,26 +133,23 @@ describe('functionalSkillsMapper', () => {
 
       const expected = {
         assessments: [
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2012-02-16')),
-            grade: 'Level 1',
+            level: 'Level 1',
             prisonId: 'MDI',
             type: 'ENGLISH',
-            source: 'CURIOUS1',
           }),
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2012-02-18')),
-            grade: 'Level 2',
+            level: 'Level 2',
             prisonId: 'MDI',
             type: 'MATHS',
-            source: 'CURIOUS1',
           }),
-          aValidAssessment({
+          aValidCurious1Assessment({
             assessmentDate: startOfDay(parseISO('2022-08-29')),
-            grade: 'Level 3',
+            level: 'Level 3',
             prisonId: 'DNI',
             type: 'DIGITAL_LITERACY',
-            source: 'CURIOUS1',
           }),
         ],
       }
