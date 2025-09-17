@@ -1,5 +1,5 @@
 import { startOfDay } from 'date-fns'
-import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
+import type { Assessment, InPrisonCourse, PrisonerSupportNeeds } from 'viewModels'
 import CuriousClient from '../data/curiousClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
@@ -9,6 +9,8 @@ import {
   anAllAssessmentDTO,
 } from '../testsupport/curiousAssessmentsTestDataBuilder'
 import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
+import aValidAssessment from '../testsupport/assessmentTestDataBuilder'
+import { aValidInPrisonCourse } from '../testsupport/inPrisonCourseTestDataBuilder'
 
 jest.mock('../data/curiousClient')
 jest.mock('../data/hmppsAuthClient')
@@ -109,14 +111,15 @@ describe('curiousService', () => {
         const learnerProfiles = [aValidLearnerProfile()]
         curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
-        const expectedFunctionalSkills: FunctionalSkills = {
+        const expectedFunctionalSkills = {
           assessments: [
-            {
+            aValidAssessment({
               assessmentDate: startOfDay('2012-02-16'),
               grade: 'Level 1',
               prisonId: 'MDI',
               type: 'ENGLISH',
-            },
+              source: 'CURIOUS1',
+            }),
           ],
         }
 
@@ -135,8 +138,8 @@ describe('curiousService', () => {
         // Given
         curiousClient.getLearnerProfile.mockResolvedValue(null)
 
-        const expectedFunctionalSkills: FunctionalSkills = {
-          assessments: [],
+        const expectedFunctionalSkills = {
+          assessments: [] as Array<Assessment>,
         }
 
         // When
@@ -177,14 +180,15 @@ describe('curiousService', () => {
         const allAssessments = anAllAssessmentDTO()
         curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
-        const expectedFunctionalSkills: FunctionalSkills = {
+        const expectedFunctionalSkills = {
           assessments: [
-            {
+            aValidAssessment({
               assessmentDate: startOfDay('2012-02-16'),
               grade: 'Level 1',
               prisonId: 'MDI',
               type: 'ENGLISH',
-            },
+              source: 'CURIOUS1',
+            }),
           ],
         }
 
@@ -201,8 +205,8 @@ describe('curiousService', () => {
         // Given
         curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(null)
 
-        const expectedFunctionalSkills: FunctionalSkills = {
-          assessments: [],
+        const expectedFunctionalSkills = {
+          assessments: [] as Array<Assessment>,
         }
 
         // When
@@ -240,11 +244,11 @@ describe('curiousService', () => {
       const allPrisonerQualifications = anAllQualificationsDTO()
       curiousClient.getQualificationsByPrisonNumber.mockResolvedValue(allPrisonerQualifications)
 
-      const expected: InPrisonCourseRecords = {
+      const expected = {
         totalRecords: 1,
         coursesByStatus: {
           COMPLETED: [
-            {
+            aValidInPrisonCourse({
               courseCode: '101448',
               courseCompletionDate: startOfDay('2024-01-24'),
               courseName: 'Certificate of Management',
@@ -255,14 +259,14 @@ describe('curiousService', () => {
               isAccredited: true,
               prisonId: 'BXI',
               withdrawalReason: null,
-              source: 'CURIOUS',
-            },
+              source: 'CURIOUS1',
+            }),
           ],
-          IN_PROGRESS: [],
-          WITHDRAWN: [],
-          TEMPORARILY_WITHDRAWN: [],
+          IN_PROGRESS: [] as Array<InPrisonCourse>,
+          WITHDRAWN: [] as Array<InPrisonCourse>,
+          TEMPORARILY_WITHDRAWN: [] as Array<InPrisonCourse>,
         },
-        coursesCompletedInLast12Months: [],
+        coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
         hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
         hasWithdrawnOrInProgressCourses: expect.any(Function),
       }
@@ -296,15 +300,15 @@ describe('curiousService', () => {
       // Given
       curiousClient.getQualificationsByPrisonNumber.mockResolvedValue(null)
 
-      const expected: InPrisonCourseRecords = {
+      const expected = {
         totalRecords: 0,
         coursesByStatus: {
-          COMPLETED: [],
-          IN_PROGRESS: [],
-          WITHDRAWN: [],
-          TEMPORARILY_WITHDRAWN: [],
+          COMPLETED: [] as Array<InPrisonCourse>,
+          IN_PROGRESS: [] as Array<InPrisonCourse>,
+          WITHDRAWN: [] as Array<InPrisonCourse>,
+          TEMPORARILY_WITHDRAWN: [] as Array<InPrisonCourse>,
         },
-        coursesCompletedInLast12Months: [],
+        coursesCompletedInLast12Months: [] as Array<InPrisonCourse>,
         hasCoursesCompletedMoreThan12MonthsAgo: expect.any(Function),
         hasWithdrawnOrInProgressCourses: expect.any(Function),
       }

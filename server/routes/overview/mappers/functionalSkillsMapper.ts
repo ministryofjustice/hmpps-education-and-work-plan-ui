@@ -30,7 +30,7 @@ const toFunctionalSkills = (
   if (learnerProfiles) {
     assessments = learnerProfiles.flatMap(learnerProfile =>
       (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
-        toAssessmentFromCurious1AssessmentDto(learnerProfile.establishmentId, assessment),
+        assessmentRecordedInCurious1(learnerProfile.establishmentId, assessment),
       ),
     )
   } else {
@@ -39,24 +39,26 @@ const toFunctionalSkills = (
     ) as Array<LearnerAssessmentV1DTO>
     assessments = v1LearnerAssessments
       .filter(v1LearnerAssessment => v1LearnerAssessment.qualification != null)
-      .map(toAssessmentFromCurious2LearnerAssessmentV1DTO)
+      .map(learnerAssessmentV1DtoRecordedInCurious1)
   }
 
   return { assessments }
 }
 
-const toAssessmentFromCurious1AssessmentDto = (prisonId: string, assessment: AssemmentDto): Assessment => ({
+const assessmentRecordedInCurious1 = (prisonId: string, assessment: AssemmentDto): Assessment => ({
   prisonId,
   type: toAssessmentType(assessment.qualificationType),
   grade: assessment.qualificationGrade,
   assessmentDate: dateOrNull(assessment.assessmentDate),
+  source: 'CURIOUS1',
 })
 
-const toAssessmentFromCurious2LearnerAssessmentV1DTO = (v1LearnerAssessment: LearnerAssessmentV1DTO): Assessment => ({
+const learnerAssessmentV1DtoRecordedInCurious1 = (v1LearnerAssessment: LearnerAssessmentV1DTO): Assessment => ({
   prisonId: v1LearnerAssessment.establishmentId,
   type: toAssessmentType(v1LearnerAssessment.qualification.qualificationType),
   grade: v1LearnerAssessment.qualification.qualificationGrade,
   assessmentDate: dateOrNull(v1LearnerAssessment.qualification.assessmentDate),
+  source: 'CURIOUS1',
 })
 
 const dateOrNull = (value: string): Date | undefined => {

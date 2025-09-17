@@ -8,6 +8,8 @@ import formatFunctionalSkillTypeFilter from '../../../../../filters/formatFuncti
 import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPropertyFilter'
 import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
+import { aValidInPrisonCourse } from '../../../../../testsupport/inPrisonCourseTestDataBuilder'
+import aValidAssessment from '../../../../../testsupport/assessmentTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -29,9 +31,8 @@ const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
 const curiousInPrisonCourses = Result.fulfilled({
   coursesCompletedInLast12Months: [
-    {
+    aValidInPrisonCourse({
       prisonId: 'BXI',
-      prisonName: 'Brixton (HMP)',
       courseName: 'Basic English',
       courseCode: 'ENG_01',
       isAccredited: true,
@@ -39,8 +40,8 @@ const curiousInPrisonCourses = Result.fulfilled({
       courseCompletionDate: parseISO('2023-06-15T00:00:00Z'),
       courseStatus: 'COMPLETED',
       grade: 'Pass',
-      source: 'CURIOUS',
-    },
+      source: 'CURIOUS1',
+    }),
   ],
   hasWithdrawnOrInProgressCourses: () => false,
   hasCoursesCompletedMoreThan12MonthsAgo: () => false,
@@ -62,18 +63,20 @@ describe('_educationAndTrainingSummaryCard', () => {
       prisonerFunctionalSkills: Result.fulfilled(
         validFunctionalSkills({
           assessments: [
-            {
+            aValidAssessment({
               prisonId: 'LEI',
               type: 'MATHS',
               grade: 'Level 1',
               assessmentDate: parseISO('2022-01-15T00:00:00Z'),
-            },
-            {
+              source: 'CURIOUS1',
+            }),
+            aValidAssessment({
               prisonId: 'BXI',
               type: 'MATHS',
               grade: 'Level 2',
               assessmentDate: parseISO('2023-01-15T00:00:00Z'),
-            },
+              source: 'CURIOUS1',
+            }),
           ],
         }),
       ),

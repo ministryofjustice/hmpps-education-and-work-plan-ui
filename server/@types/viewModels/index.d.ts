@@ -86,9 +86,10 @@ declare module 'viewModels' {
    */
   export interface Assessment {
     prisonId: string
-    type?: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
-    grade?: string
-    assessmentDate?: Date
+    type: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
+    grade: string
+    assessmentDate: Date
+    source: 'CURIOUS1' | 'CURIOUS2'
   }
 
   export interface ActionPlan {
@@ -251,7 +252,7 @@ declare module 'viewModels' {
     isAccredited: boolean
     grade?: string
     withdrawalReason?: string
-    source: 'CURIOUS'
+    source: 'CURIOUS1' | 'CURIOUS2'
   }
 
   export interface Job {
