@@ -1,12 +1,9 @@
-import { parseISO, startOfDay } from 'date-fns'
-import type {
-  AllAssessmentDTO,
-  Assessment as AssemmentDto,
-  LearnerAssessmentV1DTO,
-  LearnerLatestAssessmentV1DTO,
-  LearnerProfile,
-} from 'curiousApiClient'
+import type { AllAssessmentDTO, ExternalAssessmentsDTO, LearnerProfile } from 'curiousApiClient'
 import type { Assessment, FunctionalSkills } from 'viewModels'
+import {
+  toCurious1AssessmentsFromAllAssessmentDTO,
+  toCurious1AssessmentsFromLearnerProfiles,
+} from './curious1AssessmentMapper'
 
 /**
  * Map to FunctionalSkills
@@ -20,72 +17,35 @@ import type { Assessment, FunctionalSkills } from 'viewModels'
  * The complexity of two arguments is because the main Functional Skills page needs to show ALL functional skills the prisoner
  * has been assessed for; IE. a complete history. Currently the Curious 2 /learnerAssessments/v2 endpoint does not return
  * ALL functional skills recorded in Curious 1 - it only returns the latest of type.
- * TODO - tidy this complexity once the main Functional Skills page can call the new C2 endpoint.
+ * TODO - tidy this complexity once the main Functional Skills page can call just the new C2 endpoint.
  */
 const toFunctionalSkills = (
   allAssessments: AllAssessmentDTO,
   learnerProfiles: Array<LearnerProfile> = null,
 ): FunctionalSkills => {
-  let assessments: Array<Assessment>
+  const assessments: Array<Assessment> = []
+
+  /*
+  Map the assessments recorded in Curious2 into the assessments array.
+  */
+  const assessmentsRecordedInCurious2: ExternalAssessmentsDTO = allAssessments?.v2?.assessments
+  if (assessmentsRecordedInCurious2) {
+    // TODO - enable this mapping when the screens have been updated to render assessments from Curious 2
+    // assessments.push(...toCurious2FunctionalSkillsAssessments(assessmentsRecordedInCurious2))
+  }
+
+  /*
+  Map the assessments recorded in Curious1 into the assessments array.
+  Curious1 Assessments are mapped from the array of LearnerProfile if specified in precedence to the array of LearnerLatestAssessmentV1DTO
+  See method comment for rationale to this logic.
+   */
   if (learnerProfiles) {
-    assessments = learnerProfiles.flatMap(learnerProfile =>
-      (learnerProfile.qualifications as Array<AssemmentDto>).map(assessment =>
-        assessmentRecordedInCurious1(learnerProfile.establishmentId, assessment),
-      ),
-    )
+    assessments.push(...toCurious1AssessmentsFromLearnerProfiles(learnerProfiles))
   } else {
-    const v1LearnerAssessments = ((allAssessments?.v1 || []) as Array<LearnerLatestAssessmentV1DTO>).flatMap(
-      assessment => assessment.qualifications || [],
-    ) as Array<LearnerAssessmentV1DTO>
-    assessments = v1LearnerAssessments
-      .filter(v1LearnerAssessment => v1LearnerAssessment.qualification != null)
-      .map(learnerAssessmentV1DtoRecordedInCurious1)
+    assessments.push(...toCurious1AssessmentsFromAllAssessmentDTO(allAssessments))
   }
 
   return { assessments }
-}
-
-const assessmentRecordedInCurious1 = (prisonId: string, assessment: AssemmentDto): Assessment => ({
-  prisonId,
-  type: toAssessmentType(assessment.qualificationType),
-  assessmentDate: dateOrNull(assessment.assessmentDate),
-  level: assessment.qualificationGrade,
-  levelBanding: null,
-  referral: null,
-  nextStep: null,
-  source: 'CURIOUS1',
-})
-
-const learnerAssessmentV1DtoRecordedInCurious1 = (v1LearnerAssessment: LearnerAssessmentV1DTO): Assessment => ({
-  prisonId: v1LearnerAssessment.establishmentId,
-  type: toAssessmentType(v1LearnerAssessment.qualification.qualificationType),
-  assessmentDate: dateOrNull(v1LearnerAssessment.qualification.assessmentDate),
-  level: v1LearnerAssessment.qualification.qualificationGrade,
-  levelBanding: null,
-  referral: null,
-  nextStep: null,
-  source: 'CURIOUS1',
-})
-
-const dateOrNull = (value: string): Date | undefined => {
-  return value ? startOfDay(parseISO(value)) : undefined
-}
-
-const toAssessmentType = (qualificationType: string): 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY' => {
-  switch (qualificationType) {
-    case 'English': {
-      return 'ENGLISH'
-    }
-    case 'Maths': {
-      return 'MATHS'
-    }
-    case 'Digital Literacy': {
-      return 'DIGITAL_LITERACY'
-    }
-    default: {
-      return undefined
-    }
-  }
 }
 
 export default toFunctionalSkills

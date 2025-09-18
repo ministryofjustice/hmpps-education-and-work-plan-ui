@@ -11,6 +11,7 @@ declare module 'viewModels' {
   import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
   import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
   import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
+  import AssessmentTypeValue from '../../enums/assessmentTypeValue'
 
   export interface SessionsSummary {
     overdueSessionCount: number
@@ -86,7 +87,7 @@ declare module 'viewModels' {
    */
   export interface Assessment {
     prisonId: string
-    type: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
+    type: AssessmentTypeValue
     assessmentDate: Date
     level: string
     levelBanding: string | null

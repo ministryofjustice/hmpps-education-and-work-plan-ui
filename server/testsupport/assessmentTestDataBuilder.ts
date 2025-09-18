@@ -1,5 +1,6 @@
 import type { Assessment } from 'viewModels'
 import { startOfDay } from 'date-fns'
+import AssessmentTypeValue from '../enums/assessmentTypeValue'
 
 const aValidCurious1Assessment = (options?: {
   prisonId?: string
@@ -9,7 +10,7 @@ const aValidCurious1Assessment = (options?: {
 }): Assessment =>
   aValidAssessment({
     prisonId: options?.prisonId,
-    type: options?.type,
+    type: options?.type as AssessmentTypeValue,
     level: options?.level,
     levelBanding: null,
     referral: null,
@@ -20,7 +21,7 @@ const aValidCurious1Assessment = (options?: {
 
 const aValidCurious2Assessment = (options?: {
   prisonId?: string
-  type?: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
+  type?: AssessmentTypeValue
   level?: string
   levelBanding?: string
   referral?: string
@@ -40,7 +41,7 @@ const aValidCurious2Assessment = (options?: {
 
 const aValidAssessment = (options?: {
   prisonId?: string
-  type?: 'ENGLISH' | 'MATHS' | 'DIGITAL_LITERACY'
+  type?: AssessmentTypeValue
   level?: string
   levelBanding?: string
   referral?: string
