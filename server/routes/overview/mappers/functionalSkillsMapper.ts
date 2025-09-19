@@ -4,6 +4,11 @@ import {
   toCurious1AssessmentsFromAllAssessmentDTO,
   toCurious1AssessmentsFromLearnerProfiles,
 } from './curious1AssessmentMapper'
+import {
+  toCurious2ESOLAssessments,
+  toCurious2FunctionalSkillsAssessments,
+  toCurious2ReadingAssessments,
+} from './curious2AssessmentMapper'
 
 /**
  * Map to FunctionalSkills
@@ -30,8 +35,11 @@ const toFunctionalSkills = (
   */
   const assessmentsRecordedInCurious2: ExternalAssessmentsDTO = allAssessments?.v2?.assessments
   if (assessmentsRecordedInCurious2) {
-    // TODO - enable this mapping when the screens have been updated to render assessments from Curious 2
-    // assessments.push(...toCurious2FunctionalSkillsAssessments(assessmentsRecordedInCurious2))
+    assessments.push(
+      ...toCurious2FunctionalSkillsAssessments(assessmentsRecordedInCurious2),
+      ...toCurious2ReadingAssessments(assessmentsRecordedInCurious2),
+      ...toCurious2ESOLAssessments(assessmentsRecordedInCurious2),
+    )
   }
 
   /*

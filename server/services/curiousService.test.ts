@@ -4,13 +4,17 @@ import CuriousClient from '../data/curiousClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
 import {
+  aLearnerAssessmentV2DTO,
   aLearnerLatestAssessmentV1DTO,
   aLearnerLddInfoExternalV1DTO,
+  aMathsFunctionalSkillsLearnerAssessmentsDTO,
   anAllAssessmentDTO,
+  anExternalAssessmentsDTO,
 } from '../testsupport/curiousAssessmentsTestDataBuilder'
 import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
-import { aValidCurious1Assessment } from '../testsupport/assessmentTestDataBuilder'
+import { aValidCurious1Assessment, aValidCurious2Assessment } from '../testsupport/assessmentTestDataBuilder'
 import { aValidInPrisonCourse } from '../testsupport/inPrisonCourseTestDataBuilder'
+import AssessmentTypeValue from '../enums/assessmentTypeValue'
 
 jest.mock('../data/curiousClient')
 jest.mock('../data/hmppsAuthClient')
@@ -102,7 +106,7 @@ describe('curiousService', () => {
   })
 
   describe('getPrisonerFunctionalSkills', () => {
-    describe('get functional skills from both Curious 1 and Curious 2', () => {
+    describe('get functional skills from data from both Curious 1 and Curious 2 endpoints', () => {
       const allAssessments = anAllAssessmentDTO()
       curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
@@ -111,6 +115,9 @@ describe('curiousService', () => {
         const learnerProfiles = [aValidLearnerProfile()]
         curiousClient.getLearnerProfile.mockResolvedValue(learnerProfiles)
 
+        // We expect the service to have called the mapper in such a way that it ignores/does not map assessments from the
+        // Curious 2 endpoint data. Therefore we expect the returned functional skills to be only those that are in the
+        // array of LearnerProfile, which by definition will all be Curious 1 Functional Skills
         const expectedFunctionalSkills = {
           assessments: [
             aValidCurious1Assessment({
@@ -173,14 +180,39 @@ describe('curiousService', () => {
       })
     })
 
-    describe('get functional skills only from Curious 2', () => {
+    describe('get functional skills only from Curious 2 endpoint data', () => {
       it('should get prisoner functional skills given a known prison number', async () => {
         // Given
-        const allAssessments = anAllAssessmentDTO()
+        const allAssessments = anAllAssessmentDTO({
+          v1Assessments: [aLearnerLatestAssessmentV1DTO()],
+          v2Assessments: aLearnerAssessmentV2DTO({
+            assessments: anExternalAssessmentsDTO({
+              englishFunctionalSkills: [],
+              mathsFunctionalSkills: [aMathsFunctionalSkillsLearnerAssessmentsDTO()],
+              digitalFunctionalSkillsAssessments: [],
+              esolAssessments: [],
+              readingAssessments: [],
+            }),
+          }),
+        })
         curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
+        // We expect the returned Functional Skills to be those mapped from the Curious 2 endpoint assessment data.
+        // Even though it is a Curious 2 endpoint, it returns both Curious 1 and Curious 2 functional skills, hence we
+        // expect both types.
         const expectedFunctionalSkills = {
           assessments: [
+            // The Curious 2 Maths assessment
+            aValidCurious2Assessment({
+              type: AssessmentTypeValue.MATHS,
+              assessmentDate: startOfDay('2025-10-01'),
+              prisonId: 'MDI',
+              level: 'Entry Level 2',
+              levelBanding: '2.1',
+              nextStep: 'Progress to course at level consistent with assessment result',
+              referral: 'Education Specialist',
+            }),
+            // The Curious 1 English assessment
             aValidCurious1Assessment({
               assessmentDate: startOfDay('2012-02-16'),
               level: 'Level 1',
