@@ -61,18 +61,23 @@ declare module 'viewModels' {
     hasActionPlan: boolean
   }
 
+  /**
+   * Collates the Additional Learning Needs (ALN) and Learning Difficulties and Disabilities (LDD) assessments that have been recorded in Curious
+   */
   export interface PrisonerSupportNeeds {
     lddAssessments: Array<LddAssessment>
     // TODO - add property for Curious 2 ALN assessments
   }
 
+  /**
+   * Represents a Learning Difficulties and Disabilities (LDD) assessment that has been recorded in Curious
+   */
   export interface LddAssessment {
     prisonId: string
-    rapidAssessmentDate?: Date
-    inDepthAssessmentDate?: Date
-    primaryLddAndHealthNeeds?: string
+    rapidAssessmentDate: Date
+    inDepthAssessmentDate: Date
+    primaryLddAndHealthNeeds: string
     additionalLddAndHealthNeeds: Array<string>
-    hasSupportNeeds: boolean
   }
 
   /**

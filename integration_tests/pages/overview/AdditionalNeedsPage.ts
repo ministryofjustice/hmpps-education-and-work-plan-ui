@@ -19,13 +19,13 @@ export default class AdditionalNeedsPage extends Page {
     return this
   }
 
-  hasCuriousUnavailableMessageDisplayed(): AdditionalNeedsPage {
-    this.curiousUnavailableMessage().should('be.exist')
+  hasCuriousAssessmentsUnavailableMessageDisplayed(): AdditionalNeedsPage {
+    this.curiousAssesmentsUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasNoDataMessageDisplayed(): AdditionalNeedsPage {
-    this.noDataMessage().should('be.exist')
+  hasNoAssessmentsMessageDisplayed(): AdditionalNeedsPage {
+    this.noAssessmentsMessage().should('be.exist')
     return this
   }
 
@@ -33,7 +33,7 @@ export default class AdditionalNeedsPage extends Page {
 
   healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('[data-qa=health-and-support-needs-summary-card]')
 
-  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+  curiousAssesmentsUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-assessments-unavailable-message]')
 
-  noDataMessage = (): PageElement => cy.get('[data-qa=no-data-message]')
+  noAssessmentsMessage = (): PageElement => cy.get('[data-qa=no-assessments-message]')
 }

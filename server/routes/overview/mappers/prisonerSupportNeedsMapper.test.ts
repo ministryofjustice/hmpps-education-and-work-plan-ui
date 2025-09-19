@@ -1,4 +1,4 @@
-import { parseISO, startOfDay } from 'date-fns'
+import { startOfDay } from 'date-fns'
 import type { PrisonerSupportNeeds } from 'viewModels'
 import toPrisonerSupportNeeds from './prisonerSupportNeedsMapper'
 import {
@@ -38,19 +38,10 @@ describe('prisonerSupportNeedsMapper', () => {
       lddAssessments: [
         {
           prisonId: 'MDI',
-          rapidAssessmentDate: startOfDay(parseISO('2022-05-18')),
-          inDepthAssessmentDate: startOfDay(parseISO('2022-06-01')),
+          rapidAssessmentDate: startOfDay('2022-05-18'),
+          inDepthAssessmentDate: startOfDay('2022-06-01'),
           primaryLddAndHealthNeeds: 'Hearing impairment',
           additionalLddAndHealthNeeds: [],
-          hasSupportNeeds: true,
-        },
-        {
-          prisonId: 'DNI',
-          rapidAssessmentDate: undefined,
-          inDepthAssessmentDate: undefined,
-          primaryLddAndHealthNeeds: null,
-          additionalLddAndHealthNeeds: [],
-          hasSupportNeeds: false,
         },
       ],
     }

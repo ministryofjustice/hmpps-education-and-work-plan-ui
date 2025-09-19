@@ -14,15 +14,6 @@ export default function aValidPrisonerSupportNeeds(): PrisonerSupportNeeds {
           'Mental health difficulty',
           'Social and emotional difficulties',
         ],
-        hasSupportNeeds: true,
-      },
-      {
-        prisonId: 'ACI',
-        rapidAssessmentDate: undefined,
-        inDepthAssessmentDate: undefined,
-        primaryLddAndHealthNeeds: null,
-        additionalLddAndHealthNeeds: [],
-        hasSupportNeeds: false,
       },
     ],
   }
