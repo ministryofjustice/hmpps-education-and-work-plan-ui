@@ -17,6 +17,8 @@ Data supplied to this template:
       {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
       {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
       {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+      {% set mostRecentReadingAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'READING') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+      {% set mostRecentEsolAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ESOL') | sort(attribute = 'assessmentDate', reverse = true) | first %}
       {% set mostRecentAssessmentsOfType = [] %}
       {% if mostRecentEnglishAssessment %}
         {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEnglishAssessment), mostRecentAssessmentsOfType) %}
@@ -27,6 +29,12 @@ Data supplied to this template:
       {% if mostRecentDigitalSkillsAssessment %}
         {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
       {% endif %}
+      {% if mostRecentReadingAssessment %}
+        {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentReadingAssessment), mostRecentAssessmentsOfType) %}
+      {% endif %}
+      {% if mostRecentEsolAssessment %}
+        {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEsolAssessment), mostRecentAssessmentsOfType) %}
+      {% endif %}
 
       <p class="govuk-hint" data-qa="functional-skills-hint">Information from Curious.</p>
 
@@ -36,8 +44,9 @@ Data supplied to this template:
         <table class="govuk-table govuk-!-margin-bottom-0" data-qa="functional-skills-table">
           <thead class="govuk-table__head govuk-visually-hidden">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Skill and assessment date</th>
-              <th scope="col" class="govuk-table__header">Assessment level</th>
+              <th scope="col" class="govuk-table__header app-u-width-20">Skill</th>
+              <th scope="col" class="govuk-table__header app-u-width-20">Assessment level</th>
+              <th scope="col" class="govuk-table__header app-u-width-60">Assessment date</th>
             </tr>
           </thead>
           <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
@@ -45,11 +54,14 @@ Data supplied to this template:
             {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
               <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
                 <td class="govuk-table__cell">
-                  <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }} {{ functionalSkillAssessment.level }}</span>
+                  <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }}</span>
+                </td>
+                <td class="govuk-table__cell">
+                  <span class="govuk-body">{{ functionalSkillAssessment.level }}</span>
                 </td>
                 <td class="govuk-table__cell">
                   {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}
-                  <span class="govuk-hint">Assessed on {{ functionalSkillAssessment.assessmentDate | formatDate('d MMMM yyyy') }}, {{ prisonName }}</span>
+                  <span class="govuk-hint">Assessed on {{ functionalSkillAssessment.assessmentDate | formatDate('d MMM yyyy') }}, {{ prisonName }}</span>
                 </td>
               </tr>
             {% endfor %}

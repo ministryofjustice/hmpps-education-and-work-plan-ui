@@ -9,7 +9,11 @@ import filterArrayOnPropertyFilter from '../../../../../filters/filterArrayOnPro
 import validFunctionalSkills from '../../../../../testsupport/functionalSkillsTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
 import { aValidInPrisonCourse } from '../../../../../testsupport/inPrisonCourseTestDataBuilder'
-import { aValidCurious1Assessment } from '../../../../../testsupport/assessmentTestDataBuilder'
+import {
+  aValidCurious1Assessment,
+  aValidCurious2Assessment,
+} from '../../../../../testsupport/assessmentTestDataBuilder'
+import AssessmentTypeValue from '../../../../../enums/assessmentTypeValue'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -65,15 +69,20 @@ describe('_educationAndTrainingSummaryCard', () => {
           assessments: [
             aValidCurious1Assessment({
               prisonId: 'LEI',
-              type: 'MATHS',
+              type: AssessmentTypeValue.MATHS,
               level: 'Level 1',
               assessmentDate: parseISO('2022-01-15T00:00:00Z'),
             }),
             aValidCurious1Assessment({
               prisonId: 'BXI',
-              type: 'MATHS',
+              type: AssessmentTypeValue.MATHS,
               level: 'Level 2',
               assessmentDate: parseISO('2023-01-15T00:00:00Z'),
+            }),
+            aValidCurious2Assessment({
+              prisonId: 'MDI',
+              type: AssessmentTypeValue.READING,
+              level: 'emerging reader',
             }),
           ],
         }),
@@ -104,11 +113,16 @@ describe('_educationAndTrainingSummaryCard', () => {
 
     // Then
     const functionalSkillsRows = $('[data-qa="functional-skills-table-body"] tr')
-    expect(functionalSkillsRows.length).toEqual(1)
-    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('Maths skills Level 2')
-    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual(
-      'Assessed on 15 January 2023, Brixton (HMP)',
+    expect(functionalSkillsRows.length).toEqual(2)
+    expect(functionalSkillsRows.eq(0).find('td').eq(0).text().trim()).toEqual('Maths skills')
+    expect(functionalSkillsRows.eq(0).find('td').eq(1).text().trim()).toEqual('Level 2')
+    expect(functionalSkillsRows.eq(0).find('td').eq(2).text().trim()).toEqual('Assessed on 15 Jan 2023, Brixton (HMP)')
+    expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Reading')
+    expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual('emerging reader')
+    expect(functionalSkillsRows.eq(1).find('td').eq(2).text().trim()).toEqual(
+      'Assessed on 28 Apr 2021, Moorland (HMP & YOI)',
     )
+
     expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(0)
 
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(1)

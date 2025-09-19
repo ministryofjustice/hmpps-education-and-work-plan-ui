@@ -1,10 +1,13 @@
-export default function formatFunctionalSkillTypeFilter(value: string): string {
-  const assessmentType = AssessmentType[value as keyof typeof AssessmentType]
-  return assessmentType
+import AssessmentTypeValue from '../enums/assessmentTypeValue'
+
+const assessmentTypeScreenValues: Record<AssessmentTypeValue, string> = {
+  ENGLISH: 'English skills',
+  MATHS: 'Maths skills',
+  DIGITAL_LITERACY: 'Digital skills',
+  READING: 'Reading',
+  ESOL: 'ESOL',
 }
 
-enum AssessmentType {
-  ENGLISH = 'English skills',
-  MATHS = 'Maths skills',
-  DIGITAL_LITERACY = 'Digital skills',
-}
+const formatFunctionalSkillTypeFilter = (value: AssessmentTypeValue): string => assessmentTypeScreenValues[value]
+
+export default formatFunctionalSkillTypeFilter

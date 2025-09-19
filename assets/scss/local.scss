@@ -5,14 +5,24 @@
 // Custom column widths
 // https://design-system.service.gov.uk/components/table/#custom-column-widths
 
+.app-u-width-10 {
+  width: 10% !important;
+}
+.app-u-width-15 {
+  width: 15% !important;
+}
 .app-u-width-20 {
   width: 20% !important;
 }
-
 .app-u-width-30 {
   width: 30% !important;
 }
-
+.app-u-width-40 {
+  width: 40% !important;
+}
+.app-u-width-50 {
+  width: 50% !important;
+}
 .app-u-width-60 {
   width: 60% !important;
 }
@@ -59,16 +69,6 @@
 .action-plan-reviews-container {
   display: flex;
   align-items: center;
-}
-
-// Match the widths of the columns of functional skills and courses on overview page
-
-tbody[data-qa="functional-skills-table-body"] .govuk-table__cell:first-child {
-  width: 40%;
-}
-
-tbody[data-qa="functional-skills-table-body"] .govuk-table__cell:nth-child(2) {
-  width: 50%;
 }
 
 tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:first-child {
