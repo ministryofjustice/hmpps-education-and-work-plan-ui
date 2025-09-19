@@ -12,87 +12,81 @@ Data supplied to this template:
 where the InductionDto contains any in-prison training interests the prisoner has, as entered as part of their Induction
 #}
 
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">Training and education interests in prison</h2>
+  </div>
 
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Training and education interests in prison</h2>
-      </div>
+  {% if not induction.problemRetrievingData %}
+    {% if induction.inductionDto %}
+      {# The API returned the prisoner's Induction #}
 
-      {% if not induction.problemRetrievingData %}
-        {% if induction.inductionDto %}
-          {# The API returned the prisoner's Induction #}
+      {# Whilst the prisoner has an Induction, it may or may not have In Prison Training Interests recorded (original Induction 'Long Question Set' did not record In Prison Training Interests #}
+      {% set inductionHasInPrisonTrainingInterestsRecorded = induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | length > 0 %}
 
-          {# Whilst the prisoner has an Induction, it may or may not have In Prison Training Interests recorded (original Induction 'Long Question Set' did not record In Prison Training Interests #}
-          {% set inductionHasInPrisonTrainingInterestsRecorded = induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | length > 0 %}
-
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Training and education interests
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {% if inductionHasInPrisonTrainingInterestsRecorded %}
-                    <ul class="govuk-list" data-qa="in-prison-training-interests">
-                      {% for training in induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | objectsSortedAlphabeticallyWithOtherLastBy('trainingType') %}
-                        {% if training.trainingType === 'OTHER' %}
-                          <li>Other - {{ training.trainingTypeOther }}</li>
-                        {% else %}
-                          <li>{{ training.trainingType | formatInPrisonTraining }}</li>
-                        {% endif %}
-                      {% endfor %}
-                    </ul>
-                  {% else %}
-                    <p class='govuk-body'>Not recorded.</p>
-                  {% endif %}
-                </dd>
-                {% if userHasPermissionTo('UPDATE_INDUCTION') %}
-                  <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-                    <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training" data-qa="in-prison-training-change-link">
-                      {{ 'Change' if inductionHasInPrisonTrainingInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> training and education interests</span>
-                    </a>
-                  </dd>
-                {% endif %}
-              </div>
-            </dl>
-
-            {% if inductionHasInPrisonTrainingInterestsRecorded %}
-              <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}</span></p>
+      <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Training and education interests
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {% if inductionHasInPrisonTrainingInterestsRecorded %}
+                <ul class="govuk-list" data-qa="in-prison-training-interests">
+                  {% for training in induction.inductionDto.inPrisonInterests.inPrisonTrainingInterests | objectsSortedAlphabeticallyWithOtherLastBy('trainingType') %}
+                    {% if training.trainingType === 'OTHER' %}
+                      <li>Other - {{ training.trainingTypeOther }}</li>
+                    {% else %}
+                      <li>{{ training.trainingType | formatInPrisonTraining }}</li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class='govuk-body'>Not recorded.</p>
+              {% endif %}
+            </dd>
+            {% if userHasPermissionTo('UPDATE_INDUCTION') %}
+              <dd class="govuk-summary-list__actions govuk-!-display-none-print">
+                <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/in-prison-training" data-qa="in-prison-training-change-link">
+                  {{ 'Change' if inductionHasInPrisonTrainingInterestsRecorded else 'Add' }}<span class="govuk-visually-hidden"> training and education interests</span>
+                </a>
+              </dd>
             {% endif %}
           </div>
+        </dl>
 
-        {% else %}
-          {# The API returned no Induction for the prisoner - prompt the user to create the Induction #}
-          <div class="govuk-summary-card__content">
-            <p class="govuk-body" data-qa="induction-not-created-yet">
-              {% if userHasPermissionTo('RECORD_INDUCTION') %}
-                To add education and training information you need to
-                {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
-                  <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
-                    create a learning and work plan
-                  </a>
-                {% else %}
-                  create a learning and work plan
-                {% endif %}
-                with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
-              {% else %}
-                Not entered.
-              {% endif %}
-            </p>
-          </div>
+        {% if inductionHasInPrisonTrainingInterestsRecorded %}
+          <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}</span></p>
         {% endif %}
+      </div>
 
-      {% else %}
-        {# There was a problem retrieving the induction from the API #}
-        <div class="govuk-summary-card__content">
-          <h3 class="govuk-heading-s" data-qa="training-interests-induction-unavailable-message">We cannot show these details right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-        </div>
-      {% endif %}
+    {% else %}
+      {# The API returned no Induction for the prisoner - prompt the user to create the Induction #}
+      <div class="govuk-summary-card__content">
+        <p class="govuk-body" data-qa="induction-not-created-yet">
+          {% if userHasPermissionTo('RECORD_INDUCTION') %}
+            To add education and training information you need to
+            {% if not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD' %}
+              <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                create a learning and work plan
+              </a>
+            {% else %}
+              create a learning and work plan
+            {% endif %}
+            with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+          {% else %}
+            Not entered.
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
 
+  {% else %}
+    {# There was a problem retrieving the induction from the API #}
+    <div class="govuk-summary-card__content">
+      <h3 class="govuk-heading-s" data-qa="training-interests-induction-unavailable-message">We cannot show these details right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
     </div>
+  {% endif %}
 
-  </div>
 </div>
