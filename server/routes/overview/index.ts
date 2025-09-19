@@ -4,7 +4,7 @@ import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCur
 import removeFormDataFromSession from '../routerRequestHandlers/removeFormDataFromSession'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import HistoryController from './historyController'
-import SupportNeedsController from './supportNeedsController'
+import AdditionalNeedsController from './additionalNeedsController'
 import WorkAndInterestsController from './workAndInterestsController'
 import EducationAndTrainingController from './educationAndTrainingController'
 import retrieveInduction from '../routerRequestHandlers/retrieveInduction'
@@ -34,7 +34,7 @@ export default (router: Router, services: Services) => {
 
   const overviewController = new OverviewController()
   const timelineController = new HistoryController()
-  const supportNeedsController = new SupportNeedsController()
+  const additionalNeedsController = new AdditionalNeedsController()
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
   const viewGoalsController = new ViewGoalsController()
@@ -52,10 +52,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(overviewController.getOverviewView),
   ])
 
-  router.get('/plan/:prisonNumber/view/support-needs', [
+  router.get('/plan/:prisonNumber/view/additional-needs', [
     retrievePrisonNamesById(prisonService),
     retrieveCuriousSupportNeeds(curiousService),
-    asyncMiddleware(supportNeedsController.getSupportNeedsView),
+    asyncMiddleware(additionalNeedsController.getAdditionalNeedsView),
   ])
 
   router.get('/plan/:prisonNumber/view/education-and-training', [

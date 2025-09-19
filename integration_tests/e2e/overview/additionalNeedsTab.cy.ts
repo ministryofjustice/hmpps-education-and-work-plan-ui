@@ -1,8 +1,8 @@
 import OverviewPage from '../../pages/overview/OverviewPage'
 import Page from '../../pages/page'
-import SupportNeedsPage from '../../pages/overview/SupportNeedsPage'
+import AdditionalNeedsPage from '../../pages/overview/AdditionalNeedsPage'
 
-context('Prisoner Overview page - Support Needs tab', () => {
+context('Prisoner Overview page - Additional Needs tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
@@ -17,7 +17,7 @@ context('Prisoner Overview page - Support Needs tab', () => {
     cy.task('stubGetAllPrisons')
   })
 
-  it('should display Support Needs data', () => {
+  it('should display Additional Needs data', () => {
     // Given
     cy.task('stubLearnerAssessments')
 
@@ -27,12 +27,12 @@ context('Prisoner Overview page - Support Needs tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Support needs')
-    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
+    overviewPage.selectTab('Additional needs')
+    const additionalNeedsPage = Page.verifyOnPage(AdditionalNeedsPage)
 
     // Then
-    supportNeedsPage //
-      .activeTabIs('Support needs')
+    additionalNeedsPage //
+      .activeTabIs('Additional needs')
       .hasHealthAndSupportNeedsDisplayed()
   })
 
@@ -46,12 +46,12 @@ context('Prisoner Overview page - Support Needs tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Support needs')
-    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
+    overviewPage.selectTab('Additional needs')
+    const additionalNeedsPage = Page.verifyOnPage(AdditionalNeedsPage)
 
     // Then
-    supportNeedsPage //
-      .activeTabIs('Support needs')
+    additionalNeedsPage //
+      .activeTabIs('Additional needs')
       .hasNoDataMessageDisplayed()
   })
 
@@ -65,12 +65,12 @@ context('Prisoner Overview page - Support Needs tab', () => {
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
     // When
-    overviewPage.selectTab('Support needs')
-    const supportNeedsPage = Page.verifyOnPage(SupportNeedsPage)
+    overviewPage.selectTab('Additional needs')
+    const additionalNeedsPage = Page.verifyOnPage(AdditionalNeedsPage)
 
     // Then
-    supportNeedsPage //
-      .activeTabIs('Support needs')
+    additionalNeedsPage //
+      .activeTabIs('Additional needs')
       .hasCuriousUnavailableMessageDisplayed()
   })
 })

@@ -1,30 +1,30 @@
 import Page, { PageElement } from '../page'
 
 /**
- * Cypress page class representing the Support Needs tab of the Overview Page
+ * Cypress page class representing the Additional Needs tab of the Overview Page (previously known as Support Needs)
  */
-export default class SupportNeedsPage extends Page {
+export default class AdditionalNeedsPage extends Page {
   constructor() {
     super('overview')
-    this.activeTabIs('Support needs')
+    this.activeTabIs('Additional needs')
   }
 
-  activeTabIs(expected: string): SupportNeedsPage {
+  activeTabIs(expected: string): AdditionalNeedsPage {
     this.activeTab().should('contain.text', expected)
     return this
   }
 
-  hasHealthAndSupportNeedsDisplayed(): SupportNeedsPage {
+  hasHealthAndSupportNeedsDisplayed(): AdditionalNeedsPage {
     this.healthAndSupportNeedsSummaryCard().should('be.visible')
     return this
   }
 
-  hasCuriousUnavailableMessageDisplayed(): SupportNeedsPage {
+  hasCuriousUnavailableMessageDisplayed(): AdditionalNeedsPage {
     this.curiousUnavailableMessage().should('be.exist')
     return this
   }
 
-  hasNoDataMessageDisplayed(): SupportNeedsPage {
+  hasNoDataMessageDisplayed(): AdditionalNeedsPage {
     this.noDataMessage().should('be.exist')
     return this
   }
