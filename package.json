@@ -28,14 +28,15 @@
     "npm": "^10"
   },
   "jest": {
+    "preset": "ts-jest/presets/js-with-ts-esm",
     "transform": {
       "^.+\\.tsx?$": [
-        "ts-jest",
-        {
-          "isolatedModules": true
-        }
+        "ts-jest"
       ]
     },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(uuid)/)"
+    ],
     "collectCoverageFrom": [
       "server/**/*.{ts,js,jsx,mjs}"
     ],

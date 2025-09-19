@@ -56,4 +56,4 @@ type InductionScheduleView = {
   exemptionReason?: InductionScheduleStatusValue
 }
 
-export { OverviewViewRenderArgs, ActionPlanReviewScheduleView, InductionScheduleView }
+export type { OverviewViewRenderArgs, ActionPlanReviewScheduleView, InductionScheduleView }
