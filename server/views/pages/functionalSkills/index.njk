@@ -48,6 +48,8 @@
           {% set englishSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) %}
           {% set mathsSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) %}
           {% set digitalSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) %}
+          {% set readingSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'READING') | sort(attribute = 'assessmentDate', reverse = true) %}
+          {% set esolSkills = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ESOL') | sort(attribute = 'assessmentDate', reverse = true) %}
 
           <p class="govuk-hint">Information from Curious. These results are from a person's induction assessment.
             For recent functional skills qualifications, go to
@@ -93,10 +95,26 @@
           {% endif %}
 
           <h2 class="govuk-heading-m">Reading scores</h2>
-          <p class="govuk-body">No Reading assessment result recorded in Curious.</p>
+          {% if readingSkills.length > 0 %}
+            {{ sortableTable({
+              id: "reading-skills",
+              prisonNamesById: prisonNamesById,
+              assessments: readingSkills
+            }) }}
+          {% else %}
+            <p class="govuk-body">No Reading assessment result recorded in Curious.</p>
+          {% endif %}
 
           <h2 class="govuk-heading-m">ESOL scores</h2>
-          <p class="govuk-body">No ESOL assessment result recorded in Curious.</p>
+          {% if esolSkills.length > 0 %}
+            {{ sortableTable({
+              id: "esol-skills",
+              prisonNamesById: prisonNamesById,
+              assessments: esolSkills
+            }) }}
+          {% else %}
+            <p class="govuk-body">No ESOL assessment result recorded in Curious.</p>
+          {% endif %}
 
         {% else %}
 
