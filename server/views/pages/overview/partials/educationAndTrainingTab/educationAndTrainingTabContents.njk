@@ -6,11 +6,17 @@ Contains 'Functional skills', 'In-prison qualifications and achievements', 'Educ
 
 {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
-{# 'Functional skills' summary card #}
-{% include './_functionalSkills.njk' %}
-{# 'In-prison qualifications and achievements' summary card #}
-{% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
-{# 'Education and qualifications history' summary card #}
-{% include './_educationAndQualificationsHistory.njk' %}
-{# 'Training and eduction in prison' summary card #}
-{% include './_trainingAndEducationInterestsInPrison.njk' %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    {# 'Functional skills' summary card #}
+    {% include './_functionalSkills.njk' %}
+    {# 'In-prison qualifications and achievements' summary card #}
+    {% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
+    {# 'Education and qualifications history' summary card #}
+    {% include './_educationAndQualificationsHistory.njk' %}
+    {# 'Training and eduction in prison' summary card #}
+    {% include './_trainingAndEducationInterestsInPrison.njk' %}
+
+  </div>
+</div>
