@@ -58,7 +58,6 @@ describe('curiousService', () => {
             inDepthAssessmentDate: startOfDay('2022-02-18'),
             primaryLddAndHealthNeeds: 'Visual impairment',
             additionalLddAndHealthNeeds: ['Hearing impairment'],
-            hasSupportNeeds: true,
           },
         ],
       }

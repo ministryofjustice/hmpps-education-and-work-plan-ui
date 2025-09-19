@@ -52,7 +52,7 @@ context('Prisoner Overview page - Additional Needs tab', () => {
     // Then
     additionalNeedsPage //
       .activeTabIs('Additional needs')
-      .hasNoDataMessageDisplayed()
+      .hasNoAssessmentsMessageDisplayed()
   })
 
   it('should display curious unavailable message given curious is unavailable', () => {
@@ -71,6 +71,6 @@ context('Prisoner Overview page - Additional Needs tab', () => {
     // Then
     additionalNeedsPage //
       .activeTabIs('Additional needs')
-      .hasCuriousUnavailableMessageDisplayed()
+      .hasCuriousAssessmentsUnavailableMessageDisplayed()
   })
 })

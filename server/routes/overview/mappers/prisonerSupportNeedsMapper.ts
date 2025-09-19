@@ -1,32 +1,23 @@
-import { parseISO, startOfDay } from 'date-fns'
+import { parseISO } from 'date-fns'
 import type { LddAssessment, PrisonerSupportNeeds } from 'viewModels'
 import type { AllAssessmentDTO, LearnerLatestAssessmentV1DTO, LearnerLddInfoExternalV1DTO } from 'curiousApiClient'
 
-const toPrisonerSupportNeeds = (allAssessments: AllAssessmentDTO): PrisonerSupportNeeds => {
-  const learnerLddInfos = ((allAssessments?.v1 || []) as Array<LearnerLatestAssessmentV1DTO>).flatMap(
-    assessment => assessment.ldd || [],
-  ) as Array<LearnerLddInfoExternalV1DTO>
-  return {
-    lddAssessments: learnerLddInfos.map(toLddAssessment),
-  }
-}
+const toPrisonerSupportNeeds = (allAssessments: AllAssessmentDTO): PrisonerSupportNeeds => ({
+  lddAssessments: (allAssessments?.v1 || [])
+    .flatMap((assessment: LearnerLatestAssessmentV1DTO) => assessment.ldd || [])
+    .filter(
+      (lddAssessment: LearnerLddInfoExternalV1DTO) =>
+        lddAssessment.lddPrimaryName && (lddAssessment.rapidAssessmentDate || lddAssessment.inDepthAssessmentDate),
+    )
+    .map(toLddAssessment),
+})
 
 const toLddAssessment = (learnerLddInfo: LearnerLddInfoExternalV1DTO): LddAssessment => ({
   prisonId: learnerLddInfo.establishmentId,
-  rapidAssessmentDate: dateOrNull(learnerLddInfo.rapidAssessmentDate),
-  inDepthAssessmentDate: dateOrNull(learnerLddInfo.inDepthAssessmentDate),
+  rapidAssessmentDate: learnerLddInfo.rapidAssessmentDate ? parseISO(learnerLddInfo.rapidAssessmentDate) : null,
+  inDepthAssessmentDate: learnerLddInfo.inDepthAssessmentDate ? parseISO(learnerLddInfo.inDepthAssessmentDate) : null,
   primaryLddAndHealthNeeds: learnerLddInfo.lddPrimaryName,
   additionalLddAndHealthNeeds: learnerLddInfo.lddSecondaryNames || [],
-  hasSupportNeeds: !!(
-    learnerLddInfo.rapidAssessmentDate ||
-    learnerLddInfo.inDepthAssessmentDate ||
-    learnerLddInfo.lddPrimaryName ||
-    (learnerLddInfo.lddSecondaryNames || []).length > 0
-  ),
 })
-
-const dateOrNull = (value: string): Date | undefined => {
-  return value ? startOfDay(parseISO(value)) : undefined
-}
 
 export default toPrisonerSupportNeeds

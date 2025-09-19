@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio'
 import nunjucks from 'nunjucks'
 import { startOfDay } from 'date-fns'
+import type { PrisonerSupportNeeds } from 'viewModels'
 import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import fallbackMessageFilter from '../../../../../filters/fallbackMessageFilter'
@@ -45,15 +46,6 @@ describe('Additional Needs tab view', () => {
             'Mental health difficulty',
             'Social and emotional difficulties',
           ],
-          hasSupportNeeds: true,
-        },
-        {
-          prisonId: 'BXI',
-          rapidAssessmentDate: null as Date,
-          inDepthAssessmentDate: null as Date,
-          primaryLddAndHealthNeeds: null as string,
-          additionalLddAndHealthNeeds: [],
-          hasSupportNeeds: false,
         },
       ],
     }
@@ -70,11 +62,10 @@ describe('Additional Needs tab view', () => {
     expect($('[data-qa=health-and-support-needs-summary-card]').length).toEqual(1)
     expect($('[data-qa=support-needs-list]')).toHaveLength(1)
 
-    // LDD Assessment data from Moorland where the assessment was recorded with support needs
+    // LDD Assessment data from Moorland
     const moorlandAssessment = $('[data-qa=ldd-assessment-recorded-at-MDI]')
     expect(moorlandAssessment.length).toEqual(1)
     expect(moorlandAssessment.find('[data-qa=prison-name]').text().trim()).toContain('Moorland (HMP & YOI)')
-    expect(moorlandAssessment.find('[data-qa=no-screener-for-prison-message]').length).toEqual(0)
     expect(moorlandAssessment.find('[data-qa=rapid-assessment-date]').text().trim()).toEqual('18 February 2022')
     expect(moorlandAssessment.find('[data-qa=in-depth-assessment-date]').text().trim()).toEqual(
       'Not recorded in Curious',
@@ -89,35 +80,12 @@ describe('Additional Needs tab view', () => {
       'Mental health difficulty',
       'Social and emotional difficulties',
     ])
-
-    // LDD Assessment data from Brixton where there is data from Curious but with no apparent data recorded
-    const brixtonAssessment = $('[data-qa=ldd-assessment-recorded-at-BXI]')
-    expect(brixtonAssessment.length).toEqual(1)
-    expect(brixtonAssessment.find('[data-qa=prison-name]').text().trim()).toContain('Brixton (HMP)')
-    expect(brixtonAssessment.find('[data-qa=no-screener-for-prison-message]').length).toEqual(1)
   })
 
-  it('should should render the Additional Needs page given there is more than one prison and none of them have LDD assessment data recorded', () => {
+  it('should should render the Additional Needs page given there are no LDD assessments recorded', () => {
     // Given
-    const supportNeeds = {
-      lddAssessments: [
-        {
-          prisonId: 'MDI',
-          rapidAssessmentDate: null as Date,
-          inDepthAssessmentDate: null as Date,
-          primaryLddAndHealthNeeds: null as string,
-          additionalLddAndHealthNeeds: [] as Array<string>,
-          hasSupportNeeds: false,
-        },
-        {
-          prisonId: 'BXI',
-          rapidAssessmentDate: null as Date,
-          inDepthAssessmentDate: null as Date,
-          primaryLddAndHealthNeeds: null as string,
-          additionalLddAndHealthNeeds: [] as Array<string>,
-          hasSupportNeeds: false,
-        },
-      ],
+    const supportNeeds: PrisonerSupportNeeds = {
+      lddAssessments: [],
     }
     const params = {
       ...templateParams,
@@ -130,7 +98,7 @@ describe('Additional Needs tab view', () => {
 
     // Then
     expect($('[data-qa=support-needs-list]').length).toEqual(0)
-    expect($('[data-qa=no-data-message]').length).toEqual(1)
+    expect($('[data-qa=no-assessments-message]').length).toEqual(1)
   })
 
   it('should render the Additional Needs page given the Curious service API promise is not resolved', () => {
@@ -145,7 +113,6 @@ describe('Additional Needs tab view', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=health-and-support-needs-summary-card]').length).toEqual(0)
-    expect($('[data-qa=curious-unavailable-message]').length).toEqual(1)
+    expect($('[data-qa=curious-assessments-unavailable-message]').length).toEqual(1)
   })
 })
