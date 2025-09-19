@@ -1,14 +1,14 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
-import SupportNeedsController from './supportNeedsController'
+import AdditionalNeedsController from './additionalNeedsController'
 import { Result } from '../../utils/result/result'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
 
-describe('supportNeedsController', () => {
-  const controller = new SupportNeedsController()
+describe('additionalNeedsController', () => {
+  const controller = new AdditionalNeedsController()
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
@@ -35,9 +35,9 @@ describe('supportNeedsController', () => {
     jest.resetAllMocks()
   })
 
-  it('should get support needs view', async () => {
+  it('should get additional needs view', async () => {
     // Given
-    const expectedTab = 'support-needs'
+    const expectedTab = 'additional-needs'
     req.params.tab = expectedTab
 
     const expectedView = {
@@ -48,7 +48,7 @@ describe('supportNeedsController', () => {
     }
 
     // When
-    await controller.getSupportNeedsView(req, res, next)
+    await controller.getAdditionalNeedsView(req, res, next)
 
     // Then
     expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)

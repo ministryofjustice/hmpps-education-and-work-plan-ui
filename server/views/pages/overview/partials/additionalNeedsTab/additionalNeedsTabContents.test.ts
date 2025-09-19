@@ -22,16 +22,16 @@ njkEnv.addFilter('formatDate', formatDateFilter)
 
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
-const template = 'supportNeedsTabContents.njk'
+const template = 'additionalNeedsTabContents.njk'
 const templateParams = {
-  tab: 'support-needs',
+  tab: 'additional-needs',
   prisonerSummary,
   prisonNamesById: Result.fulfilled(prisonNamesById),
   supportNeeds: Result.fulfilled(aValidPrisonerSupportNeeds()),
 }
 
-describe('Support Needs tab view', () => {
-  it('should render the Support Needs page given a prison has LDD assessment data recorded', () => {
+describe('Additional Needs tab view', () => {
+  it('should render the Additional Needs page given a prison has LDD assessment data recorded', () => {
     // Given
     const supportNeeds = {
       lddAssessments: [
@@ -97,7 +97,7 @@ describe('Support Needs tab view', () => {
     expect(brixtonAssessment.find('[data-qa=no-screener-for-prison-message]').length).toEqual(1)
   })
 
-  it('should should render the Support Needs page given there is more than one prison and none of them have LDD assessment data recorded', () => {
+  it('should should render the Additional Needs page given there is more than one prison and none of them have LDD assessment data recorded', () => {
     // Given
     const supportNeeds = {
       lddAssessments: [
@@ -133,11 +133,11 @@ describe('Support Needs tab view', () => {
     expect($('[data-qa=no-data-message]').length).toEqual(1)
   })
 
-  it('should render the Support Needs page given the Curious service API promise is not resolved', () => {
+  it('should render the Additional Needs page given the Curious service API promise is not resolved', () => {
     // Given
     const params = {
       ...templateParams,
-      supportNeeds: Result.rejected(new Error('Failed to get Prisoner Support Needs')),
+      supportNeeds: Result.rejected(new Error('Failed to get Prisoner Additional Needs')),
     }
 
     // When
