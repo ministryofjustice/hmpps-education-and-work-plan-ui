@@ -9,10 +9,12 @@
     <table class="govuk-table" data-module="moj-sortable-table" data-qa="{{ config.id }}-sortable-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header app-u-width-20">Subject</th>
-          <th scope="col" class="govuk-table__header app-u-width-30" aria-sort="none">Location</th>
-          <th scope="col" class="govuk-table__header app-u-width-30" aria-sort="none">Assessed on</th>
-          <th scope="col" class="govuk-table__header app-u-width-20" aria-sort="none">Level</th>
+          <th scope="col" class="govuk-table__header app-u-width-15">Subject</th>
+          <th scope="col" class="govuk-table__header app-u-width-20" aria-sort="none">Location</th>
+          <th scope="col" class="govuk-table__header app-u-width-15" aria-sort="none">Assessed on</th>
+          <th scope="col" class="govuk-table__header app-u-width-20" aria-sort="none">Assessment outcome</th>
+          <th scope="col" class="govuk-table__header app-u-width-15" aria-sort="none">Next steps</th>
+          <th scope="col" class="govuk-table__header app-u-width-15" aria-sort="none">Referral</th>
         </tr>
       </thead>
 
@@ -22,8 +24,10 @@
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{ assessment.type | formatFunctionalSkillType }}</td>
             <td class="govuk-table__cell">{{ prisonName }}</td>
-            <td class="govuk-table__cell">{{ assessment.assessmentDate | formatDate('d MMMM yyyy') }}</td>
-            <td class="govuk-table__cell">{{ assessment.grade }}</td>
+            <td class="govuk-table__cell" data-sort-value="{{ assessment.assessmentDate | formatDate('yyyyMMdd') }}">{{ assessment.assessmentDate | formatDate('d MMM yyyy') }}</td>
+            <td class="govuk-table__cell">{{ assessment.level }}{{ ' (' + assessment.levelBanding + ')' if assessment.levelBanding }}</td>
+            <td class="govuk-table__cell">{{ assessment.nextStep if assessment.nextStep else 'N/A' }}</td>
+            <td class="govuk-table__cell">{{ assessment.referral if assessment.referral else 'N/A' }}</td>
           </tr>
         {% endfor %}
       </tbody>
