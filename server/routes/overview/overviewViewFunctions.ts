@@ -1,9 +1,10 @@
-import type { ActionPlanReviews, InductionSchedule } from 'viewModels'
+import type { ActionPlanReviews, InductionSchedule, ScheduledActionPlanReview } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
-import { addMonths, isAfter, isWithinInterval, startOfToday } from 'date-fns'
+import { addMonths, isAfter, isWithinInterval, startOfToday, subMonths } from 'date-fns'
 import type { ActionPlanReviewScheduleView, InductionScheduleView } from './overviewViewTypes'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
+import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 
 const toInductionScheduleView = (
   inductionSchedule?: InductionSchedule,
@@ -87,7 +88,10 @@ const workOutReviewStatus = (
   const reviewOnHold =
     latestReviewScheduleStatus !== ActionPlanReviewStatusValue.SCHEDULED &&
     latestReviewScheduleStatus !== ActionPlanReviewStatusValue.COMPLETED
-  const reviewDateFrom = actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
+  const reviewDateFrom = // TODO - RR-1919 - revert to this: actionPlanReviews?.latestReviewSchedule?.reviewDateFrom
+    actionPlanReviews?.latestReviewSchedule != null
+      ? adjustReviewDateFrom(actionPlanReviews.latestReviewSchedule)
+      : null
   const reviewDueDate = actionPlanReviews?.latestReviewSchedule?.reviewDateTo
 
   if (reviewScheduleDoesNotExist) {
@@ -106,6 +110,32 @@ const workOutReviewStatus = (
     return 'DUE'
   }
   return 'NOT_DUE'
+}
+
+// TODO - temp fix for RR-1919 - the ScheduledActionPlanReview.reviewDateFrom value _might_ be wrong in some cases
+// Until a data fix is implemented at the API, the safest option is to recalculate the reviewDateFrom value by subtracting the relevant number of months
+// from the reviewDueDate value (ie reverse-engineer what the API ReviewScheduleDateCalculationService.calculateReviewWindow would have done)
+const adjustReviewDateFrom = (latestReviewSchedule: ScheduledActionPlanReview): Date => {
+  if (
+    [
+      ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
+      ActionPlanReviewCalculationRuleValue.PRISONER_ON_REMAND,
+      ActionPlanReviewCalculationRuleValue.PRISONER_UN_SENTENCED,
+    ].includes(latestReviewSchedule.calculationRule)
+  ) {
+    return subMonths(latestReviewSchedule.reviewDateTo, 1)
+  }
+  if (
+    [
+      ActionPlanReviewCalculationRuleValue.BETWEEN_3_MONTHS_8_DAYS_AND_6_MONTHS_TO_SERVE,
+      ActionPlanReviewCalculationRuleValue.BETWEEN_12_AND_60_MONTHS_TO_SERVE,
+      ActionPlanReviewCalculationRuleValue.MORE_THAN_60_MONTHS_TO_SERVE,
+      ActionPlanReviewCalculationRuleValue.INDETERMINATE_SENTENCE,
+    ].includes(latestReviewSchedule.calculationRule)
+  ) {
+    return subMonths(latestReviewSchedule.reviewDateTo, 2)
+  }
+  return latestReviewSchedule.reviewDateFrom
 }
 
 export { toInductionScheduleView, toActionPlanReviewScheduleView }
