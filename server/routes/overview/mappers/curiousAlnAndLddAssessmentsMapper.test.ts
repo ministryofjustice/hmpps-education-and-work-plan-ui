@@ -70,6 +70,7 @@ describe('curiousAlnAndLddAssessmentsMapper', () => {
           prisonId: 'MDI',
           assessmentDate: startOfDay('2025-10-01'),
           referral: AlnAssessmentReferral.EDUCATION_SPECIALIST,
+          additionalNeedsIdentified: true,
         }),
       ],
     })

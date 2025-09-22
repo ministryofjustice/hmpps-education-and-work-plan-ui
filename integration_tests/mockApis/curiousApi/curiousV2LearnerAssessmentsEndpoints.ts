@@ -55,7 +55,16 @@ const stubLearnerAssessments = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
         v2: {
           prn: prisonNumber,
           assessments: {
-            aln: [],
+            aln: [
+              {
+                establishmentId: 'MDI',
+                establishmentName: 'MOORLAND (HMP & YOI)',
+                assessmentDate: '2025-10-01',
+                assessmentOutcome: 'Yes',
+                hasPrisonerConsent: 'Yes',
+                stakeholderReferral: 'Education Specialist',
+              },
+            ],
             englishFunctionalSkills: [
               {
                 establishmentId: 'MDI',

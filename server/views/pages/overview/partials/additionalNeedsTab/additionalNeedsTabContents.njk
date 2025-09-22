@@ -1,9 +1,13 @@
+{% from "./components/aln-assessments-details/macro.njk" import alnAssessmentsDetails %}
+{% from "./components/ldd-assessments-details/macro.njk" import lddAssessmentsDetails %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
 {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
 
-    <div class="govuk-summary-card" data-qa="health-and-support-needs-summary-card">
+    <div class="govuk-summary-card" data-qa="screening-and-assessments-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">Screening and assessment results from Curious</h2>
       </div>
@@ -11,67 +15,61 @@
 
         {% if curiousAlnAndLddAssessments.isFulfilled() %}
           {% set curiousAlnAndLddAssessments = curiousAlnAndLddAssessments.value %}
+          {# The LDD Assessments are the old historic assessments that a prisoner may have from Curious 1 #}
           {% set lddAssessments = curiousAlnAndLddAssessments.lddAssessments %}
+          {# ALN Assessments are from Curious 2 #}
+          {% set alnAssessments = curiousAlnAndLddAssessments.alnAssessments %}
 
-          {% if lddAssessments | length %}
-
-            <p class="govuk-hint">This is information from the education team entered in Curious and is not a medical diagnosis.</p>
-            {% for lddAssessment in lddAssessments %}
-              <section data-qa="ldd-assessment-recorded-at-{{ lddAssessment.prisonId }}">
-                {% set prisonName = prisonNamesById[lddAssessment.prisonId] | default(lddAssessment.prisonId) %}
-                <h3 class="govuk-heading-m" data-qa="prison-name">
-                  <span class="govuk-visually-hidden">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName | capitalize }}'s learning difficulties, disabilities and health needs recorded whilst at</span>
-                  {{ prisonName }}
-                </h3>
-                <dl class="govuk-summary-list govuk-!-margin-bottom-6" data-qa="support-needs-list">
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      Rapid screener from induction
-                    </dt>
-                    <dd class="govuk-summary-list__value" data-qa="rapid-assessment-date">
-                      {{ lddAssessment.rapidAssessmentDate | formatDate('D MMMM YYYY') | default('Not recorded in Curious') }}
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      In-depth assessment by education
-                    </dt>
-                    <dd class="govuk-summary-list__value" data-qa="in-depth-assessment-date">
-                      {{ lddAssessment.inDepthAssessmentDate | formatDate('D MMMM YYYY') | default('Not recorded in Curious') }}
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      Primary area of need identified
-                    </dt>
-                    <dd class="govuk-summary-list__value" data-qa="primary-ldd-needs">
-                      {{ lddAssessment.primaryLddAndHealthNeed | default('Not recorded in Curious') }}
-                    </dd>
-                  </div>
-                  <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      Other areas of need identified
-                    </dt>
-                    <dd class="govuk-summary-list__value" data-qa="additional-ldd-needs">
-                      {% if lddAssessment.additionalLddAndHealthNeeds.length > 0 %}
-                        <ul class="govuk-list">
-                          {% for additionalLddAndHealthNeed in lddAssessment.additionalLddAndHealthNeeds %}
-                            <li>{{ additionalLddAndHealthNeed }}</li>
-                          {% endfor %}
-                        </ul>
-                      {% else %}
-                        Not recorded in Curious
-                      {% endif %}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-            {% endfor %}
-
-          {% else %}
+          {% if lddAssessments.length == 0 and alnAssessments.length == 0 %}
             <p class="govuk-body" data-qa="no-assessments-message">
               {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no screener and assessment results recorded in Curious.
             </p>
+          {% else %}
+            <section data-qa="assessments">
+              <p class="govuk-hint">This is information from the education team entered in Curious and is not a medical diagnosis.</p>
+
+              {% if alnAssessments.length == 0 %}
+                {# If there are no ALN assessments (ie. there are only LDD assessments) render the LDD assessments #}
+                {{ lddAssessmentsDetails({
+                  lddAssessments: lddAssessments,
+                  prisonerSummary: prisonerSummary,
+                  prisonNamesById: prisonNamesById,
+                  classes: "govuk-!-margin-top-4",
+                  attributes: {
+                    "data-qa": "ldd-assessments"
+                  }
+                }) }}
+              {% else %}
+                {# Render the ALN assessments #}
+                {{ alnAssessmentsDetails({
+                  alnAssessments: alnAssessments,
+                  prisonerSummary: prisonerSummary,
+                  prisonNamesById: prisonNamesById,
+                  attributes: {
+                    "data-qa": "aln-assessments"
+                  }
+                }) }}
+
+                {% if lddAssessments.length > 0 %}
+                  {# If there are also LDD assessments these should be rendered within a govuk details component #}
+                  {% set lddDetailsContent = lddAssessmentsDetails({
+                    lddAssessments: lddAssessments,
+                    prisonerSummary: prisonerSummary,
+                    prisonNamesById: prisonNamesById,
+                    attributes: {
+                      "data-qa": "ldd-assessments"
+                    }
+                  }) %}
+                  {{ govukDetails({
+                    summaryText: "Historic screener results",
+                    html: lddDetailsContent,
+                    attributes: {
+                      "data-qa": "ldd-assessment-details"
+                    }
+                  }) }}
+                {% endif %}
+              {% endif %}
+            </section>
           {% endif %}
 
         {% else %}

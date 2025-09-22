@@ -19,7 +19,7 @@ context('Prisoner Overview page - Additional Needs tab', () => {
 
   it('should display Additional Needs data', () => {
     // Given
-    cy.task('stubLearnerAssessments')
+    cy.task('stubLearnerAssessments') // Curious assessments stub has 1 LDD and 1 ALN assessment
 
     cy.signIn()
     const prisonNumber = 'G6115VJ'
@@ -33,7 +33,8 @@ context('Prisoner Overview page - Additional Needs tab', () => {
     // Then
     additionalNeedsPage //
       .activeTabIs('Additional needs')
-      .hasHealthAndSupportNeedsDisplayed()
+      .hasAlnAssessmentsDisplayed()
+      .hasLddAssessmentsDisplayed()
   })
 
   it('should display no results message given curious API returns a 404', () => {
