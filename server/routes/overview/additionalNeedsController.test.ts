@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import aValidPrisonerSupportNeeds from '../../testsupport/supportNeedsTestDataBuilder'
+import { validCuriousAlnAndLddAssessments } from '../../testsupport/curiousAlnAndLddAssessmentsTestDataBuilder'
 import AdditionalNeedsController from './additionalNeedsController'
 import { Result } from '../../utils/result/result'
 
@@ -12,7 +12,7 @@ describe('additionalNeedsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
-  const prisonerSupportNeeds = Result.fulfilled(aValidPrisonerSupportNeeds())
+  const curiousAlnAndLddAssessments = Result.fulfilled(validCuriousAlnAndLddAssessments())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
@@ -25,7 +25,7 @@ describe('additionalNeedsController', () => {
     render: jest.fn(),
     locals: {
       prisonerSummary,
-      prisonerSupportNeeds,
+      curiousAlnAndLddAssessments,
       prisonNamesById,
     },
   } as unknown as Response
@@ -44,7 +44,7 @@ describe('additionalNeedsController', () => {
       tab: expectedTab,
       prisonerSummary,
       prisonNamesById,
-      supportNeeds: prisonerSupportNeeds,
+      curiousAlnAndLddAssessments,
     }
 
     // When

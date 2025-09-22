@@ -1,5 +1,5 @@
 import { startOfDay } from 'date-fns'
-import type { Assessment, InPrisonCourse, PrisonerSupportNeeds } from 'viewModels'
+import type { Assessment, InPrisonCourse, CuriousAlnAndLddAssessments } from 'viewModels'
 import CuriousClient from '../data/curiousClient'
 import CuriousService from './curiousService'
 import aValidLearnerProfile from '../testsupport/learnerProfileTestDataBuilder'
@@ -9,12 +9,19 @@ import {
   aLearnerLddInfoExternalV1DTO,
   aMathsFunctionalSkillsLearnerAssessmentsDTO,
   anAllAssessmentDTO,
+  anAlnLearnerAssessmentsDTO,
   anExternalAssessmentsDTO,
 } from '../testsupport/curiousAssessmentsTestDataBuilder'
 import { anAllQualificationsDTO } from '../testsupport/curiousQualificationsTestDataBuilder'
 import { aValidCurious1Assessment, aValidCurious2Assessment } from '../testsupport/assessmentTestDataBuilder'
 import { aValidInPrisonCourse } from '../testsupport/inPrisonCourseTestDataBuilder'
 import AssessmentTypeValue from '../enums/assessmentTypeValue'
+import {
+  aLddAssessment,
+  anAlnAssessment,
+  validCuriousAlnAndLddAssessments,
+} from '../testsupport/curiousAlnAndLddAssessmentsTestDataBuilder'
+import AlnAssessmentReferral from '../enums/alnAssessmentReferral'
 
 jest.mock('../data/curiousClient')
 jest.mock('../data/hmppsAuthClient')
@@ -29,44 +36,71 @@ describe('curiousService', () => {
     jest.resetAllMocks()
   })
 
-  describe('getPrisonerSupportNeeds', () => {
-    it('should get prisoner support needs given a known prison number', async () => {
+  describe('getAlnAndLddAssessments', () => {
+    it('should get ALN and LDD assessments given a known prison number', async () => {
       // Given
       const allAssessments = anAllAssessmentDTO({
         v1Assessments: [
           aLearnerLatestAssessmentV1DTO({
-            prisonNumber: 'G6123VU',
             lddAssessments: [
               aLearnerLddInfoExternalV1DTO({
                 prisonId: 'MDI',
-                rapidAssessmentDate: '2022-02-18',
-                inDepthAssessmentDate: '2022-02-18',
                 lddPrimaryName: 'Visual impairment',
-                lddSecondaryNames: ['Hearing impairment'],
+                lddSecondaryNames: [
+                  'Hearing impairment',
+                  'Mental health difficulty',
+                  'Social and emotional difficulties',
+                ],
+                inDepthAssessmentDate: '2013-02-16',
+                rapidAssessmentDate: '2012-02-16',
               }),
             ],
           }),
         ],
+        v2Assessments: aLearnerAssessmentV2DTO({
+          assessments: anExternalAssessmentsDTO({
+            alnAssessments: [
+              anAlnLearnerAssessmentsDTO({
+                prisonId: 'MDI',
+                assessmentDate: '2025-10-01',
+                assessmentOutcome: 'Yes',
+                hasPrisonerConsent: 'Yes',
+                stakeholderReferral: 'Education Specialist',
+              }),
+            ],
+          }),
+        }),
       })
       curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(allAssessments)
 
-      const expectedSupportNeeds: PrisonerSupportNeeds = {
+      const expectedAssessments = validCuriousAlnAndLddAssessments({
         lddAssessments: [
-          {
+          aLddAssessment({
             prisonId: 'MDI',
-            rapidAssessmentDate: startOfDay('2022-02-18'),
-            inDepthAssessmentDate: startOfDay('2022-02-18'),
-            primaryLddAndHealthNeeds: 'Visual impairment',
-            additionalLddAndHealthNeeds: ['Hearing impairment'],
-          },
+            rapidAssessmentDate: startOfDay('2012-02-16'),
+            inDepthAssessmentDate: startOfDay('2013-02-16'),
+            primaryLddAndHealthNeed: 'Visual impairment',
+            additionalLddAndHealthNeeds: [
+              'Hearing impairment',
+              'Mental health difficulty',
+              'Social and emotional difficulties',
+            ],
+          }),
         ],
-      }
+        alnAssessments: [
+          anAlnAssessment({
+            prisonId: 'MDI',
+            assessmentDate: startOfDay('2025-10-01'),
+            referral: AlnAssessmentReferral.EDUCATION_SPECIALIST,
+          }),
+        ],
+      })
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber)
 
       // Then
-      expect(actual).toEqual(expectedSupportNeeds)
+      expect(actual).toEqual(expectedAssessments)
       expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
@@ -80,26 +114,27 @@ describe('curiousService', () => {
       curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber).catch(error => error)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber).catch(error => error)
 
       // Then
       expect(actual).toEqual(curiousApiError)
       expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
 
-    it('should handle retrieval of prisoner support needs given Curious API client returns null indicating not found error for the prisoner assessments', async () => {
+    it('should handle retrieval of ALN and LDD assessments given Curious API client returns null indicating not found error for the prisoner assessments', async () => {
       // Given
       curiousClient.getAssessmentsByPrisonNumber.mockResolvedValue(null)
 
-      const expectedSupportNeeds: PrisonerSupportNeeds = {
+      const expectedAssessments: CuriousAlnAndLddAssessments = {
         lddAssessments: [],
+        alnAssessments: [],
       }
 
       // When
-      const actual = await curiousService.getPrisonerSupportNeeds(prisonNumber)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber)
 
       // Then
-      expect(actual).toEqual(expectedSupportNeeds)
+      expect(actual).toEqual(expectedAssessments)
       expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
     })
   })

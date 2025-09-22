@@ -1,5 +1,5 @@
-import type { FunctionalSkills, InPrisonCourseRecords, PrisonerSupportNeeds } from 'viewModels'
-import toPrisonerSupportNeeds from '../routes/overview/mappers/prisonerSupportNeedsMapper'
+import type { FunctionalSkills, InPrisonCourseRecords, CuriousAlnAndLddAssessments } from 'viewModels'
+import toCuriousAlnAndLddAssessments from '../routes/overview/mappers/curiousAlnAndLddAssessmentsMapper'
 import CuriousClient from '../data/curiousClient'
 import logger from '../../logger'
 import toFunctionalSkills from '../routes/overview/mappers/functionalSkillsMapper'
@@ -8,10 +8,14 @@ import toInPrisonCourseRecords from '../data/mappers/inPrisonCourseRecordsMapper
 export default class CuriousService {
   constructor(private readonly curiousClient: CuriousClient) {}
 
-  async getPrisonerSupportNeeds(prisonNumber: string): Promise<PrisonerSupportNeeds> {
+  /**
+   * Returns the Additional Learning Needs (ALN) and Learning Difficulties and Disabilities (LDD) assessments for a
+   * given prisoner.
+   */
+  async getAlnAndLddAssessments(prisonNumber: string): Promise<CuriousAlnAndLddAssessments> {
     try {
       const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
-      return toPrisonerSupportNeeds(allPrisonerAssessments)
+      return toCuriousAlnAndLddAssessments(allPrisonerAssessments)
     } catch (error) {
       logger.error('Error retrieving support needs data from Curious', error)
       throw error

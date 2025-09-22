@@ -9,9 +9,9 @@
       </div>
       <div class="govuk-summary-card__content">
 
-        {% if supportNeeds.isFulfilled() %}
-          {% set supportNeeds = supportNeeds.value %}
-          {% set lddAssessments = supportNeeds.lddAssessments %}
+        {% if curiousAlnAndLddAssessments.isFulfilled() %}
+          {% set curiousAlnAndLddAssessments = curiousAlnAndLddAssessments.value %}
+          {% set lddAssessments = curiousAlnAndLddAssessments.lddAssessments %}
 
           {% if lddAssessments | length %}
 
@@ -45,7 +45,7 @@
                       Primary area of need identified
                     </dt>
                     <dd class="govuk-summary-list__value" data-qa="primary-ldd-needs">
-                      {{ lddAssessment.primaryLddAndHealthNeeds | default('Not recorded in Curious') }}
+                      {{ lddAssessment.primaryLddAndHealthNeed | default('Not recorded in Curious') }}
                     </dd>
                   </div>
                   <div class="govuk-summary-list__row">
