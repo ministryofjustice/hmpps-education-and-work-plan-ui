@@ -1,8 +1,8 @@
 import * as cheerio from 'cheerio'
 import nunjucks from 'nunjucks'
 import { startOfDay } from 'date-fns'
-import type { PrisonerSupportNeeds } from 'viewModels'
-import aValidPrisonerSupportNeeds from '../../../../../testsupport/supportNeedsTestDataBuilder'
+import type { CuriousAlnAndLddAssessments } from 'viewModels'
+import { validCuriousAlnAndLddAssessments } from '../../../../../testsupport/curiousAlnAndLddAssessmentsTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import fallbackMessageFilter from '../../../../../filters/fallbackMessageFilter'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
@@ -28,19 +28,19 @@ const templateParams = {
   tab: 'additional-needs',
   prisonerSummary,
   prisonNamesById: Result.fulfilled(prisonNamesById),
-  supportNeeds: Result.fulfilled(aValidPrisonerSupportNeeds()),
+  curiousAlnAndLddAssessments: Result.fulfilled(validCuriousAlnAndLddAssessments()),
 }
 
 describe('Additional Needs tab view', () => {
-  it('should render the Additional Needs page given a prison has LDD assessment data recorded', () => {
+  it('should render the Additional Needs page given a prisoner has LDD assessment data recorded', () => {
     // Given
-    const supportNeeds = {
+    const curiousAlnAndLddAssessments = {
       lddAssessments: [
         {
           prisonId: 'MDI',
           rapidAssessmentDate: startOfDay('2022-02-18'),
           inDepthAssessmentDate: null as Date,
-          primaryLddAndHealthNeeds: 'Visual impairment',
+          primaryLddAndHealthNeed: 'Visual impairment',
           additionalLddAndHealthNeeds: [
             'Hearing impairment',
             'Mental health difficulty',
@@ -51,7 +51,7 @@ describe('Additional Needs tab view', () => {
     }
     const params = {
       ...templateParams,
-      supportNeeds: Result.fulfilled(supportNeeds),
+      curiousAlnAndLddAssessments: Result.fulfilled(curiousAlnAndLddAssessments),
     }
 
     // When
@@ -84,12 +84,13 @@ describe('Additional Needs tab view', () => {
 
   it('should should render the Additional Needs page given there are no LDD assessments recorded', () => {
     // Given
-    const supportNeeds: PrisonerSupportNeeds = {
+    const curiousAlnAndLddAssessments: CuriousAlnAndLddAssessments = {
       lddAssessments: [],
+      alnAssessments: [],
     }
     const params = {
       ...templateParams,
-      supportNeeds: Result.fulfilled(supportNeeds),
+      curiousAlnAndLddAssessments: Result.fulfilled(curiousAlnAndLddAssessments),
     }
 
     // When
@@ -105,7 +106,7 @@ describe('Additional Needs tab view', () => {
     // Given
     const params = {
       ...templateParams,
-      supportNeeds: Result.rejected(new Error('Failed to get Prisoner Additional Needs')),
+      curiousAlnAndLddAssessments: Result.rejected(new Error('Failed to get ALN and LDD assessments')),
     }
 
     // When

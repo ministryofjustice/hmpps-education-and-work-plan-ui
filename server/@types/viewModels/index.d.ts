@@ -12,6 +12,7 @@ declare module 'viewModels' {
   import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
   import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
   import AssessmentTypeValue from '../../enums/assessmentTypeValue'
+  import AlnAssessmentReferral from '../../enums/alnAssessmentReferral'
 
   export interface SessionsSummary {
     overdueSessionCount: number
@@ -64,9 +65,9 @@ declare module 'viewModels' {
   /**
    * Collates the Additional Learning Needs (ALN) and Learning Difficulties and Disabilities (LDD) assessments that have been recorded in Curious
    */
-  export interface PrisonerSupportNeeds {
+  export interface CuriousAlnAndLddAssessments {
     lddAssessments: Array<LddAssessment>
-    // TODO - add property for Curious 2 ALN assessments
+    alnAssessments: Array<AlnAssessment>
   }
 
   /**
@@ -76,8 +77,17 @@ declare module 'viewModels' {
     prisonId: string
     rapidAssessmentDate: Date
     inDepthAssessmentDate: Date
-    primaryLddAndHealthNeeds: string
+    primaryLddAndHealthNeed: string
     additionalLddAndHealthNeeds: Array<string>
+  }
+
+  /**
+   * Represents an Additional Learning Needs (ALN) assessment that has been recorded in Curious
+   */
+  export interface AlnAssessment {
+    prisonId: string
+    assessmentDate: Date
+    referral: AlnAssessmentReferral
   }
 
   /**

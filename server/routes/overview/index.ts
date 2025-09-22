@@ -13,7 +13,7 @@ import retrieveAllGoalsForPrisoner from '../routerRequestHandlers/retrieveAllGoa
 import ViewGoalsController from './viewGoalsController'
 import OverviewController from './overviewController'
 import retrieveCuriousFunctionalSkills from '../routerRequestHandlers/retrieveCuriousFunctionalSkills'
-import retrieveCuriousSupportNeeds from '../routerRequestHandlers/retrieveCuriousSupportNeeds'
+import retrieveCuriousAlnAndLddAssessments from '../routerRequestHandlers/retrieveCuriousAlnAndLddAssessments'
 import retrieveActionPlanReviews from '../routerRequestHandlers/retrieveActionPlanReviews'
 import retrieveInductionSchedule from '../routerRequestHandlers/retrieveInductionSchedule'
 import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonNamesById'
@@ -54,7 +54,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/additional-needs', [
     retrievePrisonNamesById(prisonService),
-    retrieveCuriousSupportNeeds(curiousService),
+    retrieveCuriousAlnAndLddAssessments(curiousService),
     asyncMiddleware(additionalNeedsController.getAdditionalNeedsView),
   ])
 
