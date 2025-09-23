@@ -125,13 +125,13 @@ describe('sessionListController', () => {
       const expectedView: RenderedSessionListView = {
         sessionsSummary,
         currentPageOfRecords: [
-          { ...jimmyLilac, ...jimmyLilacSession },
           { ...jimmyOrange, ...jimmyOrangeSession },
+          { ...jimmyLilac, ...jimmyLilacSession },
         ], // default sort order (due-by descending) applied
         searchTerm: '',
         sessionType: '',
         sortBy: 'due-by',
-        sortOrder: 'descending',
+        sortOrder: 'ascending',
         items: [],
         nextPage: {
           href: '',
@@ -153,7 +153,7 @@ describe('sessionListController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
-      expect(req.session.sessionListSortOptions).toEqual('due-by,descending')
+      expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
       expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
@@ -282,7 +282,7 @@ describe('sessionListController', () => {
           searchTerm: 'orange',
           sessionType: '',
           sortBy: 'due-by',
-          sortOrder: 'descending',
+          sortOrder: 'ascending',
           items: [],
           nextPage: {
             href: '',
@@ -304,7 +304,7 @@ describe('sessionListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
-        expect(req.session.sessionListSortOptions).toEqual('due-by,descending')
+        expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
         expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
@@ -329,7 +329,7 @@ describe('sessionListController', () => {
           searchTerm: '',
           sessionType: 'INDUCTION',
           sortBy: 'due-by',
-          sortOrder: 'descending',
+          sortOrder: 'ascending',
           items: [],
           nextPage: {
             href: '',
@@ -351,7 +351,7 @@ describe('sessionListController', () => {
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
-        expect(req.session.sessionListSortOptions).toEqual('due-by,descending')
+        expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
         expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
@@ -379,7 +379,7 @@ describe('sessionListController', () => {
         searchTerm: '',
         sessionType: '',
         sortBy: 'due-by',
-        sortOrder: 'descending',
+        sortOrder: 'ascending',
         items: [],
         nextPage: {
           href: '',
@@ -401,7 +401,7 @@ describe('sessionListController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/onHoldSessions', expectedView)
-      expect(req.session.sessionListSortOptions).toEqual('due-by,descending')
+      expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
       expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
@@ -428,7 +428,7 @@ describe('sessionListController', () => {
         searchTerm: '',
         sessionType: '',
         sortBy: 'due-by',
-        sortOrder: 'descending',
+        sortOrder: 'ascending',
         items: [],
         nextPage: {
           href: '',
@@ -450,7 +450,7 @@ describe('sessionListController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/overdueSessions', expectedView)
-      expect(req.session.sessionListSortOptions).toEqual('due-by,descending')
+      expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
       expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],

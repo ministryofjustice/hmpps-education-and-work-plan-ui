@@ -7,7 +7,7 @@ import config from '../../config'
 import { SessionListQueryStringParams } from './sessionListQueryStringParams'
 
 const DEFAULT_SORT_FIELD = SortBy.DUE_BY
-const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
+const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
 
 export default class SessionListController {
   constructor(
