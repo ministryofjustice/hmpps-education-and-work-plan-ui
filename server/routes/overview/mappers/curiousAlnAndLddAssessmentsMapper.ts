@@ -31,6 +31,7 @@ const toAlnAssessment = (curiousV2AlnAssessment: LearnerAssessmentsAlnDTO): AlnA
   prisonId: curiousV2AlnAssessment.establishmentId,
   assessmentDate: parseISO(curiousV2AlnAssessment.assessmentDate),
   referral: toAlnAssessmentReferral(curiousV2AlnAssessment.stakeholderReferral),
+  additionalNeedsIdentified: curiousV2AlnAssessment.assessmentOutcome?.toLowerCase().trim() === 'yes',
 })
 
 const toAlnAssessmentReferral = (apiStakeholderReferral: string): AlnAssessmentReferral =>

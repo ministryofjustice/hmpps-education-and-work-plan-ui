@@ -88,6 +88,7 @@ declare module 'viewModels' {
     prisonId: string
     assessmentDate: Date
     referral: AlnAssessmentReferral
+    additionalNeedsIdentified: boolean
   }
 
   /**

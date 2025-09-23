@@ -1,0 +1,15 @@
+{# LDD Assessments Details macro
+
+Data supplied to this marco:
+  params: {
+    prisonerSummary: PrisonerSummary
+    lddAssessments: Array<CuriousLddAssessmentDto> - The LDD Assessments from Curious
+    prisonNamesById: Object of key value pairs, where the key is the prison ID, and the value is the prison name
+    id: string
+    classes: string
+    attributes: Object of key value pairs of additonal attributes to add the to the component
+  }
+#}
+{% macro lddAssessmentsDetails(params) %}
+  {%- include "./template.njk" -%}
+{% endmacro %}

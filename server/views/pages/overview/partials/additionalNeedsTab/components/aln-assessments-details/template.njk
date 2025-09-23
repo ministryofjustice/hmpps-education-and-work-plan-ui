@@ -1,0 +1,58 @@
+{% from "govuk/macros/attributes.njk" import govukAttributes %}
+
+{#- Set classes for this component #}
+{%- set classNames = "" -%}
+{%- if params.classes %}
+  {% set classNames = classNames + " " + params.classes %}
+{% endif %}
+
+{#- Define component attributes #}
+{%- set componentAttributes %} class="{{ classNames }}" {{- govukAttributes(params.attributes) -}} {% if params.id %} id="{{ params.id }}"{% endif %}{% endset %}
+
+{% if params.alnAssessments | length  %}
+
+  <section {{ componentAttributes | safe }}>
+
+    {% for alnAssessment in params.alnAssessments | sort(attribute = 'assessmentDate', reverse = true) %}
+      <section class="govuk-!-margin-bottom-6" data-qa="aln-assessment-from-{{ alnAssessment.prisonId }}">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2" data-qa="prison-name">
+          {% set prisonName = params.prisonNamesById[alnAssessment.prisonId] | default(alnAssessment.prisonId) %}
+          <span class="govuk-visually-hidden">{{ params.prisonerSummary.firstName | capitalize }} {{ params.prisonerSummary.lastName | capitalize }}'s additional learning needs assessment recorded whilst at</span>
+          {{ prisonName }}
+        </h3>
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Assessment date
+            </dt>
+            <dd class="govuk-summary-list__value" data-qa="assessment-date">
+              {{ alnAssessment.assessmentDate | formatDate('d MMMM yyyy') | default('Not recorded in Curious') }}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Assessment outcome
+            </dt>
+            <dd class="govuk-summary-list__value" data-qa="assessment-outcome">
+              {{ 'Additional needs identified' if alnAssessment.additionalNeedsIdentified else 'No additional needs identified' }}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Referred to
+            </dt>
+            <dd class="govuk-summary-list__value" data-qa="assessment-referral">
+              {{ alnAssessment.referral | formatAlnAssessmentReferralScreenValue | default('Not recorded in Curious') }}
+            </dd>
+          </div>
+        </dl>
+      </section>
+    {% endfor %}
+
+  </section>
+
+{% else %}
+  <p class="govuk-body" data-qa="no-aln-assessments">
+    No additional learning needs screener recorded in Curious.
+  </p>
+{% endif %}

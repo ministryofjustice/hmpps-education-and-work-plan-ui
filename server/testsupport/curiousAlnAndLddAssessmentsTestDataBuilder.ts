@@ -34,10 +34,13 @@ const anAlnAssessment = (options?: {
   prisonId?: string
   assessmentDate?: Date
   referral?: AlnAssessmentReferral
+  additionalNeedsIdentified?: boolean
 }): AlnAssessment => ({
   prisonId: options?.prisonId || 'BXI',
   assessmentDate: options?.assessmentDate || startOfDay('2025-10-02'),
   referral: options?.referral || AlnAssessmentReferral.PSYCHOLOGY,
+  additionalNeedsIdentified:
+    options?.additionalNeedsIdentified === false ? false : options?.additionalNeedsIdentified || true,
 })
 
 export { validCuriousAlnAndLddAssessments, aLddAssessment, anAlnAssessment }

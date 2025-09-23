@@ -1,0 +1,9 @@
+{% from "./macro.njk" import alnAssessmentsDetails %}
+
+{{ alnAssessmentsDetails({
+  alnAssessments: alnAssessments,
+  prisonerSummary: prisonerSummary,
+  prisonNamesById: prisonNamesById,
+  classes: classes,
+  attributes: attributes
+}) }}

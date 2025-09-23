@@ -36,6 +36,7 @@ import formatReviewExemptionReasonValueFilter from '../filters/formatReviewExemp
 import formatInductionExemptionReasonFilter from '../filters/formatInductionExemptionReasonFilter'
 import assetMapFilter from '../filters/assetMapFilter'
 import filterArrayOnPropertyFilter from '../filters/filterArrayOnPropertyFilter'
+import formatAlnAssessmentReferralScreenValueFilter from '../filters/formatAlnAssessmentReferralFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -124,6 +125,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonValueFilter)
   njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
   njkEnv.addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
+  njkEnv.addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
 
   njkEnv.addFilter('addMonths', addMonths)
 

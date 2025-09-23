@@ -1,0 +1,9 @@
+{% from "./macro.njk" import lddAssessmentsDetails %}
+
+{{ lddAssessmentsDetails({
+  lddAssessments: lddAssessments,
+  prisonerSummary: prisonerSummary,
+  prisonNamesById: prisonNamesById,
+  classes: classes,
+  attributes: attributes
+}) }}

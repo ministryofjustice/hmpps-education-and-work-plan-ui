@@ -14,26 +14,34 @@ export default class AdditionalNeedsPage extends Page {
     return this
   }
 
-  hasHealthAndSupportNeedsDisplayed(): AdditionalNeedsPage {
-    this.healthAndSupportNeedsSummaryCard().should('be.visible')
+  hasAlnAssessmentsDisplayed(): AdditionalNeedsPage {
+    this.alnAssessments().should('be.visible')
+    return this
+  }
+
+  hasLddAssessmentsDisplayed(): AdditionalNeedsPage {
+    this.lddAssessments().should('be.visible')
     return this
   }
 
   hasCuriousAssessmentsUnavailableMessageDisplayed(): AdditionalNeedsPage {
-    this.curiousAssesmentsUnavailableMessage().should('be.exist')
+    this.curiousAssessmentsUnavailableMessage().should('be.visible')
     return this
   }
 
   hasNoAssessmentsMessageDisplayed(): AdditionalNeedsPage {
-    this.noAssessmentsMessage().should('be.exist')
+    this.noAssessmentsMessage().should('be.visible')
     return this
   }
 
-  activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
+  private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
-  healthAndSupportNeedsSummaryCard = (): PageElement => cy.get('[data-qa=health-and-support-needs-summary-card]')
+  private alnAssessments = (): PageElement => cy.get('[data-qa=aln-assessments]')
 
-  curiousAssesmentsUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-assessments-unavailable-message]')
+  private lddAssessments = (): PageElement => cy.get('[data-qa=ldd-assessments]')
 
-  noAssessmentsMessage = (): PageElement => cy.get('[data-qa=no-assessments-message]')
+  private curiousAssessmentsUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=curious-assessments-unavailable-message]')
+
+  private noAssessmentsMessage = (): PageElement => cy.get('[data-qa=no-assessments-message]')
 }
