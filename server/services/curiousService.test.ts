@@ -309,7 +309,7 @@ describe('curiousService', () => {
       curiousClient.getQualificationsByPrisonNumber.mockResolvedValue(allPrisonerQualifications)
 
       const expected = {
-        totalRecords: 1,
+        totalRecords: 2,
         coursesByStatus: {
           COMPLETED: [
             aValidInPrisonCourse({
@@ -326,7 +326,21 @@ describe('curiousService', () => {
               source: 'CURIOUS1',
             }),
           ],
-          IN_PROGRESS: [] as Array<InPrisonCourse>,
+          IN_PROGRESS: [
+            aValidInPrisonCourse({
+              prisonId: 'BXI',
+              courseCode: '270828',
+              courseName: 'CIMA Strategic Level',
+              courseStartDate: startOfDay('2024-06-01'),
+              courseStatus: 'IN_PROGRESS',
+              courseCompletionDate: null,
+              coursePlannedEndDate: startOfDay('2024-06-30'),
+              isAccredited: true,
+              grade: null,
+              withdrawalReason: null,
+              source: 'CURIOUS2',
+            }),
+          ],
           WITHDRAWN: [] as Array<InPrisonCourse>,
           TEMPORARILY_WITHDRAWN: [] as Array<InPrisonCourse>,
         },

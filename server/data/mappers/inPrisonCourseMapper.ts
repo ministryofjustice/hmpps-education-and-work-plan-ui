@@ -1,26 +1,44 @@
 import { parseISO, startOfDay } from 'date-fns'
-import type { LearnerEducationDTO } from 'curiousApiClient'
+import type { LearnerEducationDTO, LearnerQualificationsDTO } from 'curiousApiClient'
 import type { InPrisonCourse } from 'viewModels'
 
-const toInPrisonCourse = (apiLearnerEducation: LearnerEducationDTO): InPrisonCourse => {
-  return {
-    prisonId: apiLearnerEducation.establishmentId,
-    courseCode: apiLearnerEducation.courseCode,
-    courseName: apiLearnerEducation.courseName,
-    courseStartDate: startOfDay(parseISO(apiLearnerEducation.learningStartDate)),
-    courseStatus: toCourseStatus(apiLearnerEducation.completionStatus),
-    courseCompletionDate: apiLearnerEducation.learningActualEndDate
-      ? startOfDay(parseISO(apiLearnerEducation.learningActualEndDate))
-      : null,
-    coursePlannedEndDate: apiLearnerEducation.learningPlannedEndDate
-      ? startOfDay(parseISO(apiLearnerEducation.learningPlannedEndDate))
-      : null,
-    isAccredited: apiLearnerEducation.isAccredited,
-    grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
-    withdrawalReason: apiLearnerEducation.prisonWithdrawalReason,
-    source: 'CURIOUS1',
-  }
-}
+const toInPrisonCourseFromLearnerEducationDTO = (apiLearnerEducation: LearnerEducationDTO): InPrisonCourse => ({
+  prisonId: apiLearnerEducation.establishmentId,
+  courseCode: apiLearnerEducation.courseCode,
+  courseName: apiLearnerEducation.courseName,
+  courseStartDate: startOfDay(parseISO(apiLearnerEducation.learningStartDate)),
+  courseStatus: toCourseStatus(apiLearnerEducation.completionStatus),
+  courseCompletionDate: apiLearnerEducation.learningActualEndDate
+    ? startOfDay(parseISO(apiLearnerEducation.learningActualEndDate))
+    : null,
+  coursePlannedEndDate: apiLearnerEducation.learningPlannedEndDate
+    ? startOfDay(parseISO(apiLearnerEducation.learningPlannedEndDate))
+    : null,
+  isAccredited: apiLearnerEducation.isAccredited,
+  grade: apiLearnerEducation.outcomeGrade || apiLearnerEducation.outcome || null,
+  withdrawalReason: apiLearnerEducation.prisonWithdrawalReason,
+  source: 'CURIOUS1',
+})
+
+const toInPrisonCourseFromLearnerQualificationsDTO = (
+  apiLearnerQualification: LearnerQualificationsDTO,
+): InPrisonCourse => ({
+  prisonId: apiLearnerQualification.establishmentId,
+  courseCode: apiLearnerQualification.qualificationCode,
+  courseName: apiLearnerQualification.qualificationName,
+  courseStartDate: startOfDay(parseISO(apiLearnerQualification.learningStartDate)),
+  courseStatus: toCourseStatus(apiLearnerQualification.completionStatus),
+  courseCompletionDate: apiLearnerQualification.learningActualEndDate
+    ? startOfDay(parseISO(apiLearnerQualification.learningActualEndDate))
+    : null,
+  coursePlannedEndDate: apiLearnerQualification.learningPlannedEndDate
+    ? startOfDay(parseISO(apiLearnerQualification.learningPlannedEndDate))
+    : null,
+  isAccredited: apiLearnerQualification.isAccredited,
+  grade: apiLearnerQualification.outcomeGrade || apiLearnerQualification.outcome || null,
+  withdrawalReason: apiLearnerQualification.withdrawalReason,
+  source: 'CURIOUS2',
+})
 
 /**
  * Returns one of 'COMPLETED' | 'IN_PROGRESS' | 'WITHDRAWN' | 'TEMPORARILY_WITHDRAWN' to represent the course status.
@@ -58,4 +76,4 @@ const toCourseStatus = (
   return 'IN_PROGRESS'
 }
 
-export { toInPrisonCourse, toCourseStatus }
+export { toInPrisonCourseFromLearnerEducationDTO, toInPrisonCourseFromLearnerQualificationsDTO, toCourseStatus }
