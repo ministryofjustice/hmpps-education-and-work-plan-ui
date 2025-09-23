@@ -132,16 +132,6 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasNoCoursesCompletedYetMessageDisplayed(): OverviewPage {
-    this.noCoursesCompletedYetMessage().should('be.visible')
-    return this
-  }
-
-  hasNoCoursesRecordedMessageDisplayed(): OverviewPage {
-    this.noCoursesRecordedMessage().should('be.visible')
-    return this
-  }
-
   hasNoCoursesTableDisplayed(): OverviewPage {
     this.completedCoursesinLast12MonthsTable().should('not.exist')
     return this
@@ -254,10 +244,6 @@ export default class OverviewPage extends Page {
 
   private noCoursesCompletedInLast12MonthsMessage = (): PageElement =>
     cy.get('[data-qa=no-courses-completed-in-last-12-months-message]')
-
-  private noCoursesCompletedYetMessage = (): PageElement => cy.get('[data-qa=no-courses-completed-yet-message]')
-
-  private noCoursesRecordedMessage = (): PageElement => cy.get('[data-qa=no-courses-recorded-message]')
 
   private curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
 

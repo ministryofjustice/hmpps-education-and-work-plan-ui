@@ -1,13 +1,11 @@
 <div class="govuk-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">In-prison courses and qualifications</h2>
-    {% if inPrisonCourses.isFulfilled() and inPrisonCourses.value.totalRecords > 0 %}
-      <ul class="govuk-summary-card__actions govuk-!-display-none-print">
-        <li class="govuk-summary-card__action">
-          <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/in-prison-courses-and-qualifications" data-qa="view-all-in-prison-courses-link">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
-        </li>
-      </ul>
-    {% endif %}
+    <h2 class="govuk-summary-card__title">In-prison courses and qualifications completed in the last 12 months</h2>
+    <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+      <li class="govuk-summary-card__action">
+        <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/in-prison-courses-and-qualifications" data-qa="view-all-in-prison-courses-link">View all<span class="govuk-visually-hidden"> in-prison courses and qualifications</span></a>
+      </li>
+    </ul>
   </div>
   <div class="govuk-summary-card__content">
     {% if inPrisonCourses.isFulfilled() %}
@@ -15,21 +13,22 @@
 
       <p class="govuk-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
 
-      <table class="govuk-table" id="completed-in-prison-courses-in-last-12-months-table">
-        <caption class="govuk-table__caption">Completed courses</caption>
+      {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
 
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Name</th>
-          <th scope="col" class="govuk-table__header">Type</th>
-          <th scope="col" class="govuk-table__header">Location</th>
-          <th scope="col" class="govuk-table__header">Completed on</th>
-          <th scope="col" class="govuk-table__header">Grade or outcome</th>
-        </tr>
-        </thead>
+        <table class="govuk-table" id="completed-in-prison-courses-in-last-12-months-table">
+          <caption class="govuk-table__caption">Completed courses</caption>
 
-        <tbody class="govuk-table__body">
-          {% if inPrisonCourses.coursesCompletedInLast12Months.length > 0 %}
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Type</th>
+            <th scope="col" class="govuk-table__header">Location</th>
+            <th scope="col" class="govuk-table__header">Completed on</th>
+            <th scope="col" class="govuk-table__header">Grade or outcome</th>
+          </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
             {% for completedCourse in inPrisonCourses.coursesCompletedInLast12Months | sort(attribute = 'courseCompletionDate', reverse = true) %}
               {% set prisonName = prisonNamesById[completedCourse.prisonId] | default(completedCourse.prisonId) %}
               <tr class="govuk-table__row">
@@ -40,15 +39,14 @@
                 <td class="govuk-table__cell">{{ completedCourse.grade }}</td>
               </tr>
             {% endfor %}
-          {% else %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell" colspan="5" data-qa="no-completed-courses-in-last-12-months-message">
-                No courses or qualifications completed in last 12 months.
-              </td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+
+      {% else %}
+        <p class="govuk-body" data-qa="no-completed-courses-in-last-12-months-message">
+          No courses or qualifications completed in last 12 months.
+        </p>
+      {% endif %}
 
     {% else %}
 

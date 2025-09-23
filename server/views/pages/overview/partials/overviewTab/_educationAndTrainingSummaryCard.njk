@@ -78,7 +78,6 @@ Data supplied to this template:
     {% endif %}
 
     <h3 class="govuk-heading-s govuk-!-padding-top-7" data-qa="completed-courses-heading">Courses and qualifications completed in the last 12 months</h3>
-    <p class="govuk-hint" data-qa="completed-courses-hint">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
     {% if curiousInPrisonCourses.isFulfilled() %}
       {% set curiousInPrisonCourses = curiousInPrisonCourses.value %}
 
@@ -97,12 +96,8 @@ Data supplied to this template:
           {% endfor %}
           </tbody>
         </table>
-      {% elif curiousInPrisonCourses.hasCoursesCompletedMoreThan12MonthsAgo() %}
-        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
-      {% elif curiousInPrisonCourses.hasWithdrawnOrInProgressCourses() %}
-        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-completed-yet-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed yet.</p>
       {% else %}
-        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-recorded-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications recorded in Curious.</p>
+        <p class="govuk-body govuk-!-margin-top-5" data-qa="no-courses-completed-in-last-12-months-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no courses and qualifications completed in the last 12 months.</p>
       {% endif %}
     {% else %}
       <h3 class="govuk-heading-s" data-qa="curious-unavailable-message">We cannot show these details from Curious right now</h3>
