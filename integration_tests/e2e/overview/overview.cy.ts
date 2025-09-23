@@ -128,7 +128,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasNoCoursesTableDisplayed()
-      .hasViewAllEducationAndTrainingButtonDisplayed()
+      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
   })
 
   it('should display the correct message if there are withdrawn or in progress courses or qualifications but no completed ones', () => {
@@ -145,7 +145,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasNoCoursesTableDisplayed()
-      .hasNoCoursesCompletedYetMessageDisplayed()
+      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
   })
 
   it('should display the correct message if there are no courses or qualifications recorded at all', () => {
@@ -162,7 +162,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
       .hasNoCoursesTableDisplayed()
-      .hasNoCoursesRecordedMessageDisplayed()
+      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
   })
 
   it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {

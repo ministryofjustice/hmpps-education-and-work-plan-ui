@@ -140,11 +140,6 @@ export default class EducationAndTrainingPage extends Page {
     return Page.verifyOnPage(QualificationLevelPage)
   }
 
-  doesNotHaveLinkToViewAllCourses(): EducationAndTrainingPage {
-    this.viewAllInPrisonCoursesLink().should('not.exist')
-    return this
-  }
-
   hasNoCompletedCoursesInLast12MonthsDisplayed(): EducationAndTrainingPage {
     this.noCompletedCoursesInLast12MonthsMessage().should('be.visible')
     return this

@@ -135,8 +135,6 @@ describe('_educationAndTrainingSummaryCard', () => {
     ).toEqual('Completed on 15 June 2023')
 
     expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-completed-yet-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-recorded-message"]').length).toEqual(0)
 
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
@@ -180,9 +178,7 @@ describe('_educationAndTrainingSummaryCard', () => {
 
     // Then
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-completed-yet-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-recorded-message"]').length).toEqual(1)
+    expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(1)
 
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
@@ -204,9 +200,7 @@ describe('_educationAndTrainingSummaryCard', () => {
 
     // Then
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-completed-yet-message"]').length).toEqual(1)
-    expect($('[data-qa="no-courses-recorded-message"]').length).toEqual(0)
+    expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(1)
 
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })
@@ -229,8 +223,6 @@ describe('_educationAndTrainingSummaryCard', () => {
     // Then
     expect($('[data-qa="completed-in-prison-courses-in-last-12-months-table"]').length).toEqual(0)
     expect($('[data-qa="no-courses-completed-in-last-12-months-message"]').length).toEqual(1)
-    expect($('[data-qa="no-courses-completed-yet-message"]').length).toEqual(0)
-    expect($('[data-qa="no-courses-recorded-message"]').length).toEqual(0)
 
     expect($('[data-qa="curious-unavailable-message"]').length).toEqual(0)
   })

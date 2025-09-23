@@ -150,11 +150,10 @@ describe('Education and Training tab view - In Prison Qualifications Completed I
     const $ = cheerio.load(content)
 
     // Then
-    expect($('#completed-in-prison-courses-in-last-12-months-table tbody tr').length).toBe(1)
-    expect($('#completed-in-prison-courses-in-last-12-months-table tbody tr td').length).toBe(1)
-    expect($('#completed-in-prison-courses-in-last-12-months-table tbody tr td').text().trim()).toEqual(
+    expect($('#completed-in-prison-courses-in-last-12-months-table').length).toBe(0)
+    expect($('[data-qa=no-completed-courses-in-last-12-months-message]').text().trim()).toEqual(
       'No courses or qualifications completed in last 12 months.',
     )
-    expect($('[data-qa=view-all-in-prison-courses-link]').length).toEqual(0)
+    expect($('[data-qa=view-all-in-prison-courses-link]').length).toEqual(1)
   })
 })

@@ -128,7 +128,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
         .hasLinkToViewAllCourses()
     })
 
-    it('should display message but not display view all link if prisoner has no completed courses', () => {
+    it('should display message if prisoner has no completed courses at all', () => {
       // Given
       cy.task('stubLearnerQualificationsWithNoCourses')
 
@@ -145,7 +145,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasNoCompletedCoursesInLast12MonthsDisplayed()
-        .doesNotHaveLinkToViewAllCourses()
     })
 
     it('should not display In Prison courses given curious API returns a 404 for the learner qualifications', () => {
@@ -165,7 +164,6 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasNoCompletedCoursesInLast12MonthsDisplayed()
-        .doesNotHaveLinkToViewAllCourses()
     })
 
     it('should display curious unavailable message given curious is unavailable for the learner qualifications', () => {
