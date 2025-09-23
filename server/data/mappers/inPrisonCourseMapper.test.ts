@@ -1,11 +1,15 @@
-import { parseISO, startOfDay } from 'date-fns'
-import { toInPrisonCourse, toCourseStatus } from './inPrisonCourseMapper'
-import { aLearnerEducationDTO } from '../../testsupport/curiousQualificationsTestDataBuilder'
+import { startOfDay } from 'date-fns'
+import {
+  toInPrisonCourseFromLearnerEducationDTO,
+  toCourseStatus,
+  toInPrisonCourseFromLearnerQualificationsDTO,
+} from './inPrisonCourseMapper'
+import { aLearnerEducationDTO, aLearnerQualificationsDTO } from '../../testsupport/curiousQualificationsTestDataBuilder'
 import { aValidInPrisonCourse } from '../../testsupport/inPrisonCourseTestDataBuilder'
 
 describe('inPrisonCourseMapper', () => {
-  describe('toInPrisonCourse', () => {
-    it('should map a Curious LearnerEducationDTO to an InPrisonCourse', () => {
+  describe('toInPrisonCourseFromLearnerEducationDTO', () => {
+    it('should map a Curious 1 LearnerEducationDTO to an InPrisonCourse', () => {
       // Given
       const apiLearnerEducation = aLearnerEducationDTO()
 
@@ -13,10 +17,10 @@ describe('inPrisonCourseMapper', () => {
         prisonId: 'BXI',
         courseCode: '101448',
         courseName: 'Certificate of Management',
-        courseStartDate: startOfDay(parseISO('2023-10-13')),
+        courseStartDate: startOfDay('2023-10-13'),
         courseStatus: 'COMPLETED',
-        courseCompletionDate: startOfDay(parseISO('2024-01-24')),
-        coursePlannedEndDate: startOfDay(parseISO('2023-12-29')),
+        courseCompletionDate: startOfDay('2024-01-24'),
+        coursePlannedEndDate: startOfDay('2023-12-29'),
         isAccredited: true,
         grade: 'Achieved',
         withdrawalReason: null,
@@ -24,7 +28,34 @@ describe('inPrisonCourseMapper', () => {
       })
 
       // When
-      const actual = toInPrisonCourse(apiLearnerEducation)
+      const actual = toInPrisonCourseFromLearnerEducationDTO(apiLearnerEducation)
+
+      // Then
+      expect(actual).toEqual(expectedInPrisonCourse)
+    })
+  })
+
+  describe('toInPrisonCourseFromLearnerQualificationsDTO', () => {
+    it('should map a Curious 2 LearnerQualificationsDTO to an InPrisonCourse', () => {
+      // Given
+      const apiLearnerQualification = aLearnerQualificationsDTO()
+
+      const expectedInPrisonCourse = aValidInPrisonCourse({
+        prisonId: 'BXI',
+        courseCode: '270828',
+        courseName: 'CIMA Strategic Level',
+        courseStartDate: startOfDay('2024-06-01'),
+        courseStatus: 'IN_PROGRESS',
+        courseCompletionDate: null,
+        coursePlannedEndDate: startOfDay('2024-06-30'),
+        isAccredited: true,
+        grade: null,
+        withdrawalReason: null,
+        source: 'CURIOUS2',
+      })
+
+      // When
+      const actual = toInPrisonCourseFromLearnerQualificationsDTO(apiLearnerQualification)
 
       // Then
       expect(actual).toEqual(expectedInPrisonCourse)
