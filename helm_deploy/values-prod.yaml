@@ -20,6 +20,8 @@ generic-service:
     ACTIVITIES_API_URL: "https://activities-api.prison.service.justice.gov.uk"
     HMPPS_AUTH_TIMEOUT_RESPONSE: 10000
     HMPPS_AUTH_TIMEOUT_DEADLINE: 10000
+    TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE: 10000
+    TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE: 10000
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-support-additional-needs-prod
