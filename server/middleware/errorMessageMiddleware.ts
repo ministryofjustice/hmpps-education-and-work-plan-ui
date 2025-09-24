@@ -16,6 +16,8 @@ export default function errorMessageMiddleware(req: Request, res: Response, next
     if (invalidForm) {
       res.locals.invalidForm = JSON.parse(invalidForm)
     }
+
+    res.locals.pageHasApiErrors = req.flash('pageHasApiErrors')[0] === 'true'
   }
 
   next()

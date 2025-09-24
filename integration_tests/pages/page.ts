@@ -136,10 +136,12 @@ export default abstract class Page {
 
   apiErrorBannerIsNotDisplayed = () => {
     this.apiErrorBanner().should('not.exist')
+    return this
   }
 
   apiErrorBannerIsDisplayed = () => {
     this.apiErrorBanner().should('be.visible')
+    return this
   }
 
   private apiErrorBanner = (): PageElement => cy.get('[data-qa=api-error-banner]')
