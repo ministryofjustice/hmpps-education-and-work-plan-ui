@@ -12,6 +12,7 @@ function getApiClientToken(token: string) {
     .then(response => Boolean(response.body && response.body.active))
     .catch(error => {
       logger.error(getSanitisedError(error), 'Error calling tokenVerificationApi')
+      throw error
     })
 }
 
