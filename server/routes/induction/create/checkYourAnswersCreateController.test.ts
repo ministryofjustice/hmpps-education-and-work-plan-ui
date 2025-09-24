@@ -23,11 +23,13 @@ describe('checkYourAnswersCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
   const inductionDto = aValidInductionDto()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
     params: { prisonNumber },
     user: { username },
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -73,6 +75,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(req.session.pageFlowHistory).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not create Induction given error calling service', async () => {
@@ -81,10 +84,6 @@ describe('checkYourAnswersCreateController', () => {
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(createInductionDto)
 
       inductionService.createInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error creating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitCheckYourAnswers(req, res, next)
@@ -92,8 +91,9 @@ describe('checkYourAnswersCreateController', () => {
       // Then
       expect(mockedCreateOrUpdateInductionDtoMapper).toHaveBeenCalledWith(prisonerSummary.prisonId, inductionDto)
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
     })
   })
 })
