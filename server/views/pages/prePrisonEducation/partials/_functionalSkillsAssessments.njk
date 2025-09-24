@@ -3,6 +3,8 @@
   {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
   {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
   {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+  {% set mostRecentReadingAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'READING') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+  {% set mostRecentEsolAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ESOL') | sort(attribute = 'assessmentDate', reverse = true) | first %}
   {% set mostRecentAssessmentsOfType = [] %}
   {% if mostRecentEnglishAssessment %}
     {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEnglishAssessment), mostRecentAssessmentsOfType) %}
@@ -12,6 +14,12 @@
   {% endif %}
   {% if mostRecentDigitalSkillsAssessment %}
     {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
+  {% endif %}
+  {% if mostRecentReadingAssessment %}
+    {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentReadingAssessment), mostRecentAssessmentsOfType) %}
+  {% endif %}
+  {% if mostRecentEsolAssessment %}
+    {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEsolAssessment), mostRecentAssessmentsOfType) %}
   {% endif %}
 
   {% if mostRecentAssessmentsOfType.length %}
