@@ -1,6 +1,6 @@
 {% if inPrisonCourses.isFulfilled() %}
   {% set curiousInPrisonCourses = inPrisonCourses.value %}
-  {% set completedCourses = inPrisonCourses.coursesByStatus['COMPLETED'] %}
+  {% set completedCourses = curiousInPrisonCourses.coursesByStatus['COMPLETED'] %}
 
   {% if completedCourses.length %}
     <table class="govuk-table govuk-!-margin-bottom-8">
