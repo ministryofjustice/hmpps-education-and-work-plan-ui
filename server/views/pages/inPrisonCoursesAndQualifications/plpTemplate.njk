@@ -53,7 +53,7 @@
             <h2 class="govuk-heading-m">Completed courses</h2>
             {% include './_completedCoursesTable.njk' %}
           {% else %}
-            <p class="govuk-body" data-qa="no-completed-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has not completed any courses.</p>
+            <p class="govuk-body" data-qa="no-completed-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no completed courses.</p>
           {% endif %}
         {% endset -%}
 
@@ -64,7 +64,7 @@
             <h2 class="govuk-heading-m">Current courses</h2>
             {% include './_inProgressCoursesTable.njk' %}
           {% else %}
-            <p class="govuk-body" data-qa="no-in-progress-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} is not currently doing any courses.</p>
+            <p class="govuk-body" data-qa="no-in-progress-courses-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no in progress courses.</p>
           {% endif %}
         {% endset -%}
 
