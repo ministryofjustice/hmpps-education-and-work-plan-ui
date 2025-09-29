@@ -18,6 +18,7 @@ generic-service:
     NEW_DPS_URL: "https://dps.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     ACTIVITIES_API_URL: "https://activities-api.prison.service.justice.gov.uk"
+    SUPPORT_ADDITIONAL_NEEDS_UI_URL: "https://support-for-additional-needs.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_TIMEOUT_RESPONSE: 10000
     HMPPS_AUTH_TIMEOUT_DEADLINE: 10000
     TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE: 10000
