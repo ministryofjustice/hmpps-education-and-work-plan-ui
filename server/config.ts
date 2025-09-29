@@ -182,6 +182,9 @@ export default {
   sessionListUiDefaultPaginationPageSize: Number(
     get('SESSION_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE', 50, requiredInProduction),
   ),
+  serviceUrls: {
+    supportAdditionalNeedsUi: get('SUPPORT_ADDITIONAL_NEEDS_UI_URL', 'http://localhost:3001', requiredInProduction),
+  },
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
   },

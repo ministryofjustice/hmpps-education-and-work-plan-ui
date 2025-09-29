@@ -133,6 +133,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addGlobal('feedbackUrl', config.feedbackUrl)
   njkEnv.addGlobal('prisonerListUrl', '/')
   njkEnv.addGlobal('featureToggles', config.featureToggles)
+  njkEnv.addGlobal('supportAdditionalNeedsUrl', config.serviceUrls.supportAdditionalNeedsUi)
 
   return njkEnv
 }
