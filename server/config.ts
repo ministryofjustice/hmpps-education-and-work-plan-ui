@@ -127,6 +127,15 @@ export default {
       agent: new AgentConfig(Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: true,
     },
+    supportAdditionalNeedsApi: {
+      url: get('SUPPORT_ADDITIONAL_NEEDS_API_URL', 'http://localhost:8083', requiredInProduction),
+      timeout: {
+        response: Number(get('SUPPORT_ADDITIONAL_NEEDS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('SUPPORT_ADDITIONAL_NEEDS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('SUPPORT_ADDITIONAL_NEEDS_API_TIMEOUT_RESPONSE', 5000))),
+      includeInHealthCheck: true,
+    },
     prisonerSearch: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
