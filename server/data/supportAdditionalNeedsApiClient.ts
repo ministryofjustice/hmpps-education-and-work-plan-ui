@@ -9,8 +9,7 @@ import type {
 } from 'supportAdditionalNeedsApiClient'
 import config from '../config'
 import logger from '../../logger'
-import restClientErrorHandler from "./restClientErrorHandler";
-
+import restClientErrorHandler from './restClientErrorHandler'
 
 export default class SupportAdditionalNeedsApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {

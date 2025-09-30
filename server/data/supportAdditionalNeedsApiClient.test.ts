@@ -86,9 +86,7 @@ describe('supportAdditionalNeedsApiClient', () => {
       const expectedError = new Error('Internal Server Error')
 
       // When
-      const actual = await supportAdditionalNeedsApiClient
-        .getSupportStrategies(prisonNumber, username)
-        .catch(e => e)
+      const actual = await supportAdditionalNeedsApiClient.getSupportStrategies(prisonNumber, username).catch(e => e)
 
       // Then
       expect(actual).toEqual(expectedError)

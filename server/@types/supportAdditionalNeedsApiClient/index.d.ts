@@ -10,5 +10,4 @@ declare module 'supportAdditionalNeedsApiClient' {
   export type ChallengeResponse = components['schemas']['ChallengeResponse']
   export type StrengthResponse = components['schemas']['StrengthResponse']
   export type ConditionResponse = components['schemas']['ConditionResponse']
-
 }
