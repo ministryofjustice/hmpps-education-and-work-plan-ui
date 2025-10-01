@@ -22,7 +22,8 @@ const aLddAssessment = (options?: {
     options?.rapidAssessmentDate === null ? null : options?.rapidAssessmentDate || startOfDay('2024-10-20'),
   inDepthAssessmentDate:
     options?.inDepthAssessmentDate === null ? null : options?.inDepthAssessmentDate || startOfDay('2024-10-25'),
-  primaryLddAndHealthNeed: options?.primaryLddAndHealthNeed || 'Visual impairment',
+  primaryLddAndHealthNeed:
+    options?.primaryLddAndHealthNeed === null ? null : options?.primaryLddAndHealthNeed || 'Visual impairment',
   additionalLddAndHealthNeeds: options?.additionalLddAndHealthNeeds || [
     'Hearing impairment',
     'Mental health difficulty',
