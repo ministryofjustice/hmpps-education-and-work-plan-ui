@@ -11,10 +11,6 @@ import AlnAssessmentReferral from '../../../enums/alnAssessmentReferral'
 const toCuriousAlnAndLddAssessments = (allAssessments: AllAssessmentDTO): CuriousAlnAndLddAssessments => ({
   lddAssessments: (allAssessments?.v1 || [])
     .flatMap((assessment: LearnerLatestAssessmentV1DTO) => assessment.ldd || [])
-    .filter(
-      (lddAssessment: LearnerLddInfoExternalV1DTO) =>
-        lddAssessment.lddPrimaryName && (lddAssessment.rapidAssessmentDate || lddAssessment.inDepthAssessmentDate),
-    )
     .map(toLddAssessment),
   alnAssessments: allAssessments?.v2?.assessments?.aln?.map(toAlnAssessment) || [],
 })

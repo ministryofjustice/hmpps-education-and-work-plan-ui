@@ -81,4 +81,43 @@ describe('curiousAlnAndLddAssessmentsMapper', () => {
     // Then
     expect(actual).toEqual(expected)
   })
+
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessments have no dates', () => {
+    // Given
+    const allAssessments = anAllAssessmentDTO({
+      v1Assessments: [
+        aLearnerLatestAssessmentV1DTO({
+          lddAssessments: [
+            aLearnerLddInfoExternalV1DTO({
+              prisonId: 'MDI',
+              lddPrimaryName: 'Visual impairment',
+              lddSecondaryNames: null,
+              inDepthAssessmentDate: null,
+              rapidAssessmentDate: null,
+            }),
+          ],
+        }),
+      ],
+      v2Assessments: null,
+    })
+
+    const expected = validCuriousAlnAndLddAssessments({
+      lddAssessments: [
+        aLddAssessment({
+          prisonId: 'MDI',
+          rapidAssessmentDate: null,
+          inDepthAssessmentDate: null,
+          primaryLddAndHealthNeed: 'Visual impairment',
+          additionalLddAndHealthNeeds: [],
+        }),
+      ],
+      alnAssessments: [],
+    })
+
+    // When
+    const actual = toCuriousAlnAndLddAssessments(allAssessments)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
 })
