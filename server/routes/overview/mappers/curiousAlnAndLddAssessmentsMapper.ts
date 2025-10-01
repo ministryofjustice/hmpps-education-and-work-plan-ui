@@ -11,6 +11,14 @@ import AlnAssessmentReferral from '../../../enums/alnAssessmentReferral'
 const toCuriousAlnAndLddAssessments = (allAssessments: AllAssessmentDTO): CuriousAlnAndLddAssessments => ({
   lddAssessments: (allAssessments?.v1 || [])
     .flatMap((assessment: LearnerLatestAssessmentV1DTO) => assessment.ldd || [])
+    .filter(
+      (lddAssessment: LearnerLddInfoExternalV1DTO) =>
+        // At least one of the 4 fields needs to have a value for it to be considered a valid LDD record and for us to map it
+        lddAssessment.lddPrimaryName?.length > 0 ||
+        (lddAssessment.lddSecondaryNames || []).length > 0 ||
+        lddAssessment.rapidAssessmentDate != null ||
+        lddAssessment.inDepthAssessmentDate != null,
+    )
     .map(toLddAssessment),
   alnAssessments: allAssessments?.v2?.assessments?.aln?.map(toAlnAssessment) || [],
 })

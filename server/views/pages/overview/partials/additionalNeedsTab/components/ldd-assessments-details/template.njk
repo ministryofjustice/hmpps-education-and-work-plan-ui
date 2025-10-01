@@ -42,7 +42,7 @@
               Primary area of need identified
             </dt>
             <dd class="govuk-summary-list__value" data-qa="primary-ldd-need">
-              {{ lddAssessment.primaryLddAndHealthNeed | default('Not recorded in Curious') }}
+              {{ lddAssessment.primaryLddAndHealthNeed | default('Not recorded in Curious', true) }}
             </dd>
           </div>
           <div class="govuk-summary-list__row">

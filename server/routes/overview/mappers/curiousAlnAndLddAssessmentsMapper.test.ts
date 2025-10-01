@@ -82,7 +82,7 @@ describe('curiousAlnAndLddAssessmentsMapper', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessments have no dates', () => {
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessment only has a primary name', () => {
     // Given
     const allAssessments = anAllAssessmentDTO({
       v1Assessments: [
@@ -111,6 +111,154 @@ describe('curiousAlnAndLddAssessmentsMapper', () => {
           additionalLddAndHealthNeeds: [],
         }),
       ],
+      alnAssessments: [],
+    })
+
+    // When
+    const actual = toCuriousAlnAndLddAssessments(allAssessments)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessment only has secondary names', () => {
+    // Given
+    const allAssessments = anAllAssessmentDTO({
+      v1Assessments: [
+        aLearnerLatestAssessmentV1DTO({
+          lddAssessments: [
+            aLearnerLddInfoExternalV1DTO({
+              prisonId: 'MDI',
+              lddPrimaryName: null,
+              lddSecondaryNames: ['Visual impairment'],
+              inDepthAssessmentDate: null,
+              rapidAssessmentDate: null,
+            }),
+          ],
+        }),
+      ],
+      v2Assessments: null,
+    })
+
+    const expected = validCuriousAlnAndLddAssessments({
+      lddAssessments: [
+        aLddAssessment({
+          prisonId: 'MDI',
+          rapidAssessmentDate: null,
+          inDepthAssessmentDate: null,
+          primaryLddAndHealthNeed: null,
+          additionalLddAndHealthNeeds: ['Visual impairment'],
+        }),
+      ],
+      alnAssessments: [],
+    })
+
+    // When
+    const actual = toCuriousAlnAndLddAssessments(allAssessments)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessment only has an indepth assessment date', () => {
+    // Given
+    const allAssessments = anAllAssessmentDTO({
+      v1Assessments: [
+        aLearnerLatestAssessmentV1DTO({
+          lddAssessments: [
+            aLearnerLddInfoExternalV1DTO({
+              prisonId: 'MDI',
+              lddPrimaryName: null,
+              lddSecondaryNames: null,
+              inDepthAssessmentDate: '2023-10-01',
+              rapidAssessmentDate: null,
+            }),
+          ],
+        }),
+      ],
+      v2Assessments: null,
+    })
+
+    const expected = validCuriousAlnAndLddAssessments({
+      lddAssessments: [
+        aLddAssessment({
+          prisonId: 'MDI',
+          rapidAssessmentDate: null,
+          inDepthAssessmentDate: startOfDay('2023-10-01'),
+          primaryLddAndHealthNeed: null,
+          additionalLddAndHealthNeeds: [],
+        }),
+      ],
+      alnAssessments: [],
+    })
+
+    // When
+    const actual = toCuriousAlnAndLddAssessments(allAssessments)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessment only has a rapid assessment date', () => {
+    // Given
+    const allAssessments = anAllAssessmentDTO({
+      v1Assessments: [
+        aLearnerLatestAssessmentV1DTO({
+          lddAssessments: [
+            aLearnerLddInfoExternalV1DTO({
+              prisonId: 'MDI',
+              lddPrimaryName: null,
+              lddSecondaryNames: null,
+              inDepthAssessmentDate: null,
+              rapidAssessmentDate: '2023-10-01',
+            }),
+          ],
+        }),
+      ],
+      v2Assessments: null,
+    })
+
+    const expected = validCuriousAlnAndLddAssessments({
+      lddAssessments: [
+        aLddAssessment({
+          prisonId: 'MDI',
+          rapidAssessmentDate: startOfDay('2023-10-01'),
+          inDepthAssessmentDate: null,
+          primaryLddAndHealthNeed: null,
+          additionalLddAndHealthNeeds: [],
+        }),
+      ],
+      alnAssessments: [],
+    })
+
+    // When
+    const actual = toCuriousAlnAndLddAssessments(allAssessments)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should map to CuriousAlnAndLddAssessments given v1 LDD assessment has no populated fields', () => {
+    // Given
+    const allAssessments = anAllAssessmentDTO({
+      v1Assessments: [
+        aLearnerLatestAssessmentV1DTO({
+          lddAssessments: [
+            aLearnerLddInfoExternalV1DTO({
+              prisonId: 'MDI',
+              lddPrimaryName: null,
+              lddSecondaryNames: null,
+              inDepthAssessmentDate: null,
+              rapidAssessmentDate: null,
+            }),
+          ],
+        }),
+      ],
+      v2Assessments: null,
+    })
+
+    const expected = validCuriousAlnAndLddAssessments({
+      lddAssessments: [],
       alnAssessments: [],
     })
 
