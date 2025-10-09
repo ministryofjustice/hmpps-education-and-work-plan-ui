@@ -24,6 +24,7 @@ describe('skillsUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -31,6 +32,7 @@ describe('skillsUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/skills`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -135,6 +137,7 @@ describe('skillsUpdateController', () => {
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -163,10 +166,6 @@ describe('skillsUpdateController', () => {
       ]
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitSkillsForm(req, res, next)
@@ -178,8 +177,9 @@ describe('skillsUpdateController', () => {
       expect(updatedInduction.personalSkillsAndInterests.skills).toEqual(expectedUpdatedSkills)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('skills')
     })
   })
 })

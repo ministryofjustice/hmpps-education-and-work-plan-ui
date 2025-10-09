@@ -8,6 +8,7 @@ import logger from '../../../../logger'
 import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
+import { Result } from '../../../utils/result/result'
 
 /**
  * Controller for the Update of the Previous Work Experience Detail screen of the Induction.
@@ -68,16 +69,23 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
-    try {
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-      req.session.previousWorkExperienceDetailForm = undefined
-      req.journeyData.inductionDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-    } catch (e) {
-      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect(
+        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/${typeOfWorkExperience}`,
+      )
     }
+
+    req.session.previousWorkExperienceDetailForm = undefined
+    req.journeyData.inductionDto = undefined
+    return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

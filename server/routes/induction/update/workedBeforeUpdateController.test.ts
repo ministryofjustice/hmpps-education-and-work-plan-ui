@@ -26,6 +26,7 @@ describe('workedBeforeUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -33,6 +34,7 @@ describe('workedBeforeUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/has-worked-before`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -185,6 +187,7 @@ describe('workedBeforeUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should update Induction and call API and redirect to work and interests page if answering NOT_RELEVANT', async () => {
@@ -216,6 +219,7 @@ describe('workedBeforeUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -233,10 +237,6 @@ describe('workedBeforeUpdateController', () => {
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitWorkedBeforeForm(req, res, next)
@@ -248,9 +248,10 @@ describe('workedBeforeUpdateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.workedBeforeForm).toEqual(workedBeforeForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('has-worked-before')
     })
   })
 })

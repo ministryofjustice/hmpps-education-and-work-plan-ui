@@ -25,6 +25,7 @@ describe('additionalTrainingUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -32,6 +33,7 @@ describe('additionalTrainingUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/additional-training`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -166,6 +168,7 @@ describe('additionalTrainingUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -187,10 +190,6 @@ describe('additionalTrainingUpdateController', () => {
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitAdditionalTrainingForm(req, res, next)
@@ -203,7 +202,6 @@ describe('additionalTrainingUpdateController', () => {
       expect(updatedInduction.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
       const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual([
@@ -211,6 +209,8 @@ describe('additionalTrainingUpdateController', () => {
         AdditionalTrainingValue.OTHER,
       ])
       expect(updatedInductionDto.previousTraining.trainingTypeOther).toEqual('Italian cookery for IT professionals')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('additional-training')
     })
   })
 })

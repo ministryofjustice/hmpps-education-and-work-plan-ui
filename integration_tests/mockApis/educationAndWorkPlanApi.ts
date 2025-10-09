@@ -812,6 +812,25 @@ const stubUpdateInduction500Error = (prisonNumber = 'G6115VJ'): SuperAgentReques
     },
   })
 
+const stubUpdateInduction400Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'PUT',
+      urlPattern: `/inductions/${prisonNumber}`,
+    },
+    response: {
+      status: 400,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 400,
+        errorCode: null,
+        userMessage: 'Bad request',
+        developerMessage: 'Bad request',
+        moreInfo: null,
+      },
+    },
+  })
+
 const stubCreateInduction = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
@@ -1416,6 +1435,7 @@ export default {
 
   stubUpdateInduction,
   stubUpdateInduction500Error,
+  stubUpdateInduction400Error,
   stubCreateInduction,
   stubCreateInduction500Error,
   stubCreateInduction400Error,

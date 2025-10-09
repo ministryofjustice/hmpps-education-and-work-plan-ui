@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
@@ -11,6 +10,7 @@ import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
+import { Result } from '../../../utils/result/result'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -60,19 +60,21 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
           'Previous Work Experiences changes are only removed types so Induction can be updated without asking for work experience details',
         )
 
-        try {
-          const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
-          await this.inductionService.updateInduction(
-            prisonerSummary.prisonNumber,
-            updateInductionDto,
-            req.user.username,
-          )
-          req.session.previousWorkExperienceTypesForm = undefined
-          req.journeyData.inductionDto = undefined
-        } catch (e) {
-          logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-          return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+        const updateInductionDto = toCreateOrUpdateInductionDto(prisonerSummary.prisonId, updatedInduction)
+
+        const { apiErrorCallback } = res.locals
+        const apiResult = await Result.wrap(
+          this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+          apiErrorCallback,
+        )
+        if (!apiResult.isFulfilled()) {
+          apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+          req.flash('pageHasApiErrors', 'true')
+          return res.redirect('previous-work-experience')
         }
+
+        req.session.previousWorkExperienceTypesForm = undefined
+        req.journeyData.inductionDto = undefined
       } else {
         logger.debug('No changes to Previous Work Experiences were submitted')
       }

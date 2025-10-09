@@ -94,6 +94,7 @@ describe('checkYourAnswersCreateController', () => {
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
       expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
     })
   })
 })

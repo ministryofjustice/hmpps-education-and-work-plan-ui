@@ -25,6 +25,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -32,6 +33,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/hoping-to-work-on-release`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -123,6 +125,7 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.journeyData.inductionDto).toBeUndefined()
+        expect(flash).not.toHaveBeenCalled()
       },
     )
 
@@ -162,10 +165,6 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitHopingToWorkOnReleaseForm(req, res, next)
@@ -177,9 +176,10 @@ describe('hopingToWorkOnReleaseUpdateController', () => {
       expect(updatedInduction.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.workOnRelease.hopingToWork).toEqual(HopingToGetWorkValue.NOT_SURE)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('hoping-to-work-on-release')
     })
 
     it.each([HopingToGetWorkValue.YES, HopingToGetWorkValue.NO, HopingToGetWorkValue.NOT_SURE])(

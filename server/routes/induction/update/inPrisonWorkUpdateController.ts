@@ -1,10 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import createError from 'http-errors'
 import InPrisonWorkController from '../common/inPrisonWorkController'
 import validateInPrisonWorkForm from '../../validators/induction/inPrisonWorkFormValidator'
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
+import { Result } from '../../../utils/result/result'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
@@ -37,16 +37,21 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
     req.journeyData.inductionDto = updatedInduction
 
-    try {
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-      req.session.inPrisonWorkForm = undefined
-      req.journeyData.inductionDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-    } catch (e) {
-      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('in-prison-work')
     }
+
+    req.session.inPrisonWorkForm = undefined
+    req.journeyData.inductionDto = undefined
+    return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

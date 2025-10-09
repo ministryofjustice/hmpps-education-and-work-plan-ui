@@ -28,6 +28,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {} as SessionData,
     journeyData: {} as Express.JourneyData,
@@ -35,6 +36,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId } as Record<string, string>,
     path: '',
+    flash,
   }
   const res = {
     redirect: jest.fn(),
@@ -291,6 +293,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
         expect(req.journeyData.inductionDto).toBeUndefined()
+        expect(flash).not.toHaveBeenCalled()
       })
 
       it('should not update Induction given error calling service', async () => {
@@ -328,10 +331,6 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         ]
 
         inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-        const expectedError = createError(
-          500,
-          `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-        )
 
         // When
         await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
@@ -345,9 +344,12 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         )
 
         expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-        expect(next).toHaveBeenCalledWith(expectedError)
         expect(req.session.previousWorkExperienceDetailForm).toEqual(previousWorkExperienceDetailForm)
         expect(req.journeyData.inductionDto).toEqual(inductionDto)
+        expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+        expect(res.redirect).toHaveBeenCalledWith(
+          `/prisoners/A1234BC/induction/${journeyId}/previous-work-experience/construction`,
+        )
       })
     })
 
@@ -410,6 +412,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
         expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
         expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
         expect(req.journeyData.inductionDto).toBeUndefined()
+        expect(flash).not.toHaveBeenCalled()
       })
 
       it('should update induction in session but not call API given a PageFlowQueue that is not on the last page', async () => {
