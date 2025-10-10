@@ -1,11 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import createError from 'http-errors'
 import WorkInterestTypesController from '../common/workInterestTypesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { Result } from '../../../utils/result/result'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Types part of an Induction.
@@ -53,16 +53,21 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     }
 
     // Else we can simply call the API to update the Induction and return to Work & Interests tab
-    try {
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-      req.session.workInterestTypesForm = undefined
-      req.journeyData.inductionDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-    } catch (e) {
-      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('work-interest-types')
     }
+
+    req.session.workInterestTypesForm = undefined
+    req.journeyData.inductionDto = undefined
+    return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

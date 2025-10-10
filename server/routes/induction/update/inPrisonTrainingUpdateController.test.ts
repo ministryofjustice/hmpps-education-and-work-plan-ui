@@ -25,6 +25,7 @@ describe('inPrisonTrainingUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -32,6 +33,7 @@ describe('inPrisonTrainingUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/in-prison-training`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -174,6 +176,7 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.session.inPrisonTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -203,10 +206,6 @@ describe('inPrisonTrainingUpdateController', () => {
       ]
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitInPrisonTrainingForm(req, res, next)
@@ -218,9 +217,10 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedUpdatedInPrisonTraining)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inPrisonTrainingForm).toEqual(inPrisonTrainingForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('in-prison-training')
     })
   })
 })

@@ -1,5 +1,4 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import createError from 'http-errors'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
 import AffectAbilityToWorkController from '../common/affectAbilityToWorkController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -7,6 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
+import { Result } from '../../../utils/result/result'
 
 /**
  * Controller for the Update of the Factors Affecting a Prisoner's Ability To Work screen of the Induction.
@@ -39,16 +39,21 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
 
-    try {
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
 
-      req.session.affectAbilityToWorkForm = undefined
-      req.journeyData.inductionDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
-    } catch (e) {
-      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('affect-ability-to-work')
     }
+
+    req.session.affectAbilityToWorkForm = undefined
+    req.journeyData.inductionDto = undefined
+    return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

@@ -25,6 +25,7 @@ describe('inPrisonWorkUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -32,6 +33,7 @@ describe('inPrisonWorkUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/in-prison-work`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -183,6 +185,7 @@ describe('inPrisonWorkUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -212,10 +215,6 @@ describe('inPrisonWorkUpdateController', () => {
       ]
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitInPrisonWorkForm(
@@ -231,13 +230,14 @@ describe('inPrisonWorkUpdateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
       const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.inPrisonInterests.inPrisonWorkInterests).toEqual([
         { workType: InPrisonWorkValue.COMPUTERS_OR_DESK_BASED, workTypeOther: undefined },
         { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gambling' },
       ])
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('in-prison-work')
     })
   })
 })

@@ -27,6 +27,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -34,6 +35,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -200,6 +202,7 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -228,10 +231,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       ]
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitPreviousWorkExperienceTypesForm(req, res, next)
@@ -243,9 +242,10 @@ describe('previousWorkExperienceTypesUpdateController', () => {
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedPreviousWorkExperiences)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.previousWorkExperienceTypesForm).toEqual(previousWorkExperienceTypesForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('previous-work-experience')
     })
 
     it('should build a page flow queue and redirect to the next page given new Previous Work Experience Types are submitted', async () => {

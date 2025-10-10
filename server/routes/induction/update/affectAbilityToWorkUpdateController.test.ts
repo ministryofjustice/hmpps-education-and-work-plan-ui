@@ -25,6 +25,7 @@ describe('affectAbilityToWorkUpdateController', () => {
   const username = 'a-dps-user'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -32,6 +33,7 @@ describe('affectAbilityToWorkUpdateController', () => {
     user: { username },
     params: { prisonNumber, journeyId },
     path: '',
+    flash,
   } as undefined as Request
   const res = {
     redirect: jest.fn(),
@@ -170,6 +172,7 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
       expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should not update Induction given error calling service', async () => {
@@ -191,10 +194,6 @@ describe('affectAbilityToWorkUpdateController', () => {
       const expectedUpdatedAbilityToWorkOther = 'Variable mental health'
 
       inductionService.updateInduction.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Induction for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
 
       // When
       await controller.submitAffectAbilityToWorkForm(req, res, next)
@@ -207,9 +206,10 @@ describe('affectAbilityToWorkUpdateController', () => {
       expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual(expectedUpdatedAbilityToWorkOther)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.session.affectAbilityToWorkForm).toEqual(affectAbilityToWorkForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('affect-ability-to-work')
     })
   })
 })

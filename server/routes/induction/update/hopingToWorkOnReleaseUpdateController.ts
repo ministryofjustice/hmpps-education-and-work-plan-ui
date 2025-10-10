@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseController'
 import { InductionService } from '../../../services'
@@ -6,6 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { Result } from '../../../utils/result/result'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -40,12 +40,16 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     }
 
     // Else we can simply call the API to update the Induction and return to Work & Interests tab
-    try {
-      const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
-      await this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username)
-    } catch (e) {
-      logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Induction for prisoner ${prisonNumber}. Error: ${e}`))
+    const updateInductionDto = toCreateOrUpdateInductionDto(prisonId, updatedInduction)
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.inductionService.updateInduction(prisonNumber, updateInductionDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Induction for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('hoping-to-work-on-release')
     }
 
     req.journeyData.inductionDto = undefined
