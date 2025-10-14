@@ -13,6 +13,7 @@ import prisonRegisterApi from './integration_tests/mockApis/prisonRegisterApi'
 import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData/prisonerSearchSummaryMockDataGenerator'
 import sessionResponseMockDataGenerator from './integration_tests/mockData/sessionResponseMockDataGenerator'
 import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
+import supportAdditionalNeedsApi from './integration_tests/mockApis/supportAdditionalNeedsApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -57,6 +58,7 @@ export default defineConfig({
         ...ciagInducationApi,
         ...prisonerListApi,
         ...prisonRegisterApi,
+        ...supportAdditionalNeedsApi,
         ...prisonerSearchSummaryMockDataGenerator,
         ...sessionResponseMockDataGenerator,
         ...ciagInductionUi,

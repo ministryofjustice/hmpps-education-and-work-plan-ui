@@ -3,6 +3,7 @@ declare module 'supportAdditionalNeedsApiClient' {
 
   export type StrengthListResponse = components['schemas']['StrengthListResponse']
   export type SupportStrategyListResponse = components['schemas']['SupportStrategyListResponse']
+  export type SupportStrategyResponse = components['schemas']['SupportStrategyResponse']
   export type ConditionListResponse = components['schemas']['ConditionListResponse']
   export type ChallengeListResponse = components['schemas']['ChallengeListResponse']
   export type ALNScreeners = components['schemas']['ALNScreeners']
