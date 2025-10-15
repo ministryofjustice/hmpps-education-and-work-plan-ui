@@ -8,7 +8,6 @@ import {
   validCuriousAlnAndLddAssessments,
 } from '../../../../../testsupport/curiousAlnAndLddAssessmentsTestDataBuilder'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
-import fallbackMessageFilter from '../../../../../filters/fallbackMessageFilter'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
 import { Result } from '../../../../../utils/result/result'
 import formatAlnAssessmentReferralScreenValueFilter from '../../../../../filters/formatAlnAssessmentReferralFilter'
@@ -25,7 +24,6 @@ const njkEnv = nunjucks.configure([
 ])
 
 njkEnv //
-  .addFilter('fallbackMessage', fallbackMessageFilter)
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
 

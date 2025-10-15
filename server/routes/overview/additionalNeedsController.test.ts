@@ -3,6 +3,7 @@ import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuil
 import { validCuriousAlnAndLddAssessments } from '../../testsupport/curiousAlnAndLddAssessmentsTestDataBuilder'
 import AdditionalNeedsController from './additionalNeedsController'
 import { Result } from '../../utils/result/result'
+import { aValidConditionsList } from '../../testsupport/conditionDtoTestDataBuilder'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
@@ -13,6 +14,7 @@ describe('additionalNeedsController', () => {
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const curiousAlnAndLddAssessments = Result.fulfilled(validCuriousAlnAndLddAssessments())
+  const conditions = Result.fulfilled(aValidConditionsList())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
@@ -26,6 +28,7 @@ describe('additionalNeedsController', () => {
     locals: {
       prisonerSummary,
       curiousAlnAndLddAssessments,
+      conditions,
       prisonNamesById,
     },
   } as unknown as Response
@@ -45,6 +48,7 @@ describe('additionalNeedsController', () => {
       prisonerSummary,
       prisonNamesById,
       curiousAlnAndLddAssessments,
+      conditions,
     }
 
     // When

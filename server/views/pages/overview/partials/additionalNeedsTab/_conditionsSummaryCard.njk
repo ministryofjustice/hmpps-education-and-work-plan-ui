@@ -7,6 +7,45 @@
     </h2>
   </div>
   <div class="govuk-summary-card__content">
-    <p class="govuk-body">No conditions recorded</p>
+
+    {% if conditions.isFulfilled() %}
+      {% set activeConditions = conditions.value.conditions | filterArrayOnProperty('active', true) | sort(attribute = 'updatedAt', reverse = true) %}
+
+      {% if activeConditions.length %}
+        {% set confirmedDiagnosisConditions = activeConditions | filterArrayOnProperty('source', 'CONFIRMED_DIAGNOSIS') %}
+        {% if confirmedDiagnosisConditions.length %}
+          <section data-qa="confirmed-diagnosis-conditions">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Confirmed diagnosis</h3>
+            <ul class="govuk-list">
+              {% for condition in confirmedDiagnosisConditions %}
+                <li>{{ condition.conditionTypeCode | formatConditionTypeScreenValue | default(condition.conditionTypeCode, true) }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+        {% endif %}
+
+        {% set selfDeclaredConditions = activeConditions | filterArrayOnProperty('source', 'SELF_DECLARED') %}
+        {% if selfDeclaredConditions.length %}
+          <section data-qa="self-declared-conditions">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Self-declared</h3>
+            <ul class="govuk-list">
+              {% for condition in selfDeclaredConditions %}
+                <li>{{ condition.conditionTypeCode | formatConditionTypeScreenValue | default(condition.conditionTypeCode, true) }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+        {% endif %}
+
+      {% else %}
+        <p class="govuk-body" data-qa="no-conditions-message">No conditions recorded</p>
+      {% endif %}
+
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="san-conditions-unavailable-message">We cannot show these details right now</h3>
+      <p class="govuk-body">
+        Reload the page or try again later. Other parts of this service may still be available.
+      </p>
+    {% endif %}
+
   </div>
 </div>

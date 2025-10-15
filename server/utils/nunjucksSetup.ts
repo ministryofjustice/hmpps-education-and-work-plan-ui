@@ -19,7 +19,6 @@ import formatEducationLevelFilter from '../filters/formatEducationLevelFilter'
 import formatAdditionalTrainingFilter from '../filters/formatAdditionalTrainingFilter'
 import formatSkillFilter from '../filters/formatSkillFilter'
 import formatPersonalInterestFilter from '../filters/formatPersonalInterestFilter'
-import fallbackMessageFilter from '../filters/fallbackMessageFilter'
 import formatIsAccreditedFilter from '../filters/formatIsAccreditedFilter'
 import formatInPrisonWorkInterestFilter from '../filters/formatInPrisonWorkInterestFilter'
 import formatInPrisonTrainingFilter from '../filters/formatInPrisonTrainingFilter'
@@ -37,6 +36,7 @@ import formatInductionExemptionReasonFilter from '../filters/formatInductionExem
 import assetMapFilter from '../filters/assetMapFilter'
 import filterArrayOnPropertyFilter from '../filters/filterArrayOnPropertyFilter'
 import formatAlnAssessmentReferralScreenValueFilter from '../filters/formatAlnAssessmentReferralFilter'
+import formatConditionTypeScreenValueFilter from '../filters/formatConditionTypeFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -110,7 +110,6 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatQualificationLevelHint', formatQualificationLevelHintFilter)
   njkEnv.addFilter('formatCuriousCourseStatus', formatCuriousCourseStatusFilter)
   njkEnv.addFilter('formatHasWorkedBefore', formatHasWorkedBeforeFilter)
-  njkEnv.addFilter('fallbackMessage', fallbackMessageFilter)
   njkEnv.addFilter('sortedAlphabeticallyWithOtherLast', sortedAlphabeticallyWithOtherLastFilter)
   njkEnv.addFilter('objectsSortedAlphabeticallyWithOtherLastBy', objectsSortedAlphabeticallyWithOtherLastByFilter)
   njkEnv.addFilter(
@@ -126,6 +125,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
   njkEnv.addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
   njkEnv.addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
+  njkEnv.addFilter('formatConditionTypeScreenValue', formatConditionTypeScreenValueFilter)
 
   njkEnv.addFilter('addMonths', addMonths)
 
