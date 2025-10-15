@@ -55,7 +55,6 @@ export const dataAccess = () => {
   return {
     applicationInfo,
     hmppsAuthClient,
-    hmppsAuthenticationClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     manageUsersApiClient: new ManageUsersApiClient(),
     prisonerSearchStore: config.redis.enabled
