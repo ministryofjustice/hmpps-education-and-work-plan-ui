@@ -30,7 +30,6 @@ export const services = () => {
     prisonRegisterStore,
     prisonRegisterClient,
     journeyDataStore,
-    hmppsAuthenticationClient,
     supportAdditionalNeedsApiClient,
   } = dataAccess()
 
@@ -59,7 +58,6 @@ export const services = () => {
 
   return {
     applicationInfo,
-    hmppsAuthenticationClient,
     auditService,
     userService,
     prisonerSearchService,

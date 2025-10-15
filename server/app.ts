@@ -54,7 +54,6 @@ export default function createApp(services: Services): express.Application {
   app.get(
     /(.*)/,
     getFrontendComponents({
-      authenticationClient: services.hmppsAuthenticationClient,
       componentApiConfig: config.apis.componentApi,
       dpsUrl: config.newDpsUrl,
       logger,
