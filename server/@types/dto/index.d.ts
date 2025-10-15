@@ -6,6 +6,23 @@ declare module 'dto' {
   import ReviewPlanExemptionReasonValue from '../../enums/reviewPlanExemptionReasonValue'
   import GoalStatusValue from '../../enums/goalStatusValue'
   import StepStatusValue from '../../enums/stepStatusValue'
+  import ConditionSource from '../../enums/conditionSource'
+  import ConditionType from '../../enums/conditionType'
+
+  /**
+   * Interface defining common reference and audit related properties that DTO types can inherit through extension.
+   */
+  interface ReferencedAndAuditable {
+    reference: string
+    createdBy: string
+    createdByDisplayName: string
+    createdAt: Date
+    createdAtPrison: string
+    updatedBy: string
+    updatedByDisplayName: string
+    updatedAt: Date
+    updatedAtPrison: string
+  }
 
   export interface CreateActionPlanDto {
     prisonNumber: string
@@ -107,10 +124,24 @@ declare module 'dto' {
     exemptionReason: ReviewPlanExemptionReasonValue
     exemptionReasonDetails?: string
   }
+
+  export interface ConditionsList {
+    prisonNumber: string
+    conditions: Array<ConditionDto>
+  }
+
+  export interface ConditionDto extends ReferencedAndAuditable {
+    prisonId?: string
+    conditionTypeCode: ConditionType
+    conditionName?: string
+    conditionDetails: string
+    source: ConditionSource
+    active?: boolean
+  }
 }
 
 declare module 'inductionDto' {
-  import type { AchievedQualificationDto } from 'dto'
+  import type { AchievedQualificationDto, ReferencedAndAuditable } from 'dto'
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
   import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
@@ -265,19 +296,4 @@ declare module 'inductionDto' {
     exemptionReason: InductionExemptionReasonValue
     exemptionReasonDetails?: string
   }
-}
-
-/**
- * Interface defining common reference and audit related properties that DTO types can inherit through extension.
- */
-interface ReferencedAndAuditable {
-  reference: string
-  createdBy: string
-  createdByDisplayName: string
-  createdAt: Date
-  createdAtPrison: string
-  updatedBy: string
-  updatedByDisplayName: string
-  updatedAt: Date
-  updatedAtPrison: string
 }

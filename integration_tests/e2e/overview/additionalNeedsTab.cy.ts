@@ -15,6 +15,7 @@ context('Prisoner Overview page - Additional Needs tab', () => {
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('stubGetAllPrisons')
+    cy.task('stubGetConditions')
   })
 
   it('should display Additional Needs data', () => {
