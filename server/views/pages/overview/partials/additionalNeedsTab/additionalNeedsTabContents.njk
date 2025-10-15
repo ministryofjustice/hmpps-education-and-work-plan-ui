@@ -1,92 +1,29 @@
-{% from "./components/aln-assessments-details/macro.njk" import alnAssessmentsDetails %}
-{% from "./components/ldd-assessments-details/macro.njk" import lddAssessmentsDetails %}
-{% from "govuk/components/details/macro.njk" import govukDetails %}
-
 {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
+
+{% if featureToggles.displaySanData %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      {% include './_challengesSummaryCard.njk' %}
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      {% include './_strengthsSummaryCard.njk' %}
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      {% include './_conditionsSummaryCard.njk' %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include './_supportStrategiesSummaryCard.njk' %}
+    </div>
+  </div>
+{% endif %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-
-    <div class="govuk-summary-card" data-qa="screening-and-assessments-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Screening and assessment results from Curious</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-
-        {% if curiousAlnAndLddAssessments.isFulfilled() %}
-          {% set curiousAlnAndLddAssessments = curiousAlnAndLddAssessments.value %}
-          {# The LDD Assessments are the old historic assessments that a prisoner may have from Curious 1 #}
-          {% set lddAssessments = curiousAlnAndLddAssessments.lddAssessments %}
-          {# ALN Assessments are from Curious 2 #}
-          {% set alnAssessments = curiousAlnAndLddAssessments.alnAssessments %}
-
-          {% if lddAssessments.length == 0 and alnAssessments.length == 0 %}
-            <p class="govuk-body" data-qa="no-assessments-message">
-              {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no screener and assessment results recorded in Curious.
-            </p>
-          {% else %}
-            <section data-qa="assessments">
-              <p class="govuk-hint">This is information from the education team entered in Curious and is not a medical diagnosis.</p>
-
-              {% if alnAssessments.length == 0 %}
-                {# If there are no ALN assessments (ie. there are only LDD assessments) render the LDD assessments #}
-                {{ lddAssessmentsDetails({
-                  lddAssessments: lddAssessments,
-                  prisonerSummary: prisonerSummary,
-                  prisonNamesById: prisonNamesById,
-                  classes: "govuk-!-margin-top-4",
-                  attributes: {
-                    "data-qa": "ldd-assessments"
-                  }
-                }) }}
-              {% else %}
-                {# Render the ALN assessments #}
-                {{ alnAssessmentsDetails({
-                  alnAssessments: alnAssessments,
-                  prisonerSummary: prisonerSummary,
-                  prisonNamesById: prisonNamesById,
-                  attributes: {
-                    "data-qa": "aln-assessments"
-                  }
-                }) }}
-
-                {% if lddAssessments.length > 0 %}
-                  {# If there are also LDD assessments these should be rendered within a govuk details component #}
-                  {% set lddDetailsContent = lddAssessmentsDetails({
-                    lddAssessments: lddAssessments,
-                    prisonerSummary: prisonerSummary,
-                    prisonNamesById: prisonNamesById,
-                    attributes: {
-                      "data-qa": "ldd-assessments"
-                    }
-                  }) %}
-                  {{ govukDetails({
-                    summaryText: "Historic screener results",
-                    html: lddDetailsContent,
-                    attributes: {
-                      "data-qa": "ldd-assessment-details"
-                    }
-                  }) }}
-                {% endif %}
-              {% endif %}
-            </section>
-          {% endif %}
-
-        {% else %}
-          <h3 class="govuk-heading-s" data-qa="curious-assessments-unavailable-message">We cannot show these details right now</h3>
-          <p class="govuk-body">
-            Reload the page or try again later. Other parts of this service may still be available.
-          </p>
-        {% endif %}
-
-      </div>
-    </div>
-
-    <p class="govuk-body">
-      <a class="govuk-link" href="{{ supportAdditionalNeedsUrl }}/profile/{{ prisonerSummary.prisonNumber }}/overview" target="_blank">
-        View all additional needs details (opens in a new tab)
-      </a>
-    </p>
-
+    {% include './_screeningsAndAssessmentsSummaryCard.njk' %}
   </div>
 </div>

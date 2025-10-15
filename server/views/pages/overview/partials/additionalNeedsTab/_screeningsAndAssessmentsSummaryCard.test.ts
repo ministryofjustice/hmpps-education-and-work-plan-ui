@@ -31,16 +31,15 @@ njkEnv //
 
 const prisonerSummary = aValidPrisonerSummary()
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
-const template = 'additionalNeedsTabContents.njk'
+const template = '_screeningsAndAssessmentsSummaryCard.njk'
 const templateParams = {
-  tab: 'additional-needs',
   prisonerSummary,
-  prisonNamesById: Result.fulfilled(prisonNamesById),
+  prisonNamesById,
   curiousAlnAndLddAssessments: Result.fulfilled(validCuriousAlnAndLddAssessments()),
 }
 
-describe('Additional Needs tab view', () => {
-  it('should render the Additional Needs page given a prisoner only has LDD assessment data recorded', () => {
+describe('Additional Needs tab - Screenings And Assessments Summary Card', () => {
+  it('should render the Screenings And Assessments Summary Card given a prisoner only has LDD assessment data recorded', () => {
     // Given
     const curiousAlnAndLddAssessments = {
       lddAssessments: [
@@ -93,7 +92,7 @@ describe('Additional Needs tab view', () => {
     ])
   })
 
-  it('should render the Additional Needs page given a prisoner only has ALN assessment data recorded', () => {
+  it('should render the Screenings And Assessments Summary Card given a prisoner only has ALN assessment data recorded', () => {
     // Given
     const curiousAlnAndLddAssessments = {
       lddAssessments: [] as Array<LddAssessment>,
@@ -129,7 +128,7 @@ describe('Additional Needs tab view', () => {
     expect(brixtonAssessment.find('[data-qa=assessment-outcome]').text().trim()).toEqual('Additional needs identified')
   })
 
-  it('should render the Additional Needs page given a prisoner has both LDD and ALN assessment data recorded', () => {
+  it('should render the Screenings And Assessments Summary Card given a prisoner has both LDD and ALN assessment data recorded', () => {
     // Given
     const curiousAlnAndLddAssessments = {
       lddAssessments: [
@@ -188,7 +187,7 @@ describe('Additional Needs tab view', () => {
     expect(moorlandAssessmentAdditionalNeeds).toEqual(['Hearing impairment'])
   })
 
-  it('should should render the Additional Needs page given there are no LDD assessments recorded', () => {
+  it('should render the Screenings And Assessments Summary Card given there are no LDD assessments recorded', () => {
     // Given
     const curiousAlnAndLddAssessments: CuriousAlnAndLddAssessments = {
       lddAssessments: [],
@@ -210,7 +209,7 @@ describe('Additional Needs tab view', () => {
     expect($('[data-qa=no-assessments-message]').length).toEqual(1)
   })
 
-  it('should render the Additional Needs page given the Curious service API promise is not resolved', () => {
+  it('should render the Screenings And Assessments Summary Card given the Curious service API promise is not resolved', () => {
     // Given
     const params = {
       ...templateParams,
