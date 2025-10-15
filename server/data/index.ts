@@ -21,6 +21,7 @@ import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
 import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
+import SupportAdditionalNeedsApiClient from './supportAdditionalNeedsApiClient'
 import CuriousClient from './curiousClient'
 import CiagInductionClient from './ciagInductionClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
@@ -71,6 +72,7 @@ export const dataAccess = () => {
     journeyDataStore: config.redis.enabled
       ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
       : new InMemoryJourneyDataStore(),
+    supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthenticationClient),
   }
 }
 
@@ -90,4 +92,5 @@ export {
   type PrisonRegisterStore,
   PrisonRegisterClient,
   type JourneyDataStore,
+  SupportAdditionalNeedsApiClient,
 }

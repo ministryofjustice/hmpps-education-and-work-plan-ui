@@ -24,6 +24,7 @@ generic-service:
     NEW_DPS_URL: 'https://dps-dev.prison.service.justice.gov.uk'
     COMPONENT_API_URL: 'https://frontend-components-dev.hmpps.service.justice.gov.uk'
     ACTIVITIES_API_URL: 'https://activities-api-dev.prison.service.justice.gov.uk'
+    SUPPORT_ADDITIONAL_NEEDS_API_URL: 'https://support-for-additional-needs-api-dev.hmpps.service.justice.gov.uk'
     SUPPORT_ADDITIONAL_NEEDS_UI_URL: "https://support-for-additional-needs-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: 'DEV'
 
