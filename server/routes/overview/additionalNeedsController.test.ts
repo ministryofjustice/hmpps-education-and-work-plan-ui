@@ -4,6 +4,7 @@ import { validCuriousAlnAndLddAssessments } from '../../testsupport/curiousAlnAn
 import AdditionalNeedsController from './additionalNeedsController'
 import { Result } from '../../utils/result/result'
 import { aValidConditionsList } from '../../testsupport/conditionDtoTestDataBuilder'
+import aValidSupportStrategyResponseDto from '../../testsupport/supportStrategyResponseDtoTestDataBuilder'
 
 jest.mock('../../services/curiousService')
 jest.mock('../../services/prisonService')
@@ -15,6 +16,7 @@ describe('additionalNeedsController', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const curiousAlnAndLddAssessments = Result.fulfilled(validCuriousAlnAndLddAssessments())
   const conditions = Result.fulfilled(aValidConditionsList())
+  const supportStrategies = Result.fulfilled([aValidSupportStrategyResponseDto()])
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
@@ -29,6 +31,7 @@ describe('additionalNeedsController', () => {
       prisonerSummary,
       curiousAlnAndLddAssessments,
       conditions,
+      supportStrategies,
       prisonNamesById,
     },
   } as unknown as Response
@@ -43,12 +46,21 @@ describe('additionalNeedsController', () => {
     const expectedTab = 'additional-needs'
     req.params.tab = expectedTab
 
+    res.locals.supportStrategies = Result.fulfilled([aValidSupportStrategyResponseDto()])
+    const expectedGroupedSupportStrategies = {
+      MEMORY: [aValidSupportStrategyResponseDto()],
+    }
+
     const expectedView = {
       tab: expectedTab,
       prisonerSummary,
       prisonNamesById,
       curiousAlnAndLddAssessments,
       conditions,
+      groupedSupportStrategies: expect.objectContaining({
+        status: 'fulfilled',
+        value: expectedGroupedSupportStrategies,
+      }),
     }
 
     // When

@@ -19,6 +19,7 @@ import retrieveInductionSchedule from '../routerRequestHandlers/retrieveInductio
 import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonNamesById'
 import retrieveTimeline from '../routerRequestHandlers/retrieveTimeline'
 import retrieveSupportForAdditionalNeedsConditions from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsConditions'
+import retrieveSupportForAdditionalNeedsSupportStrategies from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsSupportStrategies'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -57,6 +58,7 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/view/additional-needs', [
     retrievePrisonNamesById(prisonService),
     retrieveSupportForAdditionalNeedsConditions(supportAdditionalNeedsService),
+    retrieveSupportForAdditionalNeedsSupportStrategies(supportAdditionalNeedsService),
     retrieveCuriousAlnAndLddAssessments(curiousService),
     asyncMiddleware(additionalNeedsController.getAdditionalNeedsView),
   ])
