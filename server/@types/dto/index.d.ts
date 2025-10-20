@@ -8,6 +8,8 @@ declare module 'dto' {
   import StepStatusValue from '../../enums/stepStatusValue'
   import ConditionSource from '../../enums/conditionSource'
   import ConditionType from '../../enums/conditionType'
+  import SupportStrategyType from '../../enums/supportStrategyType'
+  import SupportStrategyCategory from '../../enums/supportStrategyCategory'
 
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
@@ -137,6 +139,13 @@ declare module 'dto' {
     conditionDetails: string
     source: ConditionSource
     active?: boolean
+  }
+
+  export interface SupportStrategyResponseDto extends ReferencedAndAuditable {
+    supportStrategyTypeCode?: SupportStrategyType
+    supportStrategyDetails?: string
+    supportStrategyCategory?: SupportStrategyCategory
+    active: boolean
   }
 }
 

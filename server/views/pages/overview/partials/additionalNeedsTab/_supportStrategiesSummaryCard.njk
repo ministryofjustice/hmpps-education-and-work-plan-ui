@@ -7,6 +7,33 @@
     </h2>
   </div>
   <div class="govuk-summary-card__content">
-    <p class="govuk-body">No support strategies recorded</p>
+
+    {% if groupedSupportStrategies.isFulfilled() %}
+
+      {% set supportStrategiesByType = groupedSupportStrategies.value %}
+      {% if supportStrategiesByType | length %}
+        <div class="govuk-summary-list" data-qa="support-strategies-summary-list">
+          {% for type, supportStrategies in supportStrategiesByType %}
+            <div class="govuk-summary-list__row" data-qa="support-strategy-summary-list-row">
+              <h3 class="govuk-heading-s govuk-!-margin-top-3"> {{ type | formatSupportStrategyTypeScreenValue | default(type, true) }} </h3>
+              {% for supportStrategy in supportStrategies %}
+                <p class="govuk-body govuk-!-margin-top-3" data-qa="support-strategy-details">
+                  {{ supportStrategy.supportStrategyDetails }}
+                </p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="govuk-body" data-qa="no-support-strategies-recorded-message">
+          No support strategies recorded
+        </p>
+      {% endif %}
+
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="support-strategies-unavailable-message">We cannot show these details right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+    {% endif %}
+
   </div>
 </div>

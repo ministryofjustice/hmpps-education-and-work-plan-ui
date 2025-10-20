@@ -37,6 +37,10 @@ import assetMapFilter from '../filters/assetMapFilter'
 import filterArrayOnPropertyFilter from '../filters/filterArrayOnPropertyFilter'
 import formatAlnAssessmentReferralScreenValueFilter from '../filters/formatAlnAssessmentReferralFilter'
 import formatConditionTypeScreenValueFilter from '../filters/formatConditionTypeFilter'
+import {
+  formatSupportStrategyTypeHintTextFilter,
+  formatSupportStrategyTypeScreenValueFilter,
+} from '../filters/formatSupportStrategyTypeFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -126,6 +130,8 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
   njkEnv.addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
   njkEnv.addFilter('formatConditionTypeScreenValue', formatConditionTypeScreenValueFilter)
+  njkEnv.addFilter('formatSupportStrategyTypeScreenValue', formatSupportStrategyTypeScreenValueFilter)
+  njkEnv.addFilter('formatSupportStrategyTypeHintText', formatSupportStrategyTypeHintTextFilter)
 
   njkEnv.addFilter('addMonths', addMonths)
 
