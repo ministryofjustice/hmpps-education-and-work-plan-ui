@@ -1,10 +1,13 @@
 <div class="govuk-summary-card" data-qa="strengths-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">
-      <a class="govuk-link govuk-!-display-none-print" href="{{ supportAdditionalNeedsUrl }}/profile/{{ prisonerSummary.prisonNumber }}/strengths" target="_blank">
-        Strengths
-      </a>
-    </h2>
+    <h2 class="govuk-summary-card__title">Strengths</h2>
+    <ul class="govuk-summary-card__actions govuk-!-font-weight-regular govuk-!-display-none-print">
+      <li class="govuk-summary-card__action">
+        <a class="govuk-link" href="{{ supportAdditionalNeedsUrl }}/profile/{{ prisonerSummary.prisonNumber }}/strengths" target="_blank" data-qa="view-san-strengths-link">
+          View <span class="govuk-visually-hidden">this person's</span> strengths<span class="govuk-visually-hidden"> (opens in a new tab)</span>
+        </a>
+      </li>
+    </ul>
   </div>
   <div class="govuk-summary-card__content">
     <p class="govuk-body">No strengths recorded</p>
