@@ -1,8 +1,9 @@
-import type { ConditionsList, SupportStrategyResponseDto } from 'dto'
+import type { ConditionsList, StrengthsList, SupportStrategyResponseDto } from 'dto'
 import SupportAdditionalNeedsApiClient from '../data/supportAdditionalNeedsApiClient'
 import logger from '../../logger'
 import { toConditionsList } from '../data/mappers/conditionDtoMapper'
 import { toSupportStrategyResponseDtos } from '../data/mappers/supportStrategyResponseDtoMapper'
+import { toStrengthsList } from '../data/mappers/strengthResponseDtoMapper'
 
 export default class SupportAdditionalNeedsService {
   constructor(private readonly supportAdditionalNeedsApiClient: SupportAdditionalNeedsApiClient) {}
@@ -26,6 +27,16 @@ export default class SupportAdditionalNeedsService {
       return toSupportStrategyResponseDtos(supportStrategyListResponse)
     } catch (e) {
       logger.error(`Error retrieving Support Strategies for [${prisonNumber}]`, e)
+      throw e
+    }
+  }
+
+  async getStrengths(username: string, prisonNumber: string): Promise<StrengthsList> {
+    try {
+      const strengthListResponse = await this.supportAdditionalNeedsApiClient.getStrengths(prisonNumber, username)
+      return toStrengthsList(strengthListResponse, prisonNumber)
+    } catch (e) {
+      logger.error(`Error getting Strengths for [${prisonNumber}]`, e)
       throw e
     }
   }
