@@ -10,6 +10,9 @@ declare module 'dto' {
   import ConditionType from '../../enums/conditionType'
   import SupportStrategyType from '../../enums/supportStrategyType'
   import SupportStrategyCategory from '../../enums/supportStrategyCategory'
+  import StrengthCategory from '../../enums/strengthCategory'
+  import StrengthIdentificationSource from '../../enums/strengthIdentificationSource'
+  import StrengthType from '../../enums/strengthType'
 
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
@@ -146,6 +149,22 @@ declare module 'dto' {
     supportStrategyDetails?: string
     supportStrategyCategory?: SupportStrategyCategory
     active: boolean
+  }
+
+  export interface StrengthsList {
+    prisonNumber: string
+    strengths: Array<StrengthResponseDto>
+  }
+
+  export interface StrengthResponseDto extends ReferencedAndAuditable {
+    strengthTypeCode: StrengthType
+    strengthCategory: StrengthCategory
+    symptoms?: string
+    howIdentified?: Array<StrengthIdentificationSource>
+    howIdentifiedOther?: string
+    active: boolean
+    fromALNScreener: boolean
+    alnScreenerDate?: Date
   }
 }
 
