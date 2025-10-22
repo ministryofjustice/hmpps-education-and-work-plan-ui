@@ -1,5 +1,5 @@
 import { parseISO } from 'date-fns'
-import type { SupportStrategyResponseDto } from 'dto'
+import type { ChallengeResponseDto, SupportStrategyResponseDto } from 'dto'
 import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
 import SupportAdditionalNeedsApiClient from '../data/supportAdditionalNeedsApiClient'
 import { aValidConditionListResponse } from '../testsupport/conditionResponseTestDataBuilder'
@@ -13,6 +13,8 @@ import {
 import aValidSupportStrategyResponseDto from '../testsupport/supportStrategyResponseDtoTestDataBuilder'
 import SupportStrategyType from '../enums/supportStrategyType'
 import SupportStrategyCategory from '../enums/supportStrategyCategory'
+import { aValidChallengeListResponse, aValidChallengeResponse } from '../testsupport/challengeResponseTestDataBuilder'
+import aValidChallengeResponseDto from '../testsupport/challengeResponseDtoTestDataBuilder'
 
 jest.mock('../data/supportAdditionalNeedsApiClient')
 
@@ -249,6 +251,66 @@ describe('supportAdditionalNeedsService', () => {
       // Then
       expect(actual).toEqual(expectedError)
       expect(supportAdditionalNeedsApiClient.getSupportStrategies).toHaveBeenCalledWith(prisonNumber, username)
+    })
+  })
+
+  describe('getChallenges', () => {
+    it('should get challenges', async () => {
+      // Given
+      const challengeListResponse = aValidChallengeListResponse({
+        challengeResponses: [
+          aValidChallengeResponse({
+            alnScreenerDate: null,
+            fromALNScreener: false,
+            symptoms: 'John struggles to read text on white background',
+            howIdentifiedOther: 'John was seen to have other challenges',
+          }),
+        ],
+      })
+      supportAdditionalNeedsApiClient.getChallenges.mockResolvedValue(challengeListResponse)
+
+      const expectedChallenges = [
+        aValidChallengeResponseDto({
+          alnScreenerDate: null,
+          fromALNScreener: false,
+          symptoms: 'John struggles to read text on white background',
+          howIdentifiedOther: 'John was seen to have other challenges',
+        }),
+      ]
+
+      // When
+      const actual = await supportAdditionalNeedsService.getChallenges(username, prisonNumber)
+
+      // Then
+      expect(actual).toEqual(expectedChallenges)
+      expect(supportAdditionalNeedsApiClient.getChallenges).toHaveBeenCalledWith(prisonNumber, username)
+    })
+
+    it('should return empty Challenges array given API returns null', async () => {
+      // Given
+      supportAdditionalNeedsApiClient.getChallenges.mockResolvedValue(null)
+
+      const expectedChallenges = [] as Array<ChallengeResponseDto>
+
+      // When
+      const actual = await supportAdditionalNeedsService.getChallenges(username, prisonNumber)
+
+      // Then
+      expect(actual).toEqual(expectedChallenges)
+      expect(supportAdditionalNeedsApiClient.getChallenges).toHaveBeenCalledWith(prisonNumber, username)
+    })
+
+    it('should rethrow error given API client throws error', async () => {
+      // Given
+      const expectedError = new Error('Internal Server Error')
+      supportAdditionalNeedsApiClient.getChallenges.mockRejectedValue(expectedError)
+
+      // When
+      const actual = await supportAdditionalNeedsService.getChallenges(username, prisonNumber).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(supportAdditionalNeedsApiClient.getChallenges).toHaveBeenCalledWith(prisonNumber, username)
     })
   })
 })
