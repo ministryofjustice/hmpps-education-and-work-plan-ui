@@ -9,7 +9,26 @@
       </li>
     </ul>
   </div>
+
   <div class="govuk-summary-card__content">
-    <p class="govuk-body">No strengths recorded</p>
+    {% if strengthCategories.isFulfilled() %}
+      {% set strengthCategories = strengthCategories.value %}
+
+      {% if strengthCategories | length %}
+        <ul class="govuk-list">
+          {% for category in strengthCategories %}
+            <li data-qa="strength_{{ category }}">{{ category | formatStrengthCategoryScreenValue | default(category, true) }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="govuk-body" data-qa="no-strengths-recorded-message">
+          No strengths recorded
+        </p>
+      {% endif %}
+
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="san-strengths-unavailable-message">We cannot show these details right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+    {% endif %}
   </div>
 </div>

@@ -41,6 +41,7 @@ import {
   formatSupportStrategyTypeHintTextFilter,
   formatSupportStrategyTypeScreenValueFilter,
 } from '../filters/formatSupportStrategyTypeFilter'
+import formatStrengthCategoryScreenValueFilter from '../filters/formatStrengthCategoryFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -132,6 +133,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatConditionTypeScreenValue', formatConditionTypeScreenValueFilter)
   njkEnv.addFilter('formatSupportStrategyTypeScreenValue', formatSupportStrategyTypeScreenValueFilter)
   njkEnv.addFilter('formatSupportStrategyTypeHintText', formatSupportStrategyTypeHintTextFilter)
+  njkEnv.addFilter('formatStrengthCategoryScreenValue', formatStrengthCategoryScreenValueFilter)
 
   njkEnv.addFilter('addMonths', addMonths)
 
