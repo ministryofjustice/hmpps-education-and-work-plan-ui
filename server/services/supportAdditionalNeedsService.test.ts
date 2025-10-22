@@ -1,4 +1,4 @@
-import { parseISO } from 'date-fns'
+import { format, parseISO, startOfToday } from 'date-fns'
 import type { ChallengeResponseDto, SupportStrategyResponseDto } from 'dto'
 import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
 import SupportAdditionalNeedsApiClient from '../data/supportAdditionalNeedsApiClient'
@@ -15,6 +15,15 @@ import SupportStrategyType from '../enums/supportStrategyType'
 import SupportStrategyCategory from '../enums/supportStrategyCategory'
 import { aValidChallengeListResponse, aValidChallengeResponse } from '../testsupport/challengeResponseTestDataBuilder'
 import aValidChallengeResponseDto from '../testsupport/challengeResponseDtoTestDataBuilder'
+import ChallengeIdentificationSource from '../enums/challengeIdentificationSource'
+import { aValidAlnScreenerResponse, aValidAlnScreeners } from '../testsupport/alnScreenerResponseTestDataBuilder'
+import { aValidStrengthResponse } from '../testsupport/strengthResponseTestDataBuilder'
+import ChallengeType from '../enums/challengeType'
+import ChallengeCategory from '../enums/challengeCategory'
+import { aValidAlnScreenerList, aValidAlnScreenerResponseDto } from '../testsupport/alnScreenerDtoTestDataBuilder'
+import { aValidStrengthResponseDto } from '../testsupport/strengthResponseDtoTestDataBuilder'
+import StrengthType from '../enums/strengthType'
+import StrengthCategory from '../enums/strengthCategory'
 
 jest.mock('../data/supportAdditionalNeedsApiClient')
 
@@ -311,6 +320,112 @@ describe('supportAdditionalNeedsService', () => {
       // Then
       expect(actual).toEqual(expectedError)
       expect(supportAdditionalNeedsApiClient.getChallenges).toHaveBeenCalledWith(prisonNumber, username)
+    })
+  })
+
+  describe('getAlnScreeners', () => {
+    it('should get ALN Screeners', async () => {
+      // Given
+      const screenerDate = startOfToday()
+      const challenge = aValidChallengeResponse({
+        symptoms: 'John struggles to read text on white background',
+        fromALNScreener: true,
+        challengeTypeCode: 'WRITING',
+        howIdentified: [ChallengeIdentificationSource.CONVERSATIONS],
+        howIdentifiedOther: null,
+        alnScreenerDate: format(screenerDate, 'yyyy-MM-dd'),
+        challengeCategory: 'LITERACY_SKILLS',
+      })
+
+      const strength = aValidStrengthResponse({
+        fromALNScreener: true,
+        alnScreenerDate: format(screenerDate, 'yyyy-MM-dd'),
+      })
+      strength.strengthType.code = 'NUMERACY_SKILLS_DEFAULT'
+      strength.strengthType.categoryCode = 'NUMERACY_SKILLS'
+
+      const alnScreeners = aValidAlnScreeners({
+        screeners: [
+          aValidAlnScreenerResponse({
+            screenerDate: format(screenerDate, 'yyyy-MM-dd'),
+            challenges: [challenge],
+            strengths: [strength],
+          }),
+        ],
+      })
+      supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners.mockResolvedValue(alnScreeners)
+      const expectedChallengeResponseDto = aValidChallengeResponseDto({
+        symptoms: 'John struggles to read text on white background',
+        fromALNScreener: true,
+        challengeTypeCode: ChallengeType.WRITING,
+        howIdentified: [ChallengeIdentificationSource.CONVERSATIONS],
+        howIdentifiedOther: null,
+        alnScreenerDate: screenerDate,
+        challengeCategory: ChallengeCategory.LITERACY_SKILLS,
+      })
+
+      const expectedAlnScreenerList = aValidAlnScreenerList({
+        prisonNumber,
+        screeners: [
+          aValidAlnScreenerResponseDto({
+            screenerDate,
+            challenges: [expectedChallengeResponseDto],
+            strengths: [
+              aValidStrengthResponseDto({
+                strengthTypeCode: StrengthType.NUMERACY_SKILLS_DEFAULT,
+                strengthCategory: StrengthCategory.NUMERACY_SKILLS,
+                fromALNScreener: true,
+                alnScreenerDate: screenerDate,
+              }),
+            ],
+          }),
+        ],
+      })
+      // When
+      const actual = await supportAdditionalNeedsService.getAlnScreeners(username, prisonNumber)
+
+      // Then
+      expect(actual).toEqual(expectedAlnScreenerList)
+      expect(supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners).toHaveBeenCalledWith(
+        prisonNumber,
+        username,
+      )
+    })
+
+    it('should return empty AlnScreenerList given API returns null', async () => {
+      // Given
+      supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners.mockResolvedValue(null)
+
+      const expectedAlnScreenerList = aValidAlnScreenerList({
+        prisonNumber,
+        screeners: [],
+      })
+
+      // When
+      const actual = await supportAdditionalNeedsService.getAlnScreeners(username, prisonNumber)
+
+      // Then
+      expect(actual).toEqual(expectedAlnScreenerList)
+      expect(supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners).toHaveBeenCalledWith(
+        prisonNumber,
+        username,
+      )
+    })
+
+    it('should rethrow error given API client throws error', async () => {
+      // Given
+      const expectedError = new Error('Internal Server Error')
+      supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners.mockRejectedValue(expectedError)
+
+      // When
+      const actual = await supportAdditionalNeedsService.getAlnScreeners(username, prisonNumber).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners).toHaveBeenCalledWith(
+        prisonNumber,
+        username,
+      )
     })
   })
 })
