@@ -1,10 +1,13 @@
 <div class="govuk-summary-card" data-qa="challenges-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">
-      <a class="govuk-link govuk-!-display-none-print" href="{{ supportAdditionalNeedsUrl }}/profile/{{ prisonerSummary.prisonNumber }}/challenges" target="_blank">
-        Challenges
-      </a>
-    </h2>
+    <h2 class="govuk-summary-card__title">Challenges</h2>
+    <ul class="govuk-summary-card__actions govuk-!-font-weight-regular govuk-!-display-none-print">
+      <li class="govuk-summary-card__action">
+        <a class="govuk-link" href="{{ supportAdditionalNeedsUrl }}/profile/{{ prisonerSummary.prisonNumber }}/challenges" target="_blank" data-qa="view-san-challenges-link">
+          View <span class="govuk-visually-hidden">this person's</span> challenges<span class="govuk-visually-hidden"> (opens in a new tab)</span>
+        </a>
+      </li>
+    </ul>
   </div>
   <div class="govuk-summary-card__content">
     <p class="govuk-body">No challenges recorded</p>
