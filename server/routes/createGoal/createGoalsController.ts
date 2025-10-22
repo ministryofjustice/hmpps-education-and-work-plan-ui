@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import type { Request, RequestHandler } from 'express'
 import type { CreateGoalsForm } from 'forms'
 import type { CreateActionPlanDto } from 'dto'
@@ -10,6 +9,7 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDateOption'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
+import { Result } from '../../utils/result/result'
 
 export default class CreateGoalsController {
   constructor(
@@ -77,19 +77,27 @@ export default class CreateGoalsController {
 
     const createGoalDtos = toCreateGoalDtos(createGoalsForm, prisonId)
 
-    try {
-      if (actionPlan.goals.length > 0) {
-        await this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.username)
-      } else {
-        const createActionPlanDto: CreateActionPlanDto = {
-          prisonNumber,
-          goals: createGoalDtos,
-        }
-        await this.educationAndWorkPlanService.createActionPlan(createActionPlanDto, req.user.username)
+    const { apiErrorCallback } = res.locals
+    let apiResult
+    if (actionPlan.goals.length > 0) {
+      apiResult = await Result.wrap(
+        this.educationAndWorkPlanService.createGoals(prisonNumber, createGoalDtos, req.user.username),
+        apiErrorCallback,
+      )
+    } else {
+      const createActionPlanDto: CreateActionPlanDto = {
+        prisonNumber,
+        goals: createGoalDtos,
       }
-    } catch (e) {
-      logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error creating goal(s) for prisoner ${prisonNumber}. Error: ${e}`))
+      apiResult = await Result.wrap(
+        this.educationAndWorkPlanService.createActionPlan(createActionPlanDto, req.user.username),
+        apiErrorCallback,
+      )
+    }
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error creating goal(s) for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('create')
     }
 
     createGoalDtos.forEach(

@@ -27,14 +27,17 @@ describe('unarchiveGoalController', () => {
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
+  const flash = jest.fn()
   const req = {
     session: {},
     body: {},
     user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
+    flash,
   } as unknown as Request
   const res = {
+    redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
     render: jest.fn(),
     locals: { prisonerSummary },
@@ -145,7 +148,6 @@ describe('unarchiveGoalController', () => {
       req.body = unarchiveGoalForm
 
       educationAndWorkPlanService.unarchiveGoal.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`)
 
       const expectedUnarchiveGoalDto: UnarchiveGoalDto = {
         goalReference,
@@ -158,7 +160,8 @@ describe('unarchiveGoalController', () => {
 
       // Then
       expect(educationAndWorkPlanService.unarchiveGoal).toHaveBeenCalledWith(expectedUnarchiveGoalDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
+      expect(res.redirect).toHaveBeenCalledWith('unarchive')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(auditService.logUnarchiveGoal).not.toHaveBeenCalled()
     })
   })

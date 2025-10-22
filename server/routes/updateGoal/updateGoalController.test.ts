@@ -40,12 +40,14 @@ describe('updateGoalController', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: 'BXI' })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
+  const flash = jest.fn()
   const req = {
     session: {},
     body: {},
     user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -301,7 +303,6 @@ describe('updateGoalController', () => {
       mockedUpdateGoalFormToUpdateGoalDtoMapper.mockReturnValue(expectedUpdateGoalDto)
 
       educationAndWorkPlanService.updateGoal.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(500, `Error updating plan for prisoner ${prisonNumber}`)
 
       // When
       await controller.submitReviewUpdateGoal(
@@ -313,8 +314,9 @@ describe('updateGoalController', () => {
       // Then
       expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith('A1234GC', expectedUpdateGoalDto, username)
       expect(mockedUpdateGoalFormToUpdateGoalDtoMapper).toHaveBeenCalledWith(updateGoalForm, prisonerSummary.prisonId)
-      expect(next).toHaveBeenCalledWith(expectedError)
-      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
+      expect(res.redirect).toHaveBeenCalledWith('review')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(updateGoalForm)
       expect(auditService.logUpdateGoal).not.toHaveBeenCalled()
     })
   })

@@ -88,4 +88,49 @@ describe('toCreateGoalDtos', () => {
     // Then
     expect(actual).toEqual(expected)
   })
+
+  it.each([
+    null,
+    undefined,
+    '',
+    '    ',
+    `
+
+  `,
+  ])('should map to toCreateGoalDtos given notes field value %s', notesFieldValue => {
+    // Given
+    const prisonNumber = 'A1234BC'
+    const prisonId = 'MDI'
+    const createGoalsForm: CreateGoalsForm = {
+      prisonNumber,
+      goals: [
+        {
+          title: 'Goal 1',
+          targetCompletionDate: GoalTargetCompletionDateOption.THREE_MONTHS,
+          steps: [{ title: 'Goal 1, Step 1' }, { title: 'Goal 1, Step 2' }],
+          note: notesFieldValue,
+        },
+      ],
+    }
+
+    const expected: Array<CreateGoalDto> = [
+      {
+        prisonNumber,
+        prisonId,
+        title: 'Goal 1',
+        steps: [
+          { title: 'Goal 1, Step 1', sequenceNumber: 1 },
+          { title: 'Goal 1, Step 2', sequenceNumber: 2 },
+        ],
+        targetCompletionDate: addMonths(startOfToday(), 3),
+        note: null,
+      },
+    ]
+
+    // When
+    const actual = toCreateGoalDtos(createGoalsForm, prisonId)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
 })

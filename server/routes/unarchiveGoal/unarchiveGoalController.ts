@@ -7,6 +7,8 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import toUnarchiveGoalDto from './mappers/unarchiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
+import { Result } from '../../utils/result/result'
+import logger from '../../../logger'
 
 export default class UnarchiveGoalController {
   constructor(
@@ -43,11 +45,16 @@ export default class UnarchiveGoalController {
 
     const { prisonId } = prisonerSummary
     const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, prisonId, unarchiveGoalForm)
-    try {
-      await this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.username)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error unarchiving goal for prisoner ${prisonNumber}`))
+
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.educationAndWorkPlanService.unarchiveGoal(unarchiveGoalDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error unarchiving goal for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('unarchive')
     }
 
     this.auditService.logUnarchiveGoal(unarchiveGoalAuditData(req)) // no need to wait for response

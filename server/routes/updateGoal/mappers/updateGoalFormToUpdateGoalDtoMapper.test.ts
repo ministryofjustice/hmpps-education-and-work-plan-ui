@@ -97,4 +97,43 @@ describe('updateGoalFormToUpdateGoalDtoMapper', () => {
     // Then
     expect(actual).toEqual(expectedUpdateGoalDto)
   })
+
+  it.each([
+    null,
+    undefined,
+    '',
+    '    ',
+    `
+
+  `,
+  ])('should map UpdateGoalForm to UpdateGoalDto given notes field value %s', notesFieldValue => {
+    // Given
+    const updateGoalForm = {
+      ...aValidUpdateGoalFormWithIndividualTargetDateFields(),
+      note: notesFieldValue,
+    }
+    const prisonId = 'MDI'
+
+    const expectedUpdateStepDto: UpdateStepDto = {
+      stepReference: updateGoalForm.steps[0].reference,
+      status: updateGoalForm.steps[0].status,
+      title: updateGoalForm.steps[0].title,
+      sequenceNumber: updateGoalForm.steps[0].stepNumber,
+    }
+    const expectedUpdateGoalDto: UpdateGoalDto = {
+      goalReference: updateGoalForm.reference,
+      title: updateGoalForm.title,
+      steps: [expectedUpdateStepDto],
+      targetCompletionDate: startOfDay('2024-02-29'),
+      notes: null,
+      prisonId,
+      status: updateGoalForm.status,
+    }
+
+    // When
+    const actual = toUpdateGoalDto(updateGoalForm, prisonId)
+
+    // Then
+    expect(actual).toEqual(expectedUpdateGoalDto)
+  })
 })

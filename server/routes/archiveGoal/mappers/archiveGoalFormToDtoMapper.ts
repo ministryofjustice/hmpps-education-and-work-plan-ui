@@ -11,7 +11,7 @@ export default function toArchiveGoalDto(
     prisonNumber,
     reason: form.reason,
     reasonOther: form.reasonOther,
-    notes: form.notes,
+    notes: form.notes?.trim() || null,
     prisonId,
   }
 }

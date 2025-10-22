@@ -244,7 +244,7 @@ context('Create goals', () => {
               "@.goals[1].prisonId == 'BXI' && " +
               '@.goals[1].targetCompletionDate && ' + // assert the targetCompletionDate field exists in the request, but not it's value as the value is based on x months from today
               "@.goals[1].title == 'Improve communication skills' && " +
-              "@.goals[1].notes == '' && " +
+              '@.goals[1].notes == null && ' +
               '@.goals[1].steps.size() == 1 && ' +
               "@.goals[1].steps[0].title == 'Make friends on wing' && @.goals[1].steps[0].sequenceNumber == '1')]",
           ),

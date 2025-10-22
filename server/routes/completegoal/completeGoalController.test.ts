@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import AuditService, { BaseAuditData } from '../../services/auditService'
 import toCompleteGoalDto from './mappers/completeGoalFormToDtoMapper'
@@ -31,12 +30,14 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
+  const flash = jest.fn()
   const req = {
     session: {},
     body: { note: 'Great progress made' },
     user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
+    flash,
   } as unknown as Request
 
   const res = {
@@ -79,7 +80,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
     expect(next).not.toHaveBeenCalled()
   })
 
-  it('should call next with a 500 error when goal completion fails', async () => {
+  it('should redisplay page with API error message when goal completion fails', async () => {
     // Given
     const completeGoalDto = { goalReference, prisonNumber, note: 'Great progress made', prisonId }
     mockedCompleteGoalFormToCompleteGoalDtoMapper.mockReturnValue(completeGoalDto)
@@ -90,7 +91,8 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
     await controller.submitCompleteGoalForm(req as Request, res as Response, next)
 
     // Then
-    expect(next).toHaveBeenCalledWith(createError(500, 'Error completing goal for prisoner A1234GC'))
+    expect(res.redirect).toHaveBeenCalledWith('complete')
+    expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
     expect(educationAndWorkPlanService.completeGoal).toHaveBeenCalledWith(completeGoalDto, username)
     expect(res.redirectWithSuccess).not.toHaveBeenCalled()
     expect(auditService.logCompleteGoal).not.toHaveBeenCalled()

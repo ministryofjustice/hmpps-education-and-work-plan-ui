@@ -36,7 +36,7 @@ describe('archiveGoalFormToDtoMapper', () => {
       goalReference,
       reason,
       reasonOther: undefined,
-      notes: undefined,
+      notes: null,
       prisonId,
     }
 
