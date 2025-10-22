@@ -3,7 +3,6 @@ import OverviewPage from '../../../pages/overview/OverviewPage'
 import ReviewUpdateGoalPage from '../../../pages/goal/ReviewUpdateGoalPage'
 import UpdateGoalPage from '../../../pages/goal/UpdateGoalPage'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
-import Error500Page from '../../../pages/error500'
 import GoalsPage from '../../../pages/overview/GoalsPage'
 import GoalStatusValue from '../../../../server/enums/goalStatusValue'
 
@@ -90,7 +89,7 @@ context('Review updated goal', () => {
     Page.verifyOnPage(AuthorisationErrorPage)
   })
 
-  it(`should render 500 page given error updating prisoner's plan`, () => {
+  it(`should redisplay page with API error content given error updating prisoner's plan`, () => {
     // Given
     cy.signIn()
     cy.task('updateGoal500Error')
@@ -103,11 +102,13 @@ context('Review updated goal', () => {
     updateGoalPage.isForGoal(goalReference).submitPage()
 
     const reviewUpdateGoalPage = Page.verifyOnPage(ReviewUpdateGoalPage)
+    reviewUpdateGoalPage.apiErrorBannerIsNotDisplayed()
 
     // When
     reviewUpdateGoalPage.submitPage()
 
     // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(ReviewUpdateGoalPage) //
+      .apiErrorBannerIsDisplayed()
   })
 })

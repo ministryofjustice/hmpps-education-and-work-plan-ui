@@ -19,4 +19,28 @@ describe('completeGoalFormToDtoMapper', () => {
     // Then
     expect(dto).toStrictEqual(expected)
   })
+
+  it.each([
+    null,
+    undefined,
+    '',
+    '    ',
+    `
+
+  `,
+  ])('should map to from form to DTO object given notes field value %s', notesFieldValue => {
+    // Given
+    const prisonNumber = 'A1234BC'
+    const goalReference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
+    const prisonId = 'BXI'
+
+    const form: CompleteGoalForm = { title: 'A goal', reference: goalReference, notes: notesFieldValue }
+    const expected: CompleteGoalDto = { prisonNumber, goalReference, note: null, prisonId }
+
+    // When
+    const dto = toCompleteGoalDto(prisonNumber, prisonId, form)
+
+    // Then
+    expect(dto).toStrictEqual(expected)
+  })
 })

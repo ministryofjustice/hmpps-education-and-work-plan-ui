@@ -7,6 +7,8 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import toCompleteGoalDto from './mappers/completeGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
+import { Result } from '../../utils/result/result'
+import logger from '../../../logger'
 
 export default class CompleteGoalController {
   constructor(
@@ -44,11 +46,16 @@ export default class CompleteGoalController {
 
     const { prisonId } = prisonerSummary
     const completeGoalDto = toCompleteGoalDto(prisonNumber, prisonId, completeGoalForm)
-    try {
-      await this.educationAndWorkPlanService.completeGoal(completeGoalDto, req.user.username)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error completing goal for prisoner ${prisonNumber}`))
+
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.educationAndWorkPlanService.completeGoal(completeGoalDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error completing goal for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('complete')
     }
 
     this.auditService.logCompleteGoal(completeGoalAuditData(req)) // no need to wait for response

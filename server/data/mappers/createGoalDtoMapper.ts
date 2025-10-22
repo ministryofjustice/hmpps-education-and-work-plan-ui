@@ -10,7 +10,7 @@ const toCreateGoalDtos = (createGoalsForm: CreateGoalsForm, prisonId: string): A
       title: goal.title,
       targetCompletionDate: toTargetCompletionDate(goal),
       steps: (goal.steps || []).map((step, stepIndexNumber) => toAddStepDto(step, stepIndexNumber)),
-      note: goal.note,
+      note: goal.note?.trim() || null,
       prisonId,
     }
   })

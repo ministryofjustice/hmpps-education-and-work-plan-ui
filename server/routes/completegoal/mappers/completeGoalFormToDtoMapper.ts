@@ -9,7 +9,7 @@ export default function toCompleteGoalDto(
   return {
     goalReference: form.reference,
     prisonNumber,
-    note: form.notes,
+    note: form.notes?.trim() || null,
     prisonId,
   }
 }

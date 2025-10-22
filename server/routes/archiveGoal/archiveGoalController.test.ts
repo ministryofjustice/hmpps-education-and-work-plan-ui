@@ -37,12 +37,14 @@ describe('archiveGoalController', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
+  const flash = jest.fn()
   const req = {
     session: {},
     body: {},
     user: { username },
     params: { prisonNumber, goalReference },
     id: requestId,
+    flash,
   } as unknown as Request
 
   const res = {
@@ -289,11 +291,12 @@ describe('archiveGoalController', () => {
 
     it('should handle a failure archiving the goal', async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = {
+      const archiveGoalForm = {
         reference: goalReference,
         title: 'Some goal',
         reason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
       }
+      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = archiveGoalForm
       const expectedArchiveGoalDto: ArchiveGoalDto = {
         prisonNumber,
         goalReference,
@@ -302,15 +305,15 @@ describe('archiveGoalController', () => {
       }
       mockedArchiveGoalFormToArchiveGoalDtoMapper.mockReturnValue(expectedArchiveGoalDto)
       educationAndWorkPlanService.archiveGoal.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(500, `Error archiving goal for prisoner ${prisonNumber}`)
 
       // When
       await controller.submitReviewArchiveGoal(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.archiveGoal).toHaveBeenCalledWith(expectedArchiveGoalDto, username)
-      expect(next).toHaveBeenCalledWith(expectedError)
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
+      expect(res.redirect).toHaveBeenCalledWith('review')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toEqual(archiveGoalForm)
       expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
     })
   })

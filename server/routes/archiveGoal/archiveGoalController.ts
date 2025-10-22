@@ -10,6 +10,8 @@ import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
+import { Result } from '../../utils/result/result'
+import logger from '../../../logger'
 
 export default class ArchiveGoalController {
   constructor(
@@ -72,17 +74,22 @@ export default class ArchiveGoalController {
     const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
     const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
-    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
     const { prisonId } = prisonerSummary
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, prisonId, archiveGoalForm)
-    try {
-      await this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.username)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error archiving goal for prisoner ${prisonNumber}`))
+
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.educationAndWorkPlanService.archiveGoal(archiveGoalDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error archiving goal for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('review')
     }
 
+    getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     this.auditService.logArchiveGoal(archiveGoalAuditData(req)) // no need to wait for response
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
   }

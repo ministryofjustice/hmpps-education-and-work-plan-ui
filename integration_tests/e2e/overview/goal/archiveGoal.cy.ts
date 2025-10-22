@@ -184,7 +184,7 @@ context('Archive a goal', () => {
             `$[?(@.goalReference == '${goalReference}' && ` +
               "@.prisonId == 'BXI' && " +
               "@.reason == 'OTHER' && " +
-              "@.note == '' && " +
+              '@.note == null && ' +
               "@.reasonOther == 'Just because...')]",
           ),
         ),

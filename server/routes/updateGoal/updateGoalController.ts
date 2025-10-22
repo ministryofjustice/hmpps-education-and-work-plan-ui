@@ -12,6 +12,8 @@ import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
+import { Result } from '../../utils/result/result'
+import logger from '../../../logger'
 
 export default class UpdateGoalController {
   constructor(
@@ -109,17 +111,21 @@ export default class UpdateGoalController {
     const { prisonerSummary } = res.locals
     const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
 
-    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
-
     const { prisonId } = prisonerSummary
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
-    try {
-      await this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.username)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error updating plan for prisoner ${prisonNumber}`))
+
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating plan for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('review')
     }
 
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
     this.auditService.logUpdateGoal(updateGoalAuditData(req)) // no need to wait for response
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
