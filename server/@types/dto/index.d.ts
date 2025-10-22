@@ -13,6 +13,9 @@ declare module 'dto' {
   import StrengthCategory from '../../enums/strengthCategory'
   import StrengthIdentificationSource from '../../enums/strengthIdentificationSource'
   import StrengthType from '../../enums/strengthType'
+  import ChallengeCategory from '../../enums/challengeCategory'
+  import ChallengeIdentificationSource from '../../enums/challengeIdentificationSource'
+  import ChallengeType from '../../enums/challengeType'
 
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
@@ -164,6 +167,17 @@ declare module 'dto' {
     howIdentifiedOther?: string
     active: boolean
     fromALNScreener: boolean
+    alnScreenerDate?: Date
+  }
+
+  export interface ChallengeResponseDto extends ReferencedAndAuditable {
+    fromALNScreener: boolean
+    challengeTypeCode: ChallengeType
+    challengeCategory: ChallengeCategory
+    active: boolean
+    symptoms?: string
+    howIdentified?: Array<ChallengeIdentificationSource>
+    howIdentifiedOther?: string
     alnScreenerDate?: Date
   }
 }
