@@ -1,10 +1,17 @@
-import type { ChallengeResponseDto, ConditionsList, StrengthsList, SupportStrategyResponseDto } from 'dto'
+import type {
+  AlnScreenerList,
+  ChallengeResponseDto,
+  ConditionsList,
+  StrengthsList,
+  SupportStrategyResponseDto,
+} from 'dto'
 import SupportAdditionalNeedsApiClient from '../data/supportAdditionalNeedsApiClient'
 import logger from '../../logger'
 import { toConditionsList } from '../data/mappers/conditionDtoMapper'
 import { toSupportStrategyResponseDtos } from '../data/mappers/supportStrategyResponseDtoMapper'
 import { toStrengthsList } from '../data/mappers/strengthResponseDtoMapper'
 import { toChallengeDto } from '../data/mappers/challengeDtoMapper'
+import { toAlnScreenerList } from '../data/mappers/alnScreenerResponseDtoMapper'
 
 export default class SupportAdditionalNeedsService {
   constructor(private readonly supportAdditionalNeedsApiClient: SupportAdditionalNeedsApiClient) {}
@@ -48,6 +55,19 @@ export default class SupportAdditionalNeedsService {
       return toChallengeDto(challengeListResponse)
     } catch (e) {
       logger.error(`Error getting Challenges for [${prisonNumber}]`, e)
+      throw e
+    }
+  }
+
+  async getAlnScreeners(username: string, prisonNumber: string): Promise<AlnScreenerList> {
+    try {
+      const alnScreeners = await this.supportAdditionalNeedsApiClient.getAdditionalLearningNeedsScreeners(
+        prisonNumber,
+        username,
+      )
+      return toAlnScreenerList(alnScreeners, prisonNumber)
+    } catch (e) {
+      logger.error(`Error getting ALN Screeners for [${prisonNumber}]`, e)
       throw e
     }
   }

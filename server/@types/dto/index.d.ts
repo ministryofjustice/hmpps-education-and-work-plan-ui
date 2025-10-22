@@ -180,6 +180,17 @@ declare module 'dto' {
     howIdentifiedOther?: string
     alnScreenerDate?: Date
   }
+
+  export interface AlnScreenerList {
+    prisonNumber: string
+    screeners: Array<AlnScreenerResponseDto>
+  }
+
+  export interface AlnScreenerResponseDto extends ReferencedAndAuditable {
+    screenerDate: Date
+    challenges: Array<ChallengeResponseDto>
+    strengths: Array<StrengthResponseDto>
+  }
 }
 
 declare module 'inductionDto' {
