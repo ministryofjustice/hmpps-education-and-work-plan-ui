@@ -20,6 +20,9 @@ import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonName
 import retrieveTimeline from '../routerRequestHandlers/retrieveTimeline'
 import retrieveSupportForAdditionalNeedsConditions from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsConditions'
 import retrieveSupportForAdditionalNeedsSupportStrategies from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsSupportStrategies'
+import retrieveSupportForAdditionalNeedsStrengths from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsStrengths'
+import retrieveSupportForAdditionalNeedsAlnScreeners from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsAlnScreeners'
+import retrieveSupportForAdditionalNeedsChallenges from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsChallenges'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -57,7 +60,10 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/additional-needs', [
     retrievePrisonNamesById(prisonService),
+    retrieveSupportForAdditionalNeedsAlnScreeners(supportAdditionalNeedsService),
+    retrieveSupportForAdditionalNeedsChallenges(supportAdditionalNeedsService),
     retrieveSupportForAdditionalNeedsConditions(supportAdditionalNeedsService),
+    retrieveSupportForAdditionalNeedsStrengths(supportAdditionalNeedsService),
     retrieveSupportForAdditionalNeedsSupportStrategies(supportAdditionalNeedsService),
     retrieveCuriousAlnAndLddAssessments(curiousService),
     asyncMiddleware(additionalNeedsController.getAdditionalNeedsView),
