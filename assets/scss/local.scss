@@ -134,3 +134,8 @@ tbody[data-qa="completed-courses-table-body"] .govuk-table__cell:nth-child(2) {
 .js-enabled .js-back-link {
   display: inline-block;
 }
+
+.disable-link {
+  pointer-events: none;
+  cursor: default;
+}
