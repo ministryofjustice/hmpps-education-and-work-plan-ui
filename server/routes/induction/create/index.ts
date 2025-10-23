@@ -39,6 +39,7 @@ import {
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
+import personalInterestsSchema from '../validationSchemas/personalInterestsSchema'
 
 /**
  * Route definitions for creating an Induction
@@ -211,6 +212,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/personal-interests', [
     checkInductionDtoExistsInJourneyData,
+    validate(personalInterestsSchema),
     asyncMiddleware(personalInterestsCreateController.submitPersonalInterestsForm),
   ])
 

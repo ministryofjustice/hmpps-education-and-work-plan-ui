@@ -4,7 +4,6 @@ import PersonalInterestsController from '../common/personalInterestsController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validatePersonalInterestsForm from '../../validators/induction/personalInterestsFormValidator'
 import { asArray } from '../../../utils/utils'
 import { Result } from '../../../utils/result/result'
 
@@ -21,7 +20,7 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -29,12 +28,6 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
     const personalInterestsForm: PersonalInterestsForm = {
       personalInterests: asArray(req.body.personalInterests),
       personalInterestsOther: req.body.personalInterestsOther,
-    }
-    req.session.personalInterestsForm = personalInterestsForm
-
-    const errors = validatePersonalInterestsForm(personalInterestsForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/personal-interests`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
@@ -52,7 +45,6 @@ export default class PersonalInterestsUpdateController extends PersonalInterests
       return res.redirect('personal-interests')
     }
 
-    req.session.personalInterestsForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

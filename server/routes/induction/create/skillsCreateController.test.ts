@@ -122,7 +122,6 @@ describe('skillsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })

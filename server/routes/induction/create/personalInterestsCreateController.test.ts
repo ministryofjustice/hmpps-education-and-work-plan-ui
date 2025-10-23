@@ -34,15 +34,16 @@ describe('personalInterestsCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getPersonalInterestsView', () => {
-    it('should get the Personal interests view given there is no PersonalInterestsForm on the session', async () => {
+    it('should get the Personal interests view given there is no PersonalInterestsForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.personalInterestsForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedPersonalInterestsForm: PersonalInterestsForm = {
         personalInterests: [],
@@ -59,11 +60,10 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Personal interests view given there is an PersonalInterestsForm already on the session', async () => {
+    it('should get the Personal interests view given there is an PersonalInterestsForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
@@ -73,7 +73,7 @@ describe('personalInterestsCreateController', () => {
         personalInterests: ['COMMUNITY', 'CREATIVE', 'MUSICAL'],
         personalInterestsOther: '',
       }
-      req.session.personalInterestsForm = expectedPersonalInterestsForm
+      res.locals.invalidForm = expectedPersonalInterestsForm
 
       const expectedView = {
         prisonerSummary,
@@ -85,7 +85,6 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
@@ -123,40 +122,12 @@ describe('personalInterestsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.session.personalInterestsForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 
   describe('submitPersonalInterestsForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.personalSkillsAndInterests.interests = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidPersonalInterestsForm = {
-        personalInterests: ['OTHER'],
-        personalInterestsOther: '',
-      }
-      req.body = invalidPersonalInterestsForm
-      req.session.personalInterestsForm = undefined
-
-      const expectedErrors = [{ href: '#personalInterestsOther', text: `Enter Ifereeca Peigh's interests` }]
-
-      // When
-      await controller.submitPersonalInterestsForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
-        expectedErrors,
-      )
-      expect(req.session.personalInterestsForm).toEqual(invalidPersonalInterestsForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update inductionDto and redirect to in-prison-work page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -168,7 +139,6 @@ describe('personalInterestsCreateController', () => {
         personalInterestsOther: 'Renewable energy',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
 
       const expectedInterests: Array<PersonalInterestDto> = [
         { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
@@ -195,7 +165,6 @@ describe('personalInterestsCreateController', () => {
         personalInterestsOther: 'Renewable energy',
       }
       req.body = personalInterestsForm
-      req.session.personalInterestsForm = undefined
 
       const expectedInterests: Array<PersonalInterestDto> = [
         { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
