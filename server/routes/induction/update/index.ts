@@ -21,6 +21,7 @@ import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyId
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import { hopingToWorkOnReleaseSchema, skillsSchema } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import personalInterestsSchema from '../validationSchemas/personalInterestsSchema'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -68,6 +69,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(personalInterestsUpdateController.getPersonalInterestsView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/personal-interests', [
+    validate(personalInterestsSchema),
     asyncMiddleware(personalInterestsUpdateController.submitPersonalInterestsForm),
   ])
 

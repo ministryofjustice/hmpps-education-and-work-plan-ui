@@ -4,6 +4,7 @@ import type { PersonalInterestsForm } from 'inductionForms'
 import InductionController from './inductionController'
 import PersonalInterestsView from './personalInterestsView'
 import PersonalInterestsValue from '../../../enums/personalInterestsValue'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,10 +15,14 @@ export default abstract class PersonalInterestsController extends InductionContr
    */
   getPersonalInterestsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
-    const personalInterestsForm = req.session.personalInterestsForm || toPersonalInterestsForm(inductionDto)
-    req.session.personalInterestsForm = undefined
+    const personalInterestsForm = invalidForm
+      ? {
+          personalInterests: asArray(invalidForm.personalInterests),
+          personalInterestsOther: invalidForm.personalInterestsOther,
+        }
+      : toPersonalInterestsForm(inductionDto)
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
