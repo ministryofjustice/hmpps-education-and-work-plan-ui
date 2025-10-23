@@ -9,7 +9,26 @@
       </li>
     </ul>
   </div>
+
   <div class="govuk-summary-card__content">
-    <p class="govuk-body">No challenges recorded</p>
+    {% if challengeCategories.isFulfilled() %}
+      {% set challengeCategories = challengeCategories.value %}
+
+      {% if challengeCategories | length %}
+        <ul class="govuk-list" data-qa=san-challenges-list>
+          {% for category in challengeCategories %}
+            <li data-qa="challenge_{{ category }}">{{ category | formatChallengeCategoryScreenValue | default(category, true) }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="govuk-body" data-qa="no-challenges-recorded-message">
+          No challenges recorded
+        </p>
+      {% endif %}
+
+    {% else %}
+      <h3 class="govuk-heading-s" data-qa="san-challenges-unavailable-message">We cannot show these details right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+    {% endif %}
   </div>
 </div>
