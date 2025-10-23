@@ -4,7 +4,6 @@ import AffectAbilityToWorkController from '../common/affectAbilityToWorkControll
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateAffectAbilityToWorkForm from '../../validators/induction/affectAbilityToWorkFormValidator'
 import { asArray } from '../../../utils/utils'
 import { Result } from '../../../utils/result/result'
 
@@ -21,7 +20,7 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -29,12 +28,6 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
     const affectAbilityToWorkForm: AffectAbilityToWorkForm = {
       affectAbilityToWork: asArray(req.body.affectAbilityToWork),
       affectAbilityToWorkOther: req.body.affectAbilityToWorkOther,
-    }
-    req.session.affectAbilityToWorkForm = affectAbilityToWorkForm
-
-    const errors = validateAffectAbilityToWorkForm(affectAbilityToWorkForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/affect-ability-to-work`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
@@ -52,7 +45,6 @@ export default class AffectAbilityToWorkUpdateController extends AffectAbilityTo
       return res.redirect('affect-ability-to-work')
     }
 
-    req.session.affectAbilityToWorkForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

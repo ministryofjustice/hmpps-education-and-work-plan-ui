@@ -19,9 +19,13 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
-import { hopingToWorkOnReleaseSchema, skillsSchema } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
-import personalInterestsSchema from '../validationSchemas/personalInterestsSchema'
+import {
+  affectAbilityToWorkSchema,
+  hopingToWorkOnReleaseSchema,
+  personalInterestsSchema,
+  skillsSchema,
+} from '../validationSchemas'
 
 /**
  * Route definitions for updating the various sections of an Induction
@@ -116,6 +120,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(affectAbilityToWorkUpdateController.getAffectAbilityToWorkView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work', [
+    validate(affectAbilityToWorkSchema),
     asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
   ])
 

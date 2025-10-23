@@ -31,15 +31,16 @@ import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import {
+  affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
   inductionNoteSchema,
+  personalInterestsSchema,
   skillsSchema,
   whoCompletedInductionSchema,
 } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
-import personalInterestsSchema from '../validationSchemas/personalInterestsSchema'
 
 /**
  * Route definitions for creating an Induction
@@ -222,6 +223,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/affect-ability-to-work', [
     checkInductionDtoExistsInJourneyData,
+    validate(affectAbilityToWorkSchema),
     asyncMiddleware(affectAbilityToWorkCreateController.submitAffectAbilityToWorkForm),
   ])
 

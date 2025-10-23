@@ -10,7 +10,6 @@ import type {
 } from 'forms'
 import type {
   AdditionalTrainingForm,
-  AffectAbilityToWorkForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
@@ -43,7 +42,6 @@ declare module 'express-session' {
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
-    affectAbilityToWorkForm: AffectAbilityToWorkForm
     workInterestRolesForm: WorkInterestRolesForm
     workInterestTypesForm: WorkInterestTypesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
