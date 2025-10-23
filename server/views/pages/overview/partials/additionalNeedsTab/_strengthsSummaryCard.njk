@@ -15,7 +15,7 @@
       {% set strengthCategories = strengthCategories.value %}
 
       {% if strengthCategories | length %}
-        <ul class="govuk-list">
+        <ul class="govuk-list" data-qa="san-strengths-list">
           {% for category in strengthCategories %}
             <li data-qa="strength_{{ category }}">{{ category | formatStrengthCategoryScreenValue | default(category, true) }}</li>
           {% endfor %}

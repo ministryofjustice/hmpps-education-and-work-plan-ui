@@ -54,7 +54,7 @@ describe('Additional Needs tab - Strengths Summary Card', () => {
     expect(strengthListItems.eq(4).text().trim()).toEqual('Sensory')
 
     expect($('[data-qa=no-strengths-recorded-message]').length).toEqual(0)
-    expect($('[data-qa=strengths-unavailable-message]').length).toEqual(0)
+    expect($('[data-qa=san-strengths-unavailable-message]').length).toEqual(0)
   })
 
   it('should render the summary card given the prisoner has no Strengths', () => {
