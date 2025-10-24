@@ -47,14 +47,15 @@ describe('additionalTrainingUpdateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getAdditionalTrainingView', () => {
-    it('should get Additional Training view given there is no AdditionalTrainingForm on the session', async () => {
+    it('should get Additional Training view given there is no AdditionalTrainingForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.additionalTrainingForm = undefined
+      res.locals.invalidForm = undefined
       const expectedAdditionalTrainingForm = {
         additionalTraining: [
           AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
@@ -74,11 +75,10 @@ describe('additionalTrainingUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Additional Training view given there is an AdditionalTrainingForm already on the session', async () => {
+    it('should get the Additional Training view given there is an AdditionalTrainingForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
@@ -87,7 +87,7 @@ describe('additionalTrainingUpdateController', () => {
         additionalTraining: [AdditionalTrainingValue.FULL_UK_DRIVING_LICENCE, AdditionalTrainingValue.OTHER],
         additionalTrainingOther: 'Beginners cookery for IT professionals',
       }
-      req.session.additionalTrainingForm = expectedAdditionalTrainingForm
+      res.locals.invalidForm = expectedAdditionalTrainingForm
 
       const expectedView = {
         prisonerSummary,
@@ -99,43 +99,11 @@ describe('additionalTrainingUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/additionalTraining/index', expectedView)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitAdditionalTrainingForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidAdditionalTrainingForm = {
-        additionalTraining: [AdditionalTrainingValue.OTHER],
-        additionalTrainingOther: '',
-      }
-      req.body = invalidAdditionalTrainingForm
-      req.session.additionalTrainingForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#additionalTrainingOther',
-          text: 'Enter the type of training or vocational qualification Ifereeca Peigh has',
-        },
-      ]
-
-      // When
-      await controller.submitAdditionalTrainingForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/additional-training`,
-        expectedErrors,
-      )
-      expect(req.session.additionalTrainingForm).toEqual(invalidAdditionalTrainingForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -146,7 +114,6 @@ describe('additionalTrainingUpdateController', () => {
         additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -166,7 +133,6 @@ describe('additionalTrainingUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
-      expect(req.session.additionalTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -181,7 +147,6 @@ describe('additionalTrainingUpdateController', () => {
         additionalTrainingOther: 'Italian cookery for IT professionals',
       }
       req.body = additionalTrainingForm
-      req.session.additionalTrainingForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -202,7 +167,6 @@ describe('additionalTrainingUpdateController', () => {
       expect(updatedInduction.previousTraining.trainingTypeOther).toEqual(expectedUpdatedAdditionalTrainingOther)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(req.session.additionalTrainingForm).toEqual(additionalTrainingForm)
       const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.previousTraining.trainingTypes).toEqual([
         AdditionalTrainingValue.HGV_LICENCE,

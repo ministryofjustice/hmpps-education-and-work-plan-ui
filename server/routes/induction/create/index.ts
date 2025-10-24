@@ -31,6 +31,7 @@ import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import {
+  additionalTrainingSchema,
   affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
   inductionNoteSchema,
@@ -149,6 +150,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/additional-training', [
     checkInductionDtoExistsInJourneyData,
+    validate(additionalTrainingSchema),
     asyncMiddleware(additionalTrainingCreateController.submitAdditionalTrainingForm),
   ])
 

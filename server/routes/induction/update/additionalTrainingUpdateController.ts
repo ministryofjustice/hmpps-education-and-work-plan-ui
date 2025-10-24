@@ -1,10 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingController from '../common/additionalTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateAdditionalTrainingForm from '../../validators/induction/additionalTrainingFormValidator'
 import { Result } from '../../../utils/result/result'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for Updating a Prisoner's Additional Training or Vocational Qualifications screen of the Induction.
@@ -19,23 +20,14 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
-    req.session.additionalTrainingForm = { ...req.body }
-    if (!req.session.additionalTrainingForm.additionalTraining) {
-      req.session.additionalTrainingForm.additionalTraining = []
-    }
-    if (!Array.isArray(req.session.additionalTrainingForm.additionalTraining)) {
-      req.session.additionalTrainingForm.additionalTraining = [req.session.additionalTrainingForm.additionalTraining]
-    }
-    const { additionalTrainingForm } = req.session
-
-    const errors = validateAdditionalTrainingForm(additionalTrainingForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/additional-training`, errors)
+    const additionalTrainingForm: AdditionalTrainingForm = {
+      additionalTraining: asArray(req.body.additionalTraining),
+      additionalTrainingOther: req.body.additionalTrainingOther,
     }
 
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
@@ -54,7 +46,6 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
       return res.redirect('additional-training')
     }
 
-    req.session.additionalTrainingForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
   }

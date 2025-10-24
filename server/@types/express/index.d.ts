@@ -9,7 +9,6 @@ import type {
   UpdateGoalForm,
 } from 'forms'
 import type {
-  AdditionalTrainingForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
@@ -48,7 +47,6 @@ declare module 'express-session' {
     highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm
     qualificationDetailsForm: QualificationDetailsForm
-    additionalTrainingForm: AdditionalTrainingForm
     prisonerContexts: PrisonerContexts
   }
   export interface PrisonerContext {
