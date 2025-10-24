@@ -4,9 +4,15 @@ import {
   getCorrelationContext,
   setup,
   TelemetryClient,
+  Contracts,
 } from 'applicationinsights'
 import { RequestHandler } from 'express'
 import type { ApplicationInfo } from '../applicationInfo'
+
+export type ContextObject = {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  [name: string]: any
+}
 
 export function initialiseAppInsights(): void {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
@@ -15,6 +21,24 @@ export function initialiseAppInsights(): void {
 
     setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
   }
+}
+
+export function addUserDataToRequests(envelope: Contracts.EnvelopeTelemetry, contextObjects?: ContextObject): boolean {
+  const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
+  if (isRequest) {
+    const user = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
+    const { username, activeCaseLoadId } = user
+    if (username) {
+      const { properties } = envelope.data.baseData
+      // eslint-disable-next-line no-param-reassign
+      envelope.data.baseData.properties = {
+        username,
+        activeCaseLoadId: activeCaseLoadId || 'N/A',
+        ...properties,
+      }
+    }
+  }
+  return true
 }
 
 export function buildAppInsightsClient(
@@ -32,6 +56,8 @@ export function buildAppInsightsClient(
       }
       return true
     })
+
+    defaultClient.addTelemetryProcessor(addUserDataToRequests)
 
     return defaultClient
   }
