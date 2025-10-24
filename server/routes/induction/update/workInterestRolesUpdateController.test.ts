@@ -48,6 +48,7 @@ describe('workInterestRolesUpdateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWorkInterestRolesView', () => {
@@ -80,44 +81,6 @@ describe('workInterestRolesUpdateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.futureWorkInterests.interests = [
-        { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
-      ]
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidWorkInterestRolesForm = {
-        workInterestRoles: {
-          RETAIL: 'a'.repeat(513),
-          CONSTRUCTION: 'General builders mate',
-        },
-      }
-      req.body = invalidWorkInterestRolesForm
-
-      req.session.workInterestRolesForm = undefined
-
-      const expectedErrors = [{ href: '#RETAIL', text: 'The Retail and sales job role must be 512 characters or less' }]
-      const expectedWorkInterestRolesForm = {
-        workInterestRoles: [
-          [WorkInterestTypeValue.RETAIL, 'a'.repeat(513)],
-          [WorkInterestTypeValue.CONSTRUCTION, 'General builders mate'],
-        ],
-      }
-
-      // When
-      await controller.submitWorkInterestRolesForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/work-interest-roles`,
-        expectedErrors,
-      )
-      expect(req.session.workInterestRolesForm).toEqual(expectedWorkInterestRolesForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()

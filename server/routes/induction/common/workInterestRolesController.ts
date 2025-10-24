@@ -14,12 +14,16 @@ export default abstract class WorkInterestRolesController extends InductionContr
    */
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const workInterestRolesForm = req.session.workInterestRolesForm || toWorkInterestRolesForm(inductionDto)
-    req.session.workInterestRolesForm = undefined
+    const workInterestRolesForm = invalidForm
+      ? {
+          workInterestRoles: invalidForm.workInterestRoles,
+          workInterestTypesOther: invalidForm.workInterestTypesOther,
+        }
+      : toWorkInterestRolesForm(inductionDto)
 
     const view = new WorkInterestRolesView(prisonerSummary, workInterestRolesForm)
     return res.render('pages/induction/workInterests/workInterestRoles', { ...view.renderArgs })
