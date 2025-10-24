@@ -35,6 +35,7 @@ import {
   affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
   inductionNoteSchema,
+  inPrisonTrainingSchema,
   personalInterestsSchema,
   skillsSchema,
   whoCompletedInductionSchema,
@@ -244,6 +245,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/in-prison-training', [
     checkInductionDtoExistsInJourneyData,
+    validate(inPrisonTrainingSchema),
     asyncMiddleware(inPrisonTrainingCreateController.submitInPrisonTrainingForm),
   ])
 

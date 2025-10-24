@@ -24,6 +24,7 @@ import {
   additionalTrainingSchema,
   affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
+  inPrisonTrainingSchema,
   personalInterestsSchema,
   skillsSchema,
 } from '../validationSchemas'
@@ -66,6 +67,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(inPrisonTrainingUpdateController.getInPrisonTrainingView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/in-prison-training', [
+    validate(inPrisonTrainingSchema),
     asyncMiddleware(inPrisonTrainingUpdateController.submitInPrisonTrainingForm),
   ])
 

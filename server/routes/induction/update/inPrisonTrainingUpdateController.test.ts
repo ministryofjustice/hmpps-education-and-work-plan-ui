@@ -47,14 +47,15 @@ describe('inPrisonTrainingUpdateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getInPrisonTrainingView', () => {
-    it('should get the In Prison Training view given there is no InPrisonTrainingForm on the session', async () => {
+    it('should get the In Prison Training view given there is no InPrisonTrainingForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.inPrisonTrainingForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedInPrisonTrainingForm = {
         inPrisonTraining: [
@@ -75,11 +76,10 @@ describe('inPrisonTrainingUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Training view given there is an InPrisonTrainingForm already on the session', async () => {
+    it('should get the In Prison Training view given there is an InPrisonTrainingForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
@@ -88,7 +88,7 @@ describe('inPrisonTrainingUpdateController', () => {
         inPrisonTraining: [InPrisonTrainingValue.CATERING, InPrisonTrainingValue.OTHER],
         inPrisonTrainingOther: 'Electrician training',
       }
-      req.session.inPrisonTrainingForm = expectedInPrisonTrainingForm
+      res.locals.invalidForm = expectedInPrisonTrainingForm
 
       const expectedView = {
         prisonerSummary,
@@ -100,43 +100,11 @@ describe('inPrisonTrainingUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonTraining/index', expectedView)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitInPrisonTrainingForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidInPrisonTrainingForm = {
-        inPrisonTraining: [InPrisonTrainingValue.OTHER],
-        inPrisonTrainingOther: '',
-      }
-      req.body = invalidInPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#inPrisonTrainingOther',
-          text: 'Enter the type of type of training Ifereeca Peigh would like to do in prison',
-        },
-      ]
-
-      // When
-      await controller.submitInPrisonTrainingForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/in-prison-training`,
-        expectedErrors,
-      )
-      expect(req.session.inPrisonTrainingForm).toEqual(invalidInPrisonTrainingForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction and call API and redirect to education and training page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -147,7 +115,6 @@ describe('inPrisonTrainingUpdateController', () => {
         inPrisonTrainingOther: 'Electrician training',
       }
       req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -174,7 +141,6 @@ describe('inPrisonTrainingUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
-      expect(req.session.inPrisonTrainingForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -189,7 +155,6 @@ describe('inPrisonTrainingUpdateController', () => {
         inPrisonTrainingOther: 'Electrician training',
       }
       req.body = inPrisonTrainingForm
-      req.session.inPrisonTrainingForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -217,7 +182,6 @@ describe('inPrisonTrainingUpdateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonTrainingInterests).toEqual(expectedUpdatedInPrisonTraining)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(req.session.inPrisonTrainingForm).toEqual(inPrisonTrainingForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(res.redirect).toHaveBeenCalledWith('in-prison-training')

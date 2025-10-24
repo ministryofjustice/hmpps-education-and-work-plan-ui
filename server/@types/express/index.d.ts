@@ -9,7 +9,6 @@ import type {
   UpdateGoalForm,
 } from 'forms'
 import type {
-  InPrisonTrainingForm,
   InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
@@ -37,7 +36,6 @@ declare module 'express-session' {
 
     // Induction related forms held on the session
     inPrisonWorkForm: InPrisonWorkForm
-    inPrisonTrainingForm: InPrisonTrainingForm
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
