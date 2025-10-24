@@ -40,6 +40,7 @@ import {
   personalInterestsSchema,
   skillsSchema,
   whoCompletedInductionSchema,
+  workedBeforeSchema,
 } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
@@ -162,6 +163,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/has-worked-before', [
     checkInductionDtoExistsInJourneyData,
+    validate(workedBeforeSchema),
     asyncMiddleware(workedBeforeCreateController.submitWorkedBeforeForm),
   ])
 

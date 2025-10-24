@@ -33,15 +33,16 @@ describe('workedBeforeCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWorkedBeforeView', () => {
-    it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
+    it('should get the WorkedBefore view given there is no WorkedBeforeForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.workedBeforeForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedWorkedBeforeForm: WorkedBeforeForm = {
         hasWorkedBefore: undefined,
@@ -57,11 +58,10 @@ describe('workedBeforeCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
+    it('should get the WorkedBefore view given there is an WorkedBeforeForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousWorkExperiences = undefined
@@ -70,7 +70,7 @@ describe('workedBeforeCreateController', () => {
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
-      req.session.workedBeforeForm = expectedWorkedBeforeForm
+      res.locals.invalidForm = expectedWorkedBeforeForm
 
       const expectedView = {
         prisonerSummary,
@@ -82,40 +82,11 @@ describe('workedBeforeCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitWorkedBeforeForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.previousWorkExperiences = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidWorkedBeforeForm: WorkedBeforeForm = {
-        hasWorkedBefore: undefined,
-      }
-      req.body = invalidWorkedBeforeForm
-      req.session.workedBeforeForm = undefined
-
-      const expectedErrors = [
-        { href: '#hasWorkedBefore', text: 'Select whether Ifereeca Peigh has worked before or not' },
-      ]
-
-      // When
-      await controller.submitWorkedBeforeForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`,
-        expectedErrors,
-      )
-      expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update InductionDto and display Previous Work Experience page given form is submitted with worked before YES', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -127,7 +98,6 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBeforeNotRelevantReason: undefined,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       // When
       await controller.submitWorkedBeforeForm(req, res, next)
@@ -136,7 +106,6 @@ describe('workedBeforeCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
       )
-      expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('YES')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
@@ -153,14 +122,12 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBeforeNotRelevantReason: undefined,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       // When
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
@@ -178,14 +145,12 @@ describe('workedBeforeCreateController', () => {
           'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       // When
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/skills`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual(
@@ -203,7 +168,6 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBeforeNotRelevantReason: undefined,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -221,7 +185,6 @@ describe('workedBeforeCreateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to NOT_RELEVANT', async () => {
@@ -235,7 +198,6 @@ describe('workedBeforeCreateController', () => {
           'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -255,7 +217,6 @@ describe('workedBeforeCreateController', () => {
         'Chris feels his previous work experience is not relevant as he is not planning on working upon release.',
       )
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Previous Work Experience given previous page was Check Your Answers and worked before is changed to YES', async () => {
@@ -272,7 +233,6 @@ describe('workedBeforeCreateController', () => {
         hasWorkedBeforeNotRelevantReason: undefined,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
 
       req.session.pageFlowHistory = {
         pageUrls: [
@@ -293,7 +253,6 @@ describe('workedBeforeCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience`,
       )
-      expect(req.session.workedBeforeForm).toBeUndefined()
     })
   })
 })

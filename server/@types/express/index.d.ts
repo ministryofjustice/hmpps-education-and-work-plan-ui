@@ -12,7 +12,6 @@ import type {
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
   WantToAddQualificationsForm,
-  WorkedBeforeForm,
   WorkInterestRolesForm,
   WorkInterestTypesForm,
 } from 'inductionForms'
@@ -34,7 +33,6 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
 
     // Induction related forms held on the session
-    workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
     workInterestRolesForm: WorkInterestRolesForm

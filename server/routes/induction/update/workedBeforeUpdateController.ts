@@ -4,7 +4,6 @@ import WorkedBeforeController from '../common/workedBeforeController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 import { Result } from '../../../utils/result/result'
 
@@ -23,12 +22,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     const { prisonId } = prisonerSummary
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
-    req.session.workedBeforeForm = workedBeforeForm
-
-    const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/has-worked-before`, errors)
-    }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
     const prisonerHasWorkedBefore =
@@ -36,7 +29,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
 
     if (prisonerHasWorkedBefore) {
       req.journeyData.inductionDto = updatedInduction
-      req.session.workedBeforeForm = undefined
       return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`)
     }
 
@@ -54,7 +46,6 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     }
 
     req.journeyData.inductionDto = undefined
-    req.session.workedBeforeForm = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

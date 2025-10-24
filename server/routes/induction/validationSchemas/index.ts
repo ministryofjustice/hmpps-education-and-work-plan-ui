@@ -8,6 +8,7 @@ import inPrisonWorkSchema from './inPrisonWorkSchema'
 import personalInterestsSchema from './personalInterestsSchema'
 import skillsSchema from './skillsSchema'
 import whoCompletedInductionSchema from './whoCompletedInductionSchema'
+import workedBeforeSchema from './workedBeforeSchema'
 
 export {
   additionalTrainingSchema,
@@ -20,4 +21,5 @@ export {
   personalInterestsSchema,
   skillsSchema,
   whoCompletedInductionSchema,
+  workedBeforeSchema,
 }

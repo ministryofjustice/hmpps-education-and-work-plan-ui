@@ -1,7 +1,6 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import type { WorkedBeforeForm } from 'inductionForms'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
@@ -49,14 +48,15 @@ describe('workedBeforeUpdateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWorkedBeforeView', () => {
-    it('should get the WorkedBefore view given there is no WorkedBeforeForm on the session', async () => {
+    it('should get the WorkedBefore view given there is no WorkedBeforeForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.workedBeforeForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
@@ -72,11 +72,10 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the WorkedBefore view given there is an WorkedBeforeForm already on the session', async () => {
+    it('should get the WorkedBefore view given there is an WorkedBeforeForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
@@ -84,7 +83,7 @@ describe('workedBeforeUpdateController', () => {
       const expectedWorkedBeforeForm = {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
-      req.session.workedBeforeForm = expectedWorkedBeforeForm
+      res.locals.invalidForm = expectedWorkedBeforeForm
 
       const expectedView = {
         prisonerSummary,
@@ -96,39 +95,11 @@ describe('workedBeforeUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workedBefore/index', expectedView)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitWorkedBeforeForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidWorkedBeforeForm: WorkedBeforeForm = {
-        hasWorkedBefore: undefined,
-      }
-      req.body = invalidWorkedBeforeForm
-      req.session.workedBeforeForm = undefined
-
-      const expectedErrors = [
-        { href: '#hasWorkedBefore', text: 'Select whether Ifereeca Peigh has worked before or not' },
-      ]
-
-      // When
-      await controller.submitWorkedBeforeForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/has-worked-before`,
-        expectedErrors,
-      )
-      expect(req.session.workedBeforeForm).toEqual(invalidWorkedBeforeForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction in session and redirect to previous work experience page if answering YES', async () => {
       // Given
       const inductionDto = aValidInductionDto({ hasWorkedBefore: HasWorkedBeforeValue.NO })
@@ -138,7 +109,6 @@ describe('workedBeforeUpdateController', () => {
         hasWorkedBefore: HasWorkedBeforeValue.YES,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -150,7 +120,6 @@ describe('workedBeforeUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
       )
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toStrictEqual({
         ...inductionDto,
         previousWorkExperiences: {
@@ -160,6 +129,7 @@ describe('workedBeforeUpdateController', () => {
         },
       })
     })
+
     it('should update Induction and call API and redirect to work and interests page if answering NO', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -169,7 +139,6 @@ describe('workedBeforeUpdateController', () => {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -185,7 +154,6 @@ describe('workedBeforeUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -200,7 +168,6 @@ describe('workedBeforeUpdateController', () => {
         hasWorkedBeforeNotRelevantReason: 'Some reason',
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -217,7 +184,6 @@ describe('workedBeforeUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workedBeforeForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -231,7 +197,6 @@ describe('workedBeforeUpdateController', () => {
         hasWorkedBefore: HasWorkedBeforeValue.NO,
       }
       req.body = workedBeforeForm
-      req.session.workedBeforeForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -248,7 +213,6 @@ describe('workedBeforeUpdateController', () => {
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(req.session.workedBeforeForm).toEqual(workedBeforeForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(res.redirect).toHaveBeenCalledWith('has-worked-before')

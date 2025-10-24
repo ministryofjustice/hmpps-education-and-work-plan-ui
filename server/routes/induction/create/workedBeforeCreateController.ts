@@ -2,31 +2,19 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WorkedBeforeForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
-import validateWorkedBeforeForm from '../../validators/induction/workedBeforeFormValidator'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
-    req.session.workedBeforeForm = workedBeforeForm
-
-    const errors = validateWorkedBeforeForm(workedBeforeForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
-        errors,
-      )
-    }
 
     const updatedInduction = this.updatedInductionDtoWithHasWorkedBefore(inductionDto, workedBeforeForm)
     const prisonerHasWorkedBefore =
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
     req.journeyData.inductionDto = updatedInduction
-    req.session.workedBeforeForm = undefined
 
     if (!this.previousPageWasCheckYourAnswers(req)) {
       if (prisonerHasWorkedBefore) {

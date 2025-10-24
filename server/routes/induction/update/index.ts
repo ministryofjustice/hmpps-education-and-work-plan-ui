@@ -28,6 +28,7 @@ import {
   inPrisonWorkSchema,
   personalInterestsSchema,
   skillsSchema,
+  workedBeforeSchema,
 } from '../validationSchemas'
 
 /**
@@ -94,6 +95,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workedBeforeUpdateController.getWorkedBeforeView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/has-worked-before', [
+    validate(workedBeforeSchema),
     asyncMiddleware(workedBeforeUpdateController.submitWorkedBeforeForm),
   ])
 
