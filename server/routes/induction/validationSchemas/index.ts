@@ -1,3 +1,4 @@
+import additionalTrainingSchema from './additionalTrainingSchema'
 import affectAbilityToWorkSchema from './affectAbilityToWorkSchema'
 import hopingToWorkOnReleaseSchema from './hopingToWorkOnReleaseSchema'
 import inductionExemptionSchema from './inductionExemptionSchema'
@@ -7,6 +8,7 @@ import skillsSchema from './skillsSchema'
 import whoCompletedInductionSchema from './whoCompletedInductionSchema'
 
 export {
+  additionalTrainingSchema,
   affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
   inductionExemptionSchema,

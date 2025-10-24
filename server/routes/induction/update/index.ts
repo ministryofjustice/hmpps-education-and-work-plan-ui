@@ -21,6 +21,7 @@ import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyId
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import {
+  additionalTrainingSchema,
   affectAbilityToWorkSchema,
   hopingToWorkOnReleaseSchema,
   personalInterestsSchema,
@@ -149,6 +150,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(additionalTrainingUpdateController.getAdditionalTrainingView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/additional-training', [
+    validate(additionalTrainingSchema),
     asyncMiddleware(additionalTrainingUpdateController.submitAdditionalTrainingForm),
   ])
 }

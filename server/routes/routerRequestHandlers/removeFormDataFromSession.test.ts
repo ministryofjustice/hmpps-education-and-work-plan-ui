@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
 import type { HighestLevelOfEducationForm, QualificationDetailsForm, QualificationLevelForm } from 'forms'
 import type {
-  AdditionalTrainingForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
@@ -47,7 +46,6 @@ describe('removeFormDataFromSession', () => {
     req.session.highestLevelOfEducationForm = {} as HighestLevelOfEducationForm
     req.session.qualificationLevelForm = {} as QualificationLevelForm
     req.session.qualificationDetailsForm = {} as QualificationDetailsForm
-    req.session.additionalTrainingForm = {} as AdditionalTrainingForm
 
     // When
     await removeFormDataFromSession(
@@ -71,6 +69,5 @@ describe('removeFormDataFromSession', () => {
     expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     expect(req.session.qualificationLevelForm).toBeUndefined()
     expect(req.session.qualificationDetailsForm).toBeUndefined()
-    expect(req.session.additionalTrainingForm).toBeUndefined()
   })
 })

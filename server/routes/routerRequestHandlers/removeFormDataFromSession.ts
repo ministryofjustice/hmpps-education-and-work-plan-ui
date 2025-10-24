@@ -24,7 +24,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
   session.highestLevelOfEducationForm = undefined
   session.qualificationLevelForm = undefined
   session.qualificationDetailsForm = undefined
-  session.additionalTrainingForm = undefined
 
   next()
 }
