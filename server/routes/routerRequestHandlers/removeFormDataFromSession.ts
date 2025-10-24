@@ -18,7 +18,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
   session.workedBeforeForm = undefined
   session.previousWorkExperienceTypesForm = undefined
   session.previousWorkExperienceDetailForm = undefined
-  session.affectAbilityToWorkForm = undefined
   session.workInterestTypesForm = undefined
   session.inPrisonTrainingForm = undefined
   session.wantToAddQualificationsForm = undefined

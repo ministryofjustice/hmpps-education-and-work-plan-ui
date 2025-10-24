@@ -32,16 +32,17 @@ describe('affectAbilityToWorkCreateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getAbilityToWorkView', () => {
-    it('should get the Ability To Work view given there is no AbilityToWorkForm on the session', async () => {
+    it('should get the Ability To Work view given there is no AbilityToWorkForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.affectAbilityToWorkForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedAbilityToWorkForm: AffectAbilityToWorkForm = {
         affectAbilityToWork: [],
@@ -58,11 +59,10 @@ describe('affectAbilityToWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Ability To Work view given there is an AbilityToWorkForm already on the session', async () => {
+    it('should get the Ability To Work view given there is an AbilityToWorkForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
@@ -77,7 +77,7 @@ describe('affectAbilityToWorkCreateController', () => {
         ],
         affectAbilityToWorkOther: 'Variable mental health',
       }
-      req.session.affectAbilityToWorkForm = expectedAbilityToWorkForm
+      res.locals.invalidForm = expectedAbilityToWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -89,45 +89,11 @@ describe('affectAbilityToWorkCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/affectAbilityToWork/index', expectedView)
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitAbilityToWorkForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.workOnRelease.affectAbilityToWork = undefined
-      inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidAbilityToWorkForm: AffectAbilityToWorkForm = {
-        affectAbilityToWork: [AbilityToWorkValue.OTHER],
-        affectAbilityToWorkOther: '',
-      }
-      req.body = invalidAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#affectAbilityToWorkOther',
-          text: `Enter factors affecting Ifereeca Peigh's ability to work`,
-        },
-      ]
-
-      // When
-      await controller.submitAffectAbilityToWorkForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`,
-        expectedErrors,
-      )
-      expect(req.session.affectAbilityToWorkForm).toEqual(invalidAbilityToWorkForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update inductionDto and redirect to Highest Level of Education page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -140,7 +106,6 @@ describe('affectAbilityToWorkCreateController', () => {
         affectAbilityToWorkOther: 'Variable mental health',
       }
       req.body = affectAbilityToWorkForm
-      req.session.affectAbilityToWorkForm = undefined
 
       // When
       await controller.submitAffectAbilityToWorkForm(req, res, next)
@@ -155,7 +120,6 @@ describe('affectAbilityToWorkCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
       )
-      expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     })
   })
 })

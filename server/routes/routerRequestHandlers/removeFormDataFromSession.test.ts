@@ -3,7 +3,6 @@ import type { PageFlow } from 'viewModels'
 import type { HighestLevelOfEducationForm, QualificationDetailsForm, QualificationLevelForm } from 'forms'
 import type {
   AdditionalTrainingForm,
-  AffectAbilityToWorkForm,
   InPrisonTrainingForm,
   InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
@@ -42,7 +41,6 @@ describe('removeFormDataFromSession', () => {
     req.session.workedBeforeForm = {} as WorkedBeforeForm
     req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
     req.session.previousWorkExperienceDetailForm = {} as PreviousWorkExperienceDetailForm
-    req.session.affectAbilityToWorkForm = {} as AffectAbilityToWorkForm
     req.session.workInterestTypesForm = {} as WorkInterestTypesForm
     req.session.inPrisonTrainingForm = {} as InPrisonTrainingForm
     req.session.wantToAddQualificationsForm = {} as WantToAddQualificationsForm
@@ -67,7 +65,6 @@ describe('removeFormDataFromSession', () => {
     expect(req.session.workedBeforeForm).toBeUndefined()
     expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
     expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-    expect(req.session.affectAbilityToWorkForm).toBeUndefined()
     expect(req.session.workInterestTypesForm).toBeUndefined()
     expect(req.session.inPrisonTrainingForm).toBeUndefined()
     expect(req.session.wantToAddQualificationsForm).toBeUndefined()
