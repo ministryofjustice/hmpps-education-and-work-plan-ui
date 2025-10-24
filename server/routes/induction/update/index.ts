@@ -29,6 +29,8 @@ import {
   personalInterestsSchema,
   skillsSchema,
   workedBeforeSchema,
+  workInterestRolesSchema,
+  workInterestTypesSchema,
 } from '../validationSchemas'
 
 /**
@@ -134,6 +136,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workInterestTypesUpdateController.getWorkInterestTypesView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-types', [
+    validate(workInterestTypesSchema),
     asyncMiddleware(workInterestTypesUpdateController.submitWorkInterestTypesForm),
   ])
 
@@ -141,6 +144,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workInterestRolesUpdateController.getWorkInterestRolesView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles', [
+    validate(workInterestRolesSchema),
     asyncMiddleware(workInterestRolesUpdateController.submitWorkInterestRolesForm),
   ])
 

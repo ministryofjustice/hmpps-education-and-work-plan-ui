@@ -1,11 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import type { WorkInterestTypesForm } from 'inductionForms'
 import WorkInterestTypesController from '../common/workInterestTypesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateWorkInterestTypesForm from '../../validators/induction/workInterestTypesFormValidator'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import { Result } from '../../../utils/result/result'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Types part of an Induction.
@@ -25,18 +26,9 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
-    req.session.workInterestTypesForm = { ...req.body }
-    if (!req.session.workInterestTypesForm.workInterestTypes) {
-      req.session.workInterestTypesForm.workInterestTypes = []
-    }
-    if (!Array.isArray(req.session.workInterestTypesForm.workInterestTypes)) {
-      req.session.workInterestTypesForm.workInterestTypes = [req.session.workInterestTypesForm.workInterestTypes]
-    }
-    const { workInterestTypesForm } = req.session
-
-    const errors = validateWorkInterestTypesForm(workInterestTypesForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-types`, errors)
+    const workInterestTypesForm: WorkInterestTypesForm = {
+      workInterestTypes: asArray(req.body.workInterestTypes),
+      workInterestTypesOther: req.body.workInterestTypesOther,
     }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
@@ -66,7 +58,6 @@ export default class WorkInterestTypesUpdateController extends WorkInterestTypes
       return res.redirect('work-interest-types')
     }
 
-    req.session.workInterestTypesForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

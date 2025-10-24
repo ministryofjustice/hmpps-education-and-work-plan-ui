@@ -4,6 +4,7 @@ import type { WorkInterestTypesForm } from 'inductionForms'
 import InductionController from './inductionController'
 import WorkInterestTypesView from './workInterestTypesView'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,12 +15,16 @@ export default abstract class WorkInterestTypesController extends InductionContr
    */
   getWorkInterestTypesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const workInterestTypesForm = req.session.workInterestTypesForm || toWorkInterestTypesForm(inductionDto)
-    req.session.workInterestTypesForm = undefined
+    const workInterestTypesForm = invalidForm
+      ? {
+          workInterestTypes: asArray(invalidForm.workInterestTypes),
+          workInterestTypesOther: invalidForm.workInterestTypesOther,
+        }
+      : toWorkInterestTypesForm(inductionDto)
 
     const view = new WorkInterestTypesView(prisonerSummary, workInterestTypesForm)
     return res.render('pages/induction/workInterests/workInterestTypes', { ...view.renderArgs })
