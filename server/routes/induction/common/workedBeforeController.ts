@@ -14,12 +14,16 @@ export default abstract class WorkedBeforeController extends InductionController
    */
   getWorkedBeforeView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const workedBeforeForm = req.session.workedBeforeForm || toWorkedBeforeForm(inductionDto)
-    req.session.workedBeforeForm = undefined
+    const workedBeforeForm = invalidForm
+      ? {
+          hasWorkedBefore: invalidForm.hasWorkedBefore,
+          hasWorkedBeforeNotRelevantReason: invalidForm.hasWorkedBeforeNotRelevantReason,
+        }
+      : toWorkedBeforeForm(inductionDto)
 
     const view = new WorkedBeforeView(prisonerSummary, workedBeforeForm)
     return res.render('pages/induction/workedBefore/index', { ...view.renderArgs })
