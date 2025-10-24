@@ -4,6 +4,7 @@ import type { InPrisonTrainingForm } from 'inductionForms'
 import InductionController from './inductionController'
 import InPrisonTrainingView from './inPrisonTrainingView'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
+import { asArray } from '../../../utils/utils'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,12 +15,16 @@ export default abstract class InPrisonTrainingController extends InductionContro
    */
   getInPrisonTrainingView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const inPrisonTrainingForm = req.session.inPrisonTrainingForm || toInPrisonTrainingForm(inductionDto)
-    req.session.inPrisonTrainingForm = undefined
+    const inPrisonTrainingForm = invalidForm
+      ? {
+          inPrisonTraining: asArray(invalidForm.inPrisonTraining),
+          inPrisonTrainingOther: invalidForm.inPrisonTrainingOther,
+        }
+      : toInPrisonTrainingForm(inductionDto)
 
     const view = new InPrisonTrainingView(prisonerSummary, inPrisonTrainingForm)
     return res.render('pages/induction/inPrisonTraining/index', { ...view.renderArgs })

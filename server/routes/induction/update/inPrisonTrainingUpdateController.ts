@@ -4,7 +4,6 @@ import InPrisonTrainingController from '../common/inPrisonTrainingController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateInPrisonTrainingForm from '../../validators/induction/inPrisonTrainingFormValidator'
 import { asArray } from '../../../utils/utils'
 import { Result } from '../../../utils/result/result'
 
@@ -21,7 +20,7 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -29,12 +28,6 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
     const inPrisonTrainingForm: InPrisonTrainingForm = {
       inPrisonTraining: asArray(req.body.inPrisonTraining),
       inPrisonTrainingOther: req.body.inPrisonTrainingOther,
-    }
-    req.session.inPrisonTrainingForm = inPrisonTrainingForm
-
-    const errors = validateInPrisonTrainingForm(inPrisonTrainingForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/in-prison-training`, errors)
     }
 
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
@@ -52,7 +45,6 @@ export default class InPrisonTrainingUpdateController extends InPrisonTrainingCo
       return res.redirect('in-prison-training')
     }
 
-    req.session.inPrisonTrainingForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
   }
