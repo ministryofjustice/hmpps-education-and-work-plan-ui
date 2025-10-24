@@ -4,6 +4,7 @@ import hopingToWorkOnReleaseSchema from './hopingToWorkOnReleaseSchema'
 import inductionExemptionSchema from './inductionExemptionSchema'
 import inductionNoteSchema from './inductionNoteSchema'
 import inPrisonTrainingSchema from './inPrisonTrainingSchema'
+import inPrisonWorkSchema from './inPrisonWorkSchema'
 import personalInterestsSchema from './personalInterestsSchema'
 import skillsSchema from './skillsSchema'
 import whoCompletedInductionSchema from './whoCompletedInductionSchema'
@@ -15,6 +16,7 @@ export {
   inductionExemptionSchema,
   inductionNoteSchema,
   inPrisonTrainingSchema,
+  inPrisonWorkSchema,
   personalInterestsSchema,
   skillsSchema,
   whoCompletedInductionSchema,

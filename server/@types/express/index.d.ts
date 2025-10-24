@@ -9,7 +9,6 @@ import type {
   UpdateGoalForm,
 } from 'forms'
 import type {
-  InPrisonWorkForm,
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
   WantToAddQualificationsForm,
@@ -35,7 +34,6 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
 
     // Induction related forms held on the session
-    inPrisonWorkForm: InPrisonWorkForm
     workedBeforeForm: WorkedBeforeForm
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm

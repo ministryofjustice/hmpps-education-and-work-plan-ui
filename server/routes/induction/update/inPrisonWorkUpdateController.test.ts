@@ -47,14 +47,15 @@ describe('inPrisonWorkUpdateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getInPrisonWorkView', () => {
-    it('should get the In Prison Work view given there is no InPrisonWorkForm on the session', async () => {
+    it('should get the In Prison Work view given there is no InPrisonWorkForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.inPrisonWorkForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedInPrisonWorkForm = {
         inPrisonWork: ['CLEANING_AND_HYGIENE', 'OTHER'],
@@ -75,11 +76,10 @@ describe('inPrisonWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the In Prison Work view given there is an InPrisonWorkForm already on the session', async () => {
+    it('should get the In Prison Work view given there is an InPrisonWorkForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
@@ -88,7 +88,7 @@ describe('inPrisonWorkUpdateController', () => {
         inPrisonWork: ['TEXTILES_AND_SEWING', 'WELDING_AND_METALWORK', 'WOODWORK_AND_JOINERY'],
         inPrisonWorkOther: '',
       }
-      req.session.inPrisonWorkForm = expectedInPrisonWorkForm
+      res.locals.invalidForm = expectedInPrisonWorkForm
 
       const expectedView = {
         prisonerSummary,
@@ -104,44 +104,11 @@ describe('inPrisonWorkUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/inPrisonWork/index', expectedView)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitInPrisonWorkForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidInPrisonWorkForm = {
-        inPrisonWork: ['OTHER'],
-        inPrisonWorkOther: '',
-      }
-      req.body = invalidInPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
-
-      const expectedErrors = [
-        { href: '#inPrisonWorkOther', text: 'Enter the type of work Ifereeca Peigh would like to do in prison' },
-      ]
-
-      // When
-      await controller.submitInPrisonWorkForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/in-prison-work`,
-        expectedErrors,
-      )
-      expect(req.session.inPrisonWorkForm).toEqual(invalidInPrisonWorkForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -152,7 +119,6 @@ describe('inPrisonWorkUpdateController', () => {
         inPrisonWorkOther: 'Gambling',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -183,7 +149,6 @@ describe('inPrisonWorkUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.inPrisonWorkForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -198,7 +163,6 @@ describe('inPrisonWorkUpdateController', () => {
         inPrisonWorkOther: 'Gambling',
       }
       req.body = inPrisonWorkForm
-      req.session.inPrisonWorkForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -230,7 +194,6 @@ describe('inPrisonWorkUpdateController', () => {
       expect(updatedInduction.inPrisonInterests.inPrisonWorkInterests).toEqual(expectedUpdatedWorkInterests)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(req.session.inPrisonWorkForm).toEqual(inPrisonWorkForm)
       const updatedInductionDto = req.journeyData.inductionDto
       expect(updatedInductionDto.inPrisonInterests.inPrisonWorkInterests).toEqual([
         { workType: InPrisonWorkValue.COMPUTERS_OR_DESK_BASED, workTypeOther: undefined },
