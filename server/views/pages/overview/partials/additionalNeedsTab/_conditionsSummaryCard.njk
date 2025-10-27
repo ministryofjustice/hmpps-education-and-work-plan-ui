@@ -12,7 +12,7 @@
   <div class="govuk-summary-card__content">
 
     {% if conditions.isFulfilled() %}
-      {% set activeConditions = conditions.value.conditions | filterArrayOnProperty('active', true) | sort(attribute = 'updatedAt', reverse = true) %}
+      {% set activeConditions = conditions.value.conditions | filterArrayOnProperty('active', true) | sort(attribute = 'conditionTypeCode') %}
 
       {% if activeConditions.length %}
         {% set confirmedDiagnosisConditions = activeConditions | filterArrayOnProperty('source', 'CONFIRMED_DIAGNOSIS') %}
