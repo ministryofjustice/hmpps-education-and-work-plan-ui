@@ -5,7 +5,6 @@ import type {
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
   WantToAddQualificationsForm,
-  WorkInterestTypesForm,
 } from 'inductionForms'
 import { SessionData } from 'express-session'
 import removeFormDataFromSession from './removeFormDataFromSession'
@@ -35,7 +34,6 @@ describe('removeFormDataFromSession', () => {
     req.session.pageFlowHistory = {} as PageFlow
     req.session.previousWorkExperienceTypesForm = {} as PreviousWorkExperienceTypesForm
     req.session.previousWorkExperienceDetailForm = {} as PreviousWorkExperienceDetailForm
-    req.session.workInterestTypesForm = {} as WorkInterestTypesForm
     req.session.wantToAddQualificationsForm = {} as WantToAddQualificationsForm
     req.session.highestLevelOfEducationForm = {} as HighestLevelOfEducationForm
     req.session.qualificationLevelForm = {} as QualificationLevelForm
@@ -55,7 +53,6 @@ describe('removeFormDataFromSession', () => {
     expect(req.session.pageFlowHistory).toBeUndefined()
     expect(req.session.previousWorkExperienceTypesForm).toBeUndefined()
     expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
-    expect(req.session.workInterestTypesForm).toBeUndefined()
     expect(req.session.wantToAddQualificationsForm).toBeUndefined()
     expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     expect(req.session.qualificationLevelForm).toBeUndefined()

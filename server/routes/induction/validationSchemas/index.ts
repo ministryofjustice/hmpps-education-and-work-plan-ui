@@ -9,6 +9,8 @@ import personalInterestsSchema from './personalInterestsSchema'
 import skillsSchema from './skillsSchema'
 import whoCompletedInductionSchema from './whoCompletedInductionSchema'
 import workedBeforeSchema from './workedBeforeSchema'
+import workInterestRolesSchema from './workInterestRolesSchema'
+import workInterestTypesSchema from './workInterestTypesSchema'
 
 export {
   additionalTrainingSchema,
@@ -22,4 +24,6 @@ export {
   skillsSchema,
   whoCompletedInductionSchema,
   workedBeforeSchema,
+  workInterestRolesSchema,
+  workInterestTypesSchema,
 }

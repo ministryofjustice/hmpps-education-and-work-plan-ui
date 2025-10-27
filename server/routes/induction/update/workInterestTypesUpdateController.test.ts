@@ -49,14 +49,15 @@ describe('workInterestTypesUpdateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWorkInterestTypesView', () => {
-    it('should get the Work Interest Types view given there is no WorkInterestTypesForm on the session', async () => {
+    it('should get the Work Interest Types view given there is no WorkInterestTypesForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.workInterestTypesForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedWorkInterestTypesForm = {
         workInterestTypes: [
@@ -77,11 +78,10 @@ describe('workInterestTypesUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
+    it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
@@ -94,7 +94,7 @@ describe('workInterestTypesUpdateController', () => {
         ],
         workInterestTypesOther: 'Film, TV and media',
       }
-      req.session.workInterestTypesForm = expectedWorkInterestTypesForm
+      res.locals.invalidForm = expectedWorkInterestTypesForm
 
       const expectedView = {
         prisonerSummary,
@@ -106,43 +106,11 @@ describe('workInterestTypesUpdateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitWorkInterestTypesForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidWorkInterestTypesForm = {
-        workInterestTypes: [WorkInterestTypeValue.OTHER],
-        workInterestTypesOther: '',
-      }
-      req.body = invalidWorkInterestTypesForm
-      req.session.workInterestTypesForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#workInterestTypesOther',
-          text: 'Enter the type of work Ifereeca Peigh is interested in',
-        },
-      ]
-
-      // When
-      await controller.submitWorkInterestTypesForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/induction/${journeyId}/work-interest-types`,
-        expectedErrors,
-      )
-      expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update Induction and call API and redirect to work and interests page', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -153,7 +121,6 @@ describe('workInterestTypesUpdateController', () => {
         workInterestTypesOther: 'Social Media Influencer',
       }
       req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -183,7 +150,6 @@ describe('workInterestTypesUpdateController', () => {
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/work-and-interests`)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
@@ -198,7 +164,6 @@ describe('workInterestTypesUpdateController', () => {
         workInterestTypesOther: 'Social Media Influencer',
       }
       req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
       const updateInductionDto = aValidUpdateInductionRequest()
 
       mockedCreateOrUpdateInductionDtoMapper.mockReturnValueOnce(updateInductionDto)
@@ -229,7 +194,6 @@ describe('workInterestTypesUpdateController', () => {
       expect(updatedInduction.futureWorkInterests.interests).toEqual(expectedUpdatedWorkInterests)
 
       expect(inductionService.updateInduction).toHaveBeenCalledWith(prisonNumber, updateInductionDto, username)
-      expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
       expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(res.redirect).toHaveBeenCalledWith('work-interest-types')
@@ -245,7 +209,6 @@ describe('workInterestTypesUpdateController', () => {
         workInterestTypes: [WorkInterestTypeValue.CONSTRUCTION],
       }
       req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
 
       const expectedFutureWorkInterests = {
         interests: [{ role: undefined, workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined }],
@@ -256,7 +219,6 @@ describe('workInterestTypesUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/induction/${journeyId}/work-interest-roles`)
-      expect(req.session.workInterestTypesForm).toEqual(workInterestTypesForm)
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.futureWorkInterests).toEqual(expectedFutureWorkInterests)
     })

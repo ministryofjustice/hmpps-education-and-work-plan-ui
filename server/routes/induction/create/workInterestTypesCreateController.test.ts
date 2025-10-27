@@ -34,15 +34,16 @@ describe('workInterestTypesCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWorkInterestTypesView', () => {
-    it('should get the Work Interest Types view given there is no WorkInterestTypesForm on the session', async () => {
+    it('should get the Work Interest Types view given there is no WorkInterestTypesForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.workInterestTypesForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedWorkInterestTypesForm: WorkInterestTypesForm = {
         workInterestTypes: [],
@@ -59,11 +60,10 @@ describe('workInterestTypesCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on the session', async () => {
+    it('should get the Work Interest Types view given there is an WorkInterestTypesForm already on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
@@ -77,7 +77,7 @@ describe('workInterestTypesCreateController', () => {
         ],
         workInterestTypesOther: 'Film, TV and media',
       }
-      req.session.workInterestTypesForm = expectedWorkInterestTypesForm
+      res.locals.invalidForm = expectedWorkInterestTypesForm
 
       const expectedView = {
         prisonerSummary,
@@ -89,44 +89,11 @@ describe('workInterestTypesCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/induction/workInterests/workInterestTypes', expectedView)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitWorkInterestTypesForm', () => {
-    it('should not update Induction given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.futureWorkInterests = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidWorkInterestTypesForm = {
-        workInterestTypes: [WorkInterestTypeValue.OTHER],
-        workInterestTypesOther: '',
-      }
-      req.body = invalidWorkInterestTypesForm
-      req.session.workInterestTypesForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#workInterestTypesOther',
-          text: 'Enter the type of work Ifereeca Peigh is interested in',
-        },
-      ]
-
-      // When
-      await controller.submitWorkInterestTypesForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`,
-        expectedErrors,
-      )
-      expect(req.session.workInterestTypesForm).toEqual(invalidWorkInterestTypesForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should update InductionDto and redirect to Work Interests Details', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -138,7 +105,6 @@ describe('workInterestTypesCreateController', () => {
         workInterestTypesOther: 'Natural world',
       }
       req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
 
       const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-roles`
 
@@ -155,7 +121,6 @@ describe('workInterestTypesCreateController', () => {
         req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
@@ -169,7 +134,6 @@ describe('workInterestTypesCreateController', () => {
         workInterestTypesOther: 'Natural world',
       }
       req.body = workInterestTypesForm
-      req.session.workInterestTypesForm = undefined
 
       const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
         { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
@@ -192,7 +156,6 @@ describe('workInterestTypesCreateController', () => {
         req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.workInterestTypesForm).toBeUndefined()
     })
   })
 })

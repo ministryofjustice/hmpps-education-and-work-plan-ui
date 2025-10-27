@@ -4,7 +4,6 @@ import WorkInterestRolesController from '../common/workInterestRolesController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
-import validateWorkInterestRolesForm from '../../validators/induction/workInterestRolesFormValidator'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import { Result } from '../../../utils/result/result'
 
@@ -21,7 +20,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
@@ -31,12 +30,6 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
       string,
     ][]
     const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
-    req.session.workInterestRolesForm = workInterestRolesForm
-
-    const errors = validateWorkInterestRolesForm(workInterestRolesForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-roles`, errors)
-    }
 
     const updatedInduction = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
     req.journeyData.inductionDto = updatedInduction
@@ -54,7 +47,6 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
       return res.redirect('work-interest-roles')
     }
 
-    req.session.workInterestRolesForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

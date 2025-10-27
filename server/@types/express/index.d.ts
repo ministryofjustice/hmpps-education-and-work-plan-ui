@@ -12,8 +12,6 @@ import type {
   PreviousWorkExperienceDetailForm,
   PreviousWorkExperienceTypesForm,
   WantToAddQualificationsForm,
-  WorkInterestRolesForm,
-  WorkInterestTypesForm,
 } from 'inductionForms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
@@ -35,8 +33,6 @@ declare module 'express-session' {
     // Induction related forms held on the session
     previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm
     previousWorkExperienceDetailForm: PreviousWorkExperienceDetailForm
-    workInterestRolesForm: WorkInterestRolesForm
-    workInterestTypesForm: WorkInterestTypesForm
     wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm

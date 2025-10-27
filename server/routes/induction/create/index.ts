@@ -41,6 +41,8 @@ import {
   skillsSchema,
   whoCompletedInductionSchema,
   workedBeforeSchema,
+  workInterestRolesSchema,
+  workInterestTypesSchema,
 } from '../validationSchemas'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
@@ -191,6 +193,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-types', [
     checkInductionDtoExistsInJourneyData,
+    validate(workInterestTypesSchema),
     asyncMiddleware(workInterestTypesCreateController.submitWorkInterestTypesForm),
   ])
 
@@ -200,6 +203,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-roles', [
     checkInductionDtoExistsInJourneyData,
+    validate(workInterestRolesSchema),
     asyncMiddleware(workInterestRolesCreateController.submitWorkInterestRolesForm),
   ])
 
