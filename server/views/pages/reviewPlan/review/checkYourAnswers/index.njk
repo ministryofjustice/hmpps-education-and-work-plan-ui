@@ -23,9 +23,8 @@
         <h2 class="govuk-heading-m app-summary-card__change-link__heading govuk-!-margin-bottom-3">
           Who completed the review?
         </h2>
-          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="../review" data-qa="review-completed-by-change-link">
-            Change<span class="govuk-visually-hidden">
-              who completed the review</span>
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="../review?submitToCheckAnswers=true" data-qa="review-completed-by-change-link">
+            Change<span class="govuk-visually-hidden"> who completed the review</span>
           </a>
       </div>
 
@@ -51,9 +50,8 @@
       </dl>
       <div class="app-summary-card__change-link">
         <h2 class="govuk-heading-m app-summary-card__change-link__heading govuk-!-margin-bottom-3">Review note</h2>
-          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="../review/notes" data-qa="review-note-change-link">
-            Change<span class="govuk-visually-hidden">
-              review note</span>
+          <a class="govuk-link app-summary-card__change-link__link govuk-!-display-none-print" href="../review/notes?submitToCheckAnswers=true" data-qa="review-note-change-link">
+            Change<span class="govuk-visually-hidden"> review note</span>
           </a>
       </div>
       <dl class="govuk-summary-list govuk-!-margin-bottom-8">
@@ -66,14 +64,14 @@
       </dl>
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-      {{ govukButton({
-              id: "submit-button",
-              text: "Continue",
-              type: "submit",
-              attributes: {"data-qa": "submit-button"},
-              preventDoubleClick: true
-            }) }}
-      </form>
+        {{ govukButton({
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"},
+          preventDoubleClick: true
+        }) }}
+  </form>
     </div>
   </div>
 {% endblock %}

@@ -32,11 +32,12 @@ describe('whoCompletedReviewController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
   describe('getWhoCompletedReviewView', () => {
-    it(`should get 'who completed review' view given form is not on res.locals.invalidForm, but DTO is on the context`, async () => {
+    it(`should get 'who completed review' view given form is not on res.locals.invalidForm, but DTO is on the journeyData`, async () => {
       // Given
       const reviewPlanDto: ReviewPlanDto = {
         prisonNumber,
@@ -90,7 +91,7 @@ describe('whoCompletedReviewController', () => {
   describe('submitWhoCompletedReviewForm', () => {
     it('should redirect to review notes page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
-      req.session.pageFlowHistory = undefined
+      req.query = {}
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,
@@ -116,10 +117,7 @@ describe('whoCompletedReviewController', () => {
 
     it('should redirect to review check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
       // Given
-      req.session.pageFlowHistory = {
-        currentPageIndex: 0,
-        pageUrls: [`/plan/${prisonNumber}/review/check-your-answers`],
-      }
+      req.query = { submitToCheckAnswers: 'true' }
 
       const validForm: WhoCompletedReviewForm = {
         completedBy: SessionCompletedByValue.MYSELF,

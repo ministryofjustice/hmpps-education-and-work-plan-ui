@@ -1,9 +1,8 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import { format, parse, startOfDay } from 'date-fns'
 import type { WhoCompletedReviewForm } from 'reviewPlanForms'
 import type { ReviewPlanDto } from 'dto'
 import WhoCompletedReviewView from './whoCompletedReviewView'
-import { getPreviousPage } from '../../pageFlowHistory'
 
 export default class WhoCompletedReviewController {
   getWhoCompletedReviewView: RequestHandler = async (req, res, next): Promise<void> => {
@@ -31,9 +30,11 @@ export default class WhoCompletedReviewController {
     )
     req.journeyData.reviewPlanDto = updatedReviewPlanDto
 
-    return previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`)
-      : res.redirect(`/plan/${prisonNumber}/${journeyId}/review/notes`)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/plan/${prisonNumber}/${journeyId}/review/check-your-answers`
+        : `/plan/${prisonNumber}/${journeyId}/review/notes`,
+    )
   }
 }
 
@@ -61,20 +62,3 @@ const updateDtoWithFormContents = (
   completedByOtherJobRole: form.completedByOtherJobRole,
   reviewDate: startOfDay(parse(form.reviewDate, 'd/M/yyyy', new Date())),
 })
-
-const previousPageWasCheckYourAnswers = (req: Request): boolean => {
-  const { pageFlowHistory } = req.session
-  if (!pageFlowHistory) {
-    return false
-  }
-  const previousPage = getPreviousPage(pageFlowHistory)
-  if (previousPage) {
-    return previousPage.endsWith('/check-your-answers')
-  }
-
-  if (pageFlowHistory.currentPageIndex === 0 && pageFlowHistory.pageUrls.length === 1) {
-    return pageFlowHistory.pageUrls.at(0).endsWith('/check-your-answers')
-  }
-
-  return false
-}
