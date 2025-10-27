@@ -8,6 +8,7 @@ import inPrisonWorkSchema from './inPrisonWorkSchema'
 import personalInterestsSchema from './personalInterestsSchema'
 import previousWorkExperienceDetailSchema from './previousWorkExperienceDetailSchema'
 import previousWorkExperienceTypesSchema from './previousWorkExperienceTypesSchema'
+import wantToAddQualificationsSchema from './wantToAddQualificationsSchema'
 import skillsSchema from './skillsSchema'
 import whoCompletedInductionSchema from './whoCompletedInductionSchema'
 import workedBeforeSchema from './workedBeforeSchema'
@@ -26,6 +27,7 @@ export {
   previousWorkExperienceDetailSchema,
   previousWorkExperienceTypesSchema,
   skillsSchema,
+  wantToAddQualificationsSchema,
   whoCompletedInductionSchema,
   workedBeforeSchema,
   workInterestRolesSchema,

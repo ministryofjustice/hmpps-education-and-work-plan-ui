@@ -2,27 +2,14 @@ import { Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import WantToAddQualificationsController from '../common/wantToAddQualificationsController'
 import YesNoValue from '../../../enums/yesNoValue'
-import validateWantToAddQualificationsForm from '../../validators/induction/wantToAddQualificationsFormValidator'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 export default class WantToAddQualificationsCreateController extends WantToAddQualificationsController {
   submitWantToAddQualificationsForm: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
 
-    req.session.wantToAddQualificationsForm = { ...req.body }
-    const { wantToAddQualificationsForm } = req.session
-
-    const errors = validateWantToAddQualificationsForm(wantToAddQualificationsForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/want-to-add-qualifications`,
-        errors,
-      )
-    }
-
-    req.session.wantToAddQualificationsForm = undefined
+    const wantToAddQualificationsForm = { ...req.body }
 
     const updatedInduction = updatedInductionDtoWithDefaultQualificationData(
       inductionDto,

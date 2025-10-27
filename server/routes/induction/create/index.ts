@@ -41,6 +41,7 @@ import {
   previousWorkExperienceDetailSchema,
   previousWorkExperienceTypesSchema,
   skillsSchema,
+  wantToAddQualificationsSchema,
   whoCompletedInductionSchema,
   workedBeforeSchema,
   workInterestRolesSchema,
@@ -109,6 +110,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/want-to-add-qualifications', [
     checkInductionDtoExistsInJourneyData,
+    validate(wantToAddQualificationsSchema),
     asyncMiddleware(wantToAddQualificationsCreateController.submitWantToAddQualificationsForm),
   ])
 
