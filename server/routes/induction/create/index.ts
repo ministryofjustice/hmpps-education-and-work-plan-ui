@@ -38,6 +38,7 @@ import {
   inPrisonTrainingSchema,
   inPrisonWorkSchema,
   personalInterestsSchema,
+  previousWorkExperienceTypesSchema,
   skillsSchema,
   whoCompletedInductionSchema,
   workedBeforeSchema,
@@ -175,6 +176,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/previous-work-experience', [
     checkInductionDtoExistsInJourneyData,
+    validate(previousWorkExperienceTypesSchema),
     asyncMiddleware(previousWorkExperienceTypesCreateController.submitPreviousWorkExperienceTypesForm),
   ])
 

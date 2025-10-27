@@ -5,12 +5,12 @@ import type { PageFlow } from 'viewModels'
 import logger from '../../../../logger'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
 import { InductionService } from '../../../services'
-import validatePreviousWorkExperienceTypesForm from '../../validators/induction/previousWorkExperienceTypesFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
 import { Result } from '../../../utils/result/result'
+import { asArray } from '../../../utils/utils'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -26,23 +26,9 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
-    req.session.previousWorkExperienceTypesForm = { ...req.body }
-    if (!req.session.previousWorkExperienceTypesForm.typeOfWorkExperience) {
-      req.session.previousWorkExperienceTypesForm.typeOfWorkExperience = []
-    }
-    if (!Array.isArray(req.session.previousWorkExperienceTypesForm.typeOfWorkExperience)) {
-      req.session.previousWorkExperienceTypesForm.typeOfWorkExperience = [
-        req.session.previousWorkExperienceTypesForm.typeOfWorkExperience,
-      ]
-    }
-    const { previousWorkExperienceTypesForm } = req.session
-
-    const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience`,
-        errors,
-      )
+    const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
+      typeOfWorkExperience: asArray(req.body.typeOfWorkExperience),
+      typeOfWorkExperienceOther: req.body.typeOfWorkExperienceOther,
     }
 
     // create an updated InductionDto with any changes to Previous Work Experiences
@@ -73,13 +59,11 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
           return res.redirect('previous-work-experience')
         }
 
-        req.session.previousWorkExperienceTypesForm = undefined
         req.journeyData.inductionDto = undefined
       } else {
         logger.debug('No changes to Previous Work Experiences were submitted')
       }
 
-      req.session.previousWorkExperienceTypesForm = undefined
       req.journeyData.inductionDto = undefined
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
@@ -98,8 +82,6 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
     logger.debug(
       `Previous Work Experiences changes resulting in going to the Detail pages for ${workExperienceTypesToShowDetailsFormFor}`,
     )
-
-    req.session.previousWorkExperienceTypesForm = undefined
 
     const pageFlowQueue = this.buildPageFlowQueue(
       workExperienceTypesToShowDetailsFormFor,

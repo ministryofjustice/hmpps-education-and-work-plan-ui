@@ -121,13 +121,13 @@ describe('affectAbilityToWorkSchema', () => {
 
   it('sad path - affectAbilityToWorkOther exceeds length', async () => {
     // Given
-    const requestBody = { affectAbilityToWork: 'OTHER', affectAbilityToWorkOther: 'a'.repeat(256) }
+    const requestBody = { affectAbilityToWork: 'OTHER', affectAbilityToWorkOther: 'a'.repeat(513) }
     req.body = requestBody
 
     const expectedErrors: Array<Error> = [
       {
         href: '#affectAbilityToWorkOther',
-        text: 'The factors affecting ability to work must be 255 characters or less',
+        text: 'The factors affecting ability to work must be 512 characters or less',
       },
     ]
     const expectedInvalidForm = JSON.stringify(requestBody)
