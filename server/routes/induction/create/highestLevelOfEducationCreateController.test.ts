@@ -33,15 +33,16 @@ describe('highestLevelOfEducationCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getHighestLevelOfEducationView', () => {
-    it('should get the Highest Level of Education view given the induction on the session has no qualification related data set', async () => {
+    it('should get the Highest Level of Education view given there is no HighestLevelOfEducationForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.journeyData.inductionDto = inductionDto
-      req.session.highestLevelOfEducationForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedHighestLevelOfEducationForm = {
         educationLevel: undefined as EducationLevelValue,
@@ -61,11 +62,10 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Highest Level of Education view a Highest Level of Education form is on the session', async () => {
+    it('should get the Highest Level of Education view a Highest Level of Education form on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
@@ -74,7 +74,7 @@ describe('highestLevelOfEducationCreateController', () => {
       const expectedHighestLevelOfEducationForm = {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
-      req.session.highestLevelOfEducationForm = expectedHighestLevelOfEducationForm
+      res.locals.invalidForm = expectedHighestLevelOfEducationForm
 
       const expectedView = {
         prisonerSummary,
@@ -90,47 +90,11 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/highestLevelOfEducation', expectedView)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })
 
   describe('submitHighestLevelOfEducationForm', () => {
-    it('should redisplay page given form is submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.previousQualifications = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidHighestLevelOfEducationForm = {
-        educationLevel: '',
-      }
-      req.body = invalidHighestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#educationLevel',
-          text: `Select Ifereeca Peigh's highest level of education`,
-        },
-      ]
-
-      // When
-      await controller.submitHighestLevelOfEducationForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
-        expectedErrors,
-      )
-      expect(req.session.highestLevelOfEducationForm).toEqual(invalidHighestLevelOfEducationForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
       // Given
       const inductionDto = aValidInductionDto()
@@ -141,7 +105,6 @@ describe('highestLevelOfEducationCreateController', () => {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -162,7 +125,6 @@ describe('highestLevelOfEducationCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
       )
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     })
 
@@ -175,7 +137,6 @@ describe('highestLevelOfEducationCreateController', () => {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -194,7 +155,6 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/qualifications`)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     })
 
@@ -208,7 +168,6 @@ describe('highestLevelOfEducationCreateController', () => {
         educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
       }
       req.body = highestLevelOfEducationForm
-      req.session.highestLevelOfEducationForm = undefined
 
       const expectedInduction = {
         ...inductionDto,
@@ -236,7 +195,6 @@ describe('highestLevelOfEducationCreateController', () => {
       // Then
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.highestLevelOfEducationForm).toBeUndefined()
     })
   })
 })

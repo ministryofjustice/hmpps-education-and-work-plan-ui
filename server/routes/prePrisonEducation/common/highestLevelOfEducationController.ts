@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { HighestLevelOfEducationForm } from 'forms'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
@@ -13,14 +12,10 @@ export default abstract class HighestLevelOfEducationController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     const { educationDto } = req.journeyData
-    const highestLevelOfEducationForm =
-      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm ||
-      this.toHighestLevelOfEducationForm(educationDto)
-    getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = undefined
+    const highestLevelOfEducationForm = invalidForm || this.toHighestLevelOfEducationForm(educationDto)
 
     const view = new HighestLevelOfEducationView(prisonerSummary, highestLevelOfEducationForm)
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })

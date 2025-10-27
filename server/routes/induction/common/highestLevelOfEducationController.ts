@@ -17,13 +17,11 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const highestLevelOfEducationForm =
-      req.session.highestLevelOfEducationForm || toHighestLevelOfEducationForm(inductionDto)
-    req.session.highestLevelOfEducationForm = undefined
+    const highestLevelOfEducationForm = invalidForm || toHighestLevelOfEducationForm(inductionDto)
 
     const view = new HighestLevelOfEducationView(prisonerSummary, highestLevelOfEducationForm)
     return res.render('pages/prePrisonEducation/highestLevelOfEducation', { ...view.renderArgs })

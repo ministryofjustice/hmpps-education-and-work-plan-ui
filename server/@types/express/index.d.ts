@@ -3,7 +3,6 @@ import type {
   ArchiveGoalForm,
   CreateGoalsForm,
   CompleteGoalForm,
-  HighestLevelOfEducationForm,
   QualificationDetailsForm,
   QualificationLevelForm,
   UpdateGoalForm,
@@ -26,7 +25,6 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
 
     // Induction related forms held on the session
-    highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm
     qualificationDetailsForm: QualificationDetailsForm
     prisonerContexts: PrisonerContexts
@@ -37,7 +35,6 @@ declare module 'express-session' {
     archiveGoalForm?: ArchiveGoalForm
     completeGoalForm?: CompleteGoalForm
     // Education related forms
-    highestLevelOfEducationForm?: HighestLevelOfEducationForm
     qualificationLevelForm?: QualificationLevelForm
     qualificationDetailsForm?: QualificationDetailsForm
   }
