@@ -3,7 +3,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
-import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
 
 export default class PreviousWorkExperienceDetailCreateController extends PreviousWorkExperienceDetailController {
@@ -29,16 +28,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
-    req.session.previousWorkExperienceDetailForm = { ...req.body }
-    const { previousWorkExperienceDetailForm } = req.session
-
-    const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/${typeOfWorkExperience}`,
-        errors,
-      )
-    }
+    const previousWorkExperienceDetailForm = { ...req.body }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperienceDetail(
       inductionDto,
@@ -46,7 +36,6 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
       previousWorkExperienceType,
     )
     req.journeyData.inductionDto = updatedInduction
-    req.session.previousWorkExperienceDetailForm = undefined
 
     if (this.previousPageWasCheckYourAnswers(req)) {
       return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
