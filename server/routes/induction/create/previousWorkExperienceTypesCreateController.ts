@@ -3,7 +3,6 @@ import type { PageFlow } from 'viewModels'
 import type { InductionDto } from 'inductionDto'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import PreviousWorkExperienceTypesController from '../common/previousWorkExperienceTypesController'
-import validatePreviousWorkExperienceTypesForm from '../../validators/induction/previousWorkExperienceTypesFormValidator'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
 import logger from '../../../../logger'
 import { getNextPage } from '../../pageFlowQueue'
@@ -17,21 +16,10 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
 
     const previousWorkExperienceTypesForm: PreviousWorkExperienceTypesForm = {
       typeOfWorkExperience: asArray(req.body.typeOfWorkExperience),
       typeOfWorkExperienceOther: req.body.typeOfWorkExperienceOther,
-    }
-    req.session.previousWorkExperienceTypesForm = previousWorkExperienceTypesForm
-
-    const errors = validatePreviousWorkExperienceTypesForm(previousWorkExperienceTypesForm, prisonerSummary)
-
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
-        errors,
-      )
     }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperiences(
@@ -43,8 +31,6 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     // We need to show the Details page for each work experience type.
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber, journeyId)
     req.session.pageFlowQueue = pageFlowQueue
-
-    req.session.previousWorkExperienceTypesForm = undefined
 
     return res.redirect(getNextPage(pageFlowQueue))
   }

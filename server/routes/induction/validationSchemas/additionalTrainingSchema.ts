@@ -5,7 +5,7 @@ import { asArray } from '../../../utils/utils'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 
 const additionalTrainingSchema = async (req: Request, res: Response) => {
-  const MAX_OTHER_LENGTH = 255
+  const MAX_OTHER_LENGTH = 512
   const { prisonerSummary } = res.locals
   const additionalTrainingMandatoryMessage = `Select the type of training or vocational qualification ${prisonerSummary.firstName} ${prisonerSummary.lastName} has`
   const additionalTrainingOtherMandatoryMessage = `Enter the type of training or vocational qualification ${prisonerSummary.firstName} ${prisonerSummary.lastName} has`

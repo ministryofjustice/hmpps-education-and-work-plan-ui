@@ -124,11 +124,11 @@ describe('additionalTrainingSchema', () => {
 
   it('sad path - additionalTrainingOther exceeds length', async () => {
     // Given
-    const requestBody = { additionalTraining: 'OTHER', additionalTrainingOther: 'a'.repeat(256) }
+    const requestBody = { additionalTraining: 'OTHER', additionalTrainingOther: 'a'.repeat(513) }
     req.body = requestBody
 
     const expectedErrors: Array<Error> = [
-      { href: '#additionalTrainingOther', text: 'The type of training must be 255 characters or less' },
+      { href: '#additionalTrainingOther', text: 'The type of training must be 512 characters or less' },
     ]
     const expectedInvalidForm = JSON.stringify(requestBody)
 

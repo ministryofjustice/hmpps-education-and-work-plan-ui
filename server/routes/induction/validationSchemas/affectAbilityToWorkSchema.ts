@@ -5,7 +5,7 @@ import { asArray } from '../../../utils/utils'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 
 const affectAbilityToWorkSchema = async (req: Request, res: Response) => {
-  const MAX_OTHER_LENGTH = 255
+  const MAX_OTHER_LENGTH = 512
   const { prisonerSummary } = res.locals
   const affectAbilityToWorkMandatoryMessage = `Select factors affecting ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ability to work or select 'None of these'`
   const affectAbilityToWorkOtherMandatoryMessage = `Enter factors affecting ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ability to work`
