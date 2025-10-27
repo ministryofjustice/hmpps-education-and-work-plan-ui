@@ -18,13 +18,12 @@ export default abstract class WantToAddQualificationsController extends Inductio
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
+    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses, invalidForm } =
+      res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const wantToAddQualificationsForm =
-      req.session.wantToAddQualificationsForm || createWantToAddQualificationsForm(inductionDto)
-    req.session.wantToAddQualificationsForm = undefined
+    const wantToAddQualificationsForm = invalidForm || createWantToAddQualificationsForm(inductionDto)
 
     return res.render('pages/prePrisonEducation/wantToAddQualifications', {
       prisonerSummary,

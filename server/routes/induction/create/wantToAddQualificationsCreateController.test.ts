@@ -55,13 +55,14 @@ describe('wantToAddQualificationsCreateController', () => {
     req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getWantToAddQualificationsView', () => {
-    it('should get the Want To Add Qualifications view', async () => {
+    it('should get the Want To Add Qualifications view given there is no WantToAddQualificationsForm on res.locals.invalidForm', async () => {
       // Given
       req.journeyData.inductionDto = partialInductionDto()
-      req.session.wantToAddQualificationsForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
         wantToAddQualifications: undefined,
@@ -80,46 +81,39 @@ describe('wantToAddQualificationsCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
+    })
+
+    it('should get the Want To Add Qualifications view given there is already a WantToAddQualificationsForm on res.locals.invalidForm', async () => {
+      // Given
+      req.journeyData.inductionDto = partialInductionDto()
+
+      const expectedWantToAddQualificationsForm: WantToAddQualificationsForm = {
+        wantToAddQualifications: YesNoValue.NO,
+      }
+      res.locals.invalidForm = expectedWantToAddQualificationsForm
+
+      const expectedView = {
+        prisonerSummary,
+        form: expectedWantToAddQualificationsForm,
+        prisonerFunctionalSkills,
+        inPrisonCourses,
+        prisonNamesById,
+      }
+
+      // When
+      await controller.getWantToAddQualificationsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/wantToAddQualifications', expectedView)
     })
   })
 
   describe('submitWantToAddQualificationsForm', () => {
-    it('should not proceed to next page given form is submitted with validation errors', async () => {
-      // Given
-      req.journeyData.inductionDto = partialInductionDto()
-
-      const invalidWantToAddQualificationsForm = {
-        wantToAddQualifications: '',
-      }
-      req.body = invalidWantToAddQualificationsForm
-      req.session.wantToAddQualificationsForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#wantToAddQualifications',
-          text: `Select whether Ifereeca Peigh wants to record any other educational qualifications`,
-        },
-      ]
-
-      // When
-      await controller.submitWantToAddQualificationsForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
-        expectedErrors,
-      )
-      expect(req.session.wantToAddQualificationsForm).toEqual(invalidWantToAddQualificationsForm)
-      expect(req.journeyData.inductionDto.previousQualifications).toBeUndefined()
-    })
-
     it(`should proceed to qualification level page given user wants to add qualifications`, async () => {
       // Given
       req.journeyData.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -128,7 +122,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([])
       expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
@@ -138,7 +131,6 @@ describe('wantToAddQualificationsCreateController', () => {
       req.journeyData.inductionDto = partialInductionDto()
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -147,7 +139,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([])
       expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
@@ -168,7 +159,6 @@ describe('wantToAddQualificationsCreateController', () => {
       }
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -177,7 +167,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
 
@@ -199,7 +188,6 @@ describe('wantToAddQualificationsCreateController', () => {
       }
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -208,7 +196,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications)
     })
 
@@ -230,7 +217,6 @@ describe('wantToAddQualificationsCreateController', () => {
       }
 
       req.body = { wantToAddQualifications: YesNoValue.NO }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -239,7 +225,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual([]) // expect qualifications to have been removed from the Induction
       expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })
@@ -260,7 +245,6 @@ describe('wantToAddQualificationsCreateController', () => {
       }
 
       req.body = { wantToAddQualifications: YesNoValue.YES }
-      req.session.wantToAddQualificationsForm = undefined
 
       // When
       await controller.submitWantToAddQualificationsForm(req, res, next)
@@ -269,7 +253,6 @@ describe('wantToAddQualificationsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
       )
-      expect(req.session.wantToAddQualificationsForm).toBeUndefined()
       expect(req.journeyData.inductionDto.previousQualifications.qualifications).toEqual(existingQualifications) // expect qualifications to still be empty
       expect(req.journeyData.inductionDto.previousQualifications.educationLevel).toEqual(EducationLevelValue.NOT_SURE)
     })

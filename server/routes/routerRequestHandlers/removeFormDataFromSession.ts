@@ -14,7 +14,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
 
   session.pageFlowQueue = undefined
   session.pageFlowHistory = undefined
-  session.wantToAddQualificationsForm = undefined
   session.highestLevelOfEducationForm = undefined
   session.qualificationLevelForm = undefined
   session.qualificationDetailsForm = undefined

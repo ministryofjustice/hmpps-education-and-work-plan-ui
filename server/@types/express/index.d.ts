@@ -8,7 +8,6 @@ import type {
   QualificationLevelForm,
   UpdateGoalForm,
 } from 'forms'
-import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
@@ -27,7 +26,6 @@ declare module 'express-session' {
     pageFlowQueue: PageFlow
 
     // Induction related forms held on the session
-    wantToAddQualificationsForm: WantToAddQualificationsForm
     highestLevelOfEducationForm: HighestLevelOfEducationForm
     qualificationLevelForm: QualificationLevelForm
     qualificationDetailsForm: QualificationDetailsForm
