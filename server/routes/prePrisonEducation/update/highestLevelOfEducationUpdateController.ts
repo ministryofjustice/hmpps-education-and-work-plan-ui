@@ -1,8 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import createError from 'http-errors'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
-import validateHighestLevelOfEducationForm from '../../validators/induction/highestLevelOfEducationFormValidator'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import { EducationAndWorkPlanService } from '../../../services'
 import logger from '../../../../logger'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
@@ -17,22 +15,13 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
+    const { educationDto } = req.journeyData
 
     const highestLevelOfEducationForm = { ...req.body }
 
-    const errors = validateHighestLevelOfEducationForm(highestLevelOfEducationForm, prisonerSummary)
-    if (errors.length > 0) {
-      getPrisonerContext(req.session, prisonNumber).highestLevelOfEducationForm = highestLevelOfEducationForm
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/education/${journeyId}/highest-level-of-education`,
-        errors,
-      )
-    }
-
-    const { educationDto } = req.journeyData
     const updatedEducationDto = this.updatedEducationDtoWithHighestLevelOfEducation(
       educationDto,
       highestLevelOfEducationForm,

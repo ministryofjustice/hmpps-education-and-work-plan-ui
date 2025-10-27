@@ -14,6 +14,8 @@ import ApplicationAction from '../../../enums/applicationAction'
 import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyIdentifier'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import { highestLevelOfEducationSchema } from '../../induction/validationSchemas'
 
 /**
  * Route definitions for updating a prisoner's qualifications
@@ -49,6 +51,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(highestLevelOfEducationUpdateController.getHighestLevelOfEducationView),
   ])
   router.post('/prisoners/:prisonNumber/education/:journeyId/highest-level-of-education', [
+    validate(highestLevelOfEducationSchema),
     asyncMiddleware(highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm),
   ])
 

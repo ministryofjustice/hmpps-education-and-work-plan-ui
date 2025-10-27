@@ -33,6 +33,7 @@ import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import {
   additionalTrainingSchema,
   affectAbilityToWorkSchema,
+  highestLevelOfEducationSchema,
   hopingToWorkOnReleaseSchema,
   inductionNoteSchema,
   inPrisonTrainingSchema,
@@ -132,6 +133,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/highest-level-of-education', [
     checkInductionDtoExistsInJourneyData,
+    validate(highestLevelOfEducationSchema),
     asyncMiddleware(highestLevelOfEducationCreateController.submitHighestLevelOfEducationForm),
   ])
 
