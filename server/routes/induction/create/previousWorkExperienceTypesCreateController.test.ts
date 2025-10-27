@@ -91,7 +91,6 @@ describe('previousWorkExperienceTypesCreateController', () => {
         'pages/induction/previousWorkExperience/workExperienceTypes',
         expectedView,
       )
-      expect(req.session.previousWorkExperienceDetailForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })

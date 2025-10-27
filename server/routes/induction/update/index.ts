@@ -27,6 +27,7 @@ import {
   inPrisonTrainingSchema,
   inPrisonWorkSchema,
   personalInterestsSchema,
+  previousWorkExperienceDetailSchema,
   previousWorkExperienceTypesSchema,
   skillsSchema,
   workedBeforeSchema,
@@ -114,6 +115,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView),
   ])
   router.post('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
+    validate(previousWorkExperienceDetailSchema),
     asyncMiddleware(previousWorkExperienceDetailUpdateController.submitPreviousWorkExperienceDetailForm),
   ])
 

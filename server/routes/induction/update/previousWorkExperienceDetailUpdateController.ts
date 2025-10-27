@@ -5,7 +5,6 @@ import { InductionService } from '../../../services'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import validatePreviousWorkExperienceDetailForm from '../../validators/induction/previousWorkExperienceDetailFormValidator'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
 import { Result } from '../../../utils/result/result'
@@ -43,16 +42,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
-    req.session.previousWorkExperienceDetailForm = { ...req.body }
-    const { previousWorkExperienceDetailForm } = req.session
-
-    const errors = validatePreviousWorkExperienceDetailForm(previousWorkExperienceDetailForm, prisonerSummary)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/induction/${journeyId}/previous-work-experience/${typeOfWorkExperience}`,
-        errors,
-      )
-    }
+    const previousWorkExperienceDetailForm = { ...req.body }
 
     const updatedInduction = this.updatedInductionDtoWithPreviousWorkExperienceDetail(
       inductionDto,
@@ -65,7 +55,6 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       // There is a page flow queue, and we are not on the last page of the queue yet
       // Put the updated InductionDto on the session and redirect to the next page in the queue
       req.journeyData.inductionDto = updatedInduction
-      req.session.previousWorkExperienceDetailForm = undefined
       return res.redirect(getNextPage(pageFlowQueue))
     }
 
@@ -84,7 +73,6 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
       )
     }
 
-    req.session.previousWorkExperienceDetailForm = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }

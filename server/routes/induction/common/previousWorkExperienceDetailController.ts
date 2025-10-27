@@ -23,7 +23,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
   ): Promise<void> => {
     const { journeyId, prisonNumber, typeOfWorkExperience } = req.params
     const { inductionDto } = req.journeyData
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {
@@ -56,9 +56,7 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
     }
 
     const previousWorkExperienceDetailsForm =
-      req.session.previousWorkExperienceDetailForm ||
-      toPreviousWorkExperienceDetailForm(inductionDto, previousWorkExperienceType)
-    req.session.previousWorkExperienceDetailForm = undefined
+      invalidForm || toPreviousWorkExperienceDetailForm(inductionDto, previousWorkExperienceType)
 
     const view = new PreviousWorkExperienceDetailView(
       prisonerSummary,
