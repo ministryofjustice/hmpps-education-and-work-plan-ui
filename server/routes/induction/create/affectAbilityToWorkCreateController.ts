@@ -20,9 +20,10 @@ export default class AffectAbilityToWorkCreateController extends AffectAbilityTo
     const updatedInduction = this.updatedInductionDtoWithAffectAbilityToWork(inductionDto, affectAbilityToWorkForm)
     req.journeyData.inductionDto = updatedInduction
 
-    const nextPage = this.previousPageWasCheckYourAnswers(req)
-      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`
-    return res.redirect(nextPage)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`,
+    )
   }
 }

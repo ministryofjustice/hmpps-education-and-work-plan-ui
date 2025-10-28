@@ -31,9 +31,9 @@ describe('whoCompletedInductionController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -94,6 +94,8 @@ describe('whoCompletedInductionController', () => {
   describe('submitWhoCompletedInductionForm', () => {
     it('should redirect to induction notes page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = {
         ...aValidInductionDto(),
         completedBy: undefined as SessionCompletedByValue,
@@ -103,7 +105,6 @@ describe('whoCompletedInductionController', () => {
       }
       req.journeyData.inductionDto = inductionDto
 
-      req.session.pageFlowHistory = undefined
       res.locals.invalidForm = undefined
 
       const validForm: WhoCompletedInductionForm = {
@@ -133,13 +134,8 @@ describe('whoCompletedInductionController', () => {
 
     it('should redirect to induction check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
       // Given
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/who-completed-induction`,
-        ],
-        currentPageIndex: 1,
-      }
+      req.query = { submitToCheckAnswers: 'true' }
+
       res.locals.invalidForm = undefined
 
       const inductionDto = {

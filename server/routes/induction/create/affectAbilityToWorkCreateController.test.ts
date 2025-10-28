@@ -32,6 +32,7 @@ describe('affectAbilityToWorkCreateController', () => {
     jest.resetAllMocks()
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -94,8 +95,10 @@ describe('affectAbilityToWorkCreateController', () => {
   })
 
   describe('submitAbilityToWorkForm', () => {
-    it('should update inductionDto and redirect to Highest Level of Education page', async () => {
+    it('should redirect to Highest Level of Education page given form submitted successfully and previous page was not check-your-answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.workOnRelease.affectAbilityToWork = undefined
       inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
@@ -121,5 +124,32 @@ describe('affectAbilityToWorkCreateController', () => {
         `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
       )
     })
+  })
+
+  it('should redirect to induction check-your-answers page given form submitted successfully and previous page was check-your-answers', async () => {
+    req.query = { submitToCheckAnswers: 'true' }
+
+    const inductionDto = aValidInductionDto()
+    inductionDto.workOnRelease.affectAbilityToWork = undefined
+    inductionDto.workOnRelease.affectAbilityToWorkOther = undefined
+    req.journeyData.inductionDto = inductionDto
+
+    const affectAbilityToWorkForm = {
+      affectAbilityToWork: [AbilityToWorkValue.CARING_RESPONSIBILITIES, AbilityToWorkValue.OTHER],
+      affectAbilityToWorkOther: 'Variable mental health',
+    }
+    req.body = affectAbilityToWorkForm
+
+    // When
+    await controller.submitAffectAbilityToWorkForm(req, res, next)
+
+    // Then
+    const updatedInduction = req.journeyData.inductionDto
+    expect(updatedInduction.workOnRelease.affectAbilityToWork).toEqual([
+      AbilityToWorkValue.CARING_RESPONSIBILITIES,
+      AbilityToWorkValue.OTHER,
+    ])
+    expect(updatedInduction.workOnRelease.affectAbilityToWorkOther).toEqual('Variable mental health')
+    expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
   })
 })
