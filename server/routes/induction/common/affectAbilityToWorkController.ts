@@ -28,8 +28,6 @@ export default abstract class AffectAbilityToWorkController extends InductionCon
         }
       : toAffectAbilityToWorkForm(inductionDto)
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const view = new AffectAbilityToWorkView(prisonerSummary, affectAbilityToWorkForm)
     return res.render('pages/induction/affectAbilityToWork/index', { ...view.renderArgs })
   }

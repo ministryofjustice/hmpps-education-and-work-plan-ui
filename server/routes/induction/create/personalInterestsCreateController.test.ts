@@ -31,9 +31,9 @@ describe('personalInterestsCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -87,49 +87,13 @@ describe('personalInterestsCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Personal Interests view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.personalSkillsAndInterests.interests = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedPersonalInterestsForm: PersonalInterestsForm = {
-        personalInterests: [],
-        personalInterestsOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedPersonalInterestsForm,
-      }
-
-      // When
-      await controller.getPersonalInterestsView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/personalInterests/index', expectedView)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitPersonalInterestsForm', () => {
-    it('should update inductionDto and redirect to in-prison-work page', async () => {
+    it('should update inductionDto and redirect to in-prison-work page given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -156,6 +120,8 @@ describe('personalInterestsCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.interests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -170,14 +136,6 @@ describe('personalInterestsCreateController', () => {
         { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: undefined },
         { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/personal-interests`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitPersonalInterestsForm(req, res, next)

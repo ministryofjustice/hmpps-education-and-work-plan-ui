@@ -24,8 +24,6 @@ export default abstract class SkillsController extends InductionController {
         }
       : toSkillsForm(inductionDto)
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const view = new SkillsView(prisonerSummary, skillsForm)
     return res.render('pages/induction/skills/index', { ...view.renderArgs })
   }

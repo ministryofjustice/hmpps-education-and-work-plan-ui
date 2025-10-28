@@ -20,8 +20,10 @@ export default class InPrisonTrainingCreateController extends InPrisonTrainingCo
     const updatedInduction = this.updatedInductionDtoWithInPrisonTraining(inductionDto, inPrisonTrainingForm)
     req.journeyData.inductionDto = updatedInduction
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/who-completed-induction`,
+    )
   }
 }

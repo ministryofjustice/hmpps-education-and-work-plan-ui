@@ -29,7 +29,6 @@ describe('inductionNoteController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
     res.locals.invalidForm = undefined

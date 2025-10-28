@@ -31,9 +31,9 @@ describe('skillsCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -87,49 +87,13 @@ describe('skillsCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
-
-    it('should get the Skills view given the previous page was Check Your Answers', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      inductionDto.personalSkillsAndInterests.skills = undefined
-      req.journeyData.inductionDto = inductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: [`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`],
-        currentPageIndex: 0,
-      }
-
-      const expectedPageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
-        ],
-        currentPageIndex: 1,
-      }
-
-      const expectedSkillsForm: SkillsForm = {
-        skills: [],
-        skillsOther: undefined,
-      }
-
-      const expectedView = {
-        prisonerSummary,
-        form: expectedSkillsForm,
-      }
-
-      // When
-      await controller.getSkillsView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/induction/skills/index', expectedView)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
-    })
   })
 
   describe('submitSkillsForm', () => {
-    it('should update inductionDto and redirect to personal interests page', async () => {
+    it('should update inductionDto and redirect to personal interests page given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.journeyData.inductionDto = inductionDto
@@ -156,6 +120,8 @@ describe('skillsCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.personalSkillsAndInterests.skills = undefined
       req.journeyData.inductionDto = inductionDto
@@ -170,14 +136,6 @@ describe('skillsCreateController', () => {
         { skillType: SkillsValue.TEAMWORK, skillTypeOther: undefined },
         { skillType: SkillsValue.OTHER, skillTypeOther: 'Circus skills' },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/skills`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitSkillsForm(req, res, next)

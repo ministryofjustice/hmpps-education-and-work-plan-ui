@@ -36,9 +36,9 @@ describe('inPrisonTrainingCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -95,8 +95,10 @@ describe('inPrisonTrainingCreateController', () => {
   })
 
   describe('submitInPrisonTrainingForm', () => {
-    it('should update inductionDto and redirect to Who Completed Induction page', async () => {
+    it('should update inductionDto and redirect to Who Completed Induction page given previous page was not Check Your Anwsers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -125,6 +127,8 @@ describe('inPrisonTrainingCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers page given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonTrainingInterests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -139,14 +143,6 @@ describe('inPrisonTrainingCreateController', () => {
         { trainingType: InPrisonTrainingValue.CATERING, trainingTypeOther: undefined },
         { trainingType: InPrisonTrainingValue.OTHER, trainingTypeOther: 'Fence building for beginners' },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/in-prison-training`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitInPrisonTrainingForm(req, res, next)
