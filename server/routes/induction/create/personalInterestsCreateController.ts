@@ -20,9 +20,10 @@ export default class PersonalInterestsCreateController extends PersonalInterests
     const updatedInduction = this.updatedInductionDtoWithPersonalInterests(inductionDto, personalInterestsForm)
     req.journeyData.inductionDto = updatedInduction
 
-    const nextPage = this.previousPageWasCheckYourAnswers(req)
-      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-work`
-    return res.redirect(nextPage)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-work`,
+    )
   }
 }

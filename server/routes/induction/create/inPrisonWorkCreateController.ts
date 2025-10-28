@@ -16,8 +16,10 @@ export default class InPrisonWorkCreateController extends InPrisonWorkController
     const updatedInduction = this.updatedInductionDtoWithInPrisonWork(inductionDto, inPrisonWorkForm)
     req.journeyData.inductionDto = updatedInduction
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-training`)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-training`,
+    )
   }
 }

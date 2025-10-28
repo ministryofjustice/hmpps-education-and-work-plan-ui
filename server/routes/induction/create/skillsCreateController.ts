@@ -16,8 +16,10 @@ export default class SkillsCreateController extends SkillsController {
     const updatedInduction = this.updatedInductionDtoWithSkills(inductionDto, skillsForm)
     req.journeyData.inductionDto = updatedInduction
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/personal-interests`)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/personal-interests`,
+    )
   }
 }

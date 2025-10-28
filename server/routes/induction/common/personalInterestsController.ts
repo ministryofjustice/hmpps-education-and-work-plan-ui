@@ -24,8 +24,6 @@ export default abstract class PersonalInterestsController extends InductionContr
         }
       : toPersonalInterestsForm(inductionDto)
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const view = new PersonalInterestsView(prisonerSummary, personalInterestsForm)
     return res.render('pages/induction/personalInterests/index', { ...view.renderArgs })
   }

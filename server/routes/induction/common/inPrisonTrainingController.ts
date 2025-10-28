@@ -17,8 +17,6 @@ export default abstract class InPrisonTrainingController extends InductionContro
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const inPrisonTrainingForm = invalidForm
       ? {
           inPrisonTraining: asArray(invalidForm.inPrisonTraining),

@@ -31,9 +31,9 @@ describe('inPrisonWorkCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -90,8 +90,10 @@ describe('inPrisonWorkCreateController', () => {
   })
 
   describe('submitInPrisonWorkForm', () => {
-    it('should update inductionDto and redirect to in-prison training interests page', async () => {
+    it('should update inductionDto and redirect to in-prison training interests page given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.inPrisonInterests.inPrisonWorkInterests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -118,6 +120,8 @@ describe('inPrisonWorkCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
 
@@ -131,14 +135,6 @@ describe('inPrisonWorkCreateController', () => {
         { workType: InPrisonWorkValue.KITCHENS_AND_COOKING, workTypeOther: undefined },
         { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Any odd-jobs I can pick up to pass the time' },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/in-prison-work`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitInPrisonWorkForm(req, res, next)
