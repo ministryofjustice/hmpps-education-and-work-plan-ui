@@ -14,9 +14,11 @@ export default class WhoCompletedInductionCreateController extends WhoCompletedI
     const updatedInductionDto = updateDtoWithFormContents(inductionDto, whoCompletedInductionForm)
     req.journeyData.inductionDto = updatedInductionDto
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/notes`,
+    )
   }
 }
 
