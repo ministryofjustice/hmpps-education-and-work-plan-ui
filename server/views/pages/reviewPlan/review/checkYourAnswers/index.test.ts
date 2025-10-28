@@ -40,10 +40,10 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     expect($('[data-qa="page-heading"]').text().replace(/\s+/g, ' ').trim()).toBe(
       `Check Ifereeca Peigh's review information`,
     )
-    expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review')
+    expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review?submitToCheckAnswers=true')
     expect($('[data-qa="review-completed-by-MYSELF"]').length).toEqual(1)
     expect($('[data-qa="job-role"]').length).toEqual(0)
-    expect($('[data-qa="review-note-change-link"]').attr('href')).toBe('../review/notes')
+    expect($('[data-qa="review-note-change-link"]').attr('href')).toBe('../review/notes?submitToCheckAnswers=true')
     expect($('[data-qa="review-note"]').text().trim()).toBe('Progress noted in review.')
   })
 
@@ -67,10 +67,10 @@ describe('ReviewPlanCheckYourAnswersPage', () => {
     expect($('[data-qa="page-heading"]').text().replace(/\s+/g, ' ').trim()).toBe(
       `Check Ifereeca Peigh's review information`,
     )
-    expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review')
+    expect($('[data-qa="review-completed-by-change-link"]').attr('href')).toBe('../review?submitToCheckAnswers=true')
     expect($('[data-qa="review-completed-by-SOMEBODY_ELSE"]').text().trim()).toBe('Larry David')
     expect($('[data-qa="job-role"]').text().trim()).toBe('CIAG')
-    expect($('[data-qa="review-note-change-link"]').attr('href')).toBe('../review/notes')
+    expect($('[data-qa="review-note-change-link"]').attr('href')).toBe('../review/notes?submitToCheckAnswers=true')
     expect($('[data-qa="review-note"]').text().trim()).toBe('Progress noted in review.')
   })
 })

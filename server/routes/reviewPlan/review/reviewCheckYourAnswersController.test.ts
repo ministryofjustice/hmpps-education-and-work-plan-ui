@@ -49,7 +49,6 @@ describe('ReviewCheckYourAnswersController', () => {
   describe('getReviewCheckYourAnswersView', () => {
     it('should render the "Check Your Answers" page', async () => {
       // Given
-      req.session.pageFlowHistory = undefined
       const reviewPlanDto = {
         prisonNumber,
         prisonId: 'BXI',
@@ -63,17 +62,12 @@ describe('ReviewCheckYourAnswersController', () => {
         prisonerSummary,
         reviewPlanDto,
       }
-      const expectedPageFlowHistory = {
-        currentPageIndex: 0,
-        pageUrls: [`/plan/${prisonNumber}/${journeyId}/review/check-your-answers`],
-      }
 
       // When
       await controller.getReviewCheckYourAnswersView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/reviewPlan/review/checkYourAnswers/index', expectedViewData)
-      expect(req.session.pageFlowHistory).toEqual(expectedPageFlowHistory)
     })
   })
 

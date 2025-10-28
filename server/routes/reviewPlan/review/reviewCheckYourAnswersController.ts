@@ -5,7 +5,6 @@ import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersView from './reviewCheckYourAnswersView'
 import { AuditService, ReviewService } from '../../../services'
 import { BaseAuditData } from '../../../services/auditService'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 export default class ReviewCheckYourAnswersController {
   constructor(
@@ -16,8 +15,6 @@ export default class ReviewCheckYourAnswersController {
   getReviewCheckYourAnswersView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = res.locals
     const { reviewPlanDto } = req.journeyData
-
-    req.session.pageFlowHistory = buildNewPageFlowHistory(req)
 
     const view = new ReviewCheckYourAnswersView(prisonerSummary, reviewPlanDto)
     return res.render('pages/reviewPlan/review/checkYourAnswers/index', { ...view.renderArgs })
