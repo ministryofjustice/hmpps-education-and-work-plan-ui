@@ -1,6 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationDetailsController from '../common/qualificationDetailsController'
-import validateQualificationDetailsForm from '../../validators/induction/qualificationDetailsFormValidator'
 
 export default class QualificationDetailsCreateController extends QualificationDetailsController {
   submitQualificationDetailsForm: RequestHandler = async (
@@ -11,22 +10,9 @@ export default class QualificationDetailsCreateController extends QualificationD
     const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
     const { qualificationLevelForm } = req.session
-    const { prisonerSummary } = res.locals
 
     req.session.qualificationDetailsForm = { ...req.body }
     const { qualificationDetailsForm } = req.session
-
-    const errors = validateQualificationDetailsForm(
-      qualificationDetailsForm,
-      qualificationLevelForm.qualificationLevel,
-      prisonerSummary,
-    )
-    if (errors.length > 0) {
-      return res.redirectWithErrors(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`,
-        errors,
-      )
-    }
 
     const updatedInduction = this.addQualificationToInductionDto(
       inductionDto,

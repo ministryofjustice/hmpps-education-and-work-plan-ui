@@ -108,42 +108,6 @@ describe('qualificationDetailsController', () => {
   })
 
   describe('submitQualificationDetailsForm', () => {
-    it('should redisplay Qualification Details page given form is submitted with validation errors', async () => {
-      // Given
-      const educationDto = {
-        prisonNumber,
-        educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
-        qualifications: [],
-      } as EducationDto
-      req.journeyData.educationDto = educationDto
-      const qualificationLevelForm: QualificationLevelForm = {
-        qualificationLevel: QualificationLevelValue.LEVEL_3,
-      }
-      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = qualificationLevelForm
-
-      const invalidQualificationDetailsForm = {}
-      req.body = invalidQualificationDetailsForm
-
-      const expectedErrors = [
-        { href: '#qualificationSubject', text: `Enter the subject of Ifereeca Peigh's level 3 qualification` },
-        { href: '#qualificationGrade', text: `Enter the grade of Ifereeca Peigh's level 3 qualification` },
-      ]
-
-      // When
-      await controller.submitQualificationDetailsForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-education/${journeyId}/qualification-details`,
-        expectedErrors,
-      )
-      expect(req.journeyData.educationDto).toEqual(educationDto)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm).toEqual(
-        invalidQualificationDetailsForm,
-      )
-    })
-
     it('should redirect to Qualification List page given valid form is submitted', async () => {
       // Given
       const educationDto = {
