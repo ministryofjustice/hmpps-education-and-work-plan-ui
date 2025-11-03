@@ -20,7 +20,7 @@
             <div class="govuk-summary-list__row" data-qa="support-strategy-summary-list-row">
               <h3 class="govuk-heading-s govuk-!-margin-top-3"> {{ type | formatSupportStrategyTypeScreenValue | default(type, true) }} </h3>
               {% for supportStrategy in supportStrategies %}
-                <p class="govuk-body govuk-!-margin-top-3" data-qa="support-strategy-details">
+                <p class="govuk-body govuk-!-margin-top-3 app-u-multiline-text" data-qa="support-strategy-details">
                   {{ supportStrategy.supportStrategyDetails }}
                 </p>
               {% endfor %}
