@@ -14,7 +14,7 @@ export default class QualificationDetailsCreateController extends QualificationD
     req.session.qualificationDetailsForm = { ...req.body }
     const { qualificationDetailsForm } = req.session
 
-    const updatedInduction = this.addQualificationToInductionDto(
+    req.journeyData.inductionDto = this.addQualificationToInductionDto(
       inductionDto,
       qualificationDetailsForm,
       qualificationLevelForm.qualificationLevel,
