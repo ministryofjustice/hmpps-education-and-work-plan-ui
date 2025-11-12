@@ -12,7 +12,9 @@ const qualificationDetailsSchema = async (req: Request, res: Response) => {
   const { prisonerSummary } = res.locals
   const { prisonNumber } = req.params
 
-  const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
+  // Check both locations for qualificationLevelForm (dual journey support)
+  const prisonerContext = getPrisonerContext(req.session, prisonNumber)
+  const qualificationLevelForm = req.session.qualificationLevelForm || prisonerContext.qualificationLevelForm
   const qualificationLevel = qualificationLevelForm?.qualificationLevel as QualificationLevelValue
   const formattedLevel = formatQualificationLevelFilter(qualificationLevel).toLowerCase()
 
