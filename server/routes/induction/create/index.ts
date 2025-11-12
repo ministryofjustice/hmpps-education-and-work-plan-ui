@@ -41,6 +41,8 @@ import {
   personalInterestsSchema,
   previousWorkExperienceDetailSchema,
   previousWorkExperienceTypesSchema,
+  qualificationDetailsSchema,
+  qualificationLevelSchema,
   skillsSchema,
   wantToAddQualificationsSchema,
   whoCompletedInductionSchema,
@@ -143,6 +145,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/qualification-level', [
     checkInductionDtoExistsInJourneyData,
+    validate(qualificationLevelSchema),
     asyncMiddleware(qualificationLevelCreateController.submitQualificationLevelForm),
   ])
 
@@ -152,6 +155,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/qualification-details', [
     checkInductionDtoExistsInJourneyData,
+    validate(qualificationDetailsSchema),
     asyncMiddleware(qualificationDetailsCreateController.submitQualificationDetailsForm),
   ])
 

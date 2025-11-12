@@ -82,36 +82,6 @@ describe('qualificationLevelCreateController', () => {
   })
 
   describe('submitQualificationLevelForm', () => {
-    it('should not proceed to qualification detail page given form submitted with validation errors', async () => {
-      // Given
-      const inductionDto = aValidInductionDto()
-      req.journeyData.inductionDto = inductionDto
-
-      const invalidQualificationLevelForm = {
-        qualificationLevel: '',
-      }
-      req.body = invalidQualificationLevelForm
-      req.session.qualificationLevelForm = undefined
-
-      const expectedErrors = [
-        {
-          href: '#qualificationLevel',
-          text: `Select the level of qualification Ifereeca Peigh wants to add`,
-        },
-      ]
-
-      // When
-      await controller.submitQualificationLevelForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`,
-        expectedErrors,
-      )
-      expect(req.session.qualificationLevelForm).toEqual(invalidQualificationLevelForm)
-      expect(req.journeyData.inductionDto).toEqual(inductionDto)
-    })
-
     it('should proceed to qualification detail page', async () => {
       // Given
       const inductionDto = aValidInductionDto()

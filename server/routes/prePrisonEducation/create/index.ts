@@ -15,7 +15,11 @@ import insertJourneyIdentifier from '../../routerRequestHandlers/insertJourneyId
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
-import { highestLevelOfEducationSchema } from '../../induction/validationSchemas'
+import {
+  highestLevelOfEducationSchema,
+  qualificationLevelSchema,
+  qualificationDetailsSchema,
+} from '../../induction/validationSchemas'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
@@ -50,6 +54,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationLevelCreateController.getQualificationLevelView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
+    validate(qualificationLevelSchema),
     asyncMiddleware(qualificationLevelCreateController.submitQualificationLevelForm),
   ])
 
@@ -60,6 +65,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationDetailsCreateController.getQualificationDetailsView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
+    validate(qualificationDetailsSchema),
     asyncMiddleware(qualificationDetailsCreateController.submitQualificationDetailsForm),
   ])
 
