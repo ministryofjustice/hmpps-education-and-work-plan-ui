@@ -31,7 +31,7 @@ export interface paths {
     get?: never
     put?: never
     post?: never
-    /** Returns deleted employer data for the given employer Id  */
+    /** Returns deleted employer data for the given employer Id */
     delete: operations['deleteEmployerUsingDELETE']
     options?: never
     head?: never
@@ -566,6 +566,8 @@ export interface components {
       assessmentDate?: string
       /** @description Assessment Outcome Value */
       assessmentOutcome?: string
+      /** @description Assessment Reason Value */
+      assessmentReason?: string
       /** @description Establishment (prison) identifier */
       establishmentId?: string
       /** @description Establishment (prison) name */
@@ -586,6 +588,8 @@ export interface components {
       assessmentNextStep?: string
       /** @description Assessment Outcome Value */
       assessmentOutcome?: string
+      /** @description Assessment Reason Value */
+      assessmentReason?: string
       /** @description Establishment (prison) identifier */
       establishmentId?: string
       /** @description Establishment (prison) name */
@@ -604,14 +608,16 @@ export interface components {
       assessmentDate?: string
       /** @description Assessment Next Step Value */
       assessmentNextStep?: string
+      /** @description Assessment Reason Value */
+      assessmentReason?: string
       /** @description Establishment (prison) identifier */
       establishmentId?: string
       /** @description Establishment (prison) name */
       establishmentName?: string
       /** @description Has Prisoner Consent Value */
       hasPrisonerConsent?: string
-      /** @description Assessment Level Branding Value */
-      levelBranding?: string
+      /** @description Assessment Level Banding Value */
+      levelBanding?: string
       /** @description Stakeholder Referral Value */
       stakeholderReferral?: string
       /** @description Assessment Working Towards Level Value */

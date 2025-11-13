@@ -173,7 +173,7 @@ const anEnglishFunctionalSkillsLearnerAssessmentsDTO = (options?: {
     | 'Level 1'
     | 'Level 2'
     | 'Level 3'
-  levelBranding?:
+  levelBanding?:
     | '0.0'
     | '0.1'
     | '0.2'
@@ -222,7 +222,7 @@ const anEnglishFunctionalSkillsLearnerAssessmentsDTO = (options?: {
   assessmentDate: options?.assessmentDate || '2025-10-01',
   assessmentNextStep: options?.assessmentNextStep || 'Progress to course at level consistent with assessment result',
   workingTowardsLevel: options?.workingTowardsLevel || 'Entry Level 2',
-  levelBranding: options?.levelBranding || '2.1',
+  levelBanding: options?.levelBanding || '2.1',
   hasPrisonerConsent: options?.hasPrisonerConsent || 'Yes',
   stakeholderReferral: options?.stakeholderReferral || 'Education Specialist',
 })
@@ -243,7 +243,7 @@ const aMathsFunctionalSkillsLearnerAssessmentsDTO = (options?: {
     | 'Level 1'
     | 'Level 2'
     | 'Level 3'
-  levelBranding?:
+  levelBanding?:
     | '0.0'
     | '0.1'
     | '0.2'
@@ -292,7 +292,7 @@ const aMathsFunctionalSkillsLearnerAssessmentsDTO = (options?: {
   assessmentDate: options?.assessmentDate || '2025-10-01',
   assessmentNextStep: options?.assessmentNextStep || 'Progress to course at level consistent with assessment result',
   workingTowardsLevel: options?.workingTowardsLevel || 'Entry Level 2',
-  levelBranding: options?.levelBranding || '2.1',
+  levelBanding: options?.levelBanding || '2.1',
   hasPrisonerConsent: options?.hasPrisonerConsent || 'Yes',
   stakeholderReferral: options?.stakeholderReferral || 'Education Specialist',
 })
@@ -302,7 +302,7 @@ const aDigitalFunctionalSkillsLearnerAssessmentsDTO = (options?: {
   prisonName?: string
   assessmentDate?: string
   workingTowardsLevel?: 'Pre-Entry' | 'Entry Level' | 'Level 1'
-  levelBranding?:
+  levelBanding?:
     | '0.0'
     | '0.1'
     | '0.2'
@@ -328,7 +328,7 @@ const aDigitalFunctionalSkillsLearnerAssessmentsDTO = (options?: {
   establishmentName: options?.prisonName || 'MOORLAND (HMP & YOI)',
   assessmentDate: options?.assessmentDate || '2025-10-01',
   workingTowardsLevel: options?.workingTowardsLevel || 'Level 1',
-  levelBranding: options?.levelBranding || '1.2',
+  levelBanding: options?.levelBanding || '1.2',
   assessmentNextStep: null,
   hasPrisonerConsent: null,
   stakeholderReferral: null,

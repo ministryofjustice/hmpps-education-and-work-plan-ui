@@ -26,7 +26,7 @@ const toCurious2FunctionalSkillsAssessments = (externalAssessmentsDTO: ExternalA
         (assessment: LearnerAssessmentsFunctionalSkillsDTO) => ({
           ...toBasicAssessment(assessment),
           level: assessment.workingTowardsLevel,
-          levelBanding: assessment.levelBranding,
+          levelBanding: getLevelBandingFromAssessment(assessment),
           type: AssessmentTypeValue.ENGLISH,
         }),
       ),
@@ -36,7 +36,7 @@ const toCurious2FunctionalSkillsAssessments = (externalAssessmentsDTO: ExternalA
         (assessment: LearnerAssessmentsFunctionalSkillsDTO) => ({
           ...toBasicAssessment(assessment),
           level: assessment.workingTowardsLevel,
-          levelBanding: assessment.levelBranding,
+          levelBanding: getLevelBandingFromAssessment(assessment),
           type: AssessmentTypeValue.MATHS,
         }),
       ),
@@ -46,7 +46,7 @@ const toCurious2FunctionalSkillsAssessments = (externalAssessmentsDTO: ExternalA
         (assessment: LearnerAssessmentsFunctionalSkillsDTO) => ({
           ...toBasicAssessment(assessment),
           level: assessment.workingTowardsLevel,
-          levelBanding: assessment.levelBranding,
+          levelBanding: getLevelBandingFromAssessment(assessment),
           type: AssessmentTypeValue.DIGITAL_LITERACY,
         }),
       ),
@@ -82,5 +82,13 @@ const toBasicAssessment = (assessment: LearnerAssessmentsFunctionalSkillsDTO | L
     nextStep: assessment.assessmentNextStep,
     source: 'CURIOUS2',
   }) as Assessment
+
+/*
+ Temporary method to smooth over a Curious API change where they are in the process or rolling out a field name change.
+ The original (incorrect) field name was levelBranding, but it should have been levelBanding
+ Whilst they roll out this change in all their environments we need this method to defensively code around it.
+ */
+const getLevelBandingFromAssessment = (assessment: { levelBanding?: string; levelBranding?: string }): string =>
+  assessment.levelBanding || assessment.levelBranding
 
 export { toCurious2FunctionalSkillsAssessments, toCurious2ReadingAssessments, toCurious2ESOLAssessments }
