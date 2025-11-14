@@ -77,7 +77,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.925.0",
+    "@aws-sdk/client-sqs": "^3.927.0",
     "@date-fns/utc": "^2.1.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.3.10",
     "@microsoft/applicationinsights-web": "^3.3.10",
@@ -117,7 +117,7 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
-    "@ministryofjustice/eslint-config-hmpps": "^1.0.0",
+    "@ministryofjustice/eslint-config-hmpps": "^1.0.1",
     "@tsconfig/node22": "^22.0.2",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
@@ -144,7 +144,7 @@
     "cypress": "^14.5.4",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
-    "esbuild": "^0.25.12",
+    "esbuild": "^0.27.0",
     "esbuild-plugin-clean": "^1.0.1",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
