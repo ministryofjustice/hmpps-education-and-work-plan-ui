@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import QualificationLevelUpdateController from './qualificationLevelUpdateController'
 
@@ -26,10 +25,12 @@ describe('qualificationLevelUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getQualificationLevelView', () => {
-    it('should get the Qualification Level view given there is no invalid form in res.locals', async () => {
+    it('should get the Qualification Level view given there is no Qualification Level form on res.locals.invalidForm', async () => {
       // Given
       res.locals.invalidForm = undefined
 
@@ -49,7 +50,7 @@ describe('qualificationLevelUpdateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
     })
 
-    it('should get the Qualification Level view given there is an invalid form in res.locals from a validation error', async () => {
+    it('should get the Qualification Level view given a Qualification Level form on res.locals.invalidForm', async () => {
       // Given
       const expectedQualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_2,
@@ -80,7 +81,7 @@ describe('qualificationLevelUpdateController', () => {
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualification-details`)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
+      expect(req.journeyData.qualificationLevel).toEqual(qualificationLevelForm.qualificationLevel)
     })
   })
 })

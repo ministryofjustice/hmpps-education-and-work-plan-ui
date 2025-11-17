@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { QualificationDetailsForm } from 'forms'
 import QualificationDetailsView from './qualificationDetailsView'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 /**
@@ -19,22 +18,18 @@ export default abstract class QualificationDetailsController {
     const { prisonerSummary, invalidForm } = res.locals
     const { prisonNumber, journeyId } = req.params
 
-    const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
-    if (!qualificationLevelForm) {
+    const { qualificationLevel } = req.journeyData
+    if (!qualificationLevel) {
       // Guard against the user using the back button to return to this page, which can cause a NPE creating the QualificationDetailsView below (depending on which pages they've been to)
       return res.redirect(`/prisoners/${prisonNumber}/${this.journeyPathElement}/${journeyId}/qualification-level`)
     }
 
-    const qualificationDetailsForm = invalidForm || {
+    const qualificationDetailsForm = invalidForm ?? {
       qualificationSubject: '',
       qualificationGrade: '',
     }
 
-    const view = new QualificationDetailsView(
-      prisonerSummary,
-      qualificationDetailsForm,
-      qualificationLevelForm.qualificationLevel,
-    )
+    const view = new QualificationDetailsView(prisonerSummary, qualificationDetailsForm, qualificationLevel)
     return res.render('pages/prePrisonEducation/qualificationDetails', { ...view.renderArgs })
   }
 

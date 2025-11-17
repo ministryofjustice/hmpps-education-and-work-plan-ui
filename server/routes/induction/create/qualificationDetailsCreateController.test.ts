@@ -29,20 +29,19 @@ describe('qualificationDetailsCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.qualificationLevelForm = undefined
-    req.session.qualificationDetailsForm = undefined
     req.body = {}
     req.journeyData = {}
+    res.locals.invalidForm = undefined
   })
 
   describe('getQualificationDetailsView', () => {
-    it('should get the Qualification Details view given there is no invalid form in res.locals', async () => {
+    it('should get the Qualification Details view given there is no QualificationDetailsForm on res.locals.invalidForm', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.journeyData.inductionDto = inductionDto
-      const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      const qualificationLevel = QualificationLevelValue.LEVEL_3
+      req.journeyData.qualificationLevel = qualificationLevel
 
       res.locals.invalidForm = undefined
       const expectedQualificationDetailsForm = {
@@ -64,15 +63,13 @@ describe('qualificationDetailsCreateController', () => {
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the Qualification Details view given there is an invalid form in res.locals from a validation error', async () => {
+    it('should get the Qualification Details view given there is a QualificationDetailsForm already on the session', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications.qualifications = undefined
       req.journeyData.inductionDto = inductionDto
-      const qualificationLevelForm = {
-        qualificationLevel: QualificationLevelValue.LEVEL_3,
-      }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      const qualificationLevel = QualificationLevelValue.LEVEL_3
+      req.journeyData.qualificationLevel = qualificationLevel
 
       const expectedQualificationDetailsForm = {
         qualificationSubject: '',
@@ -102,17 +99,14 @@ describe('qualificationDetailsCreateController', () => {
       inductionDto.previousQualifications.qualifications = undefined
       req.journeyData.inductionDto = inductionDto
 
-      const qualificationLevelForm = {
-        qualificationLevel: QualificationLevelValue.LEVEL_3,
-      }
-      req.session.qualificationLevelForm = qualificationLevelForm
+      const qualificationLevel = QualificationLevelValue.LEVEL_3
+      req.journeyData.qualificationLevel = qualificationLevel
 
       const qualificationDetailsForm = {
         qualificationSubject: 'Maths',
         qualificationGrade: 'A',
       }
       req.body = qualificationDetailsForm
-      req.session.qualificationDetailsForm = undefined
 
       // When
       await controller.submitQualificationDetailsForm(req, res, next)
@@ -125,8 +119,7 @@ describe('qualificationDetailsCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`,
       )
-      expect(req.session.qualificationDetailsForm).toBeUndefined()
-      expect(req.session.qualificationLevelForm).toBeUndefined()
+      expect(req.journeyData.qualificationLevel).toBeUndefined()
     })
   })
 })

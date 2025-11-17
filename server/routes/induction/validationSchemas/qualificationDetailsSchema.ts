@@ -1,21 +1,15 @@
 import { Request, Response } from 'express'
 import { z } from 'zod'
 import { createSchema } from '../../routerRequestHandlers/validationMiddleware'
-import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import formatQualificationLevelFilter from '../../../filters/formatQualificationLevelFilter'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 const MAX_QUALIFICATION_SUBJECT_LENGTH = 100
 const MAX_QUALIFICATION_GRADE_LENGTH = 50
 
 const qualificationDetailsSchema = async (req: Request, res: Response) => {
   const { prisonerSummary } = res.locals
-  const { prisonNumber } = req.params
 
-  // Check both locations for qualificationLevelForm (dual journey support)
-  const prisonerContext = getPrisonerContext(req.session, prisonNumber)
-  const qualificationLevelForm = req.session.qualificationLevelForm || prisonerContext.qualificationLevelForm
-  const qualificationLevel = qualificationLevelForm?.qualificationLevel as QualificationLevelValue
+  const { qualificationLevel } = req.journeyData
   const formattedLevel = formatQualificationLevelFilter(qualificationLevel).toLowerCase()
 
   const qualificationSubjectMandatoryMessage = `Enter the subject of ${prisonerSummary.firstName} ${prisonerSummary.lastName}'s ${formattedLevel} qualification`

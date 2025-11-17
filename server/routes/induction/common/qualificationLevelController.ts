@@ -18,7 +18,7 @@ export default abstract class QualificationLevelController extends InductionCont
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const qualificationLevelForm = invalidForm || { qualificationLevel: '' }
+    const qualificationLevelForm = invalidForm ?? { qualificationLevel: '' }
 
     const view = new QualificationLevelView(prisonerSummary, qualificationLevelForm)
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })

@@ -4,11 +4,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import qualificationDetailsSchema from './qualificationDetailsSchema'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import type { Error } from '../../../filters/findErrorFilter'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
-
-jest.mock('../../../data/session/prisonerContexts', () => ({
-  getPrisonerContext: jest.fn(),
-}))
+import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 describe('qualificationDetailsSchema', () => {
   const prisonerSummary = aValidPrisonerSummary()
@@ -30,9 +26,7 @@ describe('qualificationDetailsSchema', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req.originalUrl = '/prisoners/A1234BC/create-induction/12345/qualification-details'
-    ;(getPrisonerContext as jest.Mock).mockReturnValue({
-      qualificationLevelForm: { qualificationLevel: 'LEVEL_3' },
-    })
+    req.journeyData = { qualificationLevel: QualificationLevelValue.LEVEL_3 }
   })
 
   it('happy path - validation passes with valid qualification details', async () => {
@@ -198,9 +192,7 @@ describe('qualificationDetailsSchema', () => {
 
   it('uses correct formatting for different qualification levels', async () => {
     // Given
-    ;(getPrisonerContext as jest.Mock).mockReturnValue({
-      qualificationLevelForm: { qualificationLevel: 'ENTRY_LEVEL' },
-    })
+    req.journeyData = { qualificationLevel: QualificationLevelValue.ENTRY_LEVEL }
     req.body = {}
 
     const expectedErrors: Array<Error> = [

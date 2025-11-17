@@ -12,7 +12,7 @@ export default abstract class QualificationLevelController {
   ): Promise<void> => {
     const { prisonerSummary, invalidForm } = res.locals
 
-    const qualificationLevelForm = invalidForm || {
+    const qualificationLevelForm = invalidForm ?? {
       qualificationLevel: undefined,
     }
 

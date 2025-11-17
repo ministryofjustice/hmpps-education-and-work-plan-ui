@@ -1,6 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import QualificationDetailsController from '../common/qualificationDetailsController'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 
 export default class QualificationDetailsCreateController extends QualificationDetailsController {
   journeyPathElement = 'create-education'
@@ -12,18 +11,16 @@ export default class QualificationDetailsCreateController extends QualificationD
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
 
-    const { educationDto } = req.journeyData
-    const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
+    const { educationDto, qualificationLevel } = req.journeyData
     const qualificationDetailsForm = { ...req.body }
 
     const updatedEducation = this.addQualificationToEducationDto(
       educationDto,
       qualificationDetailsForm,
-      qualificationLevelForm.qualificationLevel,
+      qualificationLevel,
     )
     req.journeyData.educationDto = updatedEducation
-
-    getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
+    req.journeyData.qualificationLevel = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/create-education/${journeyId}/qualifications`)
   }

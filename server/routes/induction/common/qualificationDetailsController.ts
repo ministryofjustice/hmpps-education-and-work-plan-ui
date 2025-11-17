@@ -17,27 +17,23 @@ export default abstract class QualificationDetailsController extends InductionCo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { qualificationLevelForm } = req.session
+    const { qualificationLevel } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
     const { prisonNumber } = req.params
-    if (!qualificationLevelForm) {
+    if (!qualificationLevel) {
       // Guard against the user using the back button to return to this page, which can cause a NPE (depending on which pages they've been to)
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const qualificationDetailsForm = invalidForm || {
+    const qualificationDetailsForm = invalidForm ?? {
       qualificationSubject: '',
       qualificationGrade: '',
     }
 
-    const view = new QualificationDetailsView(
-      prisonerSummary,
-      qualificationDetailsForm,
-      qualificationLevelForm.qualificationLevel,
-    )
+    const view = new QualificationDetailsView(prisonerSummary, qualificationDetailsForm, qualificationLevel)
     return res.render('pages/prePrisonEducation/qualificationDetails', { ...view.renderArgs })
   }
 

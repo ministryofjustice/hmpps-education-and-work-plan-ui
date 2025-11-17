@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import type { PageFlow } from 'viewModels'
-import type { QualificationDetailsForm, QualificationLevelForm } from 'forms'
 import { SessionData } from 'express-session'
 import removeFormDataFromSession from './removeFormDataFromSession'
 import { aValidUpdateGoalForm } from '../../testsupport/updateGoalFormTestDataBuilder'
@@ -27,8 +26,6 @@ describe('removeFormDataFromSession', () => {
 
     req.session.pageFlowQueue = {} as PageFlow
     req.session.pageFlowHistory = {} as PageFlow
-    req.session.qualificationLevelForm = {} as QualificationLevelForm
-    req.session.qualificationDetailsForm = {} as QualificationDetailsForm
 
     // When
     await removeFormDataFromSession(
@@ -42,7 +39,5 @@ describe('removeFormDataFromSession', () => {
     expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
     expect(req.session.pageFlowHistory).toBeUndefined()
-    expect(req.session.qualificationLevelForm).toBeUndefined()
-    expect(req.session.qualificationDetailsForm).toBeUndefined()
   })
 })

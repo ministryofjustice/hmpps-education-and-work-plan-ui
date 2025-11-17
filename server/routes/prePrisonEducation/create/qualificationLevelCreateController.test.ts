@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
-import { getPrisonerContext } from '../../../data/session/prisonerContexts'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import QualificationLevelCreateController from './qualificationLevelCreateController'
 
@@ -26,10 +25,12 @@ describe('qualificationLevelCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    res.locals.invalidForm = undefined
+    req.journeyData = {}
   })
 
   describe('getQualificationLevelView', () => {
-    it('should get the Qualification Level view given there is no invalid form in res.locals', async () => {
+    it('should get the Qualification Level view given there is no Qualification Level form on res.locals.invalidForm', async () => {
       // Given
       res.locals.invalidForm = undefined
 
@@ -49,7 +50,7 @@ describe('qualificationLevelCreateController', () => {
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
     })
 
-    it('should get the Qualification Level view given there is an invalid form in res.locals from a validation error', async () => {
+    it('should get the Qualification Level view given a Qualification Level form is on res.locals.invalidForm', async () => {
       // Given
       const expectedQualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_2,
@@ -70,7 +71,7 @@ describe('qualificationLevelCreateController', () => {
   })
 
   describe('submitQualificationLevelForm', () => {
-    it('should redirect to Qualification Details page given valid form is submitted', async () => {
+    it('should redirect to Qualification Details page', async () => {
       // Given
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_6 }
       req.body = qualificationLevelForm
@@ -82,7 +83,7 @@ describe('qualificationLevelCreateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         `/prisoners/A1234BC/create-education/${journeyId}/qualification-details`,
       )
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(qualificationLevelForm)
+      expect(req.journeyData.qualificationLevel).toEqual(qualificationLevelForm.qualificationLevel)
     })
   })
 })

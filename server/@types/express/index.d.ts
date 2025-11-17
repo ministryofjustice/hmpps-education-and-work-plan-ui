@@ -1,15 +1,9 @@
 import type { PageFlow } from 'viewModels'
-import type {
-  ArchiveGoalForm,
-  CreateGoalsForm,
-  CompleteGoalForm,
-  QualificationDetailsForm,
-  QualificationLevelForm,
-  UpdateGoalForm,
-} from 'forms'
+import type { ArchiveGoalForm, CreateGoalsForm, CompleteGoalForm, UpdateGoalForm } from 'forms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
+import QualificationLevelValue from '../../enums/qualificationLevelValue'
 
 export default {}
 
@@ -24,9 +18,6 @@ declare module 'express-session' {
     pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
 
-    // Induction related forms held on the session
-    qualificationLevelForm: QualificationLevelForm
-    qualificationDetailsForm: QualificationDetailsForm
     prisonerContexts: PrisonerContexts
   }
   export interface PrisonerContext {
@@ -34,9 +25,6 @@ declare module 'express-session' {
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
     completeGoalForm?: CompleteGoalForm
-    // Education related forms
-    qualificationLevelForm?: QualificationLevelForm
-    qualificationDetailsForm?: QualificationDetailsForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>
@@ -57,6 +45,7 @@ export declare global {
       reviewExemptionDto?: ReviewExemptionDto
       createGoalsForm?: CreateGoalsForm
       educationDto?: EducationDto
+      qualificationLevel?: QualificationLevelValue
     }
 
     interface Response {
