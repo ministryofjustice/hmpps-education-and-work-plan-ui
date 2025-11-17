@@ -11,8 +11,7 @@ export default class QualificationDetailsCreateController extends QualificationD
     const { inductionDto } = req.journeyData
     const { qualificationLevelForm } = req.session
 
-    req.session.qualificationDetailsForm = { ...req.body }
-    const { qualificationDetailsForm } = req.session
+    const qualificationDetailsForm = { ...req.body }
 
     req.journeyData.inductionDto = this.addQualificationToInductionDto(
       inductionDto,
@@ -20,7 +19,6 @@ export default class QualificationDetailsCreateController extends QualificationD
       qualificationLevelForm.qualificationLevel,
     )
 
-    req.session.qualificationDetailsForm = undefined
     req.session.qualificationLevelForm = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`)

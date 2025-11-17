@@ -18,7 +18,7 @@ export default abstract class QualificationDetailsController extends InductionCo
     next: NextFunction,
   ): Promise<void> => {
     const { qualificationLevelForm } = req.session
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     const { prisonNumber } = req.params
     if (!qualificationLevelForm) {
@@ -28,11 +28,10 @@ export default abstract class QualificationDetailsController extends InductionCo
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const qualificationDetailsForm = req.session.qualificationDetailsForm || {
+    const qualificationDetailsForm = invalidForm || {
       qualificationSubject: '',
       qualificationGrade: '',
     }
-    req.session.qualificationDetailsForm = undefined
 
     const view = new QualificationDetailsView(
       prisonerSummary,

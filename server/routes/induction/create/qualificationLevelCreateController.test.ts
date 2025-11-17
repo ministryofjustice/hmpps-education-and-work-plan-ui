@@ -34,11 +34,11 @@ describe('qualificationLevelCreateController', () => {
   })
 
   describe('getQualificationLevelView', () => {
-    it('should get the QualificationLevel view given there is no QualificationLevelForm on the session', async () => {
+    it('should get the QualificationLevel view given there is no invalid form in res.locals', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
-      req.session.qualificationLevelForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedQualificationLevelForm = {
         qualificationLevel: '',
@@ -54,17 +54,16 @@ describe('qualificationLevelCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
-      expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
 
-    it('should get the QualificationLevel view given there is an QualificationLevelForm already on the session', async () => {
+    it('should get the QualificationLevel view given there is an invalid form in res.locals from a validation error', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
 
       const expectedQualificationLevelForm = { qualificationLevel: '' }
-      req.session.qualificationLevelForm = expectedQualificationLevelForm
+      res.locals.invalidForm = expectedQualificationLevelForm
 
       const expectedView = {
         prisonerSummary,
@@ -76,7 +75,6 @@ describe('qualificationLevelCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
-      expect(req.session.qualificationLevelForm).toBeUndefined()
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })
   })

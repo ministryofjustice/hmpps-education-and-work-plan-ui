@@ -12,12 +12,11 @@ export default abstract class QualificationLevelController {
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
-    const qualificationLevelForm = getPrisonerContext(req.session, prisonNumber).qualificationLevelForm || {
+    const qualificationLevelForm = invalidForm || {
       qualificationLevel: undefined,
     }
-    getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
     const view = new QualificationLevelView(prisonerSummary, qualificationLevelForm)
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })

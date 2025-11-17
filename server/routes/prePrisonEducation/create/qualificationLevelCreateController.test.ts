@@ -29,9 +29,9 @@ describe('qualificationLevelCreateController', () => {
   })
 
   describe('getQualificationLevelView', () => {
-    it('should get the Qualification Level view given there is no Qualification Level form on the prisoner context', async () => {
+    it('should get the Qualification Level view given there is no invalid form in res.locals', async () => {
       // Given
-      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
+      res.locals.invalidForm = undefined
 
       const expectedQualificationLevelForm = {
         qualificationLevel: undefined as QualificationLevelValue,
@@ -47,15 +47,14 @@ describe('qualificationLevelCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
     })
 
-    it('should get the Qualification Level view given a Qualification Level form is on the prisoner context', async () => {
+    it('should get the Qualification Level view given there is an invalid form in res.locals from a validation error', async () => {
       // Given
       const expectedQualificationLevelForm = {
         qualificationLevel: QualificationLevelValue.LEVEL_2,
       }
-      getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = expectedQualificationLevelForm
+      res.locals.invalidForm = expectedQualificationLevelForm
 
       const expectedView = {
         prisonerSummary,
@@ -67,7 +66,6 @@ describe('qualificationLevelCreateController', () => {
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/prePrisonEducation/qualificationLevel', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toBeUndefined()
     })
   })
 

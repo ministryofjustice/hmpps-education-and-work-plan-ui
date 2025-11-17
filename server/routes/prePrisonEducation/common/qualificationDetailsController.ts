@@ -16,7 +16,7 @@ export default abstract class QualificationDetailsController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
     const { prisonNumber, journeyId } = req.params
 
     const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
@@ -25,11 +25,10 @@ export default abstract class QualificationDetailsController {
       return res.redirect(`/prisoners/${prisonNumber}/${this.journeyPathElement}/${journeyId}/qualification-level`)
     }
 
-    const qualificationDetailsForm = getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm || {
+    const qualificationDetailsForm = invalidForm || {
       qualificationSubject: '',
       qualificationGrade: '',
     }
-    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
 
     const view = new QualificationDetailsView(
       prisonerSummary,

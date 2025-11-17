@@ -15,7 +15,6 @@ export default class QualificationDetailsUpdateController extends QualificationD
     const { educationDto } = req.journeyData
     const { qualificationLevelForm } = getPrisonerContext(req.session, prisonNumber)
     const qualificationDetailsForm = { ...req.body }
-    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = qualificationDetailsForm
 
     const updatedEducation = this.addQualificationToEducationDto(
       educationDto,
@@ -24,7 +23,6 @@ export default class QualificationDetailsUpdateController extends QualificationD
     )
     req.journeyData.educationDto = updatedEducation
 
-    getPrisonerContext(req.session, prisonNumber).qualificationDetailsForm = undefined
     getPrisonerContext(req.session, prisonNumber).qualificationLevelForm = undefined
 
     return res.redirect(`/prisoners/${prisonNumber}/education/${journeyId}/qualifications`)
