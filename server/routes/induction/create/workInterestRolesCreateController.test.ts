@@ -30,7 +30,6 @@ describe('workInterestRolesCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
     res.locals.invalidForm = undefined
@@ -71,8 +70,10 @@ describe('workInterestRolesCreateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
-    it('should update InductionDto and redirect to Affect Ability To Work', async () => {
+    it('should update InductionDto and redirect to Affect Ability To Work given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
@@ -121,6 +122,8 @@ describe('workInterestRolesCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
@@ -154,14 +157,6 @@ describe('workInterestRolesCreateController', () => {
           role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
         },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/work-interest-roles',
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitWorkInterestRolesForm(req, res, next)
