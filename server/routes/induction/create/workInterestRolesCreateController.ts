@@ -20,9 +20,10 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
 
     req.journeyData.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
 
-    const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`
-    return res.redirect(nextPage)
+    return res.redirect(
+      req.query?.submitToCheckAnswers === 'true'
+        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
+        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`,
+    )
   }
 }
