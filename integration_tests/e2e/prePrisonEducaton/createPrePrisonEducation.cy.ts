@@ -135,6 +135,7 @@ context('Create a prisoners pre-prison education', () => {
     Page.verifyOnPage(QualificationDetailsPage)
       .hasErrorCount(1)
       .hasFieldInError('qualificationSubject')
+      .setQualificationGrade('C')
       .setQualificationSubject('GCSE Maths')
       .submitPage()
 
