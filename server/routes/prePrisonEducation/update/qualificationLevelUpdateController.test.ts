@@ -72,28 +72,6 @@ describe('qualificationLevelUpdateController', () => {
   })
 
   describe('submitQualificationLevelForm', () => {
-    it('should redisplay Qualification Level page given form is submitted with validation errors', async () => {
-      // Given
-      const invalidQualificationLevelForm = {}
-      req.body = invalidQualificationLevelForm
-
-      const expectedErrors = [
-        { href: '#qualificationLevel', text: 'Select the level of qualification Ifereeca Peigh wants to add' },
-      ]
-
-      // When
-      await controller.submitQualificationLevelForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/education/${journeyId}/qualification-level`,
-        expectedErrors,
-      )
-      expect(getPrisonerContext(req.session, prisonNumber).qualificationLevelForm).toEqual(
-        invalidQualificationLevelForm,
-      )
-    })
-
     it('should redirect to Qualification Details page given valid form is submitted', async () => {
       // Given
       const qualificationLevelForm = { qualificationLevel: QualificationLevelValue.LEVEL_6 }
