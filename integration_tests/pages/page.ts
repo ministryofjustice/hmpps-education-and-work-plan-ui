@@ -108,13 +108,7 @@ export default abstract class Page {
   }
 
   submitPage() {
-    this.submitButton().then($btn => {
-      if ($btn.length > 0) {
-        this.submitButton().click()
-      } else {
-        cy.log('No submit button found on this page.')
-      }
-    })
+    this.submitButton().click()
   }
 
   breadCrumb = (): PageElement => cy.get('.govuk-breadcrumbs')

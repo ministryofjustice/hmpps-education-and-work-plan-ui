@@ -249,6 +249,7 @@ declare module 'inductionDto' {
 
   export interface FutureWorkInterestsDto extends ReferencedAndAuditable {
     interests: Array<FutureWorkInterestDto>
+    needToCompleteJourneyFromCheckYourAnswers?: boolean
   }
 
   export interface CreateOrUpdateInductionDto {

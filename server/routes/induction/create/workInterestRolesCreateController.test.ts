@@ -30,7 +30,6 @@ describe('workInterestRolesCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
     res.locals.invalidForm = undefined
@@ -71,14 +70,17 @@ describe('workInterestRolesCreateController', () => {
   })
 
   describe('submitWorkInterestRolesForm', () => {
-    it('should update InductionDto and redirect to Affect Ability To Work', async () => {
+    it('should update InductionDto and redirect to Affect Ability To Work given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
+      inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers = false
       req.journeyData.inductionDto = inductionDto
 
       req.body = {
@@ -89,8 +91,7 @@ describe('workInterestRolesCreateController', () => {
         },
       }
 
-      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/affect-ability-to-work`
-
+      const expectedNextPage = 'affect-ability-to-work'
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
           workType: WorkInterestTypeValue.RETAIL,
@@ -116,17 +117,21 @@ describe('workInterestRolesCreateController', () => {
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
         req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
+      expect(req.journeyData.inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers).toEqual(false)
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests.interests = [
         { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
       ]
+      inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers = false
       req.journeyData.inductionDto = inductionDto
 
       req.body = {
@@ -137,6 +142,7 @@ describe('workInterestRolesCreateController', () => {
         },
       }
 
+      const expectedNextPage = 'check-your-answers'
       const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
         {
           workType: WorkInterestTypeValue.RETAIL,
@@ -155,13 +161,56 @@ describe('workInterestRolesCreateController', () => {
         },
       ]
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          '/prisoners/A1234BC/create-induction/check-your-answers',
-          '/prisoners/A1234BC/create-induction/work-interest-roles',
-        ],
-        currentPageIndex: 1,
+      // When
+      await controller.submitWorkInterestRolesForm(req, res, next)
+
+      // Then
+      const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
+        req.journeyData.inductionDto.futureWorkInterests.interests
+      expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
+      expect(req.journeyData.inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers).toEqual(false)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
+    })
+
+    it('should update inductionDto and redirect to Check Your Answers given previous page was not Check Your Answers but the flag indicating return to CYA is set to true', async () => {
+      // Given
+      req.query = {}
+
+      const inductionDto = aValidInductionDto()
+      inductionDto.futureWorkInterests.interests = [
+        { workType: WorkInterestTypeValue.RETAIL, workTypeOther: undefined, role: undefined },
+        { workType: WorkInterestTypeValue.CONSTRUCTION, workTypeOther: undefined, role: undefined },
+        { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Film, TV and media', role: undefined },
+      ]
+      inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers = true
+      req.journeyData.inductionDto = inductionDto
+
+      req.body = {
+        workInterestRoles: {
+          RETAIL: undefined as string,
+          CONSTRUCTION: 'General labourer',
+          OTHER: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+        },
       }
+
+      const expectedNextPage = 'check-your-answers'
+      const expectedUpdatedWorkInterests: Array<FutureWorkInterestDto> = [
+        {
+          workType: WorkInterestTypeValue.RETAIL,
+          workTypeOther: undefined,
+          role: undefined,
+        },
+        {
+          workType: WorkInterestTypeValue.CONSTRUCTION,
+          workTypeOther: undefined,
+          role: 'General labourer',
+        },
+        {
+          workType: WorkInterestTypeValue.OTHER,
+          workTypeOther: 'Film, TV and media',
+          role: 'Being a stunt double for Tom Cruise, even though he does all his own stunts',
+        },
+      ]
 
       // When
       await controller.submitWorkInterestRolesForm(req, res, next)
@@ -170,7 +219,8 @@ describe('workInterestRolesCreateController', () => {
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
         req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedUpdatedWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
+      expect(req.journeyData.inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers).toEqual(false)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
     })
   })
 })

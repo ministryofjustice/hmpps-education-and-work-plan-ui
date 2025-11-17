@@ -19,8 +19,6 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const hopingToWorkOnReleaseForm = invalidForm ?? toHopingToWorkOnReleaseForm(inductionDto)
 
     const view = new HopingToWorkOnReleaseView(prisonerSummary, hopingToWorkOnReleaseForm)
@@ -39,8 +37,9 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
       },
       futureWorkInterests: {
         ...inductionDto.futureWorkInterests,
-        // Set array of future work interests to empty array. However this page is submitted and whetever the submitted answer we should always set this to an empty array so that the data makes sense for subsequent screens
+        // Set array of future work interests to empty array. Irrespective of how this page is submitted and whatever the submitted answer we should always set this to an empty array so that the data makes sense for subsequent screens
         interests: [],
+        needToCompleteJourneyFromCheckYourAnswers: false,
       },
     }
   }
