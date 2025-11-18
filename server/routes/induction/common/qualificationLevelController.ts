@@ -14,12 +14,11 @@ export default abstract class QualificationLevelController extends InductionCont
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
     this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
 
-    const qualificationLevelForm = req.session.qualificationLevelForm || { qualificationLevel: '' }
-    req.session.qualificationLevelForm = undefined
+    const qualificationLevelForm = invalidForm ?? { qualificationLevel: '' }
 
     const view = new QualificationLevelView(prisonerSummary, qualificationLevelForm)
     return res.render('pages/prePrisonEducation/qualificationLevel', { ...view.renderArgs })
