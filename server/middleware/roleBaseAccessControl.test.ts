@@ -1,5 +1,5 @@
 import { userWithRoleCan } from './roleBasedAccessControl'
-import ApplicationRole from '../enums/applicationRole'
+import DpsRole from '../enums/dpsRole'
 import ApplicationAction from '../enums/applicationAction'
 
 describe('roleBasedAccessControl', () => {
@@ -23,7 +23,7 @@ describe('roleBasedAccessControl', () => {
       ]
 
       // When
-      const actual = userWithRoleCan(ApplicationRole.ROLE_LWP_MANAGER)
+      const actual = userWithRoleCan(DpsRole.ROLE_LWP_MANAGER)
 
       // Then
       expect(actual).toEqual(expected)
@@ -38,7 +38,18 @@ describe('roleBasedAccessControl', () => {
       ]
 
       // When
-      const actual = userWithRoleCan(ApplicationRole.ROLE_LWP_CONTRIBUTOR)
+      const actual = userWithRoleCan(DpsRole.ROLE_LWP_CONTRIBUTOR)
+
+      // Then
+      expect(actual).toEqual(expected)
+    })
+
+    it('should return the actions a user with ROLE_MATCH_LEARNER_RECORD_RW can perform', () => {
+      // Given
+      const expected = [ApplicationAction.USE_DPS_LEARNER_RECORD_MATCHING_SERVICE]
+
+      // When
+      const actual = userWithRoleCan(DpsRole.ROLE_MATCH_LEARNER_RECORD_RW)
 
       // Then
       expect(actual).toEqual(expected)
