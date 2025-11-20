@@ -19,8 +19,6 @@ export default abstract class HopingToWorkOnReleaseController extends InductionC
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const hopingToWorkOnReleaseForm = invalidForm ?? toHopingToWorkOnReleaseForm(inductionDto)
 
     const view = new HopingToWorkOnReleaseView(prisonerSummary, hopingToWorkOnReleaseForm)

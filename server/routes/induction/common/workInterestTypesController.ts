@@ -17,8 +17,6 @@ export default abstract class WorkInterestTypesController extends InductionContr
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const workInterestTypesForm = invalidForm
       ? {
           workInterestTypes: asArray(invalidForm.workInterestTypes),

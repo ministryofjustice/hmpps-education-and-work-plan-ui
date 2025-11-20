@@ -15,7 +15,7 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
 
     // If the previous page was Check Your Answers and the user has not changed the answer, go back to Check Your Answers
     if (
-      this.previousPageWasCheckYourAnswers(req) &&
+      req.query?.submitToCheckAnswers === 'true' &&
       this.answerHasNotBeenChanged(inductionDto, hopingToWorkOnReleaseForm)
     ) {
       res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
@@ -25,13 +25,13 @@ export default class HopingToWorkOnReleaseCreateController extends HopingToWorkO
     req.journeyData.inductionDto = updatedInduction
 
     let nextPage: string
-    if (this.previousPageWasCheckYourAnswers(req)) {
+    if (req.query?.submitToCheckAnswers === 'true') {
       // If the previous page was Check Your Answers we either need to go back there in the case the prisoner does not want to work
       // or go to Work Interest Types in order to capture the prisoners future work interests.
       nextPage =
         updatedInduction.workOnRelease.hopingToWork !== YesNoValue.YES
           ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-          : `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types`
+          : `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-types?submitToCheckAnswers=true`
     } else {
       // The previous page was not Check Your Answers so we are part of the regular Create journey. Depending on whether
       // the prisoner wants to work or not the next page is either Work Interest Types or Affect Ability To Work.
