@@ -195,4 +195,3 @@ Features can be toggled by setting the relevant environment variable.
 | Name                 | Default Value | Type     | Description                                                                           |
 |----------------------|---------------|----------|---------------------------------------------------------------------------------------|
 | SOME_TOGGLE_ENABLED  | false         | Boolean  | Example feature toggle, for demonstration purposes.                                   |
-| DISPLAY_SAN_DATA     | false         | Boolean  | Displays prisoner SAN (Support for Additional Needs) data on the Additional Needs tab |
