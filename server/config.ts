@@ -196,6 +196,5 @@ export default {
   },
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
-    displaySanData: toBoolean(get('DISPLAY_SAN_DATA', false, requiredInProduction)),
   },
 }

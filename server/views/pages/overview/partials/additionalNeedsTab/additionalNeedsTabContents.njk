@@ -1,22 +1,20 @@
 {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
-{% if featureToggles.displaySanData %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <div class="three-column-summary-cards">
-        {% include './_challengesSummaryCard.njk' %}
-        {% include './_strengthsSummaryCard.njk' %}
-        {% include './_conditionsSummaryCard.njk' %}
-      </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <div class="three-column-summary-cards">
+      {% include './_challengesSummaryCard.njk' %}
+      {% include './_strengthsSummaryCard.njk' %}
+      {% include './_conditionsSummaryCard.njk' %}
     </div>
   </div>
+</div>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      {% include './_supportStrategiesSummaryCard.njk' %}
-    </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    {% include './_supportStrategiesSummaryCard.njk' %}
   </div>
-{% endif %}
+</div>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
