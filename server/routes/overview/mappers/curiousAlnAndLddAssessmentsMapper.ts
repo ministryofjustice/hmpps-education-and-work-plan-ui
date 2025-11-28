@@ -34,7 +34,9 @@ const toLddAssessment = (learnerLddInfo: LearnerLddInfoExternalV1DTO): LddAssess
 const toAlnAssessment = (curiousV2AlnAssessment: LearnerAssessmentsAlnDTO): AlnAssessment => ({
   prisonId: curiousV2AlnAssessment.establishmentId,
   assessmentDate: parseISO(curiousV2AlnAssessment.assessmentDate),
-  referral: toAlnAssessmentReferral(curiousV2AlnAssessment.stakeholderReferral),
+  referral: curiousV2AlnAssessment.stakeholderReferral
+    ? curiousV2AlnAssessment.stakeholderReferral.split(',').map(toAlnAssessmentReferral)
+    : [],
   additionalNeedsIdentified: curiousV2AlnAssessment.assessmentOutcome?.toLowerCase().trim() === 'yes',
 })
 

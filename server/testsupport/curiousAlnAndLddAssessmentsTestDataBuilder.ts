@@ -34,12 +34,12 @@ const aLddAssessment = (options?: {
 const anAlnAssessment = (options?: {
   prisonId?: string
   assessmentDate?: Date
-  referral?: AlnAssessmentReferral
+  referral?: Array<AlnAssessmentReferral>
   additionalNeedsIdentified?: boolean
 }): AlnAssessment => ({
   prisonId: options?.prisonId || 'BXI',
   assessmentDate: options?.assessmentDate || startOfDay('2025-10-02'),
-  referral: options?.referral || AlnAssessmentReferral.PSYCHOLOGY,
+  referral: options?.referral === null ? null : options?.referral || [AlnAssessmentReferral.PSYCHOLOGY],
   additionalNeedsIdentified:
     options?.additionalNeedsIdentified === false ? false : options?.additionalNeedsIdentified || true,
 })

@@ -98,7 +98,7 @@ describe('Additional Needs tab - Screenings And Assessments Summary Card', () =>
         anAlnAssessment({
           prisonId: 'BXI',
           assessmentDate: startOfDay('2025-10-02'),
-          referral: AlnAssessmentReferral.PSYCHOLOGY,
+          referral: [AlnAssessmentReferral.PSYCHOLOGY],
           additionalNeedsIdentified: true,
         }),
       ],
@@ -142,7 +142,7 @@ describe('Additional Needs tab - Screenings And Assessments Summary Card', () =>
         anAlnAssessment({
           prisonId: 'BXI',
           assessmentDate: startOfDay('2025-10-02'),
-          referral: AlnAssessmentReferral.PSYCHOLOGY,
+          referral: [AlnAssessmentReferral.PSYCHOLOGY],
           additionalNeedsIdentified: true,
         }),
       ],

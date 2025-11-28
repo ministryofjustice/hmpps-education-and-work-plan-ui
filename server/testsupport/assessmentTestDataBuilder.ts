@@ -1,6 +1,7 @@
 import type { Assessment } from 'viewModels'
 import { startOfDay } from 'date-fns'
 import AssessmentTypeValue from '../enums/assessmentTypeValue'
+import AlnAssessmentReferral from '../enums/alnAssessmentReferral'
 
 const aValidCurious1Assessment = (options?: {
   prisonId?: string
@@ -24,7 +25,7 @@ const aValidCurious2Assessment = (options?: {
   type?: AssessmentTypeValue
   level?: string
   levelBanding?: string
-  referral?: string
+  referral?: Array<AlnAssessmentReferral>
   nextStep?: string
   assessmentDate?: Date
 }): Assessment =>
@@ -33,7 +34,7 @@ const aValidCurious2Assessment = (options?: {
     type: options?.type,
     level: options?.level,
     levelBanding: options?.levelBanding === null ? null : options?.levelBanding || '1.2',
-    referral: options?.referral === null ? null : options?.referral || 'Education',
+    referral: options?.referral === null ? null : options?.referral || [AlnAssessmentReferral.EDUCATION_SPECIALIST],
     nextStep: options.nextStep === null ? null : options?.nextStep || 'Progress to course at same level as assessed',
     assessmentDate: options?.assessmentDate,
     source: 'CURIOUS2',
@@ -44,7 +45,7 @@ const aValidAssessment = (options?: {
   type?: AssessmentTypeValue
   level?: string
   levelBanding?: string
-  referral?: string
+  referral?: Array<AlnAssessmentReferral>
   nextStep?: string
   assessmentDate?: Date
   source?: 'CURIOUS1' | 'CURIOUS2'
