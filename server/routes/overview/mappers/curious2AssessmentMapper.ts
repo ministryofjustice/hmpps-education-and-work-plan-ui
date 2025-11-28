@@ -15,6 +15,7 @@ import type {
 } from 'curiousApiClient'
 import type { Assessment } from 'viewModels'
 import AssessmentTypeValue from '../../../enums/assessmentTypeValue'
+import AlnAssessmentReferral from '../../../enums/alnAssessmentReferral'
 
 /**
  * Maps the Functional Skills LearnerAssessmentsFunctionalSkillsDTO (specifically those of type English, Maths and Digital) from the ExternalAssessmentsDTO into an array of Assessment
@@ -78,10 +79,23 @@ const toBasicAssessment = (assessment: LearnerAssessmentsFunctionalSkillsDTO | L
   ({
     prisonId: assessment.establishmentId,
     assessmentDate: startOfDay(assessment.assessmentDate),
-    referral: assessment.stakeholderReferral,
+    referral: assessment.stakeholderReferral
+      ? assessment.stakeholderReferral.split(',').map(toAlnAssessmentReferral)
+      : [],
     nextStep: assessment.assessmentNextStep,
     source: 'CURIOUS2',
   }) as Assessment
+
+const toAlnAssessmentReferral = (apiStakeholderReferral: string): AlnAssessmentReferral =>
+  ({
+    healthcare: AlnAssessmentReferral.HEALTHCARE,
+    psychology: AlnAssessmentReferral.PSYCHOLOGY,
+    'education specialist': AlnAssessmentReferral.EDUCATION_SPECIALIST,
+    nsm: AlnAssessmentReferral.NSM,
+    'substance misuse team': AlnAssessmentReferral.SUBSTANCE_MISUSE_TEAM,
+    'safer custody': AlnAssessmentReferral.SAFER_CUSTODY,
+    other: AlnAssessmentReferral.OTHER,
+  })[apiStakeholderReferral?.toLowerCase().trim()]
 
 /*
  Temporary method to smooth over a Curious API change where they are in the process or rolling out a field name change.

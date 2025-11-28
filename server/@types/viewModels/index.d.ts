@@ -87,7 +87,7 @@ declare module 'viewModels' {
   export interface AlnAssessment {
     prisonId: string
     assessmentDate: Date
-    referral: AlnAssessmentReferral
+    referral: Array<AlnAssessmentReferral>
     additionalNeedsIdentified: boolean
   }
 
@@ -107,7 +107,7 @@ declare module 'viewModels' {
     assessmentDate: Date
     level: string
     levelBanding: string | null
-    referral: string | null
+    referral: Array<AlnAssessmentReferral> | null
     nextStep: string | null
     source: 'CURIOUS1' | 'CURIOUS2'
   }

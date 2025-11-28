@@ -11,6 +11,8 @@ import {
 } from '../../../../../testsupport/assessmentTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
 import AssessmentTypeValue from '../../../../../enums/assessmentTypeValue'
+import AlnAssessmentReferral from '../../../../../enums/alnAssessmentReferral'
+import formatAlnAssessmentReferralScreenValueFilter from '../../../../../filters/formatAlnAssessmentReferralFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -26,6 +28,7 @@ njkEnv //
   .addFilter('formatDate', formatDate)
   .addFilter('formatFunctionalSkillType', formatFunctionalSkillTypeFilter)
   .addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
+  .addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
 
 const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
@@ -98,7 +101,7 @@ describe('Education and Training tab view - Functional Skills', () => {
               level: 'Entry Level 3',
               levelBanding: '3.5',
               nextStep: 'Progress to course at lower level due to individual circumstances',
-              referral: 'Substance Misuse Team',
+              referral: [AlnAssessmentReferral.SUBSTANCE_MISUSE_TEAM],
               prisonId: 'MDI',
             }),
           ],
@@ -120,7 +123,8 @@ describe('Education and Training tab view - Functional Skills', () => {
     expect(functionalSkillsRows.eq(0).find('td').eq(4).text().trim()).toEqual(
       'Progress to course at lower level due to individual circumstances',
     )
-    expect(functionalSkillsRows.eq(0).find('td').eq(5).text().trim()).toEqual('Substance Misuse Team')
+    expect(functionalSkillsRows.eq(0).find('td').eq(5).find('li').length).toEqual(1)
+    expect(functionalSkillsRows.eq(0).find('td').eq(5).find('li').eq(0).text().trim()).toEqual('Substance Misuse Team')
     expect($('[data-qa=no-functional-skills-in-curious-message]').length).toEqual(0)
   })
 
@@ -155,7 +159,7 @@ describe('Education and Training tab view - Functional Skills', () => {
               level: 'consolidating reader',
               levelBanding: null,
               nextStep: 'Reading support not required at this time.',
-              referral: 'Education Specialist',
+              referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
               prisonId: 'BXI',
             }),
             aValidCurious1Assessment({
@@ -176,7 +180,7 @@ describe('Education and Training tab view - Functional Skills', () => {
               level: 'ESOL Pathway',
               levelBanding: null,
               nextStep: 'English Language Support Level 2',
-              referral: 'Healthcare',
+              referral: [AlnAssessmentReferral.HEALTHCARE],
               prisonId: 'MDI',
             }),
             aValidCurious1Assessment({
@@ -203,7 +207,7 @@ describe('Education and Training tab view - Functional Skills', () => {
               level: 'Level 2',
               levelBanding: '2.4',
               nextStep: 'Progress to course at lower level due to individual circumstances',
-              referral: 'Education Specialist',
+              referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
               prisonId: 'BXI',
             }),
           ],
@@ -225,7 +229,8 @@ describe('Education and Training tab view - Functional Skills', () => {
     expect(functionalSkillsRows.eq(0).find('td').eq(4).text().trim()).toEqual(
       'Progress to course at lower level due to individual circumstances',
     )
-    expect(functionalSkillsRows.eq(0).find('td').eq(5).text().trim()).toEqual('Education Specialist')
+    expect(functionalSkillsRows.eq(0).find('td').eq(5).find('li').length).toEqual(1)
+    expect(functionalSkillsRows.eq(0).find('td').eq(5).find('li').eq(0).text().trim()).toEqual('Education Specialist')
 
     expect(functionalSkillsRows.eq(1).find('td').eq(0).text().trim()).toEqual('Maths skills')
     expect(functionalSkillsRows.eq(1).find('td').eq(1).text().trim()).toEqual('Brixton (HMP)')
@@ -248,7 +253,8 @@ describe('Education and Training tab view - Functional Skills', () => {
     expect(functionalSkillsRows.eq(3).find('td').eq(4).text().trim()).toEqual(
       'Reading support not required at this time.',
     )
-    expect(functionalSkillsRows.eq(3).find('td').eq(5).text().trim()).toEqual('Education Specialist')
+    expect(functionalSkillsRows.eq(3).find('td').eq(5).find('li').length).toEqual(1)
+    expect(functionalSkillsRows.eq(3).find('td').eq(5).find('li').eq(0).text().trim()).toEqual('Education Specialist')
 
     expect(functionalSkillsRows.eq(4).find('td').eq(0).text().trim()).toEqual('ESOL')
     expect(functionalSkillsRows.eq(4).find('td').eq(1).text().trim()).toEqual('Moorland (HMP & YOI)')

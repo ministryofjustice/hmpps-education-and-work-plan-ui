@@ -91,7 +91,7 @@ describe('curiousService', () => {
           anAlnAssessment({
             prisonId: 'MDI',
             assessmentDate: startOfDay('2025-10-01'),
-            referral: AlnAssessmentReferral.EDUCATION_SPECIALIST,
+            referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
           }),
         ],
       })
@@ -244,7 +244,7 @@ describe('curiousService', () => {
               level: 'Entry Level 2',
               levelBanding: '2.1',
               nextStep: 'Progress to course at level consistent with assessment result',
-              referral: 'Education Specialist',
+              referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
             }),
             // The Curious 1 English assessment
             aValidCurious1Assessment({
