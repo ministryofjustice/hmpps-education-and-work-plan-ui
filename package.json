@@ -96,7 +96,7 @@
     "connect-redis": "^9.0.0",
     "csrf-sync": "^4.2.1",
     "date-fns": "^4.1.0",
-    "express": "^5.1.0",
+    "express": "^5.2.0",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.18.2",
     "govuk-frontend": "^5.13.0",
