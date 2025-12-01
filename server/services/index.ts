@@ -12,6 +12,7 @@ import ReviewService from './reviewService'
 import SessionService from './sessionService'
 import JourneyDataService from './journeyDataService'
 import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
+import LearnerRecordsService from './learnerRecordsService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -31,6 +32,7 @@ export const services = () => {
     prisonRegisterClient,
     journeyDataStore,
     supportAdditionalNeedsApiClient,
+    learnerRecordsApiClient,
   } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
@@ -55,6 +57,7 @@ export const services = () => {
   const sessionService = new SessionService(educationAndWorkPlanClient, hmppsAuthClient)
   const journeyDataService = new JourneyDataService(journeyDataStore)
   const supportAdditionalNeedsService = new SupportAdditionalNeedsService(supportAdditionalNeedsApiClient)
+  const learnerRecordsService = new LearnerRecordsService(learnerRecordsApiClient)
 
   return {
     applicationInfo,
@@ -71,6 +74,7 @@ export const services = () => {
     sessionService,
     journeyDataService,
     supportAdditionalNeedsService,
+    learnerRecordsService,
   }
 }
 
@@ -90,4 +94,5 @@ export {
   SessionService,
   SupportAdditionalNeedsService,
   JourneyDataService,
+  LearnerRecordsService,
 }
