@@ -27,7 +27,8 @@ Induction, and 1 or more Goals.
 To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
 
 ## Imported Types
-Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, curious-api and ciag-induction-api.
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, prison-register,
+curious-api, hmpps-support-for-additional-needs-api, and hmpps-learner-records-api.
 You will need to install the node module `openapi-typescript` globally with the following command:
 
 `npm install -g openapi-typescript`
@@ -40,16 +41,17 @@ To update the types from the Open API docs run the following commands:
 
 `npx openapi-typescript https://prison-register-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/prisonRegisterApi/index.d.ts`
 
-`npx openapi-typescript https://activities-api-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/activitiesApi/index.d.ts`
-
 `npx openapi-typescript https://testservices.sequation.net/sequation-virtual-campus2-api/v3/api-docs -o server/@types/curiousApi/index.d.ts`
 
 `npx openapi-typescript https://support-for-additional-needs-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/supportAdditionalNeedsApi/index.d.ts`
 
+`npx openapi-typescript https://learner-records-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/learnerRecordsApi/index.d.ts`
+
 Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
 
 The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts`,
-`server/@types/prisonRegisterApi/index.d.ts` and `server/@types/curiousApi/index.d.ts` which may also need tweaking for use.
+`server/@types/prisonRegisterApi/index.d.ts`, `server/@types/curiousApi/index.d.ts`, `server/@types/supportAdditionalNeedsApi/index.d.ts`
+and `server/@types/learnerRecordsApi/index.d.ts` which may also need tweaking for use.
 
 Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
 
@@ -87,7 +89,7 @@ TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.jus
 TOKEN_VERIFICATION_ENABLED=false
 EDUCATION_AND_WORK_PLAN_API_URL=http://localhost:8080
 PRISONER_SEARCH_API_URL=http://localhost:8080
-ACTIVITIES_API_URL=http://localhost:8080
+LEARNER_RECORDS_API_URL=http://localhost:8080
 REDIS_ENABLED=true
 NODE_ENV=development
 SESSION_SECRET=anything

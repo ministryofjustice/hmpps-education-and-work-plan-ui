@@ -164,13 +164,13 @@ export default {
       agent: new AgentConfig(Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 3000))),
       includeInHealthCheck: false,
     },
-    activities: {
-      url: get('ACTIVITIES_API_URL', 'http://localhost:8083', requiredInProduction),
+    learnerRecordsApi: {
+      url: get('LEARNER_RECORDS_API_URL', 'http://localhost:8083', requiredInProduction),
       timeout: {
-        response: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000)),
-        deadline: Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 5000)),
+        response: Number(get('LEARNER_RECORDS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('LEARNER_RECORDS_API_TIMEOUT_DEADLINE', 5000)),
       },
-      agent: new AgentConfig(Number(get('ACTIVITIES_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000))),
+      agent: new AgentConfig(Number(get('LEARNER_RECORDS_API_TIMEOUT_RESPONSE', 5000))),
       includeInHealthCheck: false,
     },
   },

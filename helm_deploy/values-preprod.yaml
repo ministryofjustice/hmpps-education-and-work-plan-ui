@@ -24,7 +24,7 @@ generic-service:
     DPS_URL: "https://digital-preprod.prison.service.justice.gov.uk"
     NEW_DPS_URL: "https://dps-preprod.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk"
-    ACTIVITIES_API_URL: "https://activities-api-preprod.prison.service.justice.gov.uk"
+    LEARNER_RECORDS_API_URL: "https://learner-records-api-preprod.hmpps.service.justice.gov.uk"
     SUPPORT_ADDITIONAL_NEEDS_API_URL: 'https://support-for-additional-needs-api-preprod.hmpps.service.justice.gov.uk'
     SUPPORT_ADDITIONAL_NEEDS_UI_URL: "https://support-for-additional-needs-preprod.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: "PRE-PRODUCTION"

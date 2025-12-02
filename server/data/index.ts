@@ -35,6 +35,7 @@ import PrisonerSearchStore from './prisonerSearchStore/prisonerSearchStore'
 import InMemoryPrisonerSearchStore from './prisonerSearchStore/inMemoryPrisonerSearchStore'
 import RedisPrisonerSearchStore from './prisonerSearchStore/redisPrisonerSearchStore'
 import logger from '../../logger'
+import LearnerRecordsApiClient from './learnerRecordsApiClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -72,6 +73,7 @@ export const dataAccess = () => {
       ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
       : new InMemoryJourneyDataStore(),
     supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthenticationClient),
+    learnerRecordsApiClient: new LearnerRecordsApiClient(hmppsAuthenticationClient),
   }
 }
 
@@ -92,4 +94,5 @@ export {
   PrisonRegisterClient,
   type JourneyDataStore,
   SupportAdditionalNeedsApiClient,
+  LearnerRecordsApiClient,
 }
