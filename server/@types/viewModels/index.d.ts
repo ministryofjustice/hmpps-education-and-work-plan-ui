@@ -348,4 +348,26 @@ declare module 'viewModels' {
     pageUrls: Array<string>
     currentPageIndex: number
   }
+
+  /**
+   * A prisoner's verified qualifications from a source such as the Department for Education Learner Records Service (LRS)
+   */
+  export interface VerifiedQualifications {
+    prisonNumber: string
+    status: 'PRN_MATCHED_TO_LEARNER_RECORD' | 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' | 'LEARNER_DECLINED_TO_SHARE_DATA'
+    qualifications: Array<VerifiedQualification>
+  }
+
+  /**
+   * A verified qualification from a source such as the Department for Education Learner Records Service (LRS)
+   */
+  export interface VerifiedQualification {
+    subject: string
+    awardingBodyName: string
+    source: string
+    qualificationType: string
+    level: string
+    grade: string
+    awardedOn: Date
+  }
 }
