@@ -1,0 +1,118 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = "Qualifications and courses from the Learning Record Service (LRS)" %}
+
+{% set pageId = "lrs-qualifications" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training" data-id="breadcrumbs-prisoner-{{ prisonerSummary.prisonNumber }}">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}'s learning and work progress</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <span class="govuk-caption-l">Learning and work progress</span>
+      <h1 class="govuk-heading-l">Qualifications and courses from the Learning Record Service (LRS)</h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      {% include "../../partials/printThisPage.njk" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "../../partials/prisonerBanner.njk" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <p class="govuk-hint">
+        LRS is run by the Department for Education. Contact the local education team to find out more.<br/>
+        This is information from awarding organisations recognised by Ofqual, such as AQA, Pearson, OCR and City and Guilds.
+      </p>
+
+      {% if verifiedQualifications.isFulfilled() %}
+        {% set verifiedQualifications = verifiedQualifications.value %}
+
+        {% if verifiedQualifications.status === 'PRN_MATCHED_TO_LEARNER_RECORD' %}
+          {% set qualifications = verifiedQualifications.qualifications | filterArrayOnProperty('source', 'AO') | sort(attribute = 'awardedOn', reverse = true) %}
+          {% if qualifications.length > 0 %}
+
+            <table class="govuk-table" data-module="moj-sortable-table" data-qa="verified-qualifications">
+              <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Subject</th>
+                <th scope="col" class="govuk-table__header" aria-sort="none">Awarding body</th>
+                <th scope="col" class="govuk-table__header">Qualification type</th>
+                <th scope="col" class="govuk-table__header app-u-width-10" aria-sort="none">Level</th>
+                <th scope="col" class="govuk-table__header app-u-width-10">Grade</th>
+                <th scope="col" class="govuk-table__header app-u-width-15" aria-sort="none">Awarded on</th>
+              </tr>
+              </thead>
+
+              <tbody class="govuk-table__body">
+                {% for qualification in qualifications %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ qualification.subject }}</td>
+                    <td class="govuk-table__cell">{{ qualification.awardingBodyName }}</td>
+                    <td class="govuk-table__cell">{{ qualification.qualificationType }}</td>
+                    <td class="govuk-table__cell">{{ qualification.level }}</td>
+                    <td class="govuk-table__cell">{{ qualification.grade }}</td>
+                    <td class="govuk-table__cell" data-sort-value="{{ qualification.awardedOn | formatDate('yyyyMMdd') }}">
+                      {{ qualification.awardedOn | formatDate('d MMMM yyyy') }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <section class="moj-pagination">
+              <ul class="moj-pagination__list"></ul>
+              <p class="moj-pagination__results">Showing <b>1</b> to <b>{{ qualifications | length }}</b> of <b>{{ qualifications | length }}</b> results</p>
+            </section>
+
+          {% else %}
+            <p class="govuk-body" data-qa="learner-matched-but-has-no-qualifications-message">
+              No results. Unique learner number (ULN) matched, but learner has no qualifications from an awarding organisation.
+            </p>
+          {% endif %}
+
+        {% elseif verifiedQualifications.status === 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' %}
+          <p class="govuk-body" data-qa="not-matched-in-lrs-message">
+            No results. A unique learner number (ULN) has not yet been matched.
+            {% if userHasPermissionTo('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE') %}
+              <a href="" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
+            {% endif %}
+          </p>
+        {% elseif verifiedQualifications.status === 'LEARNER_DECLINED_TO_SHARE_DATA' %}
+          <p class="govuk-body" data-qa="learner-declined-to-share-data-message-message">
+            No results. Unique learner number (ULN) matched, but learner declined to share their LRS data.
+          </p>
+        {% endif %}
+
+
+      {% else %}
+
+        <h2 class="govuk-heading-m" data-qa="learner-records-unavailable-message">We cannot show these details from LRS right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}

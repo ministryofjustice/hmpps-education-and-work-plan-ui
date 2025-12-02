@@ -1,4 +1,4 @@
-import type { Router } from 'express'
+import { Router } from 'express'
 import { Services } from '../../services'
 import FunctionalSkillsController from './functionalSkillsController'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
@@ -8,13 +8,16 @@ import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonName
 /**
  * Route definitions for the pages relating to Functional Skills
  */
-export default (router: Router, services: Services) => {
+const functionalSkillsRoutes = (services: Services): Router => {
   const { curiousService, prisonService } = services
   const functionalSkillsController = new FunctionalSkillsController()
 
-  router.get('/plan/:prisonNumber/functional-skills', [
-    retrievePrisonNamesById(prisonService),
-    retrieveCuriousFunctionalSkills(curiousService, { useCurious1ApiForFunctionalSkills: true }),
-    asyncMiddleware(functionalSkillsController.getFunctionalSkillsView),
-  ])
+  return Router({ mergeParams: true }) //
+    .get('/functional-skills', [
+      retrievePrisonNamesById(prisonService),
+      retrieveCuriousFunctionalSkills(curiousService, { useCurious1ApiForFunctionalSkills: true }),
+      asyncMiddleware(functionalSkillsController.getFunctionalSkillsView),
+    ])
 }
+
+export default functionalSkillsRoutes
