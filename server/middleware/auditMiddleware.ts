@@ -169,6 +169,9 @@ const pageViewEventMap: Record<string, Page> = {
   '/prisoners/:prisonNumber/education/qualification-details': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
   '/prisoners/:prisonNumber/education/:journeyId/qualification-details': Page.UPDATE_QUALIFICATION_DETAILS,
 
+  // LRS Qualifications
+  '/plan/:prisonNumber/lrs-qualifications': Page.LRS_QUALIFICATIONS,
+
   // Non audit routes. These routes do not raise an audit event
   '/': null,
   '/plan/:prisonNumber/induction-created': null,

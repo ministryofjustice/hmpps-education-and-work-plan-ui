@@ -3,7 +3,7 @@ import { type Services } from '../services'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
 import overview from './overview'
-import functionalSkills from './functionalSkills'
+import functionalSkillsRoutes from './functionalSkills'
 import prisonerListRoutes from './prisonerList'
 import postInductionCreation from './postInductionCreation'
 import exemptInduction from './induction/exemption'
@@ -24,6 +24,7 @@ import landingPageRoutes from './landingPage'
 import sessionSummaryRoutes from './sessionSummary'
 import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateActiveCaseloadPrisonName'
 import sessionListRoutes from './sessionList'
+import lrsQualificationsRoutes from './lrsQualifications'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -38,7 +39,8 @@ export default function routes(services: Services): Router {
 
   // Application routes
   inPrisonCoursesAndQualifications(router, services)
-  functionalSkills(router, services)
+
+  router.use('/plan/:prisonNumber/', [functionalSkillsRoutes(services), lrsQualificationsRoutes(services)])
 
   overview(router, services)
   createGoal(router, services)
