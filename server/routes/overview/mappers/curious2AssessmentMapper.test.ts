@@ -16,6 +16,7 @@ import {
 } from './curious2AssessmentMapper'
 import { aValidCurious2Assessment } from '../../../testsupport/assessmentTestDataBuilder'
 import AssessmentTypeValue from '../../../enums/assessmentTypeValue'
+import AlnAssessmentReferral from '../../../enums/alnAssessmentReferral'
 
 describe('curious2AssessmentMapper', () => {
   const externalAssessments = anExternalAssessmentsDTO({
@@ -109,7 +110,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'Pre-Entry',
           levelBanding: '0.3',
           nextStep: 'Progress to course at level consistent with assessment result',
-          referral: 'Education Specialist',
+          referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
         }),
         aValidCurious2Assessment({
           prisonId: 'LPI',
@@ -118,7 +119,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'Level 1',
           levelBanding: '1.4',
           nextStep: 'Progress to higher level based on evidence of prior attainment',
-          referral: 'NSM',
+          referral: [AlnAssessmentReferral.NSM],
         }),
         aValidCurious2Assessment({
           prisonId: 'CYI',
@@ -127,7 +128,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'Level 3',
           levelBanding: '3.3',
           nextStep: 'Progress to higher level based on evidence of prior attainment',
-          referral: 'Psychology',
+          referral: [AlnAssessmentReferral.PSYCHOLOGY],
         }),
         aValidCurious2Assessment({
           prisonId: 'GPI',
@@ -136,7 +137,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'Entry Level',
           levelBanding: '0.6',
           nextStep: null,
-          referral: null,
+          referral: [],
         }),
         aValidCurious2Assessment({
           prisonId: 'FEI',
@@ -145,7 +146,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'Level 1',
           levelBanding: '1.2',
           nextStep: null,
-          referral: null,
+          referral: [],
         }),
       ]
 
@@ -221,7 +222,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'non-reader',
           levelBanding: null,
           nextStep: 'Refer for reading support level.',
-          referral: 'Education Specialist',
+          referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
         }),
         aValidCurious2Assessment({
           prisonId: 'SKI',
@@ -230,7 +231,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'emerging reader',
           levelBanding: null,
           nextStep: 'Reading support not required at this time.',
-          referral: 'Other',
+          referral: [AlnAssessmentReferral.OTHER],
         }),
       ]
 
@@ -302,7 +303,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'ESOL Pathway',
           levelBanding: null,
           nextStep: 'English Language Support Level 1',
-          referral: 'Education Specialist',
+          referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
         }),
         aValidCurious2Assessment({
           prisonId: 'MDI',
@@ -311,7 +312,7 @@ describe('curious2AssessmentMapper', () => {
           level: 'ESOL Pathway',
           levelBanding: null,
           nextStep: 'English Language Support Level 2',
-          referral: 'Substance Misuse Team',
+          referral: [AlnAssessmentReferral.SUBSTANCE_MISUSE_TEAM],
         }),
       ]
 

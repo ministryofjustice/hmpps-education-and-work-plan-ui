@@ -42,7 +42,15 @@
               Referred to
             </dt>
             <dd class="govuk-summary-list__value" data-qa="assessment-referral">
-              {{ alnAssessment.referral | formatAlnAssessmentReferralScreenValue | default('Not recorded in Curious') }}
+              {% if alnAssessment.referral | length %}
+                <ul class="govuk-list">
+                  {% for referral in alnAssessment.referral %}
+                    <li>{{ referral | formatAlnAssessmentReferralScreenValue }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                Not recorded in Curious
+              {% endif %}
             </dd>
           </div>
         </dl>

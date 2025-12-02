@@ -15,6 +15,7 @@ import {
 } from '../../../testsupport/curiousAssessmentsTestDataBuilder'
 import { aValidCurious1Assessment, aValidCurious2Assessment } from '../../../testsupport/assessmentTestDataBuilder'
 import AssessmentTypeValue from '../../../enums/assessmentTypeValue'
+import AlnAssessmentReferral from '../../../enums/alnAssessmentReferral'
 
 describe('functionalSkillsMapper', () => {
   describe('Map to functional skills from the Curious 1 assessments data as precedence over the Curious 2 assessments', () => {
@@ -72,7 +73,7 @@ describe('functionalSkillsMapper', () => {
             level: 'Entry Level 2',
             levelBanding: '2.1',
             nextStep: 'Progress to course at level consistent with assessment result',
-            referral: 'Education Specialist',
+            referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
           }),
           // The Curious 2 Maths assessment
           aValidCurious2Assessment({
@@ -82,7 +83,7 @@ describe('functionalSkillsMapper', () => {
             level: 'Entry Level 2',
             levelBanding: '2.1',
             nextStep: 'Progress to course at level consistent with assessment result',
-            referral: 'Education Specialist',
+            referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
           }),
           // The Curious 2 Digital Literacy assessment
           aValidCurious2Assessment({
@@ -92,7 +93,7 @@ describe('functionalSkillsMapper', () => {
             level: 'Level 1',
             levelBanding: '1.2',
             nextStep: null,
-            referral: null,
+            referral: [],
           }),
           // The Curious 2 Reading assessment
           aValidCurious2Assessment({
@@ -102,7 +103,7 @@ describe('functionalSkillsMapper', () => {
             level: 'non-reader',
             levelBanding: null,
             nextStep: 'Refer for reading support level.',
-            referral: 'Education Specialist',
+            referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
           }),
           // The Curious 2 ESOL assessment
           aValidCurious2Assessment({
@@ -112,7 +113,7 @@ describe('functionalSkillsMapper', () => {
             level: 'ESOL Pathway',
             levelBanding: null,
             nextStep: 'English Language Support Level 1',
-            referral: 'Education Specialist',
+            referral: [AlnAssessmentReferral.EDUCATION_SPECIALIST],
           }),
           // The Curious 1 assessment mapped from the LearnerProfile array
           aValidCurious1Assessment({

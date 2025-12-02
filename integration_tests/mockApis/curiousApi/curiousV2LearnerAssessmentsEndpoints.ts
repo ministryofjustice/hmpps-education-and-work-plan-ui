@@ -62,7 +62,7 @@ const stubLearnerAssessments = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
                 assessmentDate: '2025-10-01',
                 assessmentOutcome: 'Yes',
                 hasPrisonerConsent: 'Yes',
-                stakeholderReferral: 'Education Specialist',
+                stakeholderReferral: 'Education Specialist, Healthcare',
               },
             ],
             englishFunctionalSkills: [
@@ -83,7 +83,7 @@ const stubLearnerAssessments = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
                 workingTowardsLevel: 'Entry Level 2',
                 levelBanding: '2.4',
                 assessmentNextStep: 'Progress to course at level consistent with assessment result',
-                stakeholderReferral: 'Education Specialist',
+                stakeholderReferral: 'Education Specialist, Other',
                 hasPrisonerConsent: true,
               },
             ],
