@@ -87,6 +87,8 @@ export default {
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       curiousClientId: get('CURIOUS_CLIENT_ID', 'clientid', requiredInProduction),
       curiousClientSecret: get('CURIOUS_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      learnerRecordsClientId: get('LRS_API_CLIENT_ID', 'clientid', requiredInProduction),
+      learnerRecordsClientSecret: get('LRS_API_SECRET', 'clientsecret', requiredInProduction),
       includeInHealthCheck: true,
     },
     tokenVerification: {

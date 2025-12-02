@@ -81,6 +81,9 @@ generic-service:
       SESSION_SECRET: "SESSION_SECRET"
       CURIOUS_CLIENT_ID: "CURIOUS_CLIENT_ID"
       CURIOUS_CLIENT_SECRET: "CURIOUS_CLIENT_SECRET"
+      LRS_API_CLIENT_ID: "LRS_API_CLIENT_ID"
+      LRS_API_SECRET: "LRS_API_SECRET"
+
     education-work-plan-ui-elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"

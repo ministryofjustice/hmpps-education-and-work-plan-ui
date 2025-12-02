@@ -40,9 +40,13 @@ import LearnerRecordsApiClient from './learnerRecordsApiClient'
 type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => {
-  const tokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore)
-  const hmppsAuthenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, tokenStore)
+  const systemTokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
+  const hmppsAuthClient = new HmppsAuthClient(systemTokenStore)
+  const hmppsAuthenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, systemTokenStore)
+
+  const curiousTokenStore = config.redis.enabled
+    ? new RedisTokenStore(createRedisClient('curious:'))
+    : new InMemoryTokenStore()
   const curiousApiAuthClient = new AuthenticationClient(
     {
       ...config.apis.hmppsAuth,
@@ -50,7 +54,20 @@ export const dataAccess = () => {
       systemClientSecret: config.apis.hmppsAuth.curiousClientSecret,
     },
     logger,
-    tokenStore,
+    curiousTokenStore,
+  )
+
+  const learnerRecordsTokenStore = config.redis.enabled
+    ? new RedisTokenStore(createRedisClient('learnerRecords:'))
+    : new InMemoryTokenStore()
+  const learnerRecordsApiAuthClient = new AuthenticationClient(
+    {
+      ...config.apis.hmppsAuth,
+      systemClientId: config.apis.hmppsAuth.learnerRecordsClientId,
+      systemClientSecret: config.apis.hmppsAuth.learnerRecordsClientSecret,
+    },
+    logger,
+    learnerRecordsTokenStore,
   )
 
   return {
@@ -73,7 +90,7 @@ export const dataAccess = () => {
       ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
       : new InMemoryJourneyDataStore(),
     supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthenticationClient),
-    learnerRecordsApiClient: new LearnerRecordsApiClient(hmppsAuthenticationClient),
+    learnerRecordsApiClient: new LearnerRecordsApiClient(learnerRecordsApiAuthClient),
   }
 }
 
