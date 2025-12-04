@@ -40,12 +40,14 @@ import LearnerRecordsApiClient from './learnerRecordsApiClient'
 type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => {
-  const systemTokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
+  const systemTokenStore = config.redis.enabled
+    ? new RedisTokenStore(createRedisClient(), 'systemToken:')
+    : new InMemoryTokenStore()
   const hmppsAuthClient = new HmppsAuthClient(systemTokenStore)
   const hmppsAuthenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, systemTokenStore)
 
   const curiousTokenStore = config.redis.enabled
-    ? new RedisTokenStore(createRedisClient('curious:'))
+    ? new RedisTokenStore(createRedisClient(), 'curiousToken:')
     : new InMemoryTokenStore()
   const curiousApiAuthClient = new AuthenticationClient(
     {
@@ -58,7 +60,7 @@ export const dataAccess = () => {
   )
 
   const learnerRecordsTokenStore = config.redis.enabled
-    ? new RedisTokenStore(createRedisClient('learnerRecords:'))
+    ? new RedisTokenStore(createRedisClient(), 'learnerRecordsToken:')
     : new InMemoryTokenStore()
   const learnerRecordsApiAuthClient = new AuthenticationClient(
     {
@@ -76,18 +78,18 @@ export const dataAccess = () => {
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     manageUsersApiClient: new ManageUsersApiClient(),
     prisonerSearchStore: config.redis.enabled
-      ? new RedisPrisonerSearchStore(createRedisClient('prisonerSearch:'))
+      ? new RedisPrisonerSearchStore(createRedisClient())
       : new InMemoryPrisonerSearchStore(),
     prisonerSearchClient: new PrisonerSearchClient(),
     educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
     curiousClient: new CuriousClient(curiousApiAuthClient),
     ciagInductionClient: new CiagInductionClient(),
     prisonRegisterStore: config.redis.enabled
-      ? new RedisPrisonRegisterStore(createRedisClient('prisonRegister:'))
+      ? new RedisPrisonRegisterStore(createRedisClient())
       : new InMemoryPrisonRegisterStore(),
     prisonRegisterClient: new PrisonRegisterClient(hmppsAuthenticationClient),
     journeyDataStore: config.redis.enabled
-      ? new RedisJourneyDataStore(createRedisClient('journeyData:'))
+      ? new RedisJourneyDataStore(createRedisClient())
       : new InMemoryJourneyDataStore(),
     supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthenticationClient),
     learnerRecordsApiClient: new LearnerRecordsApiClient(learnerRecordsApiAuthClient),

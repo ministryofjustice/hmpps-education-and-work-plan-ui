@@ -3,7 +3,7 @@ import { RedisClient } from '../redisClient'
 import logger from '../../../logger'
 import PrisonerSearchStore from './prisonerSearchStore'
 
-const PRISONER = 'prisoner'
+const prefix = 'prisoner:'
 
 export default class RedisPrisonerSearchStore implements PrisonerSearchStore {
   constructor(private readonly client: RedisClient) {
@@ -20,12 +20,12 @@ export default class RedisPrisonerSearchStore implements PrisonerSearchStore {
 
   async setPrisoner(prisonNumber: string, prisoner: Prisoner, durationHours = 24): Promise<void> {
     await this.ensureConnected()
-    this.client.set(`${PRISONER}-${prisonNumber}`, JSON.stringify(prisoner), { EX: durationHours * 60 * 60 })
+    this.client.set(`${prefix}${prisonNumber}`, JSON.stringify(prisoner), { EX: durationHours * 60 * 60 })
   }
 
   async getPrisoner(prisonNumber: string): Promise<Prisoner> {
     await this.ensureConnected()
-    const serializedPrisoner = await this.client.get(`${PRISONER}-${prisonNumber}`)
+    const serializedPrisoner = await this.client.get(`${prefix}${prisonNumber}`)
     return serializedPrisoner ? (JSON.parse(serializedPrisoner.toString()) as Prisoner) : undefined
   }
 }
