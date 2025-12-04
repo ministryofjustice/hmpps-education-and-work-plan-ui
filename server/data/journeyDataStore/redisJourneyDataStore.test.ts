@@ -14,7 +14,7 @@ const redisClient = {
 
 const username = 'AUSER_GEN'
 const journeyId = uuidV4()
-const expectedCacheKey = `journey.${username}.${journeyId}`
+const expectedCacheKey = `journeyData:${username}:${journeyId}`
 const journeyData: Express.JourneyData = { inductionDto: aValidInductionDto() }
 
 describe('redisJourneyDataStore', () => {

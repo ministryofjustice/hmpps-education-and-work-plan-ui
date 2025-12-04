@@ -4,6 +4,7 @@ import JourneyDataStore from './journeyDataStore'
 import dataParsingReviver from './dataParsingReviver'
 
 const DATE_FIELDS = ['createdAt', 'updatedAt']
+const prefix = 'journeyData:'
 
 export default class RedisJourneyDataStore implements JourneyDataStore {
   constructor(private readonly client: RedisClient) {
@@ -25,17 +26,17 @@ export default class RedisJourneyDataStore implements JourneyDataStore {
     durationHours = 1,
   ): Promise<void> {
     await this.ensureConnected()
-    this.client.set(`journey.${username}.${journeyId}`, JSON.stringify(journeyData), { EX: durationHours * 60 * 60 })
+    this.client.set(`${prefix}${username}:${journeyId}`, JSON.stringify(journeyData), { EX: durationHours * 60 * 60 })
   }
 
   async getJourneyData(username: string, journeyId: string): Promise<Express.JourneyData> {
     await this.ensureConnected()
-    const serializedJourneyData = await this.client.get(`journey.${username}.${journeyId}`)
+    const serializedJourneyData = await this.client.get(`${prefix}${username}:${journeyId}`)
     return serializedJourneyData ? JSON.parse(serializedJourneyData.toString(), dataParsingReviver(DATE_FIELDS)) : {}
   }
 
   async deleteJourneyData(username: string, journeyId: string): Promise<void> {
     await this.ensureConnected()
-    await this.client.del(`journey.${username}.${journeyId}`)
+    await this.client.del(`${prefix}${username}:${journeyId}`)
   }
 }

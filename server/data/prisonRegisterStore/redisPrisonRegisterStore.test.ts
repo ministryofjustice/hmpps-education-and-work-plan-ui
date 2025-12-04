@@ -45,7 +45,7 @@ describe('redisPrisonRegisterStore', () => {
 
     // Then
     expect(redisClient.set).toHaveBeenCalledWith(
-      'activePrisons',
+      'prisonRegister:activePrisons',
       JSON.stringify(activePrisons),
       { EX: 172800 }, // 2 days in seconds
     )
@@ -61,7 +61,7 @@ describe('redisPrisonRegisterStore', () => {
 
     // Then
     expect(returnedActivePrisons).toStrictEqual(activePrisons)
-    expect(redisClient.get).toHaveBeenCalledWith('activePrisons')
+    expect(redisClient.get).toHaveBeenCalledWith('prisonRegister:activePrisons')
   })
 
   it('should get empty array of active prisons given there are no active prisons in redis', async () => {
@@ -76,7 +76,7 @@ describe('redisPrisonRegisterStore', () => {
 
     // Then
     expect(returnedActivePrisons).toStrictEqual(expectedActivePrisons)
-    expect(redisClient.get).toHaveBeenCalledWith('activePrisons')
+    expect(redisClient.get).toHaveBeenCalledWith('prisonRegister:activePrisons')
   })
 
   it('should not get active prisons given redis client throws an error', async () => {
@@ -89,7 +89,7 @@ describe('redisPrisonRegisterStore', () => {
     } catch (error) {
       // Then
       expect(error).toBe('some error')
-      expect(redisClient.get).toHaveBeenCalledWith('activePrisons')
+      expect(redisClient.get).toHaveBeenCalledWith('prisonRegister:activePrisons')
     }
   })
 })

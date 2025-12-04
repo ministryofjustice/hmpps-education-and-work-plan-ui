@@ -27,7 +27,7 @@ describe('redisPrisonerSearchStore', () => {
 
     // Then
     expect(redisClient.set).toHaveBeenCalledWith(
-      'prisoner-A1234BC',
+      'prisoner:A1234BC',
       JSON.stringify(prisoner),
       { EX: 7200 }, // 2 hours in seconds
     )
@@ -43,7 +43,7 @@ describe('redisPrisonerSearchStore', () => {
 
     // Then
     expect(returnedPrisoner).toEqual(prisoner)
-    expect(redisClient.get).toHaveBeenCalledWith('prisoner-A1234BC')
+    expect(redisClient.get).toHaveBeenCalledWith('prisoner:A1234BC')
   })
 
   it('should get undefined given prisoner by prisonNumber in redis', async () => {
@@ -56,7 +56,7 @@ describe('redisPrisonerSearchStore', () => {
 
     // Then
     expect(returnedPrisoner).toBeUndefined()
-    expect(redisClient.get).toHaveBeenCalledWith('prisoner-A1234BC')
+    expect(redisClient.get).toHaveBeenCalledWith('prisoner:A1234BC')
   })
 
   it('should not get prisoner given redis client throws an error', async () => {
@@ -69,7 +69,7 @@ describe('redisPrisonerSearchStore', () => {
     } catch (error) {
       // Then
       expect(error).toBe('some error')
-      expect(redisClient.get).toHaveBeenCalledWith('prisoner-A1234BC')
+      expect(redisClient.get).toHaveBeenCalledWith('prisoner:A1234BC')
     }
   })
 })
