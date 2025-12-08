@@ -12,9 +12,9 @@ export default class CuriousService {
    * Returns the Additional Learning Needs (ALN) and Learning Difficulties and Disabilities (LDD) assessments for a
    * given prisoner.
    */
-  async getAlnAndLddAssessments(prisonNumber: string): Promise<CuriousAlnAndLddAssessments> {
+  async getAlnAndLddAssessments(prisonNumber: string, username: string): Promise<CuriousAlnAndLddAssessments> {
     try {
-      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber, username)
       return toCuriousAlnAndLddAssessments(allPrisonerAssessments)
     } catch (error) {
       logger.error('Error retrieving support needs data from Curious', error)
@@ -24,13 +24,14 @@ export default class CuriousService {
 
   async getPrisonerFunctionalSkills(
     prisonNumber: string,
+    username: string,
     options: { useCurious1ApiForFunctionalSkills: boolean } = { useCurious1ApiForFunctionalSkills: false },
   ): Promise<FunctionalSkills> {
     try {
-      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      const allPrisonerAssessments = await this.curiousClient.getAssessmentsByPrisonNumber(prisonNumber, username)
       const learnerProfiles =
         options.useCurious1ApiForFunctionalSkills === true
-          ? (await this.curiousClient.getLearnerProfile(prisonNumber)) || []
+          ? (await this.curiousClient.getLearnerProfile(prisonNumber, username)) || []
           : null
 
       return toFunctionalSkills(allPrisonerAssessments, learnerProfiles)
@@ -47,9 +48,9 @@ export default class CuriousService {
    * more pages remaining. The cumulative array of Curious `LearnerEducation` records from all API calls are mapped and
    * grouped into arrays of `InPrisonCourse` within the returned `InPrisonCourseRecords` object.
    */
-  async getPrisonerInPrisonCourses(prisonNumber: string): Promise<InPrisonCourseRecords> {
+  async getPrisonerInPrisonCourses(prisonNumber: string, username: string): Promise<InPrisonCourseRecords> {
     try {
-      const allPrisonerQualifications = await this.curiousClient.getQualificationsByPrisonNumber(prisonNumber)
+      const allPrisonerQualifications = await this.curiousClient.getQualificationsByPrisonNumber(prisonNumber, username)
       return toInPrisonCourseRecords(allPrisonerQualifications)
     } catch (error) {
       logger.error('Error retrieving learner education data from Curious', error)

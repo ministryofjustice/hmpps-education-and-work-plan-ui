@@ -37,7 +37,7 @@ describe('retrieveCuriousInPrisonCourses', () => {
     // Then
     expect(res.locals.curiousInPrisonCourses.isFulfilled()).toEqual(true)
     expect(res.locals.curiousInPrisonCourses.value).toEqual(expectedInPrisonCourses)
-    expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber)
+    expect(curiousService.getPrisonerInPrisonCourses).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 })

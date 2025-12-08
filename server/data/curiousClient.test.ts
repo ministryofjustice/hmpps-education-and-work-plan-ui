@@ -12,6 +12,7 @@ describe('curiousClient', () => {
   const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const curiousClient = new CuriousClient(mockAuthenticationClient)
 
+  const username = 'A-DPS-USER'
   const prisonNumber = 'A1234BC'
   const systemToken = 'test-system-token'
 
@@ -64,11 +65,11 @@ describe('curiousClient', () => {
         .reply(200, learnerProfile)
 
       // When
-      const actual = await curiousClient.getLearnerProfile(prisonNumber)
+      const actual = await curiousClient.getLearnerProfile(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(learnerProfile)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
 
@@ -85,11 +86,11 @@ describe('curiousClient', () => {
         .reply(404, expectedResponseBody)
 
       // When
-      const actual = await curiousClient.getLearnerProfile(prisonNumber)
+      const actual = await curiousClient.getLearnerProfile(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(actual).toBeNull()
     })
 
@@ -108,12 +109,12 @@ describe('curiousClient', () => {
       const expectedError = new Error('Unauthorized')
 
       // When
-      const actual = await curiousClient.getLearnerProfile(prisonNumber).catch(e => e)
+      const actual = await curiousClient.getLearnerProfile(prisonNumber, username).catch(e => e)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedError)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -127,11 +128,11 @@ describe('curiousClient', () => {
         .reply(200, expectedResponse)
 
       // When
-      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedResponse)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
 
@@ -149,11 +150,11 @@ describe('curiousClient', () => {
         .reply(404, apiErrorResponse)
 
       // When
-      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber)
+      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toBeNull()
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
 
@@ -173,11 +174,11 @@ describe('curiousClient', () => {
       const expectedError = new Error('Internal Server Error')
 
       // When
-      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber).catch(e => e)
+      const actual = await curiousClient.getAssessmentsByPrisonNumber(prisonNumber, username).catch(e => e)
 
       // Then
       expect(actual).toEqual(expectedError)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
   })
@@ -192,11 +193,11 @@ describe('curiousClient', () => {
         .reply(200, expectedResponse)
 
       // When
-      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber)
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedResponse)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
 
@@ -214,11 +215,11 @@ describe('curiousClient', () => {
         .reply(404, apiErrorResponse)
 
       // When
-      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber)
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toBeNull()
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
 
@@ -238,11 +239,11 @@ describe('curiousClient', () => {
       const expectedError = new Error('Internal Server Error')
 
       // When
-      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber).catch(e => e)
+      const actual = await curiousClient.getQualificationsByPrisonNumber(prisonNumber, username).catch(e => e)
 
       // Then
       expect(actual).toEqual(expectedError)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith('CURIOUS_API')
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
     })
   })

@@ -13,7 +13,7 @@ const retrieveCuriousAlnAndLddAssessments = (curiousService: CuriousService): Re
     // Retrieve the prisoner's ALN & LDD Assessments from Curious and store in res.locals
     const { apiErrorCallback } = res.locals
     res.locals.curiousAlnAndLddAssessments = await Result.wrap(
-      curiousService.getAlnAndLddAssessments(prisonNumber),
+      curiousService.getAlnAndLddAssessments(prisonNumber, req.user.username),
       apiErrorCallback,
     )
 
