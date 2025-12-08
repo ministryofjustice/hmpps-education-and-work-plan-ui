@@ -30,6 +30,7 @@ describe('curiousService', () => {
   const curiousClient = new CuriousClient(null) as jest.Mocked<CuriousClient>
   const curiousService = new CuriousService(curiousClient)
 
+  const username = 'A-DPS-USER'
   const prisonNumber = 'A1234BC'
 
   beforeEach(() => {
@@ -97,11 +98,11 @@ describe('curiousService', () => {
       })
 
       // When
-      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedAssessments)
-      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should rethrow error given Curious returns an error for the assessments', async () => {
@@ -114,11 +115,11 @@ describe('curiousService', () => {
       curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
-      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber).catch(error => error)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber, username).catch(error => error)
 
       // Then
       expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should handle retrieval of ALN and LDD assessments given Curious API client returns null indicating not found error for the prisoner assessments', async () => {
@@ -131,11 +132,11 @@ describe('curiousService', () => {
       }
 
       // When
-      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber)
+      const actual = await curiousService.getAlnAndLddAssessments(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedAssessments)
-      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
   })
 
@@ -164,14 +165,14 @@ describe('curiousService', () => {
         }
 
         // When
-        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, {
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username, {
           useCurious1ApiForFunctionalSkills: true,
         })
 
         // Then
         expect(actual).toEqual(expectedFunctionalSkills)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
-        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, username)
       })
 
       it('should handle retrieval of prisoner functional skills given Curious client returns null indicating not found error for the learner profile', async () => {
@@ -183,14 +184,14 @@ describe('curiousService', () => {
         }
 
         // When
-        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, {
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username, {
           useCurious1ApiForFunctionalSkills: true,
         })
 
         // Then
         expect(actual).toEqual(expectedFunctionalSkills)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
-        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, username)
       })
 
       it('should rethrow error given Curious API returns an unexpected error', async () => {
@@ -204,13 +205,13 @@ describe('curiousService', () => {
 
         // When
         const actual = await curiousService
-          .getPrisonerFunctionalSkills(prisonNumber, { useCurious1ApiForFunctionalSkills: true })
+          .getPrisonerFunctionalSkills(prisonNumber, username, { useCurious1ApiForFunctionalSkills: true })
           .catch(error => error)
 
         // Then
         expect(actual).toEqual(curiousApiError)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
-        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+        expect(curiousClient.getLearnerProfile).toHaveBeenCalledWith(prisonNumber, username)
       })
     })
 
@@ -257,11 +258,11 @@ describe('curiousService', () => {
         }
 
         // When
-        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username)
 
         // Then
         expect(actual).toEqual(expectedFunctionalSkills)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
         expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
       })
 
@@ -274,11 +275,11 @@ describe('curiousService', () => {
         }
 
         // When
-        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber)
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username)
 
         // Then
         expect(actual).toEqual(expectedFunctionalSkills)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
         expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
       })
 
@@ -292,11 +293,11 @@ describe('curiousService', () => {
         curiousClient.getAssessmentsByPrisonNumber.mockRejectedValue(curiousApiError)
 
         // When
-        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber).catch(error => error)
+        const actual = await curiousService.getPrisonerFunctionalSkills(prisonNumber, username).catch(error => error)
 
         // Then
         expect(actual).toEqual(curiousApiError)
-        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+        expect(curiousClient.getAssessmentsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
         expect(curiousClient.getLearnerProfile).not.toHaveBeenCalled()
       })
     })
@@ -350,11 +351,11 @@ describe('curiousService', () => {
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should rethrow error given the curious API returns an error response', async () => {
@@ -367,11 +368,11 @@ describe('curiousService', () => {
       curiousClient.getQualificationsByPrisonNumber.mockRejectedValue(curiousApiError)
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber).catch(error => error)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username).catch(error => error)
 
       // Then
       expect(actual).toEqual(curiousApiError)
-      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should handle retrieval of In Prison Courses given Curious API client returns null indicating not found error for the learner education', async () => {
@@ -392,11 +393,11 @@ describe('curiousService', () => {
       }
 
       // When
-      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber)
+      const actual = await curiousService.getPrisonerInPrisonCourses(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expected)
-      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber)
+      expect(curiousClient.getQualificationsByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     })
   })
 })

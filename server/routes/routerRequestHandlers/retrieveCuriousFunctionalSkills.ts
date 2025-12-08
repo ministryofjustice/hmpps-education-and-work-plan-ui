@@ -14,7 +14,7 @@ const retrieveCuriousFunctionalSkills = (
 
     // Lookup the prisoners functional skills and store in res.locals
     res.locals.prisonerFunctionalSkills = await Result.wrap(
-      curiousService.getPrisonerFunctionalSkills(prisonNumber, options),
+      curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username, options),
     )
 
     return next()

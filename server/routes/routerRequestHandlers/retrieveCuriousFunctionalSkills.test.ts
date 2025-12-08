@@ -8,6 +8,7 @@ jest.mock('../../services/curiousService')
 describe('retrieveCuriousFunctionalSkills', () => {
   const curiousService = new CuriousService(null) as jest.Mocked<CuriousService>
 
+  const username = 'A-DPS-USER'
   const prisonNumber = 'A1234GC'
 
   let req: Request
@@ -19,6 +20,7 @@ describe('retrieveCuriousFunctionalSkills', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
+      user: { username },
       params: { prisonNumber },
     } as unknown as Request
   })
@@ -36,7 +38,7 @@ describe('retrieveCuriousFunctionalSkills', () => {
     // Then
     expect(res.locals.prisonerFunctionalSkills.isFulfilled()).toEqual(true)
     expect(res.locals.prisonerFunctionalSkills.value).toEqual(expectedFunctionalSkills)
-    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, {
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username, {
       useCurious1ApiForFunctionalSkills: true,
     })
     expect(next).toHaveBeenCalled()
@@ -55,7 +57,7 @@ describe('retrieveCuriousFunctionalSkills', () => {
     // Then
     expect(res.locals.prisonerFunctionalSkills.isFulfilled()).toEqual(true)
     expect(res.locals.prisonerFunctionalSkills.value).toEqual(expectedFunctionalSkills)
-    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, {
+    expect(curiousService.getPrisonerFunctionalSkills).toHaveBeenCalledWith(prisonNumber, username, {
       useCurious1ApiForFunctionalSkills: false,
     })
     expect(next).toHaveBeenCalled()

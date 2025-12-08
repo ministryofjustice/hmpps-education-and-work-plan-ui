@@ -13,13 +13,13 @@ export default class CuriousClient extends RestClient {
   /**
    * @deprecated - this method calls a Curious 1 endpoint. Use a method that calls a suitable Curious 2 endpoint instead
    */
-  async getLearnerProfile(prisonNumber: string): Promise<Array<LearnerProfile>> {
+  async getLearnerProfile(prisonNumber: string, username: string): Promise<Array<LearnerProfile>> {
     return this.get<Array<LearnerProfile>>(
       {
         path: `/learnerProfile/${prisonNumber}`,
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
-      asSystem('CURIOUS_API'),
+      asSystem(username),
     )
   }
 
@@ -29,15 +29,16 @@ export default class CuriousClient extends RestClient {
    * Functional Skills (Maths, English and Digital Skills), ESOL and Reading) as recorded in Curious 2.
    *
    * @param prisonNumber
+   * @param username
    * @return AllAssessmentDTO
    */
-  async getAssessmentsByPrisonNumber(prisonNumber: string): Promise<AllAssessmentDTO> {
+  async getAssessmentsByPrisonNumber(prisonNumber: string, username: string): Promise<AllAssessmentDTO> {
     return this.get<AllAssessmentDTO>(
       {
         path: `/learnerAssessments/v2/${prisonNumber}`,
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
-      asSystem('CURIOUS_API'),
+      asSystem(username),
     )
   }
 
@@ -46,15 +47,16 @@ export default class CuriousClient extends RestClient {
    * The returned data includes courses and qualifications as recorded in both Curious 1 and Curious 2.
    *
    * @param prisonNumber
+   * @param username
    * @return AllQualificationsDTO
    */
-  async getQualificationsByPrisonNumber(prisonNumber: string): Promise<AllQualificationsDTO> {
+  async getQualificationsByPrisonNumber(prisonNumber: string, username: string): Promise<AllQualificationsDTO> {
     return this.get<AllQualificationsDTO>(
       {
         path: `/learnerQualifications/v2/${prisonNumber}`,
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
-      asSystem('CURIOUS_API'),
+      asSystem(username),
     )
   }
 }

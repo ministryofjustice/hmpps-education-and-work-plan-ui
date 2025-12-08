@@ -9,6 +9,7 @@ describe('retrieveCuriousAlnAndLddAssessments', () => {
   const curiousService = new CuriousService(null) as jest.Mocked<CuriousService>
   const requestHandler = retrieveCuriousAlnAndLddAssessments(curiousService)
 
+  const username = 'A-DPS-USER'
   const prisonNumber = 'A1234GC'
 
   const apiErrorCallback = jest.fn()
@@ -21,6 +22,7 @@ describe('retrieveCuriousAlnAndLddAssessments', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     req = {
+      user: { username },
       params: { prisonNumber },
     } as unknown as Request
   })
@@ -36,7 +38,7 @@ describe('retrieveCuriousAlnAndLddAssessments', () => {
     // Then
     expect(res.locals.curiousAlnAndLddAssessments.isFulfilled()).toEqual(true)
     expect(res.locals.curiousAlnAndLddAssessments.value).toEqual(expectedAssessments)
-    expect(curiousService.getAlnAndLddAssessments).toHaveBeenCalledWith(prisonNumber)
+    expect(curiousService.getAlnAndLddAssessments).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
 
