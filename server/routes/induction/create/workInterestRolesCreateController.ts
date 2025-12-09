@@ -9,7 +9,6 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
     const workInterestRoles = Object.entries<string>({ ...req.body.workInterestRoles }) as [
@@ -18,11 +17,13 @@ export default class WorkInterestRolesCreateController extends WorkInterestRoles
     ][]
     const workInterestRolesForm: WorkInterestRolesForm = { ...req.body, workInterestRoles }
 
+    const nextPage =
+      req.query?.submitToCheckAnswers === 'true' ||
+      inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers
+        ? 'check-your-answers'
+        : 'affect-ability-to-work'
     req.journeyData.inductionDto = this.updatedInductionDtoWithWorkInterestRoles(inductionDto, workInterestRolesForm)
 
-    const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/affect-ability-to-work`
     return res.redirect(nextPage)
   }
 }

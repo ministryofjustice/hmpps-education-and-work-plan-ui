@@ -31,7 +31,6 @@ describe('workInterestTypesCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
     res.locals.invalidForm = undefined
@@ -94,8 +93,10 @@ describe('workInterestTypesCreateController', () => {
   })
 
   describe('submitWorkInterestTypesForm', () => {
-    it('should update InductionDto and redirect to Work Interests Details', async () => {
+    it('should update InductionDto and redirect to Work Interests Details given previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -106,8 +107,7 @@ describe('workInterestTypesCreateController', () => {
       }
       req.body = workInterestTypesForm
 
-      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-roles`
-
+      const expectedNextPage = 'work-interest-roles'
       const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
         { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Natural world', role: undefined },
@@ -125,6 +125,8 @@ describe('workInterestTypesCreateController', () => {
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.futureWorkInterests = undefined
       req.journeyData.inductionDto = inductionDto
@@ -135,18 +137,11 @@ describe('workInterestTypesCreateController', () => {
       }
       req.body = workInterestTypesForm
 
+      const expectedNextPage = 'check-your-answers'
       const expectedFutureWorkInterests: Array<FutureWorkInterestDto> = [
         { workType: WorkInterestTypeValue.DRIVING, workTypeOther: undefined, role: undefined },
         { workType: WorkInterestTypeValue.OTHER, workTypeOther: 'Natural world', role: undefined },
       ]
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/work-interest-types`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitWorkInterestTypesForm(req, res, next)
@@ -155,7 +150,7 @@ describe('workInterestTypesCreateController', () => {
       const futureWorkInterestsOnInduction: Array<FutureWorkInterestDto> =
         req.journeyData.inductionDto.futureWorkInterests.interests
       expect(futureWorkInterestsOnInduction).toEqual(expectedFutureWorkInterests)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
     })
   })
 })

@@ -9,7 +9,6 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
     const workInterestTypesForm: WorkInterestTypesForm = {
@@ -20,8 +19,6 @@ export default class WorkInterestTypesCreateController extends WorkInterestTypes
     const updatedInduction = this.updatedInductionDtoWithWorkInterestTypes(inductionDto, workInterestTypesForm)
     req.journeyData.inductionDto = updatedInduction
 
-    return this.previousPageWasCheckYourAnswers(req)
-      ? res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-      : res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-roles`)
+    return res.redirect(req.query?.submitToCheckAnswers === 'true' ? 'check-your-answers' : 'work-interest-roles')
   }
 }
