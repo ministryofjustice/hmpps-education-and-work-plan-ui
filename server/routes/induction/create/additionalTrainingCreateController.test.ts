@@ -31,9 +31,9 @@ describe('additionalTrainingCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -89,8 +89,10 @@ describe('additionalTrainingCreateController', () => {
   })
 
   describe('submitAdditionalTrainingForm', () => {
-    it('should update InductionDto and redirect to Has Worked Before', async () => {
+    it('should update InductionDto and redirect to Has Worked Before given previous page was not check-your-answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.previousTraining = undefined
       req.journeyData.inductionDto = inductionDto
@@ -104,7 +106,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
-      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/has-worked-before`
+      const expectedNextPage = 'has-worked-before'
 
       // When
       await controller.submitAdditionalTrainingForm(req, res, next)
@@ -118,6 +120,8 @@ describe('additionalTrainingCreateController', () => {
 
     it('should update InductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
 
@@ -130,14 +134,7 @@ describe('additionalTrainingCreateController', () => {
       const expectedUpdatedAdditionalTraining = ['HGV_LICENCE', 'OTHER']
       const expectedUpdatedAdditionalTrainingOther = 'Italian cookery for IT professionals'
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/additional-training`,
-        ],
-        currentPageIndex: 1,
-      }
-      const expectedNextPage = `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`
+      const expectedNextPage = 'check-your-answers'
 
       // When
       await controller.submitAdditionalTrainingForm(req, res, next)

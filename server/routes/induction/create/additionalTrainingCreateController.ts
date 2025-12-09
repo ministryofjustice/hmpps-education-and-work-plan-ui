@@ -9,7 +9,6 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
     const additionalTrainingForm: AdditionalTrainingForm = {
@@ -20,11 +19,6 @@ export default class AdditionalTrainingCreateController extends AdditionalTraini
     const updatedInduction = this.updatedInductionDtoWithAdditionalTraining(inductionDto, additionalTrainingForm)
     req.journeyData.inductionDto = updatedInduction
 
-    // If the previous page was Check Your Answers, forward to Check Your Answers again
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
-    }
-
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`)
+    return res.redirect(req.query?.submitToCheckAnswers === 'true' ? 'check-your-answers' : 'has-worked-before')
   }
 }
