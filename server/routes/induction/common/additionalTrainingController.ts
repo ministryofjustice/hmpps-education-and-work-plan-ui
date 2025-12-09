@@ -21,8 +21,6 @@ export default abstract class AdditionalTrainingController extends InductionCont
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const additionalTrainingForm = invalidForm
       ? {
           additionalTraining: asArray(invalidForm.additionalTraining),
