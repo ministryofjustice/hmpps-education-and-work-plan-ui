@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, InPrisonTrainingInterestDto } from 'inductionDto'
 import type { InPrisonTrainingForm } from 'inductionForms'
-import InductionController from './inductionController'
 import InPrisonTrainingView from './inPrisonTrainingView'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 import { asArray } from '../../../utils/utils'
@@ -9,7 +8,7 @@ import { asArray } from '../../../utils/utils'
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class InPrisonTrainingController extends InductionController {
+export default abstract class InPrisonTrainingController {
   /**
    * Returns the In-Prison Training view; suitable for use by the Create and Update journeys.
    */

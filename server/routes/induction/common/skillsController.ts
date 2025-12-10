@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, PersonalSkillDto } from 'inductionDto'
 import type { SkillsForm } from 'inductionForms'
-import InductionController from './inductionController'
 import SkillsView from './skillsView'
 import SkillsValue from '../../../enums/skillsValue'
 import { asArray } from '../../../utils/utils'
@@ -9,7 +8,7 @@ import { asArray } from '../../../utils/utils'
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class SkillsController extends InductionController {
+export default abstract class SkillsController {
   /**
    * Returns the Skills view; suitable for use by the Create and Update journeys.
    */

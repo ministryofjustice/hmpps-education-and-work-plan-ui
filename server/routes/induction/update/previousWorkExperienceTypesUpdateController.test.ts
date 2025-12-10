@@ -47,7 +47,6 @@ describe('previousWorkExperienceTypesUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.session.pageFlowQueue = undefined
     req.body = {}
     req.journeyData = {}

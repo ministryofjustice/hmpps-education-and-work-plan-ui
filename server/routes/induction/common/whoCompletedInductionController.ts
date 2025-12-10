@@ -3,12 +3,11 @@ import { format, startOfDay } from 'date-fns'
 import type { WhoCompletedInductionForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WhoCompletedInductionView from './whoCompletedInductionView'
-import InductionController from './inductionController'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class WhoCompletedInductionController extends InductionController {
+export default abstract class WhoCompletedInductionController {
   getWhoCompletedInductionView: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals

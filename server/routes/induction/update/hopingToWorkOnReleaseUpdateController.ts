@@ -3,7 +3,6 @@ import HopingToWorkOnReleaseController from '../common/hopingToWorkOnReleaseCont
 import { InductionService } from '../../../services'
 import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateInductionDtoMapper'
 import logger from '../../../../logger'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import { Result } from '../../../utils/result/result'
 
@@ -35,7 +34,6 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
 
     // If the new answer for Hoping To Work On Release is YES then we need to go to Work Interest Types in order to capture the prisoners future work interests.
     if (hopingToWorkOnReleaseForm.hopingToGetWork === HopingToGetWorkValue.YES) {
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
       return res.redirect(`/prisoners/${prisonNumber}/induction/${journeyId}/work-interest-types`)
     }
 

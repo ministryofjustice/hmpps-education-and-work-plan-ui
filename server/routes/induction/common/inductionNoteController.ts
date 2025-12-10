@@ -2,9 +2,8 @@ import { RequestHandler } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { InductionNoteForm } from 'inductionForms'
 import InductionNoteView from './inductionNoteView'
-import InductionController from './inductionController'
 
-export default abstract class InductionNoteController extends InductionController {
+export default abstract class InductionNoteController {
   getInductionNoteView: RequestHandler = async (req, res, next): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals

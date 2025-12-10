@@ -1,13 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HighestLevelOfEducationForm } from 'forms'
-import InductionController from './inductionController'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class HighestLevelOfEducationController extends InductionController {
+export default abstract class HighestLevelOfEducationController {
   /**
    * Returns the Highest Level of Education view; suitable for use by the Create and Update journeys.
    */

@@ -1,14 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { QualificationDetailsForm } from 'forms'
-import InductionController from './inductionController'
 import QualificationDetailsView from './qualificationDetailsView'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class QualificationDetailsController extends InductionController {
+export default abstract class QualificationDetailsController {
   /**
    * Returns the Qualification Details view; suitable for use by the Create and Update journeys.
    */

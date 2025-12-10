@@ -1,14 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, FutureWorkInterestDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
-import InductionController from './inductionController'
 import WorkInterestRolesView from './workInterestRolesView'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class WorkInterestRolesController extends InductionController {
+export default abstract class WorkInterestRolesController {
   /**
    * Returns the Future Work Interest Roles view; suitable for use by the Create and Update journeys.
    */
