@@ -116,9 +116,7 @@ describe('qualificationDetailsCreateController', () => {
       expect(updatedInduction.previousQualifications.qualifications).toEqual([
         { subject: 'Maths', grade: 'A', level: QualificationLevelValue.LEVEL_3 },
       ])
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`,
-      )
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
       expect(req.journeyData.qualificationLevel).toBeUndefined()
     })
   })

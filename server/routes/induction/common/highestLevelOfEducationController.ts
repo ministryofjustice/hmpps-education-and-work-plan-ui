@@ -19,8 +19,6 @@ export default abstract class HighestLevelOfEducationController extends Inductio
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const highestLevelOfEducationForm = invalidForm || toHighestLevelOfEducationForm(inductionDto)
 
     const view = new HighestLevelOfEducationView(prisonerSummary, highestLevelOfEducationForm)
@@ -35,8 +33,9 @@ export default abstract class HighestLevelOfEducationController extends Inductio
       ...inductionDto,
       previousQualifications: {
         ...inductionDto.previousQualifications,
-        qualifications: inductionDto.previousQualifications?.qualifications, // [...(inductionDto.previousQualifications?.qualifications || [])],
+        qualifications: inductionDto.previousQualifications?.qualifications,
         educationLevel: highestLevelOfEducationForm.educationLevel,
+        needToCompleteJourneyFromCheckYourAnswers: false,
       },
     }
   }

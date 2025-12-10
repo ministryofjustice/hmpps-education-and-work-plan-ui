@@ -7,7 +7,7 @@
       Educational qualifications
     </h3>
     <span class="govuk-body-m">
-      <a class="govuk-link" href="qualifications" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
+      <a class="govuk-link" href="qualifications?submitToCheckAnswers=true" data-qa="qualificationsLink">Change<span class="govuk-visually-hidden"> their educational qualifications</span></a>
     </span>
   </div>
 
@@ -43,7 +43,7 @@
       {{ inductionDto.previousQualifications.educationLevel | formatEducationLevel if inductionDto.previousQualifications.educationLevel }}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link govuk-link--no-visited-state" href="highest-level-of-education" data-qa="educationLevelLink">
+      <a class="govuk-link govuk-link--no-visited-state" href="highest-level-of-education?submitToCheckAnswers=true" data-qa="educationLevelLink">
         Change<span class="govuk-visually-hidden"> highest level of education before prison</span>
       </a>
     </dd>
@@ -58,7 +58,7 @@
         No
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link govuk-link--no-visited-state" href="want-to-add-qualifications" data-qa="wantsToAddQualificationsLink">
+        <a class="govuk-link govuk-link--no-visited-state" href="want-to-add-qualifications?submitToCheckAnswers=true" data-qa="wantsToAddQualificationsLink">
           Change<span class="govuk-visually-hidden"> whether they want to add qualifications</span>
         </a>
       </dd>

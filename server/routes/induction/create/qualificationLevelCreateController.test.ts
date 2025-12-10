@@ -96,9 +96,7 @@ describe('qualificationLevelCreateController', () => {
       await controller.submitQualificationLevelForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`,
-      )
+      expect(res.redirect).toHaveBeenCalledWith('qualification-details')
       expect(req.journeyData.qualificationLevel).toEqual(qualificationLevelForm.qualificationLevel)
       expect(req.journeyData.inductionDto).toEqual(inductionDto)
     })

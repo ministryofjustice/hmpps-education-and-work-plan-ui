@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import QualificationsListController from '../common/qualificationsListController'
-import { buildNewPageFlowHistory } from '../../pageFlowHistory'
 
 export default class QualificationsListCreateController extends QualificationsListController {
   submitQualificationsListView: RequestHandler = async (
@@ -9,35 +8,34 @@ export default class QualificationsListCreateController extends QualificationsLi
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
-    if (!req.session.pageFlowHistory) {
-      req.session.pageFlowHistory = buildNewPageFlowHistory(req)
-    }
+    const previousPageWasCheckYourAnswers = req.query?.submitToCheckAnswers === 'true'
 
     if (userClickedOnButton(req, 'addQualification')) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-level`)
+      req.journeyData.inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers =
+        req.journeyData.inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers ||
+        previousPageWasCheckYourAnswers
+      return res.redirect('qualification-level')
     }
 
     if (userClickedOnButton(req, 'removeQualification')) {
+      req.journeyData.inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers =
+        req.journeyData.inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers ||
+        previousPageWasCheckYourAnswers
       const qualificationIndexToRemove = req.body.removeQualification as number
       req.journeyData.inductionDto = inductionWithRemovedQualification(inductionDto, qualificationIndexToRemove)
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications`)
+      return res.redirect('qualifications')
     }
 
-    if (this.checkYourAnswersIsTheFirstPageInThePageHistory(req)) {
-      req.session.pageFlowHistory = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+    if (
+      previousPageWasCheckYourAnswers ||
+      inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers
+    ) {
+      return res.redirect('check-your-answers')
     }
 
-    if (inductionHasQualifications(inductionDto)) {
-      // Remove the page flow history as it was only needed here to track the journey through qualifications
-      req.session.pageFlowHistory = undefined
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`)
-    }
-
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/highest-level-of-education`)
+    return res.redirect(inductionHasQualifications(inductionDto) ? 'additional-training' : 'highest-level-of-education')
   }
 }
 

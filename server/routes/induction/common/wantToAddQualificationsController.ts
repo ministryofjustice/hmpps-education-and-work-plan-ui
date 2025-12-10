@@ -21,8 +21,6 @@ export default abstract class WantToAddQualificationsController extends Inductio
     const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses, invalidForm } =
       res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const wantToAddQualificationsForm = invalidForm || createWantToAddQualificationsForm(inductionDto)
 
     return res.render('pages/prePrisonEducation/wantToAddQualifications', {
@@ -58,6 +56,7 @@ export default abstract class WantToAddQualificationsController extends Inductio
         ...inductionDto.previousQualifications,
         qualifications: [],
         educationLevel: inductionDto.previousQualifications?.educationLevel || EducationLevelValue.NOT_SURE, // Keep the Highest Level of Education unless it is not set in which case set to NOT_SURE
+        needToCompleteJourneyFromCheckYourAnswers: false,
       },
     }
   }

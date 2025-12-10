@@ -7,11 +7,9 @@ export default class QualificationLevelCreateController extends QualificationLev
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
-
     const qualificationLevelForm = { ...req.body }
     req.journeyData.qualificationLevel = qualificationLevelForm.qualificationLevel
 
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/qualification-details`)
+    return res.redirect('qualification-details')
   }
 }
