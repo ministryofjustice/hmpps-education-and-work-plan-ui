@@ -7,7 +7,6 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
     const highestLevelOfEducationForm = { ...req.body }
@@ -18,14 +17,15 @@ export default class HighestLevelOfEducationCreateController extends HighestLeve
     )
     req.journeyData.inductionDto = updatedInduction
 
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+    let nextPage: string
+    if (req.query?.submitToCheckAnswers === 'true') {
+      nextPage = 'check-your-answers'
+    } else {
+      nextPage =
+        updatedInduction.previousQualifications.qualifications?.length > 0
+          ? 'qualifications' // if the induction already has qualifications (from being entered prior to the Induction) skip straight to the Qualifications List page
+          : 'want-to-add-qualifications'
     }
-
-    const nextPage =
-      updatedInduction.previousQualifications.qualifications?.length > 0
-        ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/qualifications` // if the induction already has qualifications (from being entered prior to the Induction) skip straight to the Qualifications List page
-        : `/prisoners/${prisonNumber}/create-induction/${journeyId}/want-to-add-qualifications`
     return res.redirect(nextPage)
   }
 }

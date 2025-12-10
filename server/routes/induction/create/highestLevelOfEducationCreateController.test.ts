@@ -30,9 +30,9 @@ describe('highestLevelOfEducationCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -95,8 +95,10 @@ describe('highestLevelOfEducationCreateController', () => {
   })
 
   describe('submitHighestLevelOfEducationForm', () => {
-    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
+    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications and the previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.journeyData.inductionDto = inductionDto
@@ -111,6 +113,7 @@ describe('highestLevelOfEducationCreateController', () => {
         previousQualifications: {
           qualifications: undefined,
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+          needToCompleteJourneyFromCheckYourAnswers: false,
         },
       } as InductionDto
 
@@ -122,14 +125,14 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoners/A1234BC/create-induction/${journeyId}/want-to-add-qualifications`,
-      )
+      expect(res.redirect).toHaveBeenCalledWith('want-to-add-qualifications')
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     })
 
-    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications', async () => {
+    it('should redirect to Do You Want To Record Any Qualifications page given the induction does not already have an qualifications and the previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       const inductionDto = aValidInductionDto()
       req.journeyData.inductionDto = inductionDto
 
@@ -143,6 +146,7 @@ describe('highestLevelOfEducationCreateController', () => {
         previousQualifications: {
           ...inductionDto.previousQualifications,
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+          needToCompleteJourneyFromCheckYourAnswers: false,
         },
       } as InductionDto
 
@@ -154,12 +158,14 @@ describe('highestLevelOfEducationCreateController', () => {
       )
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/qualifications`)
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       const inductionDto = aValidInductionDto()
       inductionDto.previousQualifications = undefined
       req.journeyData.inductionDto = inductionDto
@@ -174,16 +180,9 @@ describe('highestLevelOfEducationCreateController', () => {
         previousQualifications: {
           qualifications: undefined,
           educationLevel: EducationLevelValue.FURTHER_EDUCATION_COLLEGE,
+          needToCompleteJourneyFromCheckYourAnswers: false,
         },
       } as InductionDto
-
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/highest-level-of-education`,
-        ],
-        currentPageIndex: 1,
-      }
 
       // When
       await controller.submitHighestLevelOfEducationForm(
@@ -194,7 +193,7 @@ describe('highestLevelOfEducationCreateController', () => {
 
       // Then
       expect(req.journeyData.inductionDto).toEqual(expectedInduction)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
     })
   })
 })

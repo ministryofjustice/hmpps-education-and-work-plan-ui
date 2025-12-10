@@ -224,6 +224,7 @@ declare module 'inductionDto' {
   export interface PreviousQualificationsDto extends ReferencedAndAuditable {
     educationLevel: EducationLevelValue
     qualifications: Array<AchievedQualificationDto>
+    needToCompleteJourneyFromCheckYourAnswers?: boolean
   }
 
   export interface PreviousTrainingDto extends ReferencedAndAuditable {

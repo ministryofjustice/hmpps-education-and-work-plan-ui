@@ -26,8 +26,6 @@ export default abstract class QualificationDetailsController extends InductionCo
       return res.redirect(`/prisoners/${prisonNumber}/induction/qualification-level`)
     }
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const qualificationDetailsForm = invalidForm ?? {
       qualificationSubject: '',
       qualificationGrade: '',
