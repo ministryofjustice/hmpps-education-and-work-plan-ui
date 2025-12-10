@@ -6,7 +6,6 @@ import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
     const { inductionDto } = req.journeyData
 
     const workedBeforeForm: WorkedBeforeForm = { ...req.body }
@@ -16,22 +15,28 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
       updatedInduction.previousWorkExperiences.hasWorkedBefore === HasWorkedBeforeValue.YES
     req.journeyData.inductionDto = updatedInduction
 
-    if (!this.previousPageWasCheckYourAnswers(req)) {
+    const previousPageWasCheckYourAnswers = req.query?.submitToCheckAnswers === 'true'
+    req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers =
+      req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers ||
+      previousPageWasCheckYourAnswers
+
+    if (!previousPageWasCheckYourAnswers) {
       if (prisonerHasWorkedBefore) {
-        return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`)
+        return res.redirect('previous-work-experience')
       }
 
       // Prisoner has not worked before; skip straight to Personal Skills
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`)
+      return res.redirect('skills')
     }
 
     if (!prisonerHasWorkedBefore) {
       // Previous page was Check Your Answers and prisoner has not worked before
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+      return res.redirect('check-your-answers')
     }
 
-    // Previous page was Check Your Answers and prisoner has worked before - we need to ask about previous work experience
-    return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`)
+    // Previous page was Check Your Answers and prisoner has worked before - we need to ask about previous work experience before going to Check Your Answers
+    req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers = true
+    return res.redirect('previous-work-experience')
   }
 
   updatedInductionDtoWithHasWorkedBefore(inductionDto: InductionDto, workedBeforeForm: WorkedBeforeForm): InductionDto {
@@ -44,6 +49,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
         previousWorkExperiences: {
           ...updatedInduction.previousWorkExperiences,
           hasWorkedBeforeNotRelevantReason: undefined,
+          needToCompleteJourneyFromCheckYourAnswers: false,
         },
       }
     }

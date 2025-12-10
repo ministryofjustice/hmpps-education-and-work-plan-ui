@@ -9,7 +9,7 @@
       {{ inductionDto.previousWorkExperiences.hasWorkedBefore | formatHasWorkedBefore }}{{ ' - ' + inductionDto.previousWorkExperiences.hasWorkedBeforeNotRelevantReason if inductionDto.previousWorkExperiences.hasWorkedBefore === 'NOT_RELEVANT' }}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link govuk-link--no-visited-state" href="has-worked-before" data-qa="hasWorkedBeforeLink">
+      <a class="govuk-link govuk-link--no-visited-state" href="has-worked-before?submitToCheckAnswers=true" data-qa="hasWorkedBeforeLink">
         Change<span class="govuk-visually-hidden"> whether they have worked before</span>
       </a>
     </dd>
@@ -26,7 +26,7 @@
         {% endfor %}
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link govuk-link--no-visited-state" href="previous-work-experience" data-qa="typeOfWorkExperienceLink">
+        <a class="govuk-link govuk-link--no-visited-state" href="previous-work-experience?submitToCheckAnswers=true" data-qa="typeOfWorkExperienceLink">
           Change<span class="govuk-visually-hidden"> type of work they have done before</span>
         </a>
       </dd>
@@ -49,7 +49,7 @@
         </p>
       </dd>
       <dd class="govuk-summary-list__actions">
-        <a class="govuk-link govuk-link--no-visited-state" href="previous-work-experience/{{ item.experienceType | lower }}" data-qa="workExperienceDetailLink-{{ item.experienceType }}">
+        <a class="govuk-link govuk-link--no-visited-state" href="previous-work-experience/{{ item.experienceType | lower }}?submitToCheckAnswers=true" data-qa="workExperienceDetailLink-{{ item.experienceType }}">
           Change<span class="govuk-visually-hidden"> {{ item.experienceType | formatJobType }}</span>
         </a>
       </dd>

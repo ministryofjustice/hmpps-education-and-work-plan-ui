@@ -21,8 +21,6 @@ export default abstract class PreviousWorkExperienceTypesController extends Indu
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const previousWorkExperienceDetailsForm = invalidForm
       ? {
           typeOfWorkExperience: asArray(invalidForm.typeOfWorkExperience),

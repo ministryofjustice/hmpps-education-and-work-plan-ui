@@ -236,6 +236,7 @@ declare module 'inductionDto' {
     hasWorkedBefore: HasWorkedBeforeValue
     hasWorkedBeforeNotRelevantReason?: string
     experiences: Array<PreviousWorkExperienceDto>
+    needToCompleteJourneyFromCheckYourAnswers?: boolean
   }
 
   export interface InPrisonInterestsDto extends ReferencedAndAuditable {

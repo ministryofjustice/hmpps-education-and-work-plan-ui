@@ -16,8 +16,6 @@ export default abstract class WorkedBeforeController extends InductionController
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     const workedBeforeForm = invalidForm
       ? {
           hasWorkedBefore: invalidForm.hasWorkedBefore,
