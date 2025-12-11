@@ -17,7 +17,12 @@ const retrievePrisonerSummary = (prisonerSearchService: PrisonerSearchService): 
       )
       next()
     } catch (error) {
-      next(createError(error.status, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`))
+      next(
+        createError(
+          error.responseStatus || error.status,
+          `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`,
+        ),
+      )
     }
   }
 }

@@ -1,6 +1,6 @@
 import type { PrisonerSummaries, PrisonerSummary } from 'viewModels'
 import type { PagedCollectionOfPrisoners, Prisoner } from 'prisonerSearchApiClient'
-import { HmppsAuthClient, PrisonerSearchClient } from '../data'
+import { PrisonerSearchClient } from '../data'
 import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
 import logger from '../../logger'
 import PrisonerSearchStore from '../data/prisonerSearchStore/prisonerSearchStore'
@@ -10,7 +10,6 @@ const PRISONER_CACHE_TTL_HOURS = 1
 
 export default class PrisonerSearchService {
   constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly prisonerSearchClient: PrisonerSearchClient,
     private readonly prisonerSearchStore: PrisonerSearchStore,
   ) {}
@@ -24,8 +23,6 @@ export default class PrisonerSearchService {
    */
   async getPrisonersByPrisonId(prisonId: string, username: string): Promise<PrisonerSummaries> {
     try {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
       let page = 0
       const pageSize = config.apis.prisonerSearch.defaultPageSize
 
@@ -39,7 +36,7 @@ export default class PrisonerSearchService {
           prisonId,
           page,
           pageSize,
-          systemToken,
+          username,
         )) || { last: true }
         apiPrisoners.push(...apiPagedResponse.content)
         page += 1
@@ -60,12 +57,8 @@ export default class PrisonerSearchService {
   }
 
   async getPrisonerByPrisonNumber(prisonNumber: string, username: string): Promise<PrisonerSummary> {
-    let prisoner: Prisoner
-    prisoner = await this.getCachedPrisoner(prisonNumber)
-    if (!prisoner) {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-      prisoner = await this.retrieveAndCachePrisoner(prisonNumber, systemToken)
-    }
+    const prisoner =
+      (await this.getCachedPrisoner(prisonNumber)) || (await this.retrieveAndCachePrisoner(prisonNumber, username))
     return toPrisonerSummary(prisoner)
   }
 
@@ -87,14 +80,14 @@ export default class PrisonerSearchService {
    * Calls the prisoner-search API to retrieve a given prisoner, then caches it in the cache.
    * Returns the cached prisoner.
    */
-  private async retrieveAndCachePrisoner(prisonNumber: string, token: string): Promise<Prisoner> {
+  private async retrieveAndCachePrisoner(prisonNumber: string, username: string): Promise<Prisoner> {
     logger.info(`Retrieving and caching prisoner ${prisonNumber}`)
     let prisoner: Prisoner
     try {
-      prisoner = await this.prisonerSearchClient.getPrisonerByPrisonNumber(prisonNumber, token)
+      prisoner = await this.prisonerSearchClient.getPrisonerByPrisonNumber(prisonNumber, username)
     } catch (ex) {
       // Retrieving prisoner from the API failed.
-      logger.error('Error retrieving prisons', ex)
+      logger.error('Error retrieving prisoner', ex)
       throw ex
     }
 
