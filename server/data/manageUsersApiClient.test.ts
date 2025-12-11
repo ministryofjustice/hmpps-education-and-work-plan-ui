@@ -1,17 +1,20 @@
 import nock from 'nock'
 
-import config from '../config'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import ManageUsersApiClient, { UserCaseloadDetail } from './manageUsersApiClient'
+import config from '../config'
+
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 
 const token = { access_token: 'token-1', expires_in: 300 }
 
 describe('manageUsersApiClient', () => {
-  let fakeManageUsersApiClient: nock.Scope
-  let manageUsersApiClient: ManageUsersApiClient
+  const fakeManageUsersApiClient = nock(config.apis.manageUsersApi.url)
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
+  const manageUsersApiClient = new ManageUsersApiClient(mockAuthenticationClient)
 
   beforeEach(() => {
-    fakeManageUsersApiClient = nock(config.apis.manageUsersApi.url)
-    manageUsersApiClient = new ManageUsersApiClient()
+    jest.resetAllMocks()
   })
 
   afterEach(() => {
@@ -46,7 +49,7 @@ describe('manageUsersApiClient', () => {
 
     it('should not get user case load details given API returns an error response', async () => {
       // Given
-      const expectedResponseBody = {
+      const apiErrorResponse = {
         status: 500,
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
@@ -55,17 +58,16 @@ describe('manageUsersApiClient', () => {
         .get('/users/me/caseloads')
         .matchHeader('authorization', `Bearer ${token.access_token}`)
         .thrice()
-        .reply(500, expectedResponseBody)
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
 
       // When
-      try {
-        await manageUsersApiClient.getUserCaseLoads(token.access_token)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
+      const actual = await manageUsersApiClient.getUserCaseLoads(token.access_token).catch(e => e)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedError)
     })
   })
 })

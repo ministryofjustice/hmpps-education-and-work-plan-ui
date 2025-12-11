@@ -74,7 +74,7 @@ export const dataAccess = () => {
     applicationInfo,
     hmppsAuthClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-    manageUsersApiClient: new ManageUsersApiClient(),
+    manageUsersApiClient: new ManageUsersApiClient(hmppsAuthenticationClient),
     prisonerSearchStore: config.redis.enabled
       ? new RedisPrisonerSearchStore(createRedisClient())
       : new InMemoryPrisonerSearchStore(),
