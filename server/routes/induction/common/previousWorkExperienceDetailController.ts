@@ -38,11 +38,9 @@ export default abstract class PreviousWorkExperienceDetailController extends Ind
       return next(createError(404, `Previous Work Experience type ${typeOfWorkExperience} not found on Induction`))
     }
 
-    this.addCurrentPageToFlowHistoryWhenComingFromCheckYourAnswers(req)
-
     if (
       req.originalUrl?.includes('/create-induction/') &&
-      !this.previousPageWasCheckYourAnswers(req) &&
+      req.query?.submitToCheckAnswers !== 'true' &&
       !req.session.pageFlowQueue
     ) {
       // If this is part of the "create induction" journey, and the previous page was not Check Your Answers and there is

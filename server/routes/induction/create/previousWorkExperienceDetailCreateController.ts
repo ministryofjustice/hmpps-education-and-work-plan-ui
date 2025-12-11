@@ -11,7 +11,7 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { journeyId, prisonNumber, typeOfWorkExperience } = req.params
+    const { typeOfWorkExperience } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
 
@@ -37,8 +37,13 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     )
     req.journeyData.inductionDto = updatedInduction
 
-    if (this.previousPageWasCheckYourAnswers(req)) {
-      return res.redirect(`/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`)
+    const previousPageWasCheckYourAnswers = req.query?.submitToCheckAnswers === 'true'
+    req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers =
+      req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers ||
+      previousPageWasCheckYourAnswers
+
+    if (previousPageWasCheckYourAnswers) {
+      return res.redirect('../check-your-answers')
     }
 
     const { pageFlowQueue } = req.session
@@ -50,11 +55,10 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     // We are at the end of the page flow queue. Tidy up by removing both the page flow queue
     req.session.pageFlowQueue = undefined
 
-    const nextPage = this.checkYourAnswersIsTheFirstPageInThePageHistory(req)
-      ? `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`
-      : `/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`
+    const nextPage = req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers
+      ? '../check-your-answers'
+      : '../skills'
 
-    req.session.pageFlowHistory = undefined
     return res.redirect(nextPage)
   }
 }

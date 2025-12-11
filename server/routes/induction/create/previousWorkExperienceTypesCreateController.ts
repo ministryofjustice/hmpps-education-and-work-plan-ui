@@ -28,6 +28,11 @@ export default class PreviousWorkExperienceTypesCreateController extends Previou
     )
     req.journeyData.inductionDto = updatedInduction
 
+    const previousPageWasCheckYourAnswers = req.query?.submitToCheckAnswers === 'true'
+    req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers =
+      req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers ||
+      previousPageWasCheckYourAnswers
+
     // We need to show the Details page for each work experience type.
     const pageFlowQueue = buildPageFlowQueue(updatedInduction, prisonNumber, journeyId)
     req.session.pageFlowQueue = pageFlowQueue

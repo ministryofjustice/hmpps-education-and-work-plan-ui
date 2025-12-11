@@ -22,7 +22,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
     body: {},
     params: { prisonNumber, journeyId } as Record<string, string>,
     originalUrl: '',
-  }
+  } as unknown as Request
   const res = {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
@@ -33,9 +33,9 @@ describe('previousWorkExperienceDetailCreateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
+    req.query = {}
     res.locals.invalidForm = undefined
   })
 
@@ -61,7 +61,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -92,7 +92,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith(
@@ -114,7 +114,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       const expectedError = createError(404, `Previous Work Experience type retail not found on Induction`)
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -135,7 +135,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       )
 
       // When
-      await controller.getPreviousWorkExperienceDetailView(req as unknown as Request, res, next)
+      await controller.getPreviousWorkExperienceDetailView(req, res, next)
 
       // Then
       expect(res.render).not.toHaveBeenCalled()
@@ -159,7 +159,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         )
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -184,7 +184,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
         req.body = previousWorkExperienceDetailForm
 
         // When
-        await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+        await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
         // Then
         expect(res.redirect).not.toHaveBeenCalled()
@@ -194,6 +194,8 @@ describe('previousWorkExperienceDetailCreateController', () => {
 
     it('should update inductionDto and redirect to next page in page flow queue given we are not on the last page of the queue', async () => {
       // Given
+      req.query = {}
+
       req.params.typeOfWorkExperience = 'construction'
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
@@ -216,16 +218,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowQueue = pageFlowQueue
 
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`,
-        ],
-        currentPageIndex: 2,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
-
       const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/other`
       const expectedWorkExperiences = [
         {
@@ -243,17 +235,18 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.pageFlowQueue).toEqual(pageFlowQueue)
-      expect(req.session.pageFlowHistory).toEqual(pageFlowHistory)
       expect(req.journeyData.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
-    it('should update inductionDto and redirect to Personal Skills given we are on the last page of the queue', async () => {
+    it('should update inductionDto and redirect to Personal Skills given we are on the last page of the queue and previous page was not Check Your Answers', async () => {
       // Given
+      req.query = {}
+
       req.params.typeOfWorkExperience = 'other'
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/other`
 
@@ -289,18 +282,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowQueue = pageFlowQueue
 
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/has-worked-before`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/other`,
-        ],
-        currentPageIndex: 3,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
-
-      const expectedNextPage = `/prisoners/${prisonNumber}/create-induction/${journeyId}/skills`
+      const expectedNextPage = '../skills'
       const expectedWorkExperiences = [
         {
           experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
@@ -317,17 +299,18 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(expectedNextPage)
       expect(req.session.pageFlowQueue).toBeUndefined()
-      expect(req.session.pageFlowHistory).toBeUndefined()
       expect(req.journeyData.inductionDto.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
     })
 
     it('should update inductionDto and redirect to Check Your Answers given previous page was Check Your Answers', async () => {
       // Given
+      req.query = { submitToCheckAnswers: 'true' }
+
       req.params.typeOfWorkExperience = 'construction'
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`
 
@@ -355,24 +338,16 @@ describe('previousWorkExperienceDetailCreateController', () => {
         },
       ]
 
-      req.session.pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/A1234BC/create-induction/${journeyId}/previous-work-experience/construction`,
-        ],
-        currentPageIndex: 1,
-      }
-
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
       // Then
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
+      expect(res.redirect).toHaveBeenCalledWith('../check-your-answers')
     })
 
-    it('should update inductionDto and redirect to Check Your Answers given we are at the end of the page queue and the first page in the history was Check Your Answers', async () => {
+    it('should update inductionDto and redirect to Check Your Answers given we are at the end of the page queue and needToCompleteJourneyFromCheckYourAnswers is set', async () => {
       // Given
       req.params.typeOfWorkExperience = 'other'
       req.originalUrl = `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/other`
@@ -391,6 +366,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
           return experience
         },
       )
+      inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers = true
       req.journeyData.inductionDto = inductionDto
 
       const previousWorkExperienceDetailForm = {
@@ -409,17 +385,6 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowQueue = pageFlowQueue
 
-      const pageFlowHistory = {
-        pageUrls: [
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/check-your-answers`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/construction`,
-          `/prisoners/${prisonNumber}/create-induction/${journeyId}/previous-work-experience/other`,
-        ],
-        currentPageIndex: 3,
-      }
-      req.session.pageFlowHistory = pageFlowHistory
-
       const expectedWorkExperiences = [
         {
           experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
@@ -436,13 +401,12 @@ describe('previousWorkExperienceDetailCreateController', () => {
       ]
 
       // When
-      await controller.submitPreviousWorkExperienceDetailForm(req as unknown as Request, res, next)
+      await controller.submitPreviousWorkExperienceDetailForm(req, res, next)
 
       // Then
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.experiences).toEqual(expectedWorkExperiences)
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-induction/${journeyId}/check-your-answers`)
-      expect(req.session.pageFlowHistory).toBeUndefined()
+      expect(res.redirect).toHaveBeenCalledWith('../check-your-answers')
       expect(req.session.pageFlowQueue).toBeUndefined()
     })
   })

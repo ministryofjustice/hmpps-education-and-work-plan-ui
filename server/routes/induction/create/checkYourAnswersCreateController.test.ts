@@ -74,7 +74,6 @@ describe('checkYourAnswersCreateController', () => {
       expect(inductionService.createInduction).toHaveBeenCalledWith(prisonNumber, createInductionDto, username)
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
       expect(req.journeyData.inductionDto).toBeUndefined()
-      expect(req.session.pageFlowHistory).toBeUndefined()
       expect(flash).not.toHaveBeenCalled()
     })
 
