@@ -78,7 +78,7 @@ export const dataAccess = () => {
     prisonerSearchStore: config.redis.enabled
       ? new RedisPrisonerSearchStore(createRedisClient())
       : new InMemoryPrisonerSearchStore(),
-    prisonerSearchClient: new PrisonerSearchClient(),
+    prisonerSearchClient: new PrisonerSearchClient(hmppsAuthenticationClient),
     educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
     curiousClient: new CuriousClient(curiousApiAuthClient),
     ciagInductionClient: new CiagInductionClient(),

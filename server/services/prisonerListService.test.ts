@@ -16,7 +16,7 @@ jest.mock('../data/ciagInductionClient')
 
 describe('prisonerListService', () => {
   const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-  const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
+  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
   const ciagInductionClient = new CiagInductionClient() as jest.Mocked<CiagInductionClient>
 

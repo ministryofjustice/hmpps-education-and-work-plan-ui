@@ -7,7 +7,7 @@ import retrievePrisonerSummary from './retrievePrisonerSummary'
 jest.mock('../../services/prisonerSearchService')
 
 describe('retrievePrisonerSummary', () => {
-  const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
+  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
   const requestHandler = retrievePrisonerSummary(prisonerSearchService)
 
   const username = 'a-dps-user'

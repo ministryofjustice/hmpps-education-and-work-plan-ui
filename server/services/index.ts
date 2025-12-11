@@ -37,7 +37,7 @@ export const services = () => {
 
   const auditService = new AuditService(hmppsAuditClient)
   const userService = new UserService(manageUsersApiClient)
-  const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient, prisonerSearchStore)
+  const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     educationAndWorkPlanClient,

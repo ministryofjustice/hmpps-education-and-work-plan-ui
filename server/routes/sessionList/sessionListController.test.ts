@@ -15,7 +15,7 @@ jest.mock('../../services/prisonerSearchService')
 jest.mock('../../services/sessionService')
 
 describe('sessionListController', () => {
-  const prisonerSearchService = new PrisonerSearchService(null, null, null) as jest.Mocked<PrisonerSearchService>
+  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
   const sessionService = new SessionService(null, null) as jest.Mocked<SessionService>
   const controller = new SessionListController(prisonerSearchService, sessionService)
 

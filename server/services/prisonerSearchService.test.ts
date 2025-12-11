@@ -1,5 +1,4 @@
 import type { PrisonerSummaries } from 'viewModels'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonerSearchClient from '../data/prisonerSearchClient'
 import RedisPrisonerSearchStore from '../data/prisonerSearchStore/redisPrisonerSearchStore'
 import PrisonerSearchService from './prisonerSearchService'
@@ -9,27 +8,23 @@ import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
 import aValidPagedCollectionOfPrisoners from '../testsupport/pagedCollectionOfPrisonersTestDataBuilder'
 
 jest.mock('../data/mappers/prisonerSummaryMapper')
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonerSearchClient')
 jest.mock('../data/prisonerSearchStore/redisPrisonerSearchStore')
 
 describe('prisonerSearchService', () => {
   const mockedPrisonerSummaryMapper = toPrisonerSummary as jest.MockedFunction<typeof toPrisonerSummary>
 
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-  const prisonerSearchClient = new PrisonerSearchClient() as jest.Mocked<PrisonerSearchClient>
+  const prisonerSearchClient = new PrisonerSearchClient(null) as jest.Mocked<PrisonerSearchClient>
   const prisonerSearchStore = new RedisPrisonerSearchStore(null) as jest.Mocked<RedisPrisonerSearchStore>
 
-  const prisonerSearchService = new PrisonerSearchService(hmppsAuthClient, prisonerSearchClient, prisonerSearchStore)
+  const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
 
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
   const username = 'a-dps-user'
-  const systemToken = 'a-system-token'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('getPrisonerByPrisonNumber', () => {
@@ -50,8 +45,7 @@ describe('prisonerSearchService', () => {
       expect(actual).toEqual(expectedPrisonerSummary)
       expect(prisonerSearchStore.getPrisoner).toHaveBeenCalledWith(prisonNumber)
       expect(prisonerSearchStore.setPrisoner).toHaveBeenCalledWith(prisonNumber, prisoner, 1)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedPrisonerSummaryMapper).toHaveBeenCalledWith(prisoner)
     })
 
@@ -70,7 +64,6 @@ describe('prisonerSearchService', () => {
       expect(actual).toEqual(expectedPrisonerSummary)
       expect(prisonerSearchStore.getPrisoner).toHaveBeenCalledWith(prisonNumber)
       expect(prisonerSearchStore.setPrisoner).not.toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).not.toHaveBeenCalled()
       expect(prisonerSearchClient.getPrisonerByPrisonNumber).not.toHaveBeenCalled()
       expect(mockedPrisonerSummaryMapper).toHaveBeenCalledWith(prisoner)
     })
@@ -89,8 +82,7 @@ describe('prisonerSearchService', () => {
       expect(actual).toEqual(Error('Not Found'))
       expect(prisonerSearchStore.getPrisoner).toHaveBeenCalledWith(prisonNumber)
       expect(prisonerSearchStore.setPrisoner).not.toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedPrisonerSummaryMapper).not.toHaveBeenCalled()
     })
 
@@ -112,8 +104,7 @@ describe('prisonerSearchService', () => {
       expect(actual).toEqual(expectedPrisonerSummary)
       expect(prisonerSearchStore.getPrisoner).toHaveBeenCalledWith(prisonNumber)
       expect(prisonerSearchStore.setPrisoner).toHaveBeenCalledWith(prisonNumber, prisoner, 1)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(prisonerSearchClient.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedPrisonerSummaryMapper).toHaveBeenCalledWith(prisoner)
     })
   })
@@ -147,9 +138,8 @@ describe('prisonerSearchService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledTimes(1)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, systemToken)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, username)
     })
 
     it('should get prisoners by prisonId given there are 2 pages of data', async () => {
@@ -192,10 +182,9 @@ describe('prisonerSearchService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledTimes(2)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, systemToken)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 1, 9999, systemToken)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, username)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 1, 9999, username)
     })
 
     it('should not get prisoners by prisonId given page 1 returns an error', async () => {
@@ -219,9 +208,8 @@ describe('prisonerSearchService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledTimes(1)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, systemToken)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, username)
       expect(mockedPrisonerSummaryMapper).not.toHaveBeenCalled()
     })
 
@@ -257,10 +245,9 @@ describe('prisonerSearchService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledTimes(2)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, systemToken)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 1, 9999, systemToken)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, username)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 1, 9999, username)
       expect(mockedPrisonerSummaryMapper).not.toHaveBeenCalled()
     })
 
@@ -277,9 +264,8 @@ describe('prisonerSearchService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledTimes(1)
-      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, systemToken)
+      expect(prisonerSearchClient.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, 0, 9999, username)
       expect(mockedPrisonerSummaryMapper).not.toHaveBeenCalled()
     })
   })
