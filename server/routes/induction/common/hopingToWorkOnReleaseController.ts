@@ -1,13 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
-import InductionController from './inductionController'
 import HopingToWorkOnReleaseView from './hopingToWorkOnReleaseView'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class HopingToWorkOnReleaseController extends InductionController {
+export default abstract class HopingToWorkOnReleaseController {
   /**
    * Returns the Hoping To Work On Release view; suitable for use by the Create and Update journeys.
    */

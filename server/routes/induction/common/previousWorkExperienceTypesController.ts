@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PreviousWorkExperienceTypesForm } from 'inductionForms'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
-import InductionController from './inductionController'
 import PreviousWorkExperienceTypesView from './previousWorkExperienceTypesView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { asArray } from '../../../utils/utils'
@@ -9,7 +8,7 @@ import { asArray } from '../../../utils/utils'
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class PreviousWorkExperienceTypesController extends InductionController {
+export default abstract class PreviousWorkExperienceTypesController {
   /**
    * Returns the Previous Work Experience Types view; suitable for use by the Create and Update journeys.
    */

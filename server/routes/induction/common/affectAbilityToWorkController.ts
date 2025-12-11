@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { AffectAbilityToWorkForm } from 'inductionForms'
-import InductionController from './inductionController'
 import AffectAbilityToWorkView from './affectAbilityToWorkView'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 import { asArray } from '../../../utils/utils'
@@ -9,7 +8,7 @@ import { asArray } from '../../../utils/utils'
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class AffectAbilityToWorkController extends InductionController {
+export default abstract class AffectAbilityToWorkController {
   /**
    * Returns the Affects on Ability To Work view; suitable for use by the Create and Update journeys.
    */

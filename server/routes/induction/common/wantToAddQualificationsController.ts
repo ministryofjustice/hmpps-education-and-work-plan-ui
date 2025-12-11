@@ -1,14 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { WantToAddQualificationsForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
-import InductionController from './inductionController'
 import YesNoValue from '../../../enums/yesNoValue'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class WantToAddQualificationsController extends InductionController {
+export default abstract class WantToAddQualificationsController {
   /**
    * Returns the Want to Add Qualifications view; suitable for use by the Create and Update journeys.
    */

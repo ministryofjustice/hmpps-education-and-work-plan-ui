@@ -3,7 +3,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { PreviousWorkExperienceDetailForm } from 'inductionForms'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { PageFlow } from 'viewModels'
-import InductionController from './inductionController'
 import PreviousWorkExperienceDetailView from './previousWorkExperienceDetailView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import logger from '../../../../logger'
@@ -12,7 +11,7 @@ import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExpe
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class PreviousWorkExperienceDetailController extends InductionController {
+export default abstract class PreviousWorkExperienceDetailController {
   /**
    * Returns the Previous Work Experience Detail view; suitable for use by the Create and Update journeys.
    */

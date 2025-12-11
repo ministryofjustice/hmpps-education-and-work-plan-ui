@@ -45,7 +45,6 @@ describe('workedBeforeUpdateController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req.session.pageFlowHistory = undefined
     req.body = {}
     req.journeyData = {}
     res.locals.invalidForm = undefined

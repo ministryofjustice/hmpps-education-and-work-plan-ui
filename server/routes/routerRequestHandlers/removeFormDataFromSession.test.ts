@@ -25,7 +25,6 @@ describe('removeFormDataFromSession', () => {
     getPrisonerContext(req.session, prisonNumber).updateGoalForm = aValidUpdateGoalForm()
 
     req.session.pageFlowQueue = {} as PageFlow
-    req.session.pageFlowHistory = {} as PageFlow
 
     // When
     await removeFormDataFromSession(
@@ -38,6 +37,5 @@ describe('removeFormDataFromSession', () => {
     expect(next).toHaveBeenCalled()
     expect(getPrisonerContext(req.session, prisonNumber)).toEqual({})
     expect(req.session.pageFlowQueue).toBeUndefined()
-    expect(req.session.pageFlowHistory).toBeUndefined()
   })
 })

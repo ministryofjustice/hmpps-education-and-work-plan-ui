@@ -1,14 +1,13 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
-import InductionController from './inductionController'
 import WorkedBeforeView from './workedBeforeView'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class WorkedBeforeController extends InductionController {
+export default abstract class WorkedBeforeController {
   /**
    * Returns the WorkedBefore view; suitable for use by the Create and Update journeys.
    */

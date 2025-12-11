@@ -29,7 +29,6 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
       return res.redirect('check-your-answers')
     }
 
-    req.session.pageFlowHistory = undefined
     req.journeyData.inductionDto = undefined
     return res.redirect(`/plan/${prisonNumber}/induction-created`)
   }

@@ -13,7 +13,6 @@ const removeFormDataFromSession = async (req: Request, res: Response, next: Next
   clearPrisonerContext(session, prisonNumber)
 
   session.pageFlowQueue = undefined
-  session.pageFlowHistory = undefined
 
   next()
 }

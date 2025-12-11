@@ -2,14 +2,13 @@ import type { InductionDto, InPrisonWorkInterestDto } from 'inductionDto'
 import type { InPrisonWorkForm } from 'inductionForms'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import InPrisonWorkView from './inPrisonWorkView'
-import InductionController from './inductionController'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 import { asArray } from '../../../utils/utils'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class InPrisonWorkController extends InductionController {
+export default abstract class InPrisonWorkController {
   /**
    * Returns the In Prison Work view; suitable for use by the Create and Update journeys.
    */

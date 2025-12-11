@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { AdditionalTrainingForm } from 'inductionForms'
-import InductionController from './inductionController'
 import AdditionalTrainingView from './additionalTrainingView'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 import { asArray } from '../../../utils/utils'
@@ -9,7 +8,7 @@ import { asArray } from '../../../utils/utils'
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class AdditionalTrainingController extends InductionController {
+export default abstract class AdditionalTrainingController {
   /**
    * Returns the Additional Training view; suitable for use by the Create and Update journeys.
    */

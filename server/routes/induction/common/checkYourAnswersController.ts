@@ -1,11 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import InductionController from './inductionController'
 import CheckYourAnswersView from './checkYourAnswersView'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
  */
-export default abstract class CheckYourAnswersController extends InductionController {
+export default abstract class CheckYourAnswersController {
   /**
    * Returns the Check Your Answers view; suitable for use by the Create and Update journeys.
    */

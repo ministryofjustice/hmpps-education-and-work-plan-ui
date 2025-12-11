@@ -15,7 +15,6 @@ declare module 'express-session' {
     prisonerListSortOptions: string
     sessionListSortOptions: string
 
-    pageFlowHistory: PageFlow
     pageFlowQueue: PageFlow
 
     prisonerContexts: PrisonerContexts
