@@ -1,6 +1,7 @@
+import { asUser, RestClient } from '@ministryofjustice/hmpps-rest-client'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import logger from '../../logger'
 import config from '../config'
-import RestClient from './restClient'
 
 export interface User {
   username: string
@@ -26,15 +27,13 @@ export interface PrisonCaseload {
   name: string
 }
 
-export default class ManageUsersApiClient {
-  constructor() {}
-
-  private static restClient(token: string): RestClient {
-    return new RestClient('Manage Users Api Client', config.apis.manageUsersApi, token)
+export default class ManageUsersApiClient extends RestClient {
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Manage Users Api Client', config.apis.manageUsersApi, logger, authenticationClient)
   }
 
   async getUserCaseLoads(token: string): Promise<UserCaseloadDetail> {
     logger.info('Getting user caseloads: calling HMPPS Manage Users Api')
-    return ManageUsersApiClient.restClient(token).get<UserCaseloadDetail>({ path: '/users/me/caseloads' })
+    return this.get<UserCaseloadDetail>({ path: '/users/me/caseloads' }, asUser(token))
   }
 }

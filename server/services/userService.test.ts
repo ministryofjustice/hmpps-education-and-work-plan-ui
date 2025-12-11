@@ -6,12 +6,11 @@ import createUserToken from '../testutils/createUserToken'
 jest.mock('../data/manageUsersApiClient')
 
 describe('User service', () => {
-  let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
-  let userService: UserService
+  const manageUsersApiClient = new ManageUsersApiClient(null) as jest.Mocked<ManageUsersApiClient>
+  const userService = new UserService(manageUsersApiClient)
 
   beforeEach(() => {
-    manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-    userService = new UserService(manageUsersApiClient)
+    jest.resetAllMocks()
   })
 
   describe('getUserCaseLoads', () => {
