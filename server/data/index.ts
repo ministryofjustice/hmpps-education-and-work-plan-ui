@@ -11,12 +11,10 @@ initialiseAppInsights()
 buildAppInsightsClient(applicationInfo)
 
 // eslint-disable-next-line import/order
-import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import HmppsAuthClient from './hmppsAuthClient'
 import ManageUsersApiClient from './manageUsersApiClient'
 import { createRedisClient } from './redisClient'
-import RedisTokenStore from './tokenStore/redisTokenStore'
-import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
 import PrisonerSearchClient from './prisonerSearchClient'
