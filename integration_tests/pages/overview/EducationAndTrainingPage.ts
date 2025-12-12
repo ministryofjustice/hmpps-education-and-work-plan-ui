@@ -7,6 +7,7 @@ import HighestLevelOfEducationPage from '../prePrisonEducation/HighestLevelOfEdu
 import AdditionalTrainingPage from '../induction/AdditionalTrainingPage'
 import QualificationsListPage from '../prePrisonEducation/QualificationsListPage'
 import QualificationLevelPage from '../prePrisonEducation/QualificationLevelPage'
+import LrsQualificationsPage from '../lrsQualifications/LrsQualificationsPage'
 
 /**
  * Cypress page class representing the Education And Training tab of the Overview Page
@@ -162,32 +163,68 @@ export default class EducationAndTrainingPage extends Page {
   completedInPrisonCoursesInLast12MonthsTable = (): PageElement =>
     cy.get('#completed-in-prison-courses-in-last-12-months-table')
 
-  curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+  hasVerifiedQualificationsDisplayed(): EducationAndTrainingPage {
+    this.verifiedQualifications().should('be.visible')
+    return this
+  }
 
-  viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
+  hasLearnerNotMatchedMessageDisplayed(): EducationAndTrainingPage {
+    this.learnerNotMatchedMessage().should('be.visible')
+    return this
+  }
 
-  educationOrInductionUnavailableMessage = (): PageElement =>
+  hasLearnerRecordsUnavailableMessageDisplayed(): EducationAndTrainingPage {
+    this.learnerRecordsUnavailableMessage().should('be.visible')
+    return this
+  }
+
+  clickToViewAllLrsQualifications(): LrsQualificationsPage {
+    this.viewAllLrsQualificationsButton().click()
+    return Page.verifyOnPage(LrsQualificationsPage)
+  }
+
+  private curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+
+  private viewAllFunctionalSkillsButton = (): PageElement => cy.get('[data-qa=view-all-functional-skills-button]')
+
+  private educationOrInductionUnavailableMessage = (): PageElement =>
     cy.get('[data-qa=education-or-induction-unavailable-message]')
 
-  addEducationHistory = (): PageElement => cy.get('[data-qa=link-to-add-educational-qualifications]')
+  private addEducationHistory = (): PageElement => cy.get('[data-qa=link-to-add-educational-qualifications]')
 
-  educationTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
+  private educationTable = (): PageElement => cy.get('[data-qa=educational-qualifications-table]')
 
-  createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
+  private createInductionLink = (): PageElement => cy.get('[data-qa=link-to-create-induction]')
 
-  viewAllInPrisonCoursesLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-courses-link]')
+  private viewAllInPrisonCoursesLink = (): PageElement => cy.get('[data-qa=view-all-in-prison-courses-link]')
 
-  inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
+  private inPrisonTrainingChangeLink = (): PageElement => cy.get('[data-qa=in-prison-training-change-link]')
 
-  highestLevelOfEducationChangeLink = (): PageElement => cy.get('[data-qa=highest-level-of-education-change-link]')
+  private highestLevelOfEducationChangeLink = (): PageElement =>
+    cy.get('[data-qa=highest-level-of-education-change-link]')
 
-  additionalTrainingChangeLink = (): PageElement => cy.get('[data-qa=additional-training-change-link]')
+  private additionalTrainingChangeLink = (): PageElement => cy.get('[data-qa=additional-training-change-link]')
 
-  educationalQualificationsChangeLink = (): PageElement => cy.get('[data-qa=educational-qualifications-change-link]')
+  private educationalQualificationsChangeLink = (): PageElement =>
+    cy.get('[data-qa=educational-qualifications-change-link]')
 
-  noCompletedCoursesInLast12MonthsMessage = (): PageElement =>
+  private noCompletedCoursesInLast12MonthsMessage = (): PageElement =>
     cy.get('[data-qa=no-completed-courses-in-last-12-months-message]')
 
-  completedCourseWithName = (expectedCourseName: string): PageElement =>
+  private completedCourseWithName = (expectedCourseName: string): PageElement =>
     cy.get(`[data-qa=completed-course-name]:contains(${expectedCourseName})`)
+
+  private verifiedQualifications = (): PageElement => cy.get('[data-qa=verified-qualifications]')
+
+  private learnerMatchedButHasNoQualificationsMessage = (): PageElement =>
+    cy.get('[data-qa=learner-matched-but-has-no-qualifications-message]')
+
+  private learnerNotMatchedMessage = (): PageElement => cy.get('[data-qa=not-matched-in-lrs-message]')
+
+  private learnerDeclinedToShareDataMessage = (): PageElement =>
+    cy.get('[data-qa=learner-declined-to-share-data-message]')
+
+  private learnerRecordsUnavailableMessage = (): PageElement => cy.get('[data-qa=learner-records-unavailable-message]')
+
+  private viewAllLrsQualificationsButton = (): PageElement => cy.get('[data-qa=view-all-lrs-qualifications-link]')
 }

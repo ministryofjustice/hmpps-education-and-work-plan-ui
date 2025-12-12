@@ -16,6 +16,60 @@
         This is information from awarding organisations recognised by Ofqual, such as AQA, Pearson, OCR and City and Guilds.
       </p>
 
+      {% if verifiedQualifications.status === 'PRN_MATCHED_TO_LEARNER_RECORD' %}
+        {% set qualifications = verifiedQualifications.qualifications | filterArrayOnProperty('source', 'AO') | sort(attribute = 'awardedOn', reverse = true) %}
+        {% if qualifications.length > 0 %}
+          {% set maxTenMostRecentQualifications = qualifications.slice(0, 10) %}
+
+          <table class="govuk-table" data-qa="verified-qualifications">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Subject</th>
+              <th scope="col" class="govuk-table__header">Awarding body</th>
+              <th scope="col" class="govuk-table__header">Qualification type</th>
+              <th scope="col" class="govuk-table__header app-u-width-10">Level</th>
+              <th scope="col" class="govuk-table__header app-u-width-10">Grade</th>
+              <th scope="col" class="govuk-table__header app-u-width-15">Awarded on</th>
+            </tr>
+            </thead>
+
+            <tbody class="govuk-table__body">
+            {% for qualification in maxTenMostRecentQualifications %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ qualification.subject }}</td>
+                <td class="govuk-table__cell">{{ qualification.awardingBodyName }}</td>
+                <td class="govuk-table__cell">{{ qualification.qualificationType }}</td>
+                <td class="govuk-table__cell">{{ qualification.level }}</td>
+                <td class="govuk-table__cell">{{ qualification.grade }}</td>
+                <td class="govuk-table__cell">{{ qualification.awardedOn | formatDate('d MMMM yyyy') }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+          <section class="moj-pagination">
+            <ul class="moj-pagination__list"></ul>
+            <p class="moj-pagination__results">Showing <b>1</b> to <b>{{ maxTenMostRecentQualifications | length }}</b> of <b>{{ qualifications | length }}</b> results</p>
+          </section>
+
+        {% else %}
+          <p class="govuk-body" data-qa="learner-matched-but-has-no-qualifications-message">
+            No results. Unique learner number (ULN) matched, but no awarding organisation (AO) data in their record. This service only shows AO data.
+          </p>
+        {% endif %}
+
+      {% elseif verifiedQualifications.status === 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' %}
+        <p class="govuk-body" data-qa="not-matched-in-lrs-message">
+          No results. A unique learner number (ULN) has not yet been matched.
+          {% if userHasPermissionTo('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE') %}
+            <a href="" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
+          {% endif %}
+        </p>
+      {% elseif verifiedQualifications.status === 'LEARNER_DECLINED_TO_SHARE_DATA' %}
+        <p class="govuk-body" data-qa="learner-declined-to-share-data-message">
+          No results. Unique learner number (ULN) matched, but learner declined to share their LRS data.
+        </p>
+      {% endif %}
 
     {% else %}
 

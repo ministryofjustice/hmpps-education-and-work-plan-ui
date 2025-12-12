@@ -4,6 +4,7 @@ import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingP
 import InPrisonTrainingPage from '../../pages/induction/InPrisonTrainingPage'
 import AdditionalTrainingPage from '../../pages/induction/AdditionalTrainingPage'
 import QualificationsListPage from '../../pages/prePrisonEducation/QualificationsListPage'
+import LrsQualificationsPage from '../../pages/lrsQualifications/LrsQualificationsPage'
 
 context('Prisoner Overview page - Education And Training tab', () => {
   beforeEach(() => {
@@ -309,7 +310,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .apiErrorBannerIsNotDisplayed()
-      // TODO - assert qualifications are displayed properly
+        .hasVerifiedQualificationsDisplayed()
     })
 
     it('should display message saying no match given Learner Records Service API returns a 404', () => {
@@ -329,7 +330,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .apiErrorBannerIsNotDisplayed()
-      // TODO - assert correct content is displayed
+        .hasLearnerNotMatchedMessageDisplayed()
     })
 
     it('should display unavailable message given Learner Records Service API is unavailable when retrieving qualifications', () => {
@@ -349,7 +350,25 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .apiErrorBannerIsDisplayed()
-      // TODO - assert correct message is displayed
+        .hasLearnerRecordsUnavailableMessageDisplayed()
+    })
+
+    it('should link to the page showing all LRS qualifications', () => {
+      // Given
+      cy.task('stubMatchLearnerEvents')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      Page.verifyOnPage(OverviewPage) //
+        .selectTab('Education and training')
+
+      // When
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+      educationAndTrainingPage.clickToViewAllLrsQualifications()
+
+      // Then
+      Page.verifyOnPage(LrsQualificationsPage)
     })
   })
 
