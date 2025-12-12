@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { Services } from '../../services'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
 import removeFormDataFromSession from '../routerRequestHandlers/removeFormDataFromSession'
@@ -23,6 +23,8 @@ import retrieveSupportForAdditionalNeedsSupportStrategies from '../routerRequest
 import retrieveSupportForAdditionalNeedsStrengths from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsStrengths'
 import retrieveSupportForAdditionalNeedsAlnScreeners from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsAlnScreeners'
 import retrieveSupportForAdditionalNeedsChallenges from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsChallenges'
+import retrieveVerifiedQualifications from '../routerRequestHandlers/retrieveVerifiedQualifications'
+import config from '../../config'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -32,6 +34,7 @@ export default (router: Router, services: Services) => {
     curiousService,
     educationAndWorkPlanService,
     inductionService,
+    learnerRecordsService,
     prisonService,
     reviewService,
     supportAdditionalNeedsService,
@@ -76,6 +79,9 @@ export default (router: Router, services: Services) => {
     retrieveInductionSchedule(inductionService),
     retrieveInduction(inductionService),
     retrieveEducation(educationAndWorkPlanService),
+    config.featureToggles.lrsIntegrationEnabled
+      ? retrieveVerifiedQualifications(learnerRecordsService)
+      : async (req: Request, res: Response, next: NextFunction) => next(),
     asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 

@@ -14,6 +14,7 @@ import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData
 import sessionResponseMockDataGenerator from './integration_tests/mockData/sessionResponseMockDataGenerator'
 import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
 import supportAdditionalNeedsApi from './integration_tests/mockApis/supportAdditionalNeedsApi'
+import learnerRecordsApi from './integration_tests/mockApis/learnerRecordsApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -62,6 +63,7 @@ export default defineConfig({
         ...prisonerSearchSummaryMockDataGenerator,
         ...sessionResponseMockDataGenerator,
         ...ciagInductionUi,
+        ...learnerRecordsApi,
       })
       on('after:spec', (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
         if (results && results.video) {

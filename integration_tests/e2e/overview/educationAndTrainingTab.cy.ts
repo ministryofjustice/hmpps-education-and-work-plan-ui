@@ -20,6 +20,7 @@ context('Prisoner Overview page - Education And Training tab', () => {
     cy.task('stubGetEducation')
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
+    cy.task('stubMatchLearnerEvents')
   })
 
   describe('should retrieve and render Functional Skills from Curious API data', () => {
@@ -285,6 +286,70 @@ context('Prisoner Overview page - Education And Training tab', () => {
       educationAndTrainingPage //
         .activeTabIs('Education and training')
         .hasEducationOrInductionUnavailableMessageDisplayed()
+    })
+  })
+
+  describe('should retrieve and render verified qualifications from the HMPPS Learner Records API data', () => {
+    // Verified qualifications come from the HMPPS Learner Records API /match/{prn}/learner-events
+
+    it('should display LRS qualifications', () => {
+      // Given
+      cy.task('stubMatchLearnerEvents')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .apiErrorBannerIsNotDisplayed()
+      // TODO - assert qualifications are displayed properly
+    })
+
+    it('should display message saying no match given Learner Records Service API returns a 404', () => {
+      // Given
+      cy.task('stubMatchLearnerEvents404Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .apiErrorBannerIsNotDisplayed()
+      // TODO - assert correct content is displayed
+    })
+
+    it('should display unavailable message given Learner Records Service API is unavailable when retrieving qualifications', () => {
+      // Given
+      cy.task('stubMatchLearnerEvents500Error')
+
+      cy.signIn()
+      const prisonNumber = 'G6115VJ'
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+
+      // When
+      overviewPage.selectTab('Education and training')
+      const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+
+      // Then
+      educationAndTrainingPage //
+        .activeTabIs('Education and training')
+        .apiErrorBannerIsDisplayed()
+      // TODO - assert correct message is displayed
     })
   })
 

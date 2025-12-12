@@ -1,0 +1,28 @@
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">Qualifications and courses from the Learning Records Service (LRS)</h2>
+    <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+      <li class="govuk-summary-card__action">
+        <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/lrs-qualifications" data-qa="view-all-lrs-qualifications-link">View all<span class="govuk-visually-hidden"> LRS qualifications</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="govuk-summary-card__content">
+    {% if verifiedQualifications.isFulfilled() %}
+      {% set verifiedQualifications = verifiedQualifications.value %}
+
+      <p class="govuk-hint">
+        LRS is run by the Department for Education. Contact the local education team to find out more.<br/>
+        This is information from awarding organisations recognised by Ofqual, such as AQA, Pearson, OCR and City and Guilds.
+      </p>
+
+
+    {% else %}
+
+      <h3 class="govuk-heading-s" data-qa="learner-records-unavailable-message">We cannot show these details from LRS right now</h3>
+      <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+
+    {% endif %}
+
+  </div>
+</div>
