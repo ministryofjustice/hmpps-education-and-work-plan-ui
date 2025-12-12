@@ -13,6 +13,12 @@ Contains 'Functional skills', 'In-prison qualifications and achievements', 'Educ
     {% include './_functionalSkills.njk' %}
     {# 'In-prison qualifications and achievements' summary card #}
     {% include './_inPrisonQualificationsCompletedInLast12Months.njk' %}
+
+    {% if featureToggles.lrsIntegrationEnabled %}
+      {# 'Qualifications and courses from LRS' summary card #}
+      {% include './_qualificationsAndCoursesFromLRS.njk' %}
+    {% endif %}
+
     {# 'Education and qualifications history' summary card #}
     {% include './_educationAndQualificationsHistory.njk' %}
     {# 'Training and eduction in prison' summary card #}

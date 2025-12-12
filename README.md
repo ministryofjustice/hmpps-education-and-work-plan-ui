@@ -194,6 +194,7 @@ This UI service sends events to HMPP Audit for the following user actions:
 ## Feature Toggles
 Features can be toggled by setting the relevant environment variable.
 
-| Name                 | Default Value | Type     | Description                                                                           |
-|----------------------|---------------|----------|---------------------------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED  | false         | Boolean  | Example feature toggle, for demonstration purposes.                                   |
+| Name                    | Default Value | Type     | Description                                         |
+|-------------------------|---------------|----------|-----------------------------------------------------|
+| SOME_TOGGLE_ENABLED     | false         | Boolean  | Example feature toggle, for demonstration purposes. |
+| LRS_INTEGRATION_ENABLED | false         | Boolean  | Set to true to show qualifications from LRS         |
