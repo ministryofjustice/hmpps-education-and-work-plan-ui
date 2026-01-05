@@ -6,6 +6,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
 import GoalStatusValue from '../../enums/goalStatusValue'
 import ApplicationAction from '../../enums/applicationAction'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions for the pages relating to Archiving A Goal
@@ -24,18 +25,18 @@ export default (router: Router, services: Services) => {
   router.post('/plan/:prisonNumber/goals/:goalReference/archive', [
     asyncMiddleware(archiveGoalController.submitArchiveGoalForm),
   ])
-  router.use('/plan/:prisonNumber/goals/:goalReference/archive/review', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
+
   router.get('/plan/:prisonNumber/goals/:goalReference/archive/review', [
     asyncMiddleware(archiveGoalController.getReviewArchiveGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/archive/review', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Archive Goal',
+      redirectTo: '/plan/:prisonNumber/view/overview',
+    }),
     asyncMiddleware(archiveGoalController.submitReviewArchiveGoal),
   ])
-  router.use('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
+
   router.get('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
     asyncMiddleware(archiveGoalController.cancelArchiveGoal),
   ])

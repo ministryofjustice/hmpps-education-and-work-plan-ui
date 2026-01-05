@@ -6,6 +6,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
 import GoalStatusValue from '../../enums/goalStatusValue'
 import ApplicationAction from '../../enums/applicationAction'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions for the pages relating to Completing A Goal
@@ -22,6 +23,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(completeGoalController.getCompleteGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/complete', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Complete Goal',
+      redirectTo: '/plan/:prisonNumber/view/overview',
+    }),
     asyncMiddleware(completeGoalController.submitCompleteGoalForm),
   ])
 }

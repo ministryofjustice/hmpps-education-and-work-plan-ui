@@ -53,6 +53,7 @@ import {
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions for creating an Induction
@@ -295,6 +296,10 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/check-your-answers', [
     checkInductionDtoExistsInJourneyData,
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Create Induction',
+      redirectTo: '/plan/:prisonNumber/induction-created',
+    }),
     asyncMiddleware(checkYourAnswersCreateController.submitCheckYourAnswers),
   ])
 }

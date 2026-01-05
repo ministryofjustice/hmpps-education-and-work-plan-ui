@@ -78,6 +78,7 @@ describe('CompleteGoalController - submitCompleteGoalForm', () => {
     expect(auditService.logCompleteGoal).toHaveBeenCalledWith(expectedBaseAuditData)
     expect(res.redirectWithSuccess).toHaveBeenCalledWith('/plan/A1234GC/view/overview', 'Goal Completed')
     expect(next).not.toHaveBeenCalled()
+    expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
   })
 
   it('should redisplay page with API error message when goal completion fails', async () => {

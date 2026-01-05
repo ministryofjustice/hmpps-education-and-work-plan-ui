@@ -9,6 +9,7 @@ import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
+import { setRedirectPendingFlag } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class CompleteGoalController {
   constructor(
@@ -59,6 +60,7 @@ export default class CompleteGoalController {
     }
 
     this.auditService.logCompleteGoal(completeGoalAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal Completed')
   }
 }

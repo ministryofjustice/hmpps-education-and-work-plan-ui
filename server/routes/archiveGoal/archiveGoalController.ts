@@ -12,6 +12,7 @@ import { BaseAuditData } from '../../services/auditService'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
+import { setRedirectPendingFlag } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class ArchiveGoalController {
   constructor(
@@ -91,6 +92,7 @@ export default class ArchiveGoalController {
 
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     this.auditService.logArchiveGoal(archiveGoalAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
   }
 
