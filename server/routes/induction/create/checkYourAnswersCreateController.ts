@@ -4,6 +4,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class CheckYourAnswersCreateController extends CheckYourAnswersController {
   constructor(private readonly inductionService: InductionService) {
@@ -30,6 +31,7 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/induction-created`)
   }
 }

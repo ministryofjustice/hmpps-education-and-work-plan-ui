@@ -287,6 +287,7 @@ describe('archiveGoalController', () => {
       expect(res.redirectWithSuccess).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`, 'Goal archived')
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
       expect(auditService.logArchiveGoal).toHaveBeenCalledWith(expectedBaseAuditData)
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should handle a failure archiving the goal', async () => {
