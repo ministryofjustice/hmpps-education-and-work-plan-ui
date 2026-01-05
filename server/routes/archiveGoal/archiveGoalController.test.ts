@@ -316,6 +316,20 @@ describe('archiveGoalController', () => {
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toEqual(archiveGoalForm)
       expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
     })
+
+    it('should not attempt to archive goal given archiveGoalForm is not on the context (likely resubmit of form)', async () => {
+      // Given
+      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
+
+      // When
+      await controller.submitReviewArchiveGoal(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/overview`)
+      expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
+      expect(auditService.logArchiveGoal).not.toHaveBeenCalled()
+      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
+    })
   })
 
   describe('cancelArchiveGoal', () => {

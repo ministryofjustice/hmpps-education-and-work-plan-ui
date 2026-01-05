@@ -20,6 +20,13 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     const { prisonId } = prisonerSummary
     const { educationDto } = req.journeyData
 
+    if (!educationDto) {
+      logger.warn(
+        'Possible resubmission of form following HTTP 0 (Update Highest Level of Education). Redirecting to Education & Training',
+      )
+      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+    }
+
     const highestLevelOfEducationForm = { ...req.body }
 
     const updatedEducationDto = this.updatedEducationDtoWithHighestLevelOfEducation(

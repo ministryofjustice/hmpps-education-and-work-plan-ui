@@ -95,5 +95,18 @@ describe('checkYourAnswersCreateController', () => {
       expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
     })
+
+    it('should not attempt to create induction given inductionDto is not on the journeyData (likely resubmit of form)', async () => {
+      // Given
+      req.journeyData.inductionDto = undefined
+
+      // When
+      await controller.submitCheckYourAnswers(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/induction-created`)
+      expect(inductionService.createInduction).not.toHaveBeenCalled()
+      expect(req.journeyData.inductionDto).toBeUndefined()
+    })
   })
 })

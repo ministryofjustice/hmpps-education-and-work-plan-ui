@@ -195,5 +195,18 @@ describe('qualificationsListUpdateController', () => {
       expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualifications`)
       expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
     })
+
+    it('should not attempt to update education given educationDto is not on the journeyData (likely resubmit of form)', async () => {
+      // Given
+      req.journeyData.educationDto = undefined
+
+      // When
+      await controller.submitQualificationsListView(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
+      expect(educationAndWorkPlanService.updateEducation).not.toHaveBeenCalled()
+      expect(req.journeyData.educationDto).toBeUndefined()
+    })
   })
 })

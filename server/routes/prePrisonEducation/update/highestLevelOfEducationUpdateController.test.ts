@@ -182,5 +182,18 @@ describe('highestLevelOfEducationUpdateController', () => {
         username,
       )
     })
+
+    it('should not attempt to update highest level of education given educationDto is not on the journeyData (likely resubmit of form)', async () => {
+      // Given
+      req.journeyData.educationDto = undefined
+
+      // When
+      await controller.submitHighestLevelOfEducationForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
+      expect(educationAndWorkPlanService.updateEducation).not.toHaveBeenCalled()
+      expect(req.journeyData.educationDto).toBeUndefined()
+    })
   })
 })

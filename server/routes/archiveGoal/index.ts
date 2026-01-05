@@ -24,18 +24,14 @@ export default (router: Router, services: Services) => {
   router.post('/plan/:prisonNumber/goals/:goalReference/archive', [
     asyncMiddleware(archiveGoalController.submitArchiveGoalForm),
   ])
-  router.use('/plan/:prisonNumber/goals/:goalReference/archive/review', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
+
   router.get('/plan/:prisonNumber/goals/:goalReference/archive/review', [
     asyncMiddleware(archiveGoalController.getReviewArchiveGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/archive/review', [
     asyncMiddleware(archiveGoalController.submitReviewArchiveGoal),
   ])
-  router.use('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
+
   router.get('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
     asyncMiddleware(archiveGoalController.cancelArchiveGoal),
   ])

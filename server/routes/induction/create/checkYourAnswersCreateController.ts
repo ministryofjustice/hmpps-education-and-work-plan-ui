@@ -16,6 +16,11 @@ export default class CheckYourAnswersCreateController extends CheckYourAnswersCo
     const { prisonerSummary } = res.locals
     const { prisonId } = prisonerSummary
 
+    if (!inductionDto) {
+      logger.warn('Possible resubmission of form following HTTP 0 (Create Induction). Redirecting to induction-created')
+      return res.redirect(`/plan/${prisonNumber}/induction-created`)
+    }
+
     const createInductionDto = toCreateOrUpdateInductionDto(prisonId, inductionDto)
 
     const { apiErrorCallback } = res.locals

@@ -27,6 +27,13 @@ export default class QualificationsListUpdateController extends QualificationsLi
 
     const { educationDto } = req.journeyData
 
+    if (!educationDto) {
+      logger.warn(
+        'Possible resubmission of form following HTTP 0 (Update Education). Redirecting to Education & Training',
+      )
+      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
+    }
+
     if (this.userClickedOnButton(req, 'removeQualification')) {
       const qualificationIndexToRemove = req.body.removeQualification as number
       const updatedEducation = this.educationWithRemovedQualification(educationDto, qualificationIndexToRemove)

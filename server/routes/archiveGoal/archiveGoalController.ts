@@ -75,6 +75,11 @@ export default class ArchiveGoalController {
     const { prisonerSummary } = res.locals
     const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
 
+    if (!archiveGoalForm) {
+      logger.warn('Possible resubmission of form following HTTP 0 (Archive Goal). Redirecting to Overview')
+      return res.redirect(`/plan/${prisonNumber}/view/overview`)
+    }
+
     const { prisonId } = prisonerSummary
     const archiveGoalDto = toArchiveGoalDto(prisonNumber, prisonId, archiveGoalForm)
 
