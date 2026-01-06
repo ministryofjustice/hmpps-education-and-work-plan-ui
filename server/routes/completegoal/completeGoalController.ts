@@ -9,7 +9,10 @@ import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
-import { setRedirectPendingFlag } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class CompleteGoalController {
   constructor(
@@ -20,6 +23,8 @@ export default class CompleteGoalController {
   getCompleteGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary, goals } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     if (goals.problemRetrievingData) {
       return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
