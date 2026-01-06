@@ -39,4 +39,9 @@ const checkRedirectAtEndOfJourneyIsNotPending = (config: { journey: string; redi
  */
 const setRedirectPendingFlag = (req: Request) => req.flash(FLASH_KEY, 'true')
 
-export { setRedirectPendingFlag, checkRedirectAtEndOfJourneyIsNotPending }
+/**
+ * Function that clears the "redirect pending" flag on the request flash scope.
+ */
+const clearRedirectPendingFlag = (req: Request) => req.flash(FLASH_KEY)
+
+export { setRedirectPendingFlag, clearRedirectPendingFlag, checkRedirectAtEndOfJourneyIsNotPending }

@@ -12,7 +12,10 @@ import { BaseAuditData } from '../../services/auditService'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
-import { setRedirectPendingFlag } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class ArchiveGoalController {
   constructor(
@@ -63,6 +66,9 @@ export default class ArchiveGoalController {
   getReviewArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = res.locals
+
+    clearRedirectPendingFlag(req)
+
     const { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
     if (!archiveGoalForm) {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/archive`)

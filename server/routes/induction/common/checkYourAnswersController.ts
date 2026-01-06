@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import CheckYourAnswersView from './checkYourAnswersView'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -13,6 +14,8 @@ export default abstract class CheckYourAnswersController {
     req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers = false
     req.journeyData.inductionDto.previousQualifications.needToCompleteJourneyFromCheckYourAnswers = false
     req.journeyData.inductionDto.futureWorkInterests.needToCompleteJourneyFromCheckYourAnswers = false
+
+    clearRedirectPendingFlag(req)
 
     const { inductionDto } = req.journeyData
     const { prisonerSummary } = res.locals
