@@ -20,7 +20,7 @@ export default class PrisonerListService {
     const prisonNumbers: string[] = prisonerSummaries.map(prisoner => prisoner.prisonNumber)
 
     const prisonersWithCiagInduction: string[] = (
-      await this.ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
+      await this.ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, username)
     ).ciagProfileList.map((ciagInduction: { offenderId: string }) => ciagInduction.offenderId)
 
     const prisonersWithActionPlan: string[] = (

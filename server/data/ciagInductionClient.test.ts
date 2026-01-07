@@ -1,3 +1,4 @@
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import nock from 'nock'
 import config from '../config'
 import CiagInductionClient from './ciagInductionClient'
@@ -5,16 +6,20 @@ import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInduction
 import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSummaryReponseTestDataBuilder'
 
 describe('ciagInductionClient', () => {
-  const ciagInductionClient = new CiagInductionClient()
-
-  config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
-  let ciagApi: nock.Scope
-
   const prisonNumbers = ['A1234BC', 'B5544GD']
-  const systemToken = 'a-system-token'
+  const username = 'A-DPS-USER'
+  const systemToken = 'test-system-token'
+
+  const mockAuthenticationClient = {
+    getToken: jest.fn(),
+  } as unknown as jest.Mocked<AuthenticationClient>
+  const ciagInductionClient = new CiagInductionClient(mockAuthenticationClient)
+
+  const ciagApi = nock(config.apis.educationAndWorkPlan.url)
 
   beforeEach(() => {
-    ciagApi = nock(config.apis.educationAndWorkPlan.url)
+    jest.resetAllMocks()
+    mockAuthenticationClient.getToken.mockResolvedValue(systemToken)
   })
 
   afterEach(() => {
@@ -30,14 +35,18 @@ describe('ciagInductionClient', () => {
           aValidCiagInductionSummaryResponse({ prisonNumber: 'B5544GD' }),
         ],
       })
-      ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
+      ciagApi
+        .post('/ciag/induction/list', { offenderIds: prisonNumbers })
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedCiagInductionListResponse)
 
       // When
-      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
+      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedCiagInductionListResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get zero CIAG Inductions given none of the specified prisoners have CIAG Inductions', async () => {
@@ -45,34 +54,41 @@ describe('ciagInductionClient', () => {
       const expectedCiagInductionListResponse = aValidCiagInductionSummaryListResponse({
         ciagProfileList: [],
       })
-      ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(200, expectedCiagInductionListResponse)
+      ciagApi
+        .post('/ciag/induction/list', { offenderIds: prisonNumbers })
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedCiagInductionListResponse)
 
       // When
-      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
+      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedCiagInductionListResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
-    it('should not get CIAG Inductions given API returns an error response', async () => {
+    it('should rethrow error given API returns an error', async () => {
       // Given
-      const expectedResponseBody = {
+      const apiErrorResponse = {
         status: 500,
-        userMessage: 'An unexpected error occurred',
-        developerMessage: 'An unexpected error occurred',
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
       }
-      ciagApi.post('/ciag/induction/list', { offenderIds: prisonNumbers }).reply(500, expectedResponseBody)
+      ciagApi
+        .post('/ciag/induction/list', { offenderIds: prisonNumbers })
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
 
       // When
-      try {
-        await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, systemToken)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
-        expect(e.data).toEqual(expectedResponseBody)
-      }
+      const actual = await ciagInductionClient.getCiagInductionsForPrisonNumbers(prisonNumbers, username).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
     })
   })
 })
