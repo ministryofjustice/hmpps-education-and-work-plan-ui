@@ -18,7 +18,7 @@ describe('prisonerListService', () => {
   const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
   const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
-  const ciagInductionClient = new CiagInductionClient() as jest.Mocked<CiagInductionClient>
+  const ciagInductionClient = new CiagInductionClient(null) as jest.Mocked<CiagInductionClient>
 
   const prisonerListService = new PrisonerListService(
     hmppsAuthClient,
@@ -99,10 +99,7 @@ describe('prisonerListService', () => {
     expect(actual).toEqual(expectedPrisonerSearchSummaries)
     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, username)
-    expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(
-      expectedPrisonNumbers,
-      systemToken,
-    )
+    expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(expectedPrisonNumbers, username)
     expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, systemToken)
   })
 })

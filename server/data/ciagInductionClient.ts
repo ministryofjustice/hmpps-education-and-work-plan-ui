@@ -1,20 +1,25 @@
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { CiagInductionSummaryListResponse, GetCiagInductionSummariesRequest } from 'educationAndWorkPlanApiClient'
-import RestClient from './restClient'
 import config from '../config'
+import logger from '../../logger'
 
-export default class CiagInductionClient {
-  private static restClient(token: string): RestClient {
-    return new RestClient('CIAG Induction API Client', config.apis.educationAndWorkPlan, token)
+export default class CiagInductionClient extends RestClient {
+  constructor(authenticationClient: AuthenticationClient) {
+    super('CIAG Induction API Client', config.apis.educationAndWorkPlan, logger, authenticationClient)
   }
 
   async getCiagInductionsForPrisonNumbers(
     prisonNumbers: string[],
-    token: string,
+    username: string,
   ): Promise<CiagInductionSummaryListResponse> {
     const requestBody: GetCiagInductionSummariesRequest = { offenderIds: prisonNumbers }
-    return CiagInductionClient.restClient(token).post<CiagInductionSummaryListResponse>({
-      path: '/ciag/induction/list',
-      data: requestBody,
-    })
+    return this.post<CiagInductionSummaryListResponse>(
+      {
+        path: '/ciag/induction/list',
+        data: requestBody,
+      },
+      asSystem(username),
+    )
   }
 }
