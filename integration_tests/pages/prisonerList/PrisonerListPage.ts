@@ -8,7 +8,7 @@ export default class PrisonerListPage extends Page {
   hasResultsDisplayed(expectedResultCount: number): PrisonerListPage {
     this.prisonerListResultsTable().should('be.visible')
     this.zeroResultsMessage().should('not.exist')
-    this.paginationResultsCount().should('contain', ` of ${expectedResultCount} results`)
+    this.paginationResultsCount().should('contain', `${expectedResultCount} total results`)
     return this
   }
 
@@ -87,22 +87,25 @@ export default class PrisonerListPage extends Page {
   }
 
   paginationCurrentPageIs(value: number): PrisonerListPage {
-    this.paginationControls().find(`li:nth-of-type(${value})`).should('have.attr', 'aria-current', 'page')
+    this.paginationControls()
+      .find(`li a[aria-current=page]`)
+      .should('contain.text', value)
+      .should('attr', 'aria-label', `Page ${value}`)
     return this
   }
 
   hasPreviousLinkDisplayed(): PrisonerListPage {
-    this.paginationFirstLink().should('contain', 'Previous')
+    this.paginationPreviousPageLink().should('contain', 'Previous')
     return this
   }
 
   hasNextLinkDisplayed(): PrisonerListPage {
-    this.paginationLastLink().should('contain', 'Next')
+    this.paginationNextPageLink().should('contain', 'Next')
     return this
   }
 
   hasPaginationLinkForPage(page: number): PrisonerListPage {
-    this.paginationControls().find(`li:nth-of-type(${page}) a`).should('contain', `${page}`)
+    this.paginationControls().find(`li a`).should('contain', `${page}`)
     return this
   }
 
@@ -125,9 +128,9 @@ export default class PrisonerListPage extends Page {
 
   paginationResultsCount = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] p')
 
-  paginationFirstLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul li:first-of-type a')
+  paginationPreviousPageLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] .govuk-pagination__prev a')
 
-  paginationLastLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] ul li:last-of-type a')
+  paginationNextPageLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] .govuk-pagination__next a')
 
   sortableTableHeaders = (): PageElement => cy.get('[data-qa=sortable-table-headers]')
 }
