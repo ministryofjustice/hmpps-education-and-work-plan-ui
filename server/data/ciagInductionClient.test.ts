@@ -1,18 +1,18 @@
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import nock from 'nock'
 import config from '../config'
 import CiagInductionClient from './ciagInductionClient'
 import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInductionSummaryListResponseTestDataBuilder'
 import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSummaryReponseTestDataBuilder'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
+
 describe('ciagInductionClient', () => {
   const prisonNumbers = ['A1234BC', 'B5544GD']
   const username = 'A-DPS-USER'
   const systemToken = 'test-system-token'
 
-  const mockAuthenticationClient = {
-    getToken: jest.fn(),
-  } as unknown as jest.Mocked<AuthenticationClient>
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const ciagInductionClient = new CiagInductionClient(mockAuthenticationClient)
 
   const ciagApi = nock(config.apis.educationAndWorkPlan.url)

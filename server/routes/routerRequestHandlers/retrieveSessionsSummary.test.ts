@@ -8,7 +8,7 @@ import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuil
 jest.mock('../../services/sessionService')
 
 describe('retrieveSessionsSummary', () => {
-  const sessionService = new SessionService(null, null) as jest.Mocked<SessionService>
+  const sessionService = new SessionService(null) as jest.Mocked<SessionService>
   const requestHandler = retrieveSessionsSummary(sessionService)
 
   const username = 'a-dps-user'

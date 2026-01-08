@@ -7,7 +7,7 @@ import checkInductionDoesNotExist from './checkInductionDoesNotExist'
 jest.mock('../../services/inductionService')
 
 describe('checkInductionDoesNotExist', () => {
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const requestHandler = checkInductionDoesNotExist(inductionService)
 
   const prisonNumber = 'A1234BC'

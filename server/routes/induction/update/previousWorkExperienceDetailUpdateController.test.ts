@@ -20,7 +20,7 @@ describe('previousWorkExperienceDetailUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new PreviousWorkExperienceDetailUpdateController(inductionService)
 
   const journeyId = uuidV4()

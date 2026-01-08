@@ -1,7 +1,6 @@
 import type { ActionPlanReviews, CreatedActionPlanReview } from 'viewModels'
 import type { ReviewExemptionDto, ReviewPlanDto } from 'dto'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import { HmppsAuthClient } from '../data'
 import logger from '../../logger'
 import PrisonService from './prisonService'
 import toActionPlanReviews from '../data/mappers/actionPlanReviewsMapper'
@@ -13,15 +12,13 @@ export default class ReviewService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
-    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   async getActionPlanReviews(prisonNumber: string, username: string): Promise<ActionPlanReviews> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const actionPlanReviewsResponse = await this.educationAndWorkPlanClient.getActionPlanReviews(
         prisonNumber,
-        systemToken,
+        username,
       )
       if (!actionPlanReviewsResponse) {
         logger.info(`No Review Schedule found for prisoner [${prisonNumber}] in Education And Work Plan API`)
@@ -48,14 +45,12 @@ export default class ReviewService {
   }
 
   async createActionPlanReview(reviewPlanDto: ReviewPlanDto, username: string): Promise<CreatedActionPlanReview> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
     try {
       const createActionPlanReviewRequest = toCreateActionPlanReviewRequest(reviewPlanDto)
       const createActionPlanReviewResponse = await this.educationAndWorkPlanClient.createActionPlanReview(
         reviewPlanDto.prisonNumber,
         createActionPlanReviewRequest,
-        systemToken,
+        username,
       )
       const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
       return toCreatedActionPlan(createActionPlanReviewResponse, prisonNamesById)
@@ -69,14 +64,12 @@ export default class ReviewService {
   }
 
   async updateActionPlanReviewScheduleStatus(reviewExemptionDto: ReviewExemptionDto, username: string): Promise<void> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
     try {
       const updateReviewScheduleStatusRequest = toUpdateReviewScheduleStatusRequest(reviewExemptionDto)
       await this.educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
         reviewExemptionDto.prisonNumber,
         updateReviewScheduleStatusRequest,
-        systemToken,
+        username,
       )
     } catch (error) {
       logger.error(

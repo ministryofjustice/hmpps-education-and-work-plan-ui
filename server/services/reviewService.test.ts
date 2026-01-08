@@ -3,7 +3,6 @@ import type { ActionPlanReviews } from 'viewModels'
 import type { UpdateReviewScheduleStatusRequest } from 'educationAndWorkPlanApiClient'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import PrisonService from './prisonService'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import ReviewService from './reviewService'
 import aValidActionPlanReviewsResponse from '../testsupport/actionPlanReviewsResponseTestDataBuilder'
 import ActionPlanReviewCalculationRuleValue from '../enums/actionPlanReviewCalculationRuleValue'
@@ -18,16 +17,12 @@ import ReviewScheduleStatusValue from '../enums/reviewScheduleStatusValue'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
-jest.mock('../data/hmppsAuthClient')
 
 describe('reviewService', () => {
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService)
 
-  const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
-
-  const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
   const prisonNamesById = {
@@ -37,7 +32,6 @@ describe('reviewService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
     prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
   })
 
@@ -97,9 +91,8 @@ describe('reviewService', () => {
 
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should get Action Plan Reviews anyway given prisonService returns an error getting prison names', async () => {
@@ -158,9 +151,8 @@ describe('reviewService', () => {
 
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should get Action Plan Reviews given educationAndWorkPlanClient returns null indicating not found error for the Action Plan Reviews', async () => {
@@ -178,8 +170,7 @@ describe('reviewService', () => {
 
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should not get Action Plan Reviews given educationAndWorkPlanClient returns an error', async () => {
@@ -197,8 +188,7 @@ describe('reviewService', () => {
 
       // Then
       expect(actual).toEqual(expectedActionPlanReviews)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlanReviews).toHaveBeenCalledWith(prisonNumber, username)
     })
   })
 
@@ -225,7 +215,7 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.createActionPlanReview).toHaveBeenCalledWith(
         prisonNumber,
         expectedCreateActionPlanReviewRequest,
-        systemToken,
+        username,
       )
     })
 
@@ -259,7 +249,7 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.createActionPlanReview).toHaveBeenCalledWith(
         prisonNumber,
         expectedCreateActionPlanReviewRequest,
-        systemToken,
+        username,
       )
     })
   })
@@ -288,7 +278,7 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateReviewScheduleStatusRequest,
-        systemToken,
+        username,
       )
     })
 
@@ -328,7 +318,7 @@ describe('reviewService', () => {
       expect(educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateReviewScheduleStatusRequest,
-        systemToken,
+        username,
       )
     })
   })

@@ -7,7 +7,7 @@ import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 jest.mock('../../services/timelineService')
 
 describe('retrieveTimeline', () => {
-  const timelineService = new TimelineService(null, null, null) as jest.Mocked<TimelineService>
+  const timelineService = new TimelineService(null, null) as jest.Mocked<TimelineService>
   const requestHandler = retrieveTimeline(timelineService)
 
   const prisonNumber = 'A1234BC'

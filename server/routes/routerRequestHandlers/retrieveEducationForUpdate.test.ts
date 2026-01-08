@@ -10,7 +10,6 @@ describe('retrieveEducationForUpdate', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
-    null,
   ) as jest.Mocked<EducationAndWorkPlanService>
   const requestHandler = retrieveEducationForUpdate(educationAndWorkPlanService)
 

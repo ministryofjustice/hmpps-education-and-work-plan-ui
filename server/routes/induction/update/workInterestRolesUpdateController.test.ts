@@ -18,7 +18,7 @@ describe('workInterestRolesUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new WorkInterestRolesUpdateController(inductionService)
 
   const journeyId = uuidV4()
