@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../../services/educationAndWorkPlanService'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import QualificationsListUpdateController from './qualificationsListUpdateController'
@@ -31,11 +30,13 @@ describe('qualificationsListUpdateController', () => {
   const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
+  const flash = jest.fn()
   const req = {
     journeyData: {},
     user: { username },
     body: {},
     params: { prisonNumber, journeyId },
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -132,11 +133,12 @@ describe('qualificationsListUpdateController', () => {
         qualifications,
       })
 
-      educationAndWorkPlanService.updateEducation.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Education for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      educationAndWorkPlanService.updateEducation.mockRejectedValue(apiErrorResponse)
 
       // When
       await controller.submitQualificationsListView(req, res, next)
@@ -147,7 +149,8 @@ describe('qualificationsListUpdateController', () => {
         expectedUpdateEducationDto,
         username,
       )
-      expect(next).toHaveBeenCalledWith(expectedError)
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
       expect(req.journeyData.educationDto).toEqual(educationDto)
     })
 
@@ -163,7 +166,7 @@ describe('qualificationsListUpdateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualification-level`)
+      expect(res.redirect).toHaveBeenCalledWith('qualification-level')
       expect(req.journeyData.educationDto).toEqual(educationDto)
     })
 
@@ -192,7 +195,7 @@ describe('qualificationsListUpdateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/education/${journeyId}/qualifications`)
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
       expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
     })
   })
