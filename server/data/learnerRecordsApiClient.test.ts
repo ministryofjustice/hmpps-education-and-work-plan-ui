@@ -1,17 +1,17 @@
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import nock from 'nock'
 import config from '../config'
 import LearnerRecordsApiClient from './learnerRecordsApiClient'
 import aLearnerEventsResponse from '../testsupport/learnerRecordsApi/learnerEventsResponseTestDataBuilder'
+
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 
 describe('learnerRecordsApiClient', () => {
   const username = 'A-DPS-USER'
   const systemToken = 'test-system-token'
   const prisonNumber = 'A1234BC'
 
-  const mockAuthenticationClient = {
-    getToken: jest.fn(),
-  } as unknown as jest.Mocked<AuthenticationClient>
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const learnerRecordsApiClient = new LearnerRecordsApiClient(mockAuthenticationClient)
 
   const learnerRecordsApi = nock(config.apis.learnerRecordsApi.url)

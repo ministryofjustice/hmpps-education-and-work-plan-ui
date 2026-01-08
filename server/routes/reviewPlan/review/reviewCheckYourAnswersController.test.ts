@@ -14,7 +14,7 @@ jest.mock('../../../services/auditService')
 jest.mock('../../../services/reviewService')
 
 describe('ReviewCheckYourAnswersController', () => {
-  const reviewService = new ReviewService(null, null, null) as jest.Mocked<ReviewService>
+  const reviewService = new ReviewService(null, null) as jest.Mocked<ReviewService>
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ReviewCheckYourAnswersController(reviewService, auditService)
 

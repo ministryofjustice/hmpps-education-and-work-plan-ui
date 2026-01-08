@@ -1,6 +1,5 @@
 import type { Sessions, SessionsSummary } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import SessionService from './sessionService'
 import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseTestDataBuilder'
 import aValidSessionsSummary from '../testsupport/sessionsSummaryTestDataBuilder'
@@ -9,22 +8,18 @@ import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/se
 import { aValidPrisonerSession, aValidSessions } from '../testsupport/prisonerSessionTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
-jest.mock('../data/hmppsAuthClient')
 
 describe('SessionService', () => {
-  const educationAndWorkPlanClient =
-    new EducationAndWorkPlanClient() as unknown as jest.Mocked<EducationAndWorkPlanClient>
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(
+    null,
+  ) as unknown as jest.Mocked<EducationAndWorkPlanClient>
+  const sessionService = new SessionService(educationAndWorkPlanClient)
 
-  const sessionService = new SessionService(educationAndWorkPlanClient, hmppsAuthClient)
-
-  const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonId = 'BXI'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('getSessionsSummary', () => {
@@ -52,8 +47,7 @@ describe('SessionService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, systemToken)
+      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
     })
 
     it('should not get sessions summary given API returns a null SessionsSummaryResponse', async () => {
@@ -69,8 +63,7 @@ describe('SessionService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, systemToken)
+      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
     })
 
     it('should not get sessions summary given API returns an error', async () => {
@@ -94,8 +87,7 @@ describe('SessionService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, systemToken)
+      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
     })
   })
 
@@ -124,7 +116,7 @@ describe('SessionService', () => {
       const actual = await sessionService.getSessionsInStatusForPrisoners(
         prisonNumbers,
         SessionStatusValue.DUE,
-        systemToken,
+        username,
       )
 
       // Then
@@ -149,7 +141,7 @@ describe('SessionService', () => {
       const actual = await sessionService.getSessionsInStatusForPrisoners(
         prisonNumbers,
         SessionStatusValue.DUE,
-        systemToken,
+        username,
       )
 
       // Then
@@ -178,7 +170,7 @@ describe('SessionService', () => {
       const actual = await sessionService.getSessionsInStatusForPrisoners(
         prisonNumbers,
         SessionStatusValue.DUE,
-        systemToken,
+        username,
       )
 
       // Then

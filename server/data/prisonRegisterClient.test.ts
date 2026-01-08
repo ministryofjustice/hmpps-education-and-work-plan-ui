@@ -1,17 +1,17 @@
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { PrisonResponse } from 'prisonRegisterApiClient'
 import nock from 'nock'
 import config from '../config'
 import PrisonRegisterClient from './prisonRegisterClient'
 import aValidPrisonResponse from '../testsupport/prisonResponseTestDataBuilder'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
+
 describe('prisonRegisterClient', () => {
   const username = 'A-DPS-USER'
   const systemToken = 'test-system-token'
 
-  const mockAuthenticationClient = {
-    getToken: jest.fn(),
-  } as unknown as jest.Mocked<AuthenticationClient>
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const prisonRegisterClient = new PrisonRegisterClient(mockAuthenticationClient)
 
   config.apis.prisonRegister.url = 'http://localhost:8200'

@@ -24,7 +24,6 @@ import {
 import AlnAssessmentReferral from '../enums/alnAssessmentReferral'
 
 jest.mock('../data/curiousClient')
-jest.mock('../data/hmppsAuthClient')
 
 describe('curiousService', () => {
   const curiousClient = new CuriousClient(null) as jest.Mocked<CuriousClient>

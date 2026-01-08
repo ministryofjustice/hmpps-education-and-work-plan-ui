@@ -10,7 +10,6 @@ describe('retrieveGoals', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
-    null,
   ) as jest.Mocked<EducationAndWorkPlanService>
 
   const prisonNumber = 'A1234BC'

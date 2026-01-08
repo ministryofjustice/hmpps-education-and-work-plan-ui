@@ -29,7 +29,6 @@ describe('updateGoalController', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
     null,
-    null,
   ) as jest.Mocked<EducationAndWorkPlanService>
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new UpdateGoalController(educationAndWorkPlanService, auditService)

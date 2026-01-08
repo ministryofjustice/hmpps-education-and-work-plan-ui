@@ -11,7 +11,6 @@ import toUpdateInductionRequest from '../data/mappers/updateInductionMapper'
 import aValidCreateInductionDto from '../testsupport/createInductionDtoTestDataBuilder'
 import aValidUpdateInductionDto from '../testsupport/updateInductionDtoTestDataBuilder'
 import aValidCreateInductionRequest from '../testsupport/createInductionRequestTestDataBuilder'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import aValidInductionScheduleResponse from '../testsupport/inductionScheduleResponseTestDataBuilder'
 import aValidInductionSchedule from '../testsupport/inductionScheduleTestDataBuilder'
 import aValidInductionExemptionDto from '../testsupport/inductionExemptionDtoTestDataBuilder'
@@ -22,7 +21,6 @@ jest.mock('../data/mappers/inductionDtoMapper')
 jest.mock('../data/mappers/inductionScheduleMapper')
 jest.mock('../data/mappers/updateInductionMapper')
 jest.mock('../data/mappers/createInductionMapper')
-jest.mock('../data/hmppsAuthClient')
 
 describe('inductionService', () => {
   const mockedInductionDtoMapper = toInductionDto as jest.MockedFunction<typeof toInductionDto>
@@ -30,17 +28,14 @@ describe('inductionService', () => {
   const mockedUpdateInductionMapper = toUpdateInductionRequest as jest.MockedFunction<typeof toUpdateInductionRequest>
   const mockedCreateInductionMapper = toCreateInductionRequest as jest.MockedFunction<typeof toCreateInductionRequest>
 
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-  const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
+  const inductionService = new InductionService(educationAndWorkPlanClient)
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
-  const systemToken = 'a-system-token'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('getInduction', () => {
@@ -56,8 +51,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toEqual(expectedInductionDto)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionDtoMapper).toHaveBeenCalledWith(inductionResponse)
     })
 
@@ -70,7 +64,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toBeNull()
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
 
@@ -93,8 +87,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getInduction).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionDtoMapper).not.toHaveBeenCalled()
     })
   })
@@ -114,10 +107,9 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
         updateInductionRequest,
-        systemToken,
+        username,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Induction given Education and Work Plan API returns an error', async () => {
@@ -146,10 +138,9 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.updateInduction).toHaveBeenCalledWith(
         prisonNumber,
         updateInductionRequest,
-        systemToken,
+        username,
       )
       expect(mockedUpdateInductionMapper).toHaveBeenCalledWith(updateInductionDto)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -167,10 +158,9 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.createInduction).toHaveBeenCalledWith(
         prisonNumber,
         createInductionRequest,
-        systemToken,
+        username,
       )
       expect(mockedCreateInductionMapper).toHaveBeenCalledWith(createInductionDto)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Induction given Education and Work Plan API returns an error', async () => {
@@ -199,10 +189,9 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.createInduction).toHaveBeenCalledWith(
         prisonNumber,
         createInductionRequest,
-        systemToken,
+        username,
       )
       expect(mockedCreateInductionMapper).toHaveBeenCalledWith(createInductionDto)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -219,8 +208,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toEqual(expectedInductionSchedule)
-      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionScheduleMapper).toHaveBeenCalledWith(inductionScheduleResponse)
     })
 
@@ -235,8 +223,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toEqual(expectedInductionSchedule)
-      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
     })
 
@@ -259,8 +246,7 @@ describe('inductionService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.getInductionSchedule).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedInductionScheduleMapper).not.toHaveBeenCalled()
     })
   })
@@ -289,7 +275,7 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.updateInductionScheduleStatus).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateInductionScheduleStatusRequest,
-        systemToken,
+        username,
       )
     })
 
@@ -329,7 +315,7 @@ describe('inductionService', () => {
       expect(educationAndWorkPlanClient.updateInductionScheduleStatus).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateInductionScheduleStatusRequest,
-        systemToken,
+        username,
       )
     })
   })

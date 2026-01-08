@@ -3,7 +3,6 @@ import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toTimeline from '../data/mappers/timelineMapper'
 import logger from '../../logger'
 import PrisonService from './prisonService'
-import { HmppsAuthClient } from '../data'
 import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
 import TimelineFilterTypeValue from '../enums/timelineFilterTypeValue'
 
@@ -11,7 +10,6 @@ export default class TimelineService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
-    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   async getTimeline(request: {
@@ -29,13 +27,11 @@ export default class TimelineService {
     const { filterOptions, username, prisonNumber } = request
 
     try {
-      const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
       const timelineApiFilterOptions = new TimelineApiFilterOptions(filterOptions)
       const timelineResponse = await this.educationAndWorkPlanClient.getTimeline(
         prisonNumber,
         timelineApiFilterOptions,
-        systemToken,
+        username,
       )
 
       const { inductions, goals, reviews, prisonEvents, eventsSince, prisonId } = filterOptions

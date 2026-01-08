@@ -11,7 +11,7 @@ import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue
 jest.mock('../../services/reviewService')
 
 describe('retrieveActionPlanReviews', () => {
-  const reviewService = new ReviewService(null, null, null) as jest.Mocked<ReviewService>
+  const reviewService = new ReviewService(null, null) as jest.Mocked<ReviewService>
   const requestHandler = retrieveActionPlanReviews(reviewService)
 
   const prisonNumber = 'A1234GC'

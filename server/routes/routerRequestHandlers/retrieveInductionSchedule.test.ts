@@ -7,7 +7,7 @@ import aValidInductionSchedule from '../../testsupport/inductionScheduleTestData
 jest.mock('../../services/inductionService')
 
 describe('retrieveInductionSchedule', () => {
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const requestHandler = retrieveInductionSchedule(inductionService)
 
   const prisonNumber = 'A1234BC'

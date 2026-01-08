@@ -12,7 +12,7 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/inductionService')
 
 describe('confirmExemptionRemovalController', () => {
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const controller = new ConfirmExemptionRemovalController(inductionService, auditService)
 

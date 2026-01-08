@@ -17,7 +17,7 @@ describe('inPrisonWorkUpdateController', () => {
     typeof toCreateOrUpdateInductionDto
   >
 
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const controller = new InPrisonWorkUpdateController(inductionService)
 
   const journeyId = uuidV4()

@@ -1,4 +1,4 @@
-import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import nock from 'nock'
 import SupportAdditionalNeedsApiClient from './supportAdditionalNeedsApiClient'
 import config from '../config'
@@ -8,14 +8,14 @@ import { aValidSupportStrategyListResponse } from '../testsupport/supportStrateg
 import { aValidChallengeListResponse } from '../testsupport/challengeResponseTestDataBuilder'
 import { aValidStrengthListResponse } from '../testsupport/strengthResponseTestDataBuilder'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
+
 describe('supportAdditionalNeedsApiClient', () => {
   const username = 'A-DPS-USER'
   const systemToken = 'test-system-token'
   const prisonNumber = 'A1234BC'
 
-  const mockAuthenticationClient = {
-    getToken: jest.fn(),
-  } as unknown as jest.Mocked<AuthenticationClient>
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
   const supportAdditionalNeedsApiClient = new SupportAdditionalNeedsApiClient(mockAuthenticationClient)
 
   config.apis.prisonerSearch.url = 'http://localhost:8200'

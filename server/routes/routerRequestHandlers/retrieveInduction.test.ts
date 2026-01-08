@@ -6,7 +6,7 @@ import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilde
 
 jest.mock('../../services/inductionService')
 describe('retrieveInduction', () => {
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const requestHandler = retrieveInduction(inductionService)
 
   const prisonNumber = 'A1234BC'

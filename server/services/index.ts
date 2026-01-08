@@ -19,7 +19,6 @@ import LearnerRecordsService from './learnerRecordsService'
  */
 export const services = () => {
   const {
-    hmppsAuthClient,
     applicationInfo,
     hmppsAuditClient,
     manageUsersApiClient,
@@ -39,22 +38,17 @@ export const services = () => {
   const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    educationAndWorkPlanClient,
-    prisonService,
-    hmppsAuthClient,
-  )
-  const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
-  const inductionService = new InductionService(educationAndWorkPlanClient, hmppsAuthClient)
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
+  const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService)
+  const inductionService = new InductionService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(curiousClient)
   const prisonerListService = new PrisonerListService(
-    hmppsAuthClient,
     prisonerSearchService,
     educationAndWorkPlanClient,
     ciagInductionClient,
   )
-  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
-  const sessionService = new SessionService(educationAndWorkPlanClient, hmppsAuthClient)
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
+  const sessionService = new SessionService(educationAndWorkPlanClient)
   const journeyDataService = new JourneyDataService(journeyDataStore)
   const supportAdditionalNeedsService = new SupportAdditionalNeedsService(supportAdditionalNeedsApiClient)
   const learnerRecordsService = new LearnerRecordsService(learnerRecordsApiClient)

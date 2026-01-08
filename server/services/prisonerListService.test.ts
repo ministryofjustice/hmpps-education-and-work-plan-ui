@@ -1,5 +1,4 @@
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import PrisonerSearchService from './prisonerSearchService'
 import PrisonerListService from './prisonerListService'
 import CiagInductionClient from '../data/ciagInductionClient'
@@ -10,18 +9,15 @@ import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSumm
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
-jest.mock('../data/hmppsAuthClient')
 jest.mock('./prisonerSearchService')
 jest.mock('../data/ciagInductionClient')
 
 describe('prisonerListService', () => {
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
   const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
   const ciagInductionClient = new CiagInductionClient(null) as jest.Mocked<CiagInductionClient>
 
   const prisonerListService = new PrisonerListService(
-    hmppsAuthClient,
     prisonerSearchService,
     educationAndWorkPlanClient,
     ciagInductionClient,
@@ -34,10 +30,7 @@ describe('prisonerListService', () => {
   it('should get prisoner search summaries for a given prison id', async () => {
     // Given
     const prisonId = 'BXI'
-
     const username = 'a-dps-user'
-    const systemToken = 'a-system-token'
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
     const expectedPrisonNumbers: string[] = ['A1234BC', 'F4329JC', 'T4381KA', 'P4381IA']
 
@@ -97,9 +90,8 @@ describe('prisonerListService', () => {
 
     // Then
     expect(actual).toEqual(expectedPrisonerSearchSummaries)
-    expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, username)
     expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(expectedPrisonNumbers, username)
-    expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, systemToken)
+    expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, username)
   })
 })

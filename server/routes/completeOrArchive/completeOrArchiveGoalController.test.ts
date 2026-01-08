@@ -12,7 +12,7 @@ describe('CompleteOrArchiveGoalController - submitCompleteOrArchiveGoalForm', ()
   let mockService: jest.Mocked<EducationAndWorkPlanService>
 
   beforeEach(() => {
-    mockService = new EducationAndWorkPlanService(null, null, null) as jest.Mocked<EducationAndWorkPlanService>
+    mockService = new EducationAndWorkPlanService(null, null) as jest.Mocked<EducationAndWorkPlanService>
     controller = new CompleteOrArchiveGoalController(mockService)
 
     req = {
