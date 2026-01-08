@@ -82,6 +82,32 @@ context('Update educational qualifications within a prisoners Education before t
     )
   })
 
+  it('should not update Education and redisplay Qualifications List page given calling API is not successful', () => {
+    // Given
+    cy.task('stubUpdateEducation500Error')
+
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    Page.verifyOnPage(EducationAndTrainingPage) //
+      .clickToChangeEducationalQualifications()
+    const qualificationsListPage = Page.verifyOnPage(QualificationsListPage)
+    /* Education has highest level of education of SECONDARY_SCHOOL_TOOK_EXAMS with the following qualifications:
+         Pottery, grade C, LEVEL_4, 814ade0a-a3b2-46a3-862f-79211ba13f7b
+    */
+
+    qualificationsListPage //
+      .hasEducationalQualifications(['Pottery'])
+
+    // When
+    qualificationsListPage //
+      .removeQualification(1) // Remove Level 4 Pottery
+    qualificationsListPage.submitPage()
+
+    // Then
+    Page.verifyOnPage(QualificationsListPage) //
+      .apiErrorBannerIsDisplayed()
+  })
+
   it('should remove all qualifications and call API to update Education', () => {
     // Given
     const prisonNumber = 'G6115VJ'
