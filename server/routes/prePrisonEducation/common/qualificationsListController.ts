@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
@@ -12,6 +13,8 @@ export default abstract class QualificationsListController {
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
     const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const { educationDto } = req.journeyData
 

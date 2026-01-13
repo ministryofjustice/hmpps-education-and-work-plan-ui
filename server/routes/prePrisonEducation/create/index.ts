@@ -20,6 +20,7 @@ import {
   qualificationLevelSchema,
   qualificationDetailsSchema,
 } from '../../induction/validationSchemas'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
@@ -76,6 +77,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Create Pre-prison Qualifications',
+      redirectTo: '/plan/:prisonNumber/view/education-and-training',
+    }),
     asyncMiddleware(qualificationsListCreateController.submitQualificationsListView),
   ])
 }

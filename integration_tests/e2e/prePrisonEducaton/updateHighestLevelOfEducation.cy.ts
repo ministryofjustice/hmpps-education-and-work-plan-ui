@@ -4,6 +4,7 @@ import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
 import EducationLevelValue from '../../../server/enums/educationLevelValue'
 import EducationAndTrainingPage from '../../pages/overview/EducationAndTrainingPage'
+import HighestLevelOfEducationPage from '../../pages/prePrisonEducation/HighestLevelOfEducationPage'
 
 context('Update highest level of education within a prisoners Education before the Induction has been created', () => {
   beforeEach(() => {
@@ -83,5 +84,24 @@ context('Update highest level of education within a prisoners Education before t
           ),
         ),
     )
+  })
+
+  it('should not update Education and redisplay Highest Level of Education page given calling API is not successful', () => {
+    // Given
+    cy.task('stubUpdateEducation500Error')
+
+    const prisonNumber = 'G6115VJ'
+    cy.visit(`/plan/${prisonNumber}/view/education-and-training`)
+    const highestLevelOfEducationPage =
+      Page.verifyOnPage(EducationAndTrainingPage).clickToChangeHighestLevelOfEducation()
+
+    // When
+    highestLevelOfEducationPage //
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .apiErrorBannerIsDisplayed()
   })
 })

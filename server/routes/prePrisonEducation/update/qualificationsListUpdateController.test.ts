@@ -111,6 +111,7 @@ describe('qualificationsListUpdateController', () => {
       )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.journeyData.educationDto).toBeUndefined()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not update Education given error calling service', async () => {
@@ -167,6 +168,7 @@ describe('qualificationsListUpdateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('qualification-level')
       expect(req.journeyData.educationDto).toEqual(educationDto)
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should redisplay Qualification Details Page given page submitted with removeQualification', async () => {
@@ -196,6 +198,7 @@ describe('qualificationsListUpdateController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledWith('qualifications')
       expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
+      expect(flash).not.toHaveBeenCalled()
     })
   })
 })

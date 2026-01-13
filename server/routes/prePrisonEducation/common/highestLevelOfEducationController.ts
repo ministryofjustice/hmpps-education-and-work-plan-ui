@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { EducationDto } from 'dto'
 import type { HighestLevelOfEducationForm } from 'forms'
 import HighestLevelOfEducationView from './highestLevelOfEducationView'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update journeys.
@@ -13,6 +14,8 @@ export default abstract class HighestLevelOfEducationController {
     next: NextFunction,
   ): Promise<void> => {
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const { educationDto } = req.journeyData
     const highestLevelOfEducationForm = invalidForm || this.toHighestLevelOfEducationForm(educationDto)

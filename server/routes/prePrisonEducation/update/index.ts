@@ -20,6 +20,7 @@ import {
   qualificationLevelSchema,
   qualificationDetailsSchema,
 } from '../../induction/validationSchemas'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions for updating a prisoner's qualifications
@@ -55,6 +56,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(highestLevelOfEducationUpdateController.getHighestLevelOfEducationView),
   ])
   router.post('/prisoners/:prisonNumber/education/:journeyId/highest-level-of-education', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Update Highest Level of Education',
+      redirectTo: '/plan/:prisonNumber/view/education-and-training',
+    }),
     validate(highestLevelOfEducationSchema),
     asyncMiddleware(highestLevelOfEducationUpdateController.submitHighestLevelOfEducationForm),
   ])
@@ -67,6 +72,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(qualificationsListUpdateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/education/:journeyId/qualifications', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Update Pre-prison Qualifications',
+      redirectTo: '/plan/:prisonNumber/view/education-and-training',
+    }),
     asyncMiddleware(qualificationsListUpdateController.submitQualificationsListView),
   ])
 
