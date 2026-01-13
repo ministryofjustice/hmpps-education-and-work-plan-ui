@@ -4,6 +4,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import InPrisonWorkView from './inPrisonWorkView'
 import InPrisonWorkValue from '../../../enums/inPrisonWorkValue'
 import { asArray } from '../../../utils/utils'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -15,6 +16,8 @@ export default abstract class InPrisonWorkController {
   getInPrisonWorkView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const inPrisonWorkForm = invalidForm
       ? {

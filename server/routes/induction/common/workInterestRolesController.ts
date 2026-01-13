@@ -3,6 +3,7 @@ import type { InductionDto, FutureWorkInterestDto } from 'inductionDto'
 import type { WorkInterestRolesForm } from 'inductionForms'
 import WorkInterestRolesView from './workInterestRolesView'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,6 +15,8 @@ export default abstract class WorkInterestRolesController {
   getWorkInterestRolesView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const workInterestRolesForm = invalidForm
       ? {

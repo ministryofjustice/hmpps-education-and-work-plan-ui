@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { InductionDto } from 'inductionDto'
 import type { HopingToWorkOnReleaseForm } from 'inductionForms'
 import HopingToWorkOnReleaseView from './hopingToWorkOnReleaseView'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -17,6 +18,8 @@ export default abstract class HopingToWorkOnReleaseController {
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const hopingToWorkOnReleaseForm = invalidForm ?? toHopingToWorkOnReleaseForm(inductionDto)
 

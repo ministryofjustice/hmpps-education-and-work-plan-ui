@@ -6,6 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import { asArray } from '../../../utils/utils'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for the Update of the Skills screen of the Induction.
@@ -42,6 +43,7 @@ export default class SkillsUpdateController extends SkillsController {
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

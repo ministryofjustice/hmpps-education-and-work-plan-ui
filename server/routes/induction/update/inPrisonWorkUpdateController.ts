@@ -6,6 +6,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import { Result } from '../../../utils/result/result'
 import { asArray } from '../../../utils/utils'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for the Update of the In Prison Work screen of the Induction.
@@ -43,6 +44,7 @@ export default class InPrisonWorkUpdateController extends InPrisonWorkController
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

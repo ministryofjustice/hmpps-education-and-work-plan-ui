@@ -13,6 +13,7 @@ describe('additionalTrainingCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
@@ -20,6 +21,7 @@ describe('additionalTrainingCreateController', () => {
     user: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/additional-training`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),

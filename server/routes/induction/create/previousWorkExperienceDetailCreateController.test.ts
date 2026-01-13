@@ -16,12 +16,14 @@ describe('previousWorkExperienceDetailCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {} as SessionData,
     journeyData: {} as Express.JourneyData,
     body: {},
     params: { prisonNumber, journeyId } as Record<string, string>,
     originalUrl: '',
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
