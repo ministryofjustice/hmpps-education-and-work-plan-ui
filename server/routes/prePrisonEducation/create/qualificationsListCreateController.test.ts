@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import aValidEducationDto from '../../../testsupport/educationDtoTestDataBuilder'
 import validFunctionalSkills from '../../../testsupport/functionalSkillsTestDataBuilder'
@@ -30,10 +29,12 @@ describe('qualificationsListCreateController', () => {
   const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
+  const flash = jest.fn()
   const req = {
     params: { prisonNumber, journeyId },
     user: { username },
     journeyData: {},
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -123,6 +124,7 @@ describe('qualificationsListCreateController', () => {
       )
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/view/education-and-training`)
       expect(req.journeyData.educationDto).toBeUndefined()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not create Education given error calling service', async () => {
@@ -143,11 +145,12 @@ describe('qualificationsListCreateController', () => {
         qualifications,
       })
 
-      educationAndWorkPlanService.createEducation.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error creating Education for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      educationAndWorkPlanService.createEducation.mockRejectedValue(apiErrorResponse)
 
       // When
       await controller.submitQualificationsListView(req, res, next)
@@ -158,8 +161,9 @@ describe('qualificationsListCreateController', () => {
         expectedCreateEducationDto,
         username,
       )
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.journeyData.educationDto).toEqual(educationDto)
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
     })
 
     it('should redirect to Qualification Level Page given page submitted with addQualification', async () => {
@@ -174,8 +178,9 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualification-level`)
+      expect(res.redirect).toHaveBeenCalledWith('qualification-level')
       expect(req.journeyData.educationDto).toEqual(educationDto)
+      expect(flash).not.toHaveBeenCalled()
     })
 
     it('should redisplay Qualification Details Page given page submitted with removeQualification', async () => {
@@ -203,8 +208,9 @@ describe('qualificationsListCreateController', () => {
       await controller.submitQualificationsListView(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/prisoners/A1234BC/create-education/${journeyId}/qualifications`)
+      expect(res.redirect).toHaveBeenCalledWith('qualifications')
       expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
+      expect(flash).not.toHaveBeenCalled()
     })
   })
 })

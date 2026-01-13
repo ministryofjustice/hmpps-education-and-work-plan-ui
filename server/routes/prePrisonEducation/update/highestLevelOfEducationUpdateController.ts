@@ -1,9 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import createError from 'http-errors'
 import HighestLevelOfEducationController from '../common/highestLevelOfEducationController'
 import { EducationAndWorkPlanService } from '../../../services'
 import logger from '../../../../logger'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import { Result } from '../../../utils/result/result'
 
 export default class HighestLevelOfEducationUpdateController extends HighestLevelOfEducationController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {
@@ -28,14 +29,21 @@ export default class HighestLevelOfEducationUpdateController extends HighestLeve
     )
     req.journeyData.educationDto = updatedEducationDto
 
-    try {
-      const updateEducationDto = toUpdateEducationDto(prisonId, updatedEducationDto)
-      await this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.username)
-      req.journeyData.educationDto = undefined
-      return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
-    } catch (e) {
-      logger.error(`Error updating Education for prisoner ${prisonNumber}`, e)
-      return next(createError(500, `Error updating Education for prisoner ${prisonNumber}. Error: ${e}`))
+    const updateEducationDto = toUpdateEducationDto(prisonId, updatedEducationDto)
+
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.educationAndWorkPlanService.updateEducation(prisonNumber, updateEducationDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error updating Education for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('highest-level-of-education')
     }
+
+    req.journeyData.educationDto = undefined
+    setRedirectPendingFlag(req)
+    return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
   }
 }

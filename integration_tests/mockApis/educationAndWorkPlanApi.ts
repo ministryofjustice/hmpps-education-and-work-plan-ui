@@ -948,6 +948,25 @@ const stubCreateEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
     },
   })
 
+const stubCreateEducation500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: `/person/${prisonNumber}/education`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 const stubUpdateEducation = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
   stubFor({
     request: {
@@ -1423,6 +1442,7 @@ export default {
   getGoalsByStatus500,
 
   stubCreateEducation,
+  stubCreateEducation500Error,
 
   stubUpdateEducation,
   stubUpdateEducation500Error,

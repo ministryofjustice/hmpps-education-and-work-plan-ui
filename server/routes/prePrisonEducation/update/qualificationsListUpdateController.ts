@@ -4,6 +4,7 @@ import logger from '../../../../logger'
 import toUpdateEducationDto from '../../../data/mappers/updateCreateOrUpdateEducationDtoMapper'
 import { EducationAndWorkPlanService } from '../../../services'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class QualificationsListUpdateController extends QualificationsListController {
   constructor(private readonly educationAndWorkPlanService: EducationAndWorkPlanService) {
@@ -51,6 +52,7 @@ export default class QualificationsListUpdateController extends QualificationsLi
     }
 
     req.journeyData.educationDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
   }
 }

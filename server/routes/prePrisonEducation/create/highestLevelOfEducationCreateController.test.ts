@@ -12,10 +12,12 @@ describe('highestLevelOfEducationCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
     params: { prisonNumber, journeyId },
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),

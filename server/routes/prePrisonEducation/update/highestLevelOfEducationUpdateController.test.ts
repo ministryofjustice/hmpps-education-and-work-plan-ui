@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import createError from 'http-errors'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import HighestLevelOfEducationUpdateController from './highestLevelOfEducationUpdateController'
@@ -22,12 +21,14 @@ describe('highestLevelOfEducationUpdateController', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const username = 'a-dps-user'
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
     body: {},
     user: { username },
     params: { prisonNumber, journeyId },
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -133,6 +134,7 @@ describe('highestLevelOfEducationUpdateController', () => {
         expectedUpdateEducationDto,
         username,
       )
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not update Education given given error calling service', async () => {
@@ -158,11 +160,12 @@ describe('highestLevelOfEducationUpdateController', () => {
         })),
       })
 
-      educationAndWorkPlanService.updateEducation.mockRejectedValue(createError(500, 'Service unavailable'))
-      const expectedError = createError(
-        500,
-        `Error updating Education for prisoner ${prisonNumber}. Error: InternalServerError: Service unavailable`,
-      )
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      educationAndWorkPlanService.updateEducation.mockRejectedValue(apiErrorResponse)
 
       const expectedEducationDto = {
         ...educationDto,
@@ -173,13 +176,14 @@ describe('highestLevelOfEducationUpdateController', () => {
       await controller.submitHighestLevelOfEducationForm(req, res, next)
 
       // Then
-      expect(next).toHaveBeenCalledWith(expectedError)
       expect(req.journeyData.educationDto).toEqual(expectedEducationDto)
       expect(educationAndWorkPlanService.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         expectedUpdateEducationDto,
         username,
       )
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
+      expect(res.redirect).toHaveBeenCalledWith('highest-level-of-education')
     })
   })
 })

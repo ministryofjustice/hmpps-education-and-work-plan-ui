@@ -190,4 +190,43 @@ context('Create a prisoners pre-prison education', () => {
         ),
     )
   })
+
+  it('should not create a prisoners education record and redisplay Qualifications List page given calling API is not successful', () => {
+    // Given
+    cy.task('stubCreateEducation500Error')
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+    const overviewPage = Page.verifyOnPage(OverviewPage)
+    overviewPage.selectTab('Education and training')
+    const educationAndTrainingPage = Page.verifyOnPage(EducationAndTrainingPage)
+    educationAndTrainingPage.clickToAddEducationHistory()
+
+    // When
+    // First page is Highest Level of Education
+    Page.verifyOnPage(HighestLevelOfEducationPage) //
+      .selectHighestLevelOfEducation(EducationLevelValue.FURTHER_EDUCATION_COLLEGE)
+      .submitPage()
+
+    // Qualification Level is the next page
+    Page.verifyOnPage(QualificationLevelPage) //
+      .selectQualificationLevel(QualificationLevelValue.LEVEL_2)
+      .submitPage()
+
+    // Qualification Details is the next page
+    Page.verifyOnPage(QualificationDetailsPage) //
+      .setQualificationGrade('C')
+      .setQualificationSubject('GCSE Maths')
+      .submitPage()
+
+    // Qualifications List is the next page
+    Page.verifyOnPage(QualificationsListPage) //
+      .apiErrorBannerIsNotDisplayed()
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(QualificationsListPage) //
+      .apiErrorBannerIsDisplayed()
+  })
 })
