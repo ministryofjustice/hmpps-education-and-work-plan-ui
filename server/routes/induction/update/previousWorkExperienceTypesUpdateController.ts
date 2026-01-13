@@ -11,6 +11,7 @@ import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExpe
 import { appendPagesFromCurrentPage, getNextPage } from '../../pageFlowQueue'
 import { Result } from '../../../utils/result/result'
 import { asArray } from '../../../utils/utils'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class PreviousWorkExperienceTypesUpdateController extends PreviousWorkExperienceTypesController {
   constructor(private readonly inductionService: InductionService) {
@@ -65,6 +66,7 @@ export default class PreviousWorkExperienceTypesUpdateController extends Previou
       }
 
       req.journeyData.inductionDto = undefined
+      setRedirectPendingFlag(req)
       return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
     }
 

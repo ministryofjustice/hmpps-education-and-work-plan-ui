@@ -4,6 +4,7 @@ import type { AffectAbilityToWorkForm } from 'inductionForms'
 import AffectAbilityToWorkView from './affectAbilityToWorkView'
 import AbilityToWorkValue from '../../../enums/abilityToWorkValue'
 import { asArray } from '../../../utils/utils'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,6 +20,8 @@ export default abstract class AffectAbilityToWorkController {
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const affectAbilityToWorkForm = invalidForm
       ? {

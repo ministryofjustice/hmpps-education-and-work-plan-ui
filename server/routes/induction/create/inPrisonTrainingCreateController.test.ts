@@ -19,12 +19,14 @@ describe('inPrisonTrainingCreateController', () => {
     caseLoadIds: ['BXI'],
   }
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
     params: { prisonNumber, journeyId },
     body: {},
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/in-prison-training`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),

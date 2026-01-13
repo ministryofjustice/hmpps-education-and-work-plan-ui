@@ -6,6 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import WorkInterestTypeValue from '../../../enums/workInterestTypeValue'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for updating a Prisoner's Future Work Interest Roles part of an Induction.
@@ -48,6 +49,7 @@ export default class WorkInterestRolesUpdateController extends WorkInterestRoles
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

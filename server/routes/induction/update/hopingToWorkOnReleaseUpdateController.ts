@@ -5,6 +5,7 @@ import toCreateOrUpdateInductionDto from '../../../data/mappers/createOrUpdateIn
 import logger from '../../../../logger'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkOnReleaseController {
   constructor(private readonly inductionService: InductionService) {
@@ -51,6 +52,7 @@ export default class HopingToWorkOnReleaseUpdateController extends HopingToWorkO
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

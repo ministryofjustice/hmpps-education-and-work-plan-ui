@@ -6,6 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import { Result } from '../../../utils/result/result'
 import { asArray } from '../../../utils/utils'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for Updating a Prisoner's Additional Training or Vocational Qualifications screen of the Induction.
@@ -47,6 +48,7 @@ export default class AdditionalTrainingUpdateController extends AdditionalTraini
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/education-and-training`)
   }
 }

@@ -7,6 +7,7 @@ import PreviousWorkExperienceDetailView from './previousWorkExperienceDetailView
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import logger from '../../../../logger'
 import previousWorkExperienceTypeScreenOrderComparator from '../previousWorkExperienceTypeScreenOrderComparator'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -23,6 +24,8 @@ export default abstract class PreviousWorkExperienceDetailController {
     const { journeyId, prisonNumber, typeOfWorkExperience } = req.params
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     let previousWorkExperienceType: TypeOfWorkExperienceValue
     try {

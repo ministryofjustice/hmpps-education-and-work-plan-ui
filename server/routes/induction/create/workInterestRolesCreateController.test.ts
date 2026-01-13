@@ -13,12 +13,14 @@ describe('workInterestRolesCreateController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
 
+  const flash = jest.fn()
   const req = {
     session: {},
     journeyData: {},
     body: {},
     params: { prisonNumber, journeyId },
     originalUrl: `/prisoners/${prisonNumber}/create-induction/${journeyId}/work-interest-roles`,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),

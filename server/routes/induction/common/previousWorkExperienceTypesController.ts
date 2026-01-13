@@ -4,6 +4,7 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import PreviousWorkExperienceTypesView from './previousWorkExperienceTypesView'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { asArray } from '../../../utils/utils'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,6 +20,8 @@ export default abstract class PreviousWorkExperienceTypesController {
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const previousWorkExperienceDetailsForm = invalidForm
       ? {

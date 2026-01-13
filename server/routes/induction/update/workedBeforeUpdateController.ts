@@ -6,6 +6,7 @@ import logger from '../../../../logger'
 import { InductionService } from '../../../services'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for the Update of the Worked Before screen of the Induction.
@@ -46,6 +47,7 @@ export default class WorkedBeforeUpdateController extends WorkedBeforeController
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }

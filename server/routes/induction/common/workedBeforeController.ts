@@ -3,6 +3,7 @@ import type { InductionDto, PreviousWorkExperienceDto } from 'inductionDto'
 import type { WorkedBeforeForm } from 'inductionForms'
 import WorkedBeforeView from './workedBeforeView'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -14,6 +15,8 @@ export default abstract class WorkedBeforeController {
   getWorkedBeforeView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const workedBeforeForm = invalidForm
       ? {

@@ -4,6 +4,7 @@ import type { AdditionalTrainingForm } from 'inductionForms'
 import AdditionalTrainingView from './additionalTrainingView'
 import AdditionalTrainingValue from '../../../enums/additionalTrainingValue'
 import { asArray } from '../../../utils/utils'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -19,6 +20,8 @@ export default abstract class AdditionalTrainingController {
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const additionalTrainingForm = invalidForm
       ? {

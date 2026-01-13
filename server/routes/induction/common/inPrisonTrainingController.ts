@@ -4,6 +4,7 @@ import type { InPrisonTrainingForm } from 'inductionForms'
 import InPrisonTrainingView from './inPrisonTrainingView'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
 import { asArray } from '../../../utils/utils'
+import { clearRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Abstract controller class defining functionality common to both the Create and Update Induction journeys.
@@ -15,6 +16,8 @@ export default abstract class InPrisonTrainingController {
   getInPrisonTrainingView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { inductionDto } = req.journeyData
     const { prisonerSummary, invalidForm } = res.locals
+
+    clearRedirectPendingFlag(req)
 
     const inPrisonTrainingForm = invalidForm
       ? {

@@ -8,6 +8,7 @@ import logger from '../../../../logger'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
 import { Result } from '../../../utils/result/result'
+import { setRedirectPendingFlag } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Controller for the Update of the Previous Work Experience Detail screen of the Induction.
@@ -74,6 +75,7 @@ export default class PreviousWorkExperienceDetailUpdateController extends Previo
     }
 
     req.journeyData.inductionDto = undefined
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/work-and-interests`)
   }
 }
