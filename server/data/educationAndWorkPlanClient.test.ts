@@ -1,3 +1,4 @@
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import nock from 'nock'
 import { isEqual, isMatch } from 'lodash'
 import type { ArchiveGoalRequest, UnarchiveGoalRequest } from 'educationAndWorkPlanApiClient'
@@ -36,18 +37,22 @@ import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/se
 import SessionStatusValue from '../enums/sessionStatusValue'
 import TimelineApiFilterOptions from './timelineApiFilterOptions'
 
-describe('educationAndWorkPlanClient', () => {
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient()
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 
-  config.apis.educationAndWorkPlan.url = 'http://localhost:8200'
-  let educationAndWorkPlanApi: nock.Scope
+describe('educationAndWorkPlanClient', () => {
+  const mockAuthenticationClient = new AuthenticationClient(null, null, null) as jest.Mocked<AuthenticationClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(mockAuthenticationClient)
+
+  const educationAndWorkPlanApi = nock(config.apis.educationAndWorkPlan.url)
 
   const prisonId = 'BXI'
   const prisonNumber = 'A1234BC'
+  const username = 'A-DPS-USER'
   const systemToken = 'a-system-token'
 
   beforeEach(() => {
-    educationAndWorkPlanApi = nock(config.apis.educationAndWorkPlan.url)
+    jest.resetAllMocks()
+    mockAuthenticationClient.getToken.mockResolvedValue(systemToken)
   })
 
   afterEach(() => {
@@ -61,14 +66,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .post(`/action-plans/${prisonNumber}/goals`, requestBody => isEqual(requestBody, createGoalsRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(201, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Goals given API returns an error response', async () => {
@@ -81,16 +88,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .post(`/action-plans/${prisonNumber}/goals`, requestBody => isEqual(requestBody, createGoalsRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, systemToken)
+        await educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -99,14 +108,18 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Action Plan', async () => {
       // Given
       const expectedActionPlanResponse = aValidActionPlanResponseWithOneGoal()
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(200, expectedActionPlanResponse)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedActionPlanResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedActionPlanResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Action Plan given no Action Plan returned for specified prisoner', async () => {
@@ -115,14 +128,18 @@ describe('educationAndWorkPlanClient', () => {
         status: 404,
         userMessage: `Action Plan not found for prisoner [${prisonNumber}]`,
       }
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlan(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Action Plan given API returns error response', async () => {
@@ -132,16 +149,21 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}`).thrice().reply(500, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getActionPlan(prisonNumber, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -154,18 +176,16 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi //
         .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getGoalsByStatus(
-        prisonNumber,
-        GoalStatusValue.ACTIVE,
-        systemToken,
-      )
+      const actual = await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Goals given the API returns a 404', async () => {
@@ -179,18 +199,16 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi //
         .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getGoalsByStatus(
-        prisonNumber,
-        GoalStatusValue.ACTIVE,
-        systemToken,
-      )
+      const actual = await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Goals given API returns an error response', async () => {
@@ -202,17 +220,19 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .get(`/action-plans/${prisonNumber}/goals?status=ACTIVE`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .thrice()
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, systemToken)
+        await educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, GoalStatusValue.ACTIVE, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -228,14 +248,16 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, requestBody =>
           isEqual(requestBody, updateGoalRequest),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
-      const actual = await educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Goal given API returns an error response', async () => {
@@ -252,16 +274,18 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}`, requestBody =>
           isEqual(requestBody, updateGoalRequest),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, systemToken)
+        await educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -285,14 +309,16 @@ describe('educationAndWorkPlanClient', () => {
       })
       educationAndWorkPlanApi
         .post('/action-plans', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedActionPlanSummaryListResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedActionPlanSummaryListResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get zero Action Plans given none of the specified prisoners have Action Plans', async () => {
@@ -304,14 +330,16 @@ describe('educationAndWorkPlanClient', () => {
       })
       educationAndWorkPlanApi
         .post('/action-plans', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedActionPlanSummaryListResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlans(prisonNumbers, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedActionPlanSummaryListResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -324,18 +352,20 @@ describe('educationAndWorkPlanClient', () => {
         .post(`/action-plans/${prisonNumber}/reviews`, requestBody =>
           isEqual(requestBody, createActionPlanReviewRequest),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(201, expectedResponseBody)
 
       // When
       const actual = await educationAndWorkPlanClient.createActionPlanReview(
         prisonNumber,
         createActionPlanReviewRequest,
-        systemToken,
+        username,
       )
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Action Plan Review given API returns an error response', async () => {
@@ -350,20 +380,18 @@ describe('educationAndWorkPlanClient', () => {
         .post(`/action-plans/${prisonNumber}/reviews`, requestBody =>
           isEqual(requestBody, createActionPlanReviewRequest),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createActionPlanReview(
-          prisonNumber,
-          createActionPlanReviewRequest,
-          systemToken,
-        )
+        await educationAndWorkPlanClient.createActionPlanReview(prisonNumber, createActionPlanReviewRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -372,14 +400,18 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Action Plan Reviews', async () => {
       // Given
       const expectedActionPlanReviews = aValidActionPlanReviewsResponse()
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(200, expectedActionPlanReviews)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/reviews`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedActionPlanReviews)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedActionPlanReviews)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Action Plan Reviews given API returns error response', async () => {
@@ -389,16 +421,21 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).thrice().reply(500, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/reviews`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
 
@@ -408,14 +445,18 @@ describe('educationAndWorkPlanClient', () => {
         status: 404,
         userMessage: `Review Schedule not found for prisoner [${prisonNumber}]`,
       }
-      educationAndWorkPlanApi.get(`/action-plans/${prisonNumber}/reviews`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/reviews`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getActionPlanReviews(prisonNumber, username)
 
       // Then
       expect(actual).toBeNull()
       expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -429,18 +470,20 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/reviews/schedule-status`, requestBody =>
           isMatch(updateReviewScheduleStatusRequest, requestBody),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
         prisonNumber,
         updateReviewScheduleStatusRequest,
-        systemToken,
+        username,
       )
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Action Plan Review Schedule Status given API returns error response', async () => {
@@ -456,6 +499,7 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/action-plans/${prisonNumber}/reviews/schedule-status`, requestBody =>
           isMatch(updateReviewScheduleStatusRequest, requestBody),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
@@ -463,13 +507,14 @@ describe('educationAndWorkPlanClient', () => {
         await educationAndWorkPlanClient.updateActionPlanReviewScheduleStatus(
           prisonNumber,
           updateReviewScheduleStatusRequest,
-          systemToken,
+          username,
         )
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -481,16 +526,18 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedTimelineResponse)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedTimelineResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by induction events', async () => {
@@ -499,6 +546,7 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=true&reviews=false&goals=false&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -506,11 +554,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by review events', async () => {
@@ -519,6 +568,7 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=true&goals=false&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -526,11 +576,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by goal events', async () => {
@@ -539,6 +590,7 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=true&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -546,11 +598,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by prison events', async () => {
@@ -559,6 +612,7 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=true`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -566,11 +620,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by prison id', async () => {
@@ -579,6 +634,7 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false&prisonId=BXI`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -586,11 +642,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by events since', async () => {
@@ -601,6 +658,7 @@ describe('educationAndWorkPlanClient', () => {
         .get(
           `/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false&eventsSince=2025-02-20`,
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -608,11 +666,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should get Timeline filtered by all options', async () => {
@@ -623,6 +682,7 @@ describe('educationAndWorkPlanClient', () => {
         .get(
           `/timelines/${prisonNumber}?inductions=true&reviews=true&goals=true&prisonEvents=true&prisonId=BXI&eventsSince=2025-02-20`,
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, timelineResponseFromApi)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions({
@@ -635,11 +695,12 @@ describe('educationAndWorkPlanClient', () => {
       })
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(timelineResponseFromApi)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Timeline given no timeline returned for specified prisoner', async () => {
@@ -650,16 +711,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(404, expectedResponseBody)
 
       const timelineApiFilterOptions = new TimelineApiFilterOptions()
 
       // When
-      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+      const actual = await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Timeline given API returns error response', async () => {
@@ -671,6 +734,7 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .get(`/timelines/${prisonNumber}?inductions=false&reviews=false&goals=false&prisonEvents=false`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .thrice()
         .reply(500, expectedResponseBody)
 
@@ -678,12 +742,13 @@ describe('educationAndWorkPlanClient', () => {
 
       // When
       try {
-        await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, systemToken)
+        await educationAndWorkPlanClient.getTimeline(prisonNumber, timelineApiFilterOptions, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -692,14 +757,18 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Induction', async () => {
       // Given
       const expectedInduction = aValidInductionResponse()
-      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(200, expectedInduction)
+      educationAndWorkPlanApi
+        .get(`/inductions/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedInduction)
 
       // When
-      const actual = await educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getInduction(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedInduction)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Induction given API returns error response', async () => {
@@ -713,12 +782,13 @@ describe('educationAndWorkPlanClient', () => {
 
       // When
       try {
-        await educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getInduction(prisonNumber, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
 
@@ -728,14 +798,18 @@ describe('educationAndWorkPlanClient', () => {
         status: 404,
         userMessage: `Induction not found for prisoner [${prisonNumber}]`,
       }
-      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/inductions/${prisonNumber}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getInduction(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getInduction(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -746,13 +820,15 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi //
         .put(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, updateInductionRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
-      await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+      await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Induction given API returns error response', async () => {
@@ -766,16 +842,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .put(`/inductions/${prisonNumber}`, requestBody => isEqual(requestBody, updateInductionRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, systemToken)
+        await educationAndWorkPlanClient.updateInduction(prisonNumber, updateInductionRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -787,13 +865,15 @@ describe('educationAndWorkPlanClient', () => {
 
       educationAndWorkPlanApi //
         .post(`/inductions/${prisonNumber}`, requestBody => isMatch(createInductionRequest, requestBody))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(201)
 
       // When
-      await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
+      await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Induction given API returns error response', async () => {
@@ -807,16 +887,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .post(`/inductions/${prisonNumber}`, requestBody => isMatch(createInductionRequest, requestBody))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, systemToken)
+        await educationAndWorkPlanClient.createInduction(prisonNumber, createInductionRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -827,14 +909,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedInductionSchedule = aValidInductionScheduleResponse()
       educationAndWorkPlanApi
         .get(`/inductions/${prisonNumber}/induction-schedule`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedInductionSchedule)
 
       // When
-      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedInductionSchedule)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Induction Schedule given API returns error response', async () => {
@@ -846,17 +930,19 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .get(`/inductions/${prisonNumber}/induction-schedule`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .thrice()
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
 
@@ -866,13 +952,17 @@ describe('educationAndWorkPlanClient', () => {
         status: 404,
         userMessage: `Induction schedule not found for prisoner [${prisonNumber}]`,
       }
-      educationAndWorkPlanApi.get(`/inductions/${prisonNumber}/induction-schedule`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/inductions/${prisonNumber}/induction-schedule`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getInductionSchedule(prisonNumber, username)
 
       // Then
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -886,18 +976,20 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/inductions/${prisonNumber}/induction-schedule`, requestBody =>
           isMatch(updateInductionScheduleStatusRequest, requestBody),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
       const actual = await educationAndWorkPlanClient.updateInductionScheduleStatus(
         prisonNumber,
         updateInductionScheduleStatusRequest,
-        systemToken,
+        username,
       )
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Induction Schedule Status given API returns error response', async () => {
@@ -913,6 +1005,7 @@ describe('educationAndWorkPlanClient', () => {
         .put(`/inductions/${prisonNumber}/induction-schedule`, requestBody =>
           isMatch(updateInductionScheduleStatusRequest, requestBody),
         )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
@@ -920,13 +1013,14 @@ describe('educationAndWorkPlanClient', () => {
         await educationAndWorkPlanClient.updateInductionScheduleStatus(
           prisonNumber,
           updateInductionScheduleStatusRequest,
-          systemToken,
+          username,
         )
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -944,14 +1038,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`, archiveGoalRequest)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
-      const actual = await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not archive Goal given API returns an error response', async () => {
@@ -963,16 +1059,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/archive`, archiveGoalRequest)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, systemToken)
+        await educationAndWorkPlanClient.archiveGoal(prisonNumber, archiveGoalRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -986,14 +1084,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`, unarchiveGoalRequest)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
-      const actual = await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not unarchive Goal given API returns an error response', async () => {
@@ -1005,16 +1105,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .put(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`, unarchiveGoalRequest)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, systemToken)
+        await educationAndWorkPlanClient.unarchiveGoal(prisonNumber, unarchiveGoalRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -1023,14 +1125,18 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Education', async () => {
       // Given
       const expectedEducationResponse = aValidEducationResponse()
-      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(200, expectedEducationResponse)
+      educationAndWorkPlanApi
+        .get(`/person/${prisonNumber}/education`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedEducationResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedEducationResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Education given API returns a 404', async () => {
@@ -1040,14 +1146,18 @@ describe('educationAndWorkPlanClient', () => {
         errorMessage: 'Not found',
         httpStatusCode: 404,
       }
-      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).reply(404, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/person/${prisonNumber}/education`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+      const actual = await educationAndWorkPlanClient.getEducation(prisonNumber, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Education given API returns error response', async () => {
@@ -1057,16 +1167,21 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/person/${prisonNumber}/education`).thrice().reply(500, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/person/${prisonNumber}/education`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+        await educationAndWorkPlanClient.getEducation(prisonNumber, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -1078,14 +1193,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .post(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, createEducationRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(201, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Education given API returns error response', async () => {
@@ -1098,16 +1215,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .post(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, createEducationRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
+        await educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -1119,14 +1238,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .put(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, updateEducationRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(204)
 
       // When
-      const actual = await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
+      const actual = await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Education given API returns error response', async () => {
@@ -1139,16 +1260,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .put(`/person/${prisonNumber}/education`, requestBody => isEqual(requestBody, updateEducationRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
+        await educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -1160,18 +1283,16 @@ describe('educationAndWorkPlanClient', () => {
       const expectedResponseBody = {}
       educationAndWorkPlanApi
         .post(`/action-plans/${prisonNumber}`, requestBody => isEqual(requestBody, createActionPlanRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(201, expectedResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.createActionPlan(
-        prisonNumber,
-        createActionPlanRequest,
-        systemToken,
-      )
+      const actual = await educationAndWorkPlanClient.createActionPlan(prisonNumber, createActionPlanRequest, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create action plan given API returns an error response', async () => {
@@ -1184,16 +1305,18 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .post(`/action-plans/${prisonNumber}`, requestBody => isEqual(requestBody, createActionPlanRequest))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.createActionPlan(prisonNumber, createActionPlanRequest, systemToken)
+        await educationAndWorkPlanClient.createActionPlan(prisonNumber, createActionPlanRequest, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })
@@ -1202,14 +1325,18 @@ describe('educationAndWorkPlanClient', () => {
     it('should get Session Summary', async () => {
       // Given
       const expectedSessionSummaryResponse = aValidSessionSummaryResponse()
-      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).reply(200, expectedSessionSummaryResponse)
+      educationAndWorkPlanApi
+        .get(`/session/${prisonId}/summary`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedSessionSummaryResponse)
 
       // When
-      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedSessionSummaryResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Session Summary given API returns error response', async () => {
@@ -1219,16 +1346,21 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
       }
-      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).thrice().reply(500, expectedResponseBody)
+      educationAndWorkPlanApi
+        .get(`/session/${prisonId}/summary`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, expectedResponseBody)
 
       // When
       try {
-        await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+        await educationAndWorkPlanClient.getSessionSummary(prisonId, username)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
 
@@ -1239,14 +1371,18 @@ describe('educationAndWorkPlanClient', () => {
         userMessage: 'Some error',
         developerMessage: 'Some error',
       }
-      educationAndWorkPlanApi.get(`/session/${prisonId}/summary`).reply(404, apiErrorResponseBody)
+      educationAndWorkPlanApi
+        .get(`/session/${prisonId}/summary`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, apiErrorResponseBody)
 
       // When
-      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, systemToken)
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, username)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -1265,14 +1401,16 @@ describe('educationAndWorkPlanClient', () => {
         })
         educationAndWorkPlanApi
           .post(`/session/summary?status=${status}`, requestBody => isEqual(requestBody, { prisonNumbers }))
+          .matchHeader('authorization', `Bearer ${systemToken}`)
           .reply(200, expectedSessionResponses)
 
         // When
-        const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, status)
+        const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, username, status)
 
         // Then
         expect(nock.isDone()).toBe(true)
         expect(actual).toEqual(expectedSessionResponses)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       },
     )
 
@@ -1285,14 +1423,16 @@ describe('educationAndWorkPlanClient', () => {
       })
       educationAndWorkPlanApi
         .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, expectedSessionResponses)
 
       // When
-      const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, SessionStatusValue.DUE)
+      const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, username, SessionStatusValue.DUE)
 
       // Then
       expect(nock.isDone()).toBe(true)
       expect(actual).toEqual(expectedSessionResponses)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Sessions given API returns an error response', async () => {
@@ -1306,15 +1446,17 @@ describe('educationAndWorkPlanClient', () => {
       }
       educationAndWorkPlanApi
         .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(500, expectedResponseBody)
 
       try {
-        await educationAndWorkPlanClient.getSessions(prisonNumbers, systemToken, SessionStatusValue.DUE)
+        await educationAndWorkPlanClient.getSessions(prisonNumbers, username, SessionStatusValue.DUE)
       } catch (e) {
         // Then
         expect(nock.isDone()).toBe(true)
-        expect(e.status).toEqual(500)
+        expect(e.responseStatus).toEqual(500)
         expect(e.data).toEqual(expectedResponseBody)
+        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
     })
   })

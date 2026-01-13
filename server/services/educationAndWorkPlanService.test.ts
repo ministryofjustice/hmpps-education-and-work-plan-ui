@@ -21,7 +21,6 @@ import toEducationDto from '../data/mappers/educationMapper'
 import aValidEducationDto from '../testsupport/educationDtoTestDataBuilder'
 import aValidCreateEducationDto from '../testsupport/createEducationDtoTestDataBuilder'
 import aValidCreateEducationRequest from '../testsupport/createEducationRequestTestDataBuilder'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import aValidUpdateEducationRequest from '../testsupport/updateEducationRequestTestDataBuilder'
 import aValidUpdateEducationDto from '../testsupport/updateEducationDtoTestDataBuilder'
 import aValidCreateActionPlanDto from '../testsupport/createActionPlanDtoTestDataBuilder'
@@ -30,14 +29,12 @@ import aValidCreateActionPlanRequest from '../testsupport/createActionPlanReques
 jest.mock('../data/mappers/educationMapper')
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
-jest.mock('../data/hmppsAuthClient')
 
 describe('educationAndWorkPlanService', () => {
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 
   const mockedEducationMapper = toEducationDto as jest.MockedFunction<typeof toEducationDto>
-  const systemToken = 'a-system-token'
   const username = 'a-dps-user'
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
@@ -45,16 +42,10 @@ describe('educationAndWorkPlanService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
     prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
   })
 
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-  const educationAndWorkPlanService = new EducationAndWorkPlanService(
-    educationAndWorkPlanClient,
-    prisonService,
-    hmppsAuthClient,
-  )
+  const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
 
   describe('createGoals', () => {
     it('should create Goals', async () => {
@@ -66,8 +57,7 @@ describe('educationAndWorkPlanService', () => {
       await educationAndWorkPlanService.createGoals(prisonNumber, [createGoalDto], username)
 
       // Then
-      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.createGoals).toHaveBeenCalledWith(prisonNumber, createGoalsRequest, username)
     })
 
     it('should not create Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -85,7 +75,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -100,9 +89,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
       expect(actual).toEqual(expectedActionPlan)
     })
 
@@ -119,9 +107,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(prisonService.getAllPrisonNamesById).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
       expect(actual).toEqual(expectedActionPlan)
     })
 
@@ -140,8 +127,7 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(expectedResponse)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
     })
 
     it('should not get Action Plan given educationAndWorkPlanClient returns response with a non-404 error response', async () => {
@@ -152,8 +138,7 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
       expect(actual.problemRetrievingData).toEqual(true)
     })
   })
@@ -169,9 +154,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, username)
       expect(actual).toEqual(expectedResponse)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should return a problem loading the data if the API returns an error', async () => {
@@ -185,9 +169,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, username)
       expect(actual).toEqual(expectedResponse)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should return goals even if an error is returned loading the prison names', async () => {
@@ -205,9 +188,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, username)
       expect(actual).toEqual(expectedResponse)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should return no problem loading the data and undefined goals given the service returns null indicating the prisoner has no goals', async () => {
@@ -221,9 +203,8 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getGoalsByStatus(prisonNumber, status, username)
 
       // Then
-      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, systemToken)
+      expect(educationAndWorkPlanClient.getGoalsByStatus).toHaveBeenCalledWith(prisonNumber, status, username)
       expect(actual).toEqual(expectedResponse)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -237,8 +218,7 @@ describe('educationAndWorkPlanService', () => {
       await educationAndWorkPlanService.updateGoal(prisonNumber, updateGoalDto, username)
 
       // Then
-      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.updateGoal).toHaveBeenCalledWith(prisonNumber, updateGoalRequest, username)
     })
 
     it('should not update Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -256,7 +236,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -282,8 +261,7 @@ describe('educationAndWorkPlanService', () => {
       await educationAndWorkPlanService.archiveGoal(archiveGoalDto, username)
 
       // Then
-      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, systemToken)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.archiveGoal).toHaveBeenCalledWith(prisonNumber, archiveGoalRequest, username)
     })
 
     it('should not archive Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -297,7 +275,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -316,9 +293,8 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.unarchiveGoal).toHaveBeenCalledWith(
         prisonNumber,
         unarchiveGoalRequest,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not unarchive Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -332,7 +308,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -349,12 +324,7 @@ describe('educationAndWorkPlanService', () => {
       await educationAndWorkPlanService.completeGoal(completedGoalDto, username)
 
       // Then
-      expect(educationAndWorkPlanClient.completeGoal).toHaveBeenCalledWith(
-        prisonNumber,
-        completeGoalRequest,
-        systemToken,
-      )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(educationAndWorkPlanClient.completeGoal).toHaveBeenCalledWith(prisonNumber, completeGoalRequest, username)
     })
 
     it('should not complete Goal given educationAndWorkPlanClient returns an error', async () => {
@@ -368,7 +338,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(Error('Service Unavailable'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -386,9 +355,8 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(expectedEducationDto)
-      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedEducationMapper).toHaveBeenCalledWith(educationResponse, prisonNumber)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should handle retrieval of prisoner education given educationAndWorkPlanClient returns null indicating not found error for the prisoners education record', async () => {
@@ -400,9 +368,8 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(null)
-      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedEducationMapper).not.toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get prisoner education given educationAndWorkPlanClient returns an error', async () => {
@@ -424,9 +391,8 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getEducation).toHaveBeenCalledWith(prisonNumber, username)
       expect(mockedEducationMapper).not.toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -443,9 +409,8 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.createEducation).toHaveBeenCalledWith(
         prisonNumber,
         createEducationRequest,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not create Education given educationAndWorkPlanClient returns an error', async () => {
@@ -471,7 +436,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -488,9 +452,8 @@ describe('educationAndWorkPlanService', () => {
       expect(educationAndWorkPlanClient.updateEducation).toHaveBeenCalledWith(
         prisonNumber,
         updateEducationRequest,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should not update Education given educationAndWorkPlanClient returns an error', async () => {
@@ -516,7 +479,6 @@ describe('educationAndWorkPlanService', () => {
 
       // Then
       expect(actual).toEqual(eductionAndWorkPlanApiError)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
   })
 
@@ -528,11 +490,10 @@ describe('educationAndWorkPlanService', () => {
       const actionPlan = aValidActionPlanWithOneGoal()
 
       // When
-      const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, systemToken)
+      const result = await educationAndWorkPlanService.getAllGoalsForPrisoner(prisonNumber, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(systemToken)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
 
       expect(result).toEqual({
         prisonNumber,
@@ -553,8 +514,7 @@ describe('educationAndWorkPlanService', () => {
       const actual = await educationAndWorkPlanService.getActionPlan(prisonNumber, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, systemToken)
+      expect(educationAndWorkPlanClient.getActionPlan).toHaveBeenCalledWith(prisonNumber, username)
       expect(actual.problemRetrievingData).toEqual(true)
     })
   })
@@ -569,11 +529,10 @@ describe('educationAndWorkPlanService', () => {
       await educationAndWorkPlanService.createActionPlan(createActionPlanDto, username)
 
       // Then
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.createActionPlan).toHaveBeenCalledWith(
         prisonNumber,
         createActionPlanRequest,
-        systemToken,
+        username,
       )
     })
 

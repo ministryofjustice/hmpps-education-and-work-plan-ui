@@ -1,20 +1,16 @@
 import type { PrisonerSearchSummary } from 'viewModels'
-import { HmppsAuthClient } from '../data'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import CiagInductionClient from '../data/ciagInductionClient'
 import PrisonerSearchService from './prisonerSearchService'
 
 export default class PrisonerListService {
   constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly prisonerSearchService: PrisonerSearchService,
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly ciagInductionClient: CiagInductionClient,
   ) {}
 
   async getPrisonerSearchSummariesForPrisonId(prisonId: string, username: string): Promise<PrisonerSearchSummary[]> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-
     const prisonerSummaries = (await this.prisonerSearchService.getPrisonersByPrisonId(prisonId, username)).prisoners
 
     const prisonNumbers: string[] = prisonerSummaries.map(prisoner => prisoner.prisonNumber)
@@ -24,7 +20,7 @@ export default class PrisonerListService {
     ).ciagProfileList.map((ciagInduction: { offenderId: string }) => ciagInduction.offenderId)
 
     const prisonersWithActionPlan: string[] = (
-      await this.educationAndWorkPlanClient.getActionPlans(prisonNumbers, systemToken)
+      await this.educationAndWorkPlanClient.getActionPlans(prisonNumbers, username)
     ).actionPlanSummaries.map((actionPlanSummary: { prisonNumber: string }) => actionPlanSummary.prisonNumber)
 
     return prisonerSummaries.map(prisoner => ({

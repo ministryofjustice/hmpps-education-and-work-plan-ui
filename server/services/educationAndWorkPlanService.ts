@@ -22,7 +22,6 @@ import GoalStatusValue from '../enums/goalStatusValue'
 import PrisonService from './prisonService'
 import toEducationDto from '../data/mappers/educationMapper'
 import toCreateEducationRequest from '../data/mappers/createEducationMapper'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import toUpdateEducationRequest from '../data/mappers/updateEducationMapper'
 import toCreateActionPlanRequest from '../data/mappers/createActionPlanMapper'
 
@@ -30,13 +29,11 @@ export default class EducationAndWorkPlanService {
   constructor(
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly prisonService: PrisonService,
-    private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
   async getActionPlan(prisonNumber: string, username: string): Promise<ActionPlan> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, systemToken)
+      const actionPlanResponse = await this.educationAndWorkPlanClient.getActionPlan(prisonNumber, username)
 
       if (!actionPlanResponse) {
         logger.debug(`No Action Plan exists yet for Prisoner [${prisonNumber}]`)
@@ -52,27 +49,24 @@ export default class EducationAndWorkPlanService {
   }
 
   async createActionPlan(createActionPlanDto: CreateActionPlanDto, username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const createActionPlanRequest = toCreateActionPlanRequest(createActionPlanDto)
     return this.educationAndWorkPlanClient.createActionPlan(
       createActionPlanDto.prisonNumber,
       createActionPlanRequest,
-      systemToken,
+      username,
     )
   }
 
   async createGoals(prisonNumber: string, createGoalDtos: CreateGoalDto[], username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const createGoalsRequest: CreateGoalsRequest = {
       goals: createGoalDtos.map(createGoalDto => toCreateGoalRequest(createGoalDto)),
     }
-    return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, systemToken)
+    return this.educationAndWorkPlanClient.createGoals(prisonNumber, createGoalsRequest, username)
   }
 
   async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, username: string): Promise<Goals> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
-      const response = (await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, systemToken)) || {
+      const response = (await this.educationAndWorkPlanClient.getGoalsByStatus(prisonNumber, status, username)) || {
         goals: [],
       }
       const prisonNamesById = await this.prisonService.getAllPrisonNamesById(username)
@@ -97,36 +91,27 @@ export default class EducationAndWorkPlanService {
   }
 
   async updateGoal(prisonNumber: string, updateGoalDto: UpdateGoalDto, username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const updateGoalRequest = toUpdateGoalRequest(updateGoalDto)
-    return this.educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, systemToken)
+    return this.educationAndWorkPlanClient.updateGoal(prisonNumber, updateGoalRequest, username)
   }
 
   async archiveGoal(archiveGoalDto: ArchiveGoalDto, username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const archiveGoalRequest = toArchiveGoalRequest(archiveGoalDto)
-    return this.educationAndWorkPlanClient.archiveGoal(archiveGoalDto.prisonNumber, archiveGoalRequest, systemToken)
+    return this.educationAndWorkPlanClient.archiveGoal(archiveGoalDto.prisonNumber, archiveGoalRequest, username)
   }
 
   async unarchiveGoal(unarchiveGoalDto: UnarchiveGoalDto, username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const unarchiveGoalRequest = toUnarchiveGoalRequest(unarchiveGoalDto)
-    return this.educationAndWorkPlanClient.unarchiveGoal(
-      unarchiveGoalDto.prisonNumber,
-      unarchiveGoalRequest,
-      systemToken,
-    )
+    return this.educationAndWorkPlanClient.unarchiveGoal(unarchiveGoalDto.prisonNumber, unarchiveGoalRequest, username)
   }
 
   async completeGoal(completeGoalDto: CompleteGoalDto, username: string): Promise<unknown> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     const completeGoalRequest = toCompleteGoalRequest(completeGoalDto)
-    return this.educationAndWorkPlanClient.completeGoal(completeGoalDto.prisonNumber, completeGoalRequest, systemToken)
+    return this.educationAndWorkPlanClient.completeGoal(completeGoalDto.prisonNumber, completeGoalRequest, username)
   }
 
   async getEducation(prisonNumber: string, username: string): Promise<EducationDto> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
-    const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, systemToken)
+    const educationResponse = await this.educationAndWorkPlanClient.getEducation(prisonNumber, username)
     return educationResponse ? toEducationDto(educationResponse, prisonNumber) : null
   }
 
@@ -135,10 +120,9 @@ export default class EducationAndWorkPlanService {
     createEducationDto: CreateOrUpdateEducationDto,
     username: string,
   ): Promise<void> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const createEducationRequest = toCreateEducationRequest(createEducationDto)
-      return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, systemToken)
+      return await this.educationAndWorkPlanClient.createEducation(prisonNumber, createEducationRequest, username)
     } catch (error) {
       logger.error(`Error creating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error
@@ -150,10 +134,9 @@ export default class EducationAndWorkPlanService {
     updateEducationDto: CreateOrUpdateEducationDto,
     username: string,
   ): Promise<void> {
-    const systemToken = await this.hmppsAuthClient.getSystemClientToken(username)
     try {
       const updateEducationRequest = toUpdateEducationRequest(updateEducationDto)
-      return await this.educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, systemToken)
+      return await this.educationAndWorkPlanClient.updateEducation(prisonNumber, updateEducationRequest, username)
     } catch (error) {
       logger.error(`Error updating Education for prisoner [${prisonNumber}] in the Education And Work Plan API `, error)
       throw error

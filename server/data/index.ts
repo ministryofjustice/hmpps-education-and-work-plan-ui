@@ -12,7 +12,6 @@ buildAppInsightsClient(applicationInfo)
 
 // eslint-disable-next-line import/order
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
-import HmppsAuthClient from './hmppsAuthClient'
 import ManageUsersApiClient from './manageUsersApiClient'
 import { createRedisClient } from './redisClient'
 import config from '../config'
@@ -41,8 +40,7 @@ export const dataAccess = () => {
   const systemTokenStore = config.redis.enabled
     ? new RedisTokenStore(createRedisClient(), 'systemToken:')
     : new InMemoryTokenStore()
-  const hmppsAuthClient = new HmppsAuthClient(systemTokenStore)
-  const hmppsAuthenticationClient = new AuthenticationClient(config.apis.hmppsAuth, logger, systemTokenStore)
+  const hmppsAuthClient = new AuthenticationClient(config.apis.hmppsAuth, logger, systemTokenStore)
 
   const curiousTokenStore = config.redis.enabled
     ? new RedisTokenStore(createRedisClient(), 'curiousToken:')
@@ -72,24 +70,23 @@ export const dataAccess = () => {
 
   return {
     applicationInfo,
-    hmppsAuthClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-    manageUsersApiClient: new ManageUsersApiClient(hmppsAuthenticationClient),
+    manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
     prisonerSearchStore: config.redis.enabled
       ? new RedisPrisonerSearchStore(createRedisClient())
       : new InMemoryPrisonerSearchStore(),
-    prisonerSearchClient: new PrisonerSearchClient(hmppsAuthenticationClient),
-    educationAndWorkPlanClient: new EducationAndWorkPlanClient(),
+    prisonerSearchClient: new PrisonerSearchClient(hmppsAuthClient),
+    educationAndWorkPlanClient: new EducationAndWorkPlanClient(hmppsAuthClient),
     curiousClient: new CuriousClient(curiousApiAuthClient),
-    ciagInductionClient: new CiagInductionClient(hmppsAuthenticationClient),
+    ciagInductionClient: new CiagInductionClient(hmppsAuthClient),
     prisonRegisterStore: config.redis.enabled
       ? new RedisPrisonRegisterStore(createRedisClient())
       : new InMemoryPrisonRegisterStore(),
-    prisonRegisterClient: new PrisonRegisterClient(hmppsAuthenticationClient),
+    prisonRegisterClient: new PrisonRegisterClient(hmppsAuthClient),
     journeyDataStore: config.redis.enabled
       ? new RedisJourneyDataStore(createRedisClient())
       : new InMemoryJourneyDataStore(),
-    supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthenticationClient),
+    supportAdditionalNeedsApiClient: new SupportAdditionalNeedsApiClient(hmppsAuthClient),
     learnerRecordsApiClient: new LearnerRecordsApiClient(learnerRecordsApiAuthClient),
   }
 }
@@ -97,7 +94,6 @@ export const dataAccess = () => {
 export type DataAccess = ReturnType<typeof dataAccess>
 
 export {
-  HmppsAuthClient,
   AuthenticationClient,
   type RestClientBuilder,
   HmppsAuditClient,

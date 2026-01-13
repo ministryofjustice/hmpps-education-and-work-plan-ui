@@ -1,3 +1,5 @@
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type {
   ActionPlanResponse,
   ActionPlanReviewsResponse,
@@ -26,220 +28,294 @@ import type {
   UpdateInductionScheduleStatusRequest,
   UpdateReviewScheduleStatusRequest,
 } from 'educationAndWorkPlanApiClient'
-import RestClient from './restClient'
 import config from '../config'
 import GoalStatusValue from '../enums/goalStatusValue'
 import SessionStatusValue from '../enums/sessionStatusValue'
 import TimelineApiFilterOptions from './timelineApiFilterOptions'
+import logger from '../../logger'
+import restClientErrorHandler from './restClientErrorHandler'
 
-export default class EducationAndWorkPlanClient {
-  private static restClient(token: string): RestClient {
-    return new RestClient('Education and Work Plan API Client', config.apis.educationAndWorkPlan, token)
+export default class EducationAndWorkPlanClient extends RestClient {
+  constructor(authenticationClient: AuthenticationClient) {
+    super('Education and Work Plan API Client', config.apis.educationAndWorkPlan, logger, authenticationClient)
   }
 
-  async getActionPlan(prisonNumber: string, token: string): Promise<ActionPlanResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<ActionPlanResponse>({
-      path: `/action-plans/${prisonNumber}`,
-      ignore404: true,
-    })
+  async getActionPlan(prisonNumber: string, username: string): Promise<ActionPlanResponse> {
+    return this.get<ActionPlanResponse>(
+      {
+        path: `/action-plans/${prisonNumber}`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
   async createActionPlan(
     prisonNumber: string,
     createActionPlanRequest: CreateActionPlanRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/action-plans/${prisonNumber}`,
-      data: createActionPlanRequest,
-    })
-  }
-
-  async createGoals(prisonNumber: string, createGoalsRequest: CreateGoalsRequest, token: string): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/action-plans/${prisonNumber}/goals`,
-      data: createGoalsRequest,
-    })
-  }
-
-  async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, token: string): Promise<GetGoalsResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<GetGoalsResponse>({
-      path: `/action-plans/${prisonNumber}/goals`,
-      query: {
-        status,
+    return this.post(
+      {
+        path: `/action-plans/${prisonNumber}`,
+        data: createActionPlanRequest,
       },
-      ignore404: true,
-    })
+      asSystem(username),
+    )
   }
 
-  async updateGoal(prisonNumber: string, updateGoalRequest: UpdateGoalRequest, token: string): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/action-plans/${prisonNumber}/goals/${updateGoalRequest.goalReference}`,
-      data: updateGoalRequest,
-    })
+  async createGoals(prisonNumber: string, createGoalsRequest: CreateGoalsRequest, username: string): Promise<void> {
+    return this.post(
+      {
+        path: `/action-plans/${prisonNumber}/goals`,
+        data: createGoalsRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async archiveGoal(prisonNumber: string, archiveGoalRequest: ArchiveGoalRequest, token: string): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/action-plans/${prisonNumber}/goals/${archiveGoalRequest.goalReference}/archive`,
-      data: archiveGoalRequest,
-    })
+  async getGoalsByStatus(prisonNumber: string, status: GoalStatusValue, username: string): Promise<GetGoalsResponse> {
+    return this.get<GetGoalsResponse>(
+      {
+        path: `/action-plans/${prisonNumber}/goals`,
+        query: {
+          status,
+        },
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
-  async unarchiveGoal(prisonNumber: string, unarchiveGoalRequest: UnarchiveGoalRequest, token: string): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/action-plans/${prisonNumber}/goals/${unarchiveGoalRequest.goalReference}/unarchive`,
-      data: unarchiveGoalRequest,
-    })
+  async updateGoal(prisonNumber: string, updateGoalRequest: UpdateGoalRequest, username: string): Promise<void> {
+    return this.put(
+      {
+        path: `/action-plans/${prisonNumber}/goals/${updateGoalRequest.goalReference}`,
+        data: updateGoalRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async completeGoal(prisonNumber: string, completeGoalRequest: CompleteGoalRequest, token: string): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/action-plans/${prisonNumber}/goals/${completeGoalRequest.goalReference}/complete`,
-      data: completeGoalRequest,
-    })
+  async archiveGoal(prisonNumber: string, archiveGoalRequest: ArchiveGoalRequest, username: string): Promise<void> {
+    return this.put(
+      {
+        path: `/action-plans/${prisonNumber}/goals/${archiveGoalRequest.goalReference}/archive`,
+        data: archiveGoalRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async getActionPlans(prisonNumbers: string[], token: string): Promise<ActionPlanSummaryListResponse> {
+  async unarchiveGoal(
+    prisonNumber: string,
+    unarchiveGoalRequest: UnarchiveGoalRequest,
+    username: string,
+  ): Promise<void> {
+    return this.put(
+      {
+        path: `/action-plans/${prisonNumber}/goals/${unarchiveGoalRequest.goalReference}/unarchive`,
+        data: unarchiveGoalRequest,
+      },
+      asSystem(username),
+    )
+  }
+
+  async completeGoal(prisonNumber: string, completeGoalRequest: CompleteGoalRequest, username: string): Promise<void> {
+    return this.put(
+      {
+        path: `/action-plans/${prisonNumber}/goals/${completeGoalRequest.goalReference}/complete`,
+        data: completeGoalRequest,
+      },
+      asSystem(username),
+    )
+  }
+
+  async getActionPlans(prisonNumbers: string[], username: string): Promise<ActionPlanSummaryListResponse> {
     const requestBody: GetActionPlanSummariesRequest = { prisonNumbers }
-    return EducationAndWorkPlanClient.restClient(token).post<ActionPlanSummaryListResponse>({
-      path: '/action-plans',
-      data: requestBody,
-    })
+    return this.post<ActionPlanSummaryListResponse>(
+      {
+        path: '/action-plans',
+        data: requestBody,
+      },
+      asSystem(username),
+    )
   }
 
   async createActionPlanReview(
     prisonNumber: string,
     createActionPlanReviewRequest: CreateActionPlanReviewRequest,
-    token: string,
+    username: string,
   ): Promise<CreateActionPlanReviewResponse> {
-    return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/action-plans/${prisonNumber}/reviews`,
-      data: createActionPlanReviewRequest,
-    })
+    return this.post(
+      {
+        path: `/action-plans/${prisonNumber}/reviews`,
+        data: createActionPlanReviewRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async getActionPlanReviews(prisonNumber: string, token: string): Promise<ActionPlanReviewsResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get({
-      path: `/action-plans/${prisonNumber}/reviews`,
-      ignore404: true,
-    })
+  async getActionPlanReviews(prisonNumber: string, username: string): Promise<ActionPlanReviewsResponse> {
+    return this.get(
+      {
+        path: `/action-plans/${prisonNumber}/reviews`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
   async updateActionPlanReviewScheduleStatus(
     prisonNumber: string,
     updateReviewScheduleStatusRequest: UpdateReviewScheduleStatusRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/action-plans/${prisonNumber}/reviews/schedule-status`,
-      data: updateReviewScheduleStatusRequest,
-    })
+    return this.put(
+      {
+        path: `/action-plans/${prisonNumber}/reviews/schedule-status`,
+        data: updateReviewScheduleStatusRequest,
+      },
+      asSystem(username),
+    )
   }
 
   async getTimeline(
     prisonNumber: string,
     apiFilterOptions: TimelineApiFilterOptions,
-    token: string,
+    username: string,
   ): Promise<TimelineResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<TimelineResponse>({
-      path: `/timelines/${prisonNumber}`,
-      query: apiFilterOptions.queryParams,
-      ignore404: true,
-    })
+    return this.get<TimelineResponse>(
+      {
+        path: `/timelines/${prisonNumber}`,
+        query: apiFilterOptions.queryParams,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
-  async getInduction(prisonNumber: string, token: string): Promise<InductionResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<InductionResponse>({
-      path: `/inductions/${prisonNumber}`,
-      ignore404: true,
-    })
+  async getInduction(prisonNumber: string, username: string): Promise<InductionResponse> {
+    return this.get<InductionResponse>(
+      {
+        path: `/inductions/${prisonNumber}`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
   async updateInduction(
     prisonNumber: string,
     updateInductionRequest: UpdateInductionRequest,
-    token: string,
+    username: string,
   ): Promise<never> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/inductions/${prisonNumber}`,
-      data: updateInductionRequest,
-    })
+    return this.put(
+      {
+        path: `/inductions/${prisonNumber}`,
+        data: updateInductionRequest,
+      },
+      asSystem(username),
+    )
   }
 
   async createInduction(
     prisonNumber: string,
     createInductionRequest: CreateInductionRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/inductions/${prisonNumber}`,
-      data: createInductionRequest,
-    })
+    return this.post(
+      {
+        path: `/inductions/${prisonNumber}`,
+        data: createInductionRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async getInductionSchedule(prisonNumber: string, token: string): Promise<InductionScheduleResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get({
-      path: `/inductions/${prisonNumber}/induction-schedule`,
-      ignore404: true,
-    })
+  async getInductionSchedule(prisonNumber: string, username: string): Promise<InductionScheduleResponse> {
+    return this.get(
+      {
+        path: `/inductions/${prisonNumber}/induction-schedule`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
   async updateInductionScheduleStatus(
     prisonNumber: string,
     updateReviewScheduleStatusRequest: UpdateInductionScheduleStatusRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/inductions/${prisonNumber}/induction-schedule`,
-      data: updateReviewScheduleStatusRequest,
-    })
+    return this.put(
+      {
+        path: `/inductions/${prisonNumber}/induction-schedule`,
+        data: updateReviewScheduleStatusRequest,
+      },
+      asSystem(username),
+    )
   }
 
-  async getEducation(prisonNumber: string, token: string): Promise<EducationResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<EducationResponse>({
-      path: `/person/${prisonNumber}/education`,
-      ignore404: true,
-    })
+  async getEducation(prisonNumber: string, username: string): Promise<EducationResponse> {
+    return this.get<EducationResponse>(
+      {
+        path: `/person/${prisonNumber}/education`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
   }
 
   async createEducation(
     prisonNumber: string,
     createEducationRequest: CreateEducationRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).post({
-      path: `/person/${prisonNumber}/education`,
-      data: createEducationRequest,
-    })
+    return this.post(
+      {
+        path: `/person/${prisonNumber}/education`,
+        data: createEducationRequest,
+      },
+      asSystem(username),
+    )
   }
 
   async updateEducation(
     prisonNumber: string,
     updateEducationRequest: UpdateEducationRequest,
-    token: string,
+    username: string,
   ): Promise<void> {
-    return EducationAndWorkPlanClient.restClient(token).put({
-      path: `/person/${prisonNumber}/education`,
-      data: updateEducationRequest,
-    })
-  }
-
-  async getSessionSummary(prisonId: string, token: string): Promise<SessionSummaryResponse> {
-    return EducationAndWorkPlanClient.restClient(token).get<SessionSummaryResponse>({
-      path: `/session/${prisonId}/summary`,
-      ignore404: true,
-    })
-  }
-
-  async getSessions(prisonNumbers: string[], token: string, status: SessionStatusValue): Promise<SessionResponses> {
-    const requestBody: PrisonerIdsRequest = { prisonNumbers }
-    return EducationAndWorkPlanClient.restClient(token).post<SessionResponses>({
-      path: '/session/summary',
-      data: requestBody,
-      query: {
-        status,
+    return this.put(
+      {
+        path: `/person/${prisonNumber}/education`,
+        data: updateEducationRequest,
       },
-    })
+      asSystem(username),
+    )
+  }
+
+  async getSessionSummary(prisonId: string, username: string): Promise<SessionSummaryResponse> {
+    return this.get<SessionSummaryResponse>(
+      {
+        path: `/session/${prisonId}/summary`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async getSessions(prisonNumbers: string[], username: string, status: SessionStatusValue): Promise<SessionResponses> {
+    const requestBody: PrisonerIdsRequest = { prisonNumbers }
+    return this.post<SessionResponses>(
+      {
+        path: '/session/summary',
+        data: requestBody,
+        query: {
+          status,
+        },
+      },
+      asSystem(username),
+    )
   }
 }

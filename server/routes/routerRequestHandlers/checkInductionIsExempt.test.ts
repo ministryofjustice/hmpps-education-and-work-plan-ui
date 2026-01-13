@@ -9,7 +9,7 @@ import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusVal
 jest.mock('../../services/inductionService')
 
 describe('checkInductionIsExempt', () => {
-  const inductionService = new InductionService(null, null) as jest.Mocked<InductionService>
+  const inductionService = new InductionService(null) as jest.Mocked<InductionService>
   const requestHandler = checkInductionIsExempt(inductionService)
 
   const prisonNumber = 'A1234BC'

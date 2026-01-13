@@ -5,7 +5,6 @@ import TimelineService from './timelineService'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toTimeline from '../data/mappers/timelineMapper'
 import aValidTimelineResponse from '../testsupport/timelineResponseTestDataBuilder'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import TimelineApiFilterOptions from '../data/timelineApiFilterOptions'
 import TimelineFilterTypeValue from '../enums/timelineFilterTypeValue'
 import aValidTimeline from '../testsupport/timelineTestDataBuilder'
@@ -13,19 +12,16 @@ import aValidTimeline from '../testsupport/timelineTestDataBuilder'
 jest.mock('../data/mappers/timelineMapper')
 jest.mock('./prisonService')
 jest.mock('../data/educationAndWorkPlanClient')
-jest.mock('../data/hmppsAuthClient')
 
 describe('timelineService', () => {
   const mockedTimelineMapper = toTimeline as jest.MockedFunction<typeof toTimeline>
 
-  const educationAndWorkPlanClient = new EducationAndWorkPlanClient() as jest.Mocked<EducationAndWorkPlanClient>
+  const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
   const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
-  const hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService, hmppsAuthClient)
+  const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
 
   const prisonNumber = 'A1234BC'
   const username = 'a-dps-user'
-  const systemToken = 'a-system-token'
   const mockedPrisonNamesById = {
     ASI: 'Ashfield (HMP)',
     MDI: 'Moorland (HMP & YOI)',
@@ -33,7 +29,6 @@ describe('timelineService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('getTimeline', () => {
@@ -102,9 +97,8 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should get timeline given prison name lookups fail', async () => {
@@ -171,9 +165,8 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should get timeline given prison name lookups for several different prisons', async () => {
@@ -241,9 +234,8 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
     })
 
     it('should get timeline given all filter options', async () => {
@@ -288,7 +280,7 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
     })
 
@@ -334,7 +326,7 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
     })
 
@@ -384,7 +376,7 @@ describe('timelineService', () => {
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
     })
 
@@ -419,11 +411,10 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
       expect(mockedTimelineMapper).not.toHaveBeenCalled()
     })
@@ -466,11 +457,10 @@ describe('timelineService', () => {
 
       // Then
       expect(actual).toEqual(expected)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(educationAndWorkPlanClient.getTimeline).toHaveBeenCalledWith(
         prisonNumber,
         expectedApiFilterOptions,
-        systemToken,
+        username,
       )
       expect(mockedTimelineMapper).not.toHaveBeenCalled()
     })
