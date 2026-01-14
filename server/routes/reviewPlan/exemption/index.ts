@@ -12,6 +12,7 @@ import ApplicationAction from '../../../enums/applicationAction'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import reviewExemptionSchema from '../validationSchemas/reviewExemptionSchema'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions to set a prisoner's Action Plan Review as exempt
@@ -46,6 +47,10 @@ export default function exemptActionPlanReviewRoutes(services: Services) {
   ])
   router.post('/exemption/confirm', [
     checkReviewExemptionDtoExistsInJourneyData,
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Review Plan Record Exemption',
+      redirectTo: '/plan/:prisonNumber/:journeyId/review/exemption/recorded',
+    }),
     asyncMiddleware(confirmExemptionController.submitConfirmExemption),
   ])
 

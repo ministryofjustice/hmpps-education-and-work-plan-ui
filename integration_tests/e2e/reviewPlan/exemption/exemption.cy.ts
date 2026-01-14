@@ -90,4 +90,26 @@ context(`Review exemption page`, () => {
         ),
     )
   })
+
+  it(`should not record an exception and redisplay the Confirm Exception page given calling API is not successful`, () => {
+    // Given
+    cy.task('stubUpdateActionPlanReviewScheduleStatus500Error')
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/review/exemption`)
+
+    // When
+    Page.verifyOnPage(ExemptionReasonPage) //
+      .selectExemptionReason(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY)
+      .enterExemptionReasonDetails(ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY, 'In treatment')
+      .submitPage()
+
+    Page.verifyOnPage(ConfirmExemptionPage) //
+      .apiErrorBannerIsNotDisplayed()
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(ConfirmExemptionPage) //
+      .apiErrorBannerIsDisplayed()
+  })
 })
