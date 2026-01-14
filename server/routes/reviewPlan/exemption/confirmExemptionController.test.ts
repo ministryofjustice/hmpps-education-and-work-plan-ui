@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import { v4 as uuidV4 } from 'uuid'
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
@@ -19,25 +18,23 @@ describe('ConfirmExemptionController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
-  let req: Request
-  let res: Response
+  const flash = jest.fn()
+  const req = {
+    user: { username: 'a-dps-user' },
+    params: { prisonNumber, journeyId },
+    journeyData: {},
+    flash,
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    redirect: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
-    req = {
-      user: { username: 'a-dps-user' },
-      params: { prisonNumber, journeyId },
-      journeyData: {},
-    } as unknown as Request
-    res = {
-      render: jest.fn(),
-      redirect: jest.fn(),
-      locals: { prisonerSummary },
-    } as unknown as Response
-
+    jest.resetAllMocks()
     req.journeyData.reviewExemptionDto = undefined
-
-    jest.clearAllMocks()
   })
 
   describe('getConfirmExemptionView', () => {
@@ -68,10 +65,11 @@ describe('ConfirmExemptionController', () => {
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/recorded`)
+      expect(res.redirect).toHaveBeenCalledWith('recorded')
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(reviewExemptionDto, 'a-dps-user')
       expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
       expect(auditService.logExemptActionPlanReview).toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not redirect to review complete page given service throws an error', async () => {
@@ -79,16 +77,22 @@ describe('ConfirmExemptionController', () => {
       const reviewExemptionDto = aValidReviewExemptionDto()
       req.journeyData.reviewExemptionDto = reviewExemptionDto
 
-      reviewService.updateActionPlanReviewScheduleStatus.mockRejectedValue(new Error('Service failure'))
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      reviewService.updateActionPlanReviewScheduleStatus.mockRejectedValue(apiErrorResponse)
 
       // When
       await controller.submitConfirmExemption(req, res, next)
 
       // Then
-      expect(next).toHaveBeenCalledWith(createError(500, 'Error exempting Action Plan Review for prisoner A1234BC'))
+      expect(res.redirect).toHaveBeenCalledWith('confirm')
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(reviewExemptionDto, 'a-dps-user')
       expect(req.journeyData.reviewExemptionDto).toEqual(reviewExemptionDto)
       expect(auditService.logExemptActionPlanReview).not.toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
     })
   })
 })
