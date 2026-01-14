@@ -144,4 +144,37 @@ We have agreed and set a new goal, and the next review is 1 year from now.
         ),
     )
   })
+
+  it(`should not complete a prisoner's review and redisplay Check Your Answers page given calling API is not successful`, () => {
+    // Given
+    cy.task('stubCreateActionPlanReview500Error')
+
+    cy.signIn()
+    cy.visit(`/plan/${prisonNumber}/review`)
+
+    const reviewConductedAt = sub(startOfToday(), { weeks: 1 })
+
+    // When
+    // First page is the Who completed the review page
+    Page.verifyOnPage(WhoCompletedReviewPage) //
+      .setReviewDate(reviewConductedAt)
+      .selectWhoCompletedTheReview(SessionCompletedByValue.SOMEBODY_ELSE)
+      .enterReviewersFullName('A Reviewer')
+      .enterReviewersJobRole('CIAG')
+      .submitPage()
+
+    // Next page is Review Notes page
+    Page.verifyOnPage(ReviewNotePage) //
+      .setReviewNote(`Edfdau's review went well`)
+      .submitPage()
+
+    // Next page is Review Check Your Answers page
+    Page.verifyOnPage(ReviewPlanCheckYourAnswersPage) //
+      .apiErrorBannerIsNotDisplayed()
+      .submitPage()
+
+    // Then
+    Page.verifyOnPage(ReviewPlanCheckYourAnswersPage) //
+      .apiErrorBannerIsDisplayed()
+  })
 })

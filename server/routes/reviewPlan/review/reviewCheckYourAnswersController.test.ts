@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
-import createError from 'http-errors'
 import { v4 as uuidV4 } from 'uuid'
 import type { ReviewPlanDto } from 'dto'
 import ReviewCheckYourAnswersController from './reviewCheckYourAnswersController'
@@ -22,28 +21,25 @@ describe('ReviewCheckYourAnswersController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
 
-  let req: Request
-  let res: Response
+  const flash = jest.fn()
+  const req = {
+    params: { prisonNumber, journeyId },
+    session: {},
+    journeyData: {},
+    user: { username: 'a-dps-user' },
+    originalUrl: `/plan/${prisonNumber}/${journeyId}/review/check-your-answers`,
+    flash,
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    redirect: jest.fn(),
+    locals: { prisonerSummary },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
-    req = {
-      params: { prisonNumber, journeyId },
-      session: {},
-      journeyData: {},
-      user: { username: 'a-dps-user' },
-      originalUrl: `/plan/${prisonNumber}/${journeyId}/review/check-your-answers`,
-    } as unknown as Request
-
-    res = {
-      render: jest.fn(),
-      redirect: jest.fn(),
-      locals: { prisonerSummary },
-    } as unknown as Response
-
+    jest.resetAllMocks()
     req.journeyData.reviewPlanDto = undefined
-
-    jest.clearAllMocks()
   })
 
   describe('getReviewCheckYourAnswersView', () => {
@@ -97,10 +93,11 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.submitCheckYourAnswers(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
+      expect(res.redirect).toHaveBeenCalledWith('complete')
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
       expect(req.journeyData.reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should redirect to review complete page given form submitted successfully and this was not the prisoners last review before release', async () => {
@@ -128,10 +125,11 @@ describe('ReviewCheckYourAnswersController', () => {
       await controller.submitCheckYourAnswers(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/complete`)
+      expect(res.redirect).toHaveBeenCalledWith('complete')
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
       expect(req.journeyData.reviewPlanDto).toEqual(expectedUpdatedReviewPlanDto)
       expect(auditService.logCreateActionPlanReview).toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not redirect to review complete page given service throws an error', async () => {
@@ -145,16 +143,22 @@ describe('ReviewCheckYourAnswersController', () => {
       }
       req.journeyData.reviewPlanDto = reviewPlanDto
 
-      reviewService.createActionPlanReview.mockRejectedValue(new Error('Service failure'))
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      reviewService.createActionPlanReview.mockRejectedValue(apiErrorResponse)
 
       // When
       await controller.submitCheckYourAnswers(req, res, next)
 
       // Then
-      expect(next).toHaveBeenCalledWith(createError(500, 'Error creating Action Plan Review for prisoner A1234BC'))
+      expect(res.redirect).toHaveBeenCalledWith('check-your-answers')
       expect(reviewService.createActionPlanReview).toHaveBeenCalledWith(reviewPlanDto, 'a-dps-user')
       expect(req.journeyData.reviewPlanDto).toEqual(reviewPlanDto)
       expect(auditService.logCreateActionPlanReview).not.toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
     })
   })
 })

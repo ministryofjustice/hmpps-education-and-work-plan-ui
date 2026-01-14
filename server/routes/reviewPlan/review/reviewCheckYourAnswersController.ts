@@ -1,10 +1,14 @@
 import { type Request, RequestHandler } from 'express'
-import createError from 'http-errors'
 import type { CreatedActionPlanReview } from 'viewModels'
 import type { ReviewPlanDto } from 'dto'
-import ReviewCheckYourAnswersView from './reviewCheckYourAnswersView'
 import { AuditService, ReviewService } from '../../../services'
 import { BaseAuditData } from '../../../services/auditService'
+import { Result } from '../../../utils/result/result'
+import logger from '../../../../logger'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class ReviewCheckYourAnswersController {
   constructor(
@@ -16,27 +20,32 @@ export default class ReviewCheckYourAnswersController {
     const { prisonerSummary } = res.locals
     const { reviewPlanDto } = req.journeyData
 
-    const view = new ReviewCheckYourAnswersView(prisonerSummary, reviewPlanDto)
-    return res.render('pages/reviewPlan/review/checkYourAnswers/index', { ...view.renderArgs })
+    clearRedirectPendingFlag(req)
+
+    return res.render('pages/reviewPlan/review/checkYourAnswers/index', { prisonerSummary, reviewPlanDto })
   }
 
   submitCheckYourAnswers: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { reviewPlanDto } = req.journeyData
 
-    try {
-      const createdActionPlan = await this.reviewService.createActionPlanReview(reviewPlanDto, req.user.username)
-
-      const updatedReviewPlanDto = updateReviewPlanDtoWithNextReviewDates(reviewPlanDto, createdActionPlan)
-      req.journeyData.reviewPlanDto = updatedReviewPlanDto
-
-      this.auditService.logCreateActionPlanReview(createActionPlanReviewAuditData(req)) // no need to wait for response
-      return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/complete`)
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error creating Action Plan Review for prisoner ${prisonNumber}`))
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.reviewService.createActionPlanReview(reviewPlanDto, req.user.username),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e => logger.error(`Error creating Action Plan Review for prisoner ${prisonNumber}`, e))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('check-your-answers')
     }
+
+    const updatedReviewPlanDto = updateReviewPlanDtoWithNextReviewDates(reviewPlanDto, apiResult.getOrNull())
+    req.journeyData.reviewPlanDto = updatedReviewPlanDto
+
+    this.auditService.logCreateActionPlanReview(createActionPlanReviewAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
+    return res.redirect('complete')
   }
 }
 
