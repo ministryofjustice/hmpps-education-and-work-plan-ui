@@ -10,6 +10,10 @@ import GoalTargetCompletionDateOption from '../../enums/goalTargetCompletionDate
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { Result } from '../../utils/result/result'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class CreateGoalsController {
   constructor(
@@ -20,6 +24,8 @@ export default class CreateGoalsController {
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary } = res.locals
     const { createGoalsForm } = req.journeyData
+
+    clearRedirectPendingFlag(req)
 
     const view = new CreateGoalsView(prisonerSummary, createGoalsForm, GoalTargetCompletionDateOption)
     return res.render('pages/createGoals/index', { ...view.renderArgs })
@@ -104,6 +110,7 @@ export default class CreateGoalsController {
       (createGoalDto, idx) => this.auditService.logCreateGoal(createGoalAuditData(req, idx + 1, createGoalDtos.length)), // no need to wait for response
     )
     req.journeyData.createGoalsForm = undefined
+    setRedirectPendingFlag(req)
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goals added')
   }
 }
