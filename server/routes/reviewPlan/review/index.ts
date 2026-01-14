@@ -13,6 +13,7 @@ import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import whoCompletedReviewSchema from '../validationSchemas/whoCompletedReviewSchema'
 import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import reviewNoteSchema from '../validationSchemas/reviewNoteSchema'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions to complete a prisoner's Action Plan Review
@@ -60,6 +61,10 @@ export default function completeActionPlanReviewRoutes(services: Services) {
   ])
   router.post('/check-your-answers', [
     checkReviewPlanDtoExistsInJourneyData,
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Review Plan Check Your Answers',
+      redirectTo: '/plan/:prisonNumber/:journeyId/review/complete',
+    }),
     asyncMiddleware(reviewCheckYourAnswersController.submitCheckYourAnswers),
   ])
 

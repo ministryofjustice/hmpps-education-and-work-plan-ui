@@ -1202,6 +1202,25 @@ const stubCreateActionPlanReview = (): SuperAgentRequest =>
     },
   })
 
+const stubCreateActionPlanReview500Error = (): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/action-plans/.*/reviews',
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
 const stubUpdateActionPlanReviewScheduleStatus = (): SuperAgentRequest =>
   stubFor({
     request: {
@@ -1486,6 +1505,7 @@ export default {
   stubGetActionPlanReviews404Error,
   stubGetActionPlanReviews500Error,
   stubCreateActionPlanReview,
+  stubCreateActionPlanReview500Error,
 
   stubUpdateActionPlanReviewScheduleStatus,
   stubUpdateActionPlanReviewScheduleStatus500Error,
