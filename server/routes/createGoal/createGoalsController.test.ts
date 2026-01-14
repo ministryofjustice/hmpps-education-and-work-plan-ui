@@ -37,6 +37,7 @@ describe('createGoalsController', () => {
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId: expectedPrisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
 
+  const flash = jest.fn()
   const req = {
     journeyData: {},
     body: {},
@@ -44,6 +45,7 @@ describe('createGoalsController', () => {
     params: { prisonNumber, journeyId },
     query: {},
     id: requestId,
+    flash,
   } as unknown as Request
   const res = {
     redirect: jest.fn(),
@@ -189,6 +191,7 @@ describe('createGoalsController', () => {
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(2)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForSecondGoal)
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should call API to create action plan and redirect to overview given value CreateGoalsForm given prisoners Action Plan does not already exist', async () => {
@@ -251,6 +254,7 @@ describe('createGoalsController', () => {
       expect(req.journeyData.createGoalsForm).toBeUndefined()
       expect(auditService.logCreateGoal).toHaveBeenCalledTimes(1)
       expect(auditService.logCreateGoal).toHaveBeenCalledWith(expectedBaseAuditDataForFirstGoal)
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should redirect to create goals form given form validation fails', async () => {
