@@ -36,6 +36,11 @@ import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseT
 import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/sessionResponseTestDataBuilder'
 import SessionStatusValue from '../enums/sessionStatusValue'
 import TimelineApiFilterOptions from './timelineApiFilterOptions'
+import SearchSortDirection from '../enums/searchSortDirection'
+import aPersonResponse from '../testsupport/personResponseTestDataBuilder'
+import SearchSortField from '../enums/searchSortField'
+import aPersonSearchResult from '../testsupport/personSearchResultTestDataBuilder'
+import SearchPlanStatus from '../enums/searchPlanStatus'
 
 jest.mock('@ministryofjustice/hmpps-auth-clients')
 
@@ -1526,6 +1531,139 @@ describe('educationAndWorkPlanClient', () => {
         expect(e.data).toEqual(expectedResponseBody)
         expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       }
+    })
+  })
+
+  describe('searchByPrison', () => {
+    it('should search prisoners by prison id given prison ID exists', async () => {
+      // Given
+      const searchByPrisonResponse = aPersonSearchResult({
+        totalElements: 2,
+        people: [
+          aPersonResponse({ forename: 'YMYNNEUMAR', surname: 'SARERLY' }),
+          aPersonResponse({ forename: 'DINEENG', surname: 'BRIANORES' }),
+        ],
+      })
+      educationAndWorkPlanApi
+        .get(`/search/prisons/${prisonId}/people`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, searchByPrisonResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.searchByPrison(prisonId, username)
+
+      // Then
+      expect(actual).toEqual(searchByPrisonResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should get zero prisoners by prison id given prison ID does not exist', async () => {
+      // Given
+      const unknownPrisonId = 'some-unknown-prison-id'
+
+      const searchByPrisonResponse = aPersonSearchResult({
+        totalElements: 0,
+        people: [],
+      })
+      educationAndWorkPlanApi
+        .get(`/search/prisons/${unknownPrisonId}/people`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, searchByPrisonResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.searchByPrison(unknownPrisonId, username)
+
+      // Then
+      expect(actual).toEqual(searchByPrisonResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should get prisoners by prison id given filtering, pagination and sorting options are specified', async () => {
+      // Given
+      const prisonerNameOrNumber = 'YMYNNEUMAR'
+      const planStatus = SearchPlanStatus.NEEDS_PLAN
+      const page = 2
+      const pageSize = 20
+      const sortBy = SearchSortField.CELL_LOCATION
+      const sortDirection = SearchSortDirection.DESC
+
+      const searchByPrisonResponse = aPersonSearchResult({
+        totalElements: 2,
+        people: [
+          aPersonResponse({ forename: 'YMYNNEUMAR', surname: 'SARERLY', planStatus }),
+          aPersonResponse({ forename: 'YMYNNEUMAR', surname: 'BRIANORES', planStatus }),
+        ],
+      })
+      educationAndWorkPlanApi
+        .get(
+          `/search/prisons/${prisonId}/people?prisonerNameOrNumber=${prisonerNameOrNumber}&planStatus=${planStatus}&page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
+        )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, searchByPrisonResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.searchByPrison(
+        prisonId,
+        username,
+        prisonerNameOrNumber,
+        planStatus,
+        page,
+        pageSize,
+        sortBy,
+        sortDirection,
+      )
+
+      // Then
+      expect(actual).toEqual(searchByPrisonResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should return null given API returns a not found error', async () => {
+      // Given
+      const apiErrorResponse = {
+        status: 404,
+        userMessage: 'Not found',
+        developerMessage: 'Not found',
+      }
+      educationAndWorkPlanApi
+        .get(`/search/prisons/${prisonId}/people`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, apiErrorResponse)
+
+      // When
+      const actual = await educationAndWorkPlanClient.searchByPrison(prisonId, username)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should rethrow error given API returns an error', async () => {
+      // Given
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      educationAndWorkPlanApi
+        .get(`/search/prisons/${prisonId}/people`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
+
+      // When
+      const actual = await educationAndWorkPlanClient.searchByPrison(prisonId, username).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
     })
   })
 })
