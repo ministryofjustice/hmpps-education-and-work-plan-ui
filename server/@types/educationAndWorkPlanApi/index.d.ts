@@ -376,6 +376,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/assessments/{prisonNumber}/required': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['checkEligibilityOfAssessments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/action-plans/{prisonNumber}/reviews/review-schedules': {
     parameters: {
       query?: never
@@ -710,12 +726,6 @@ export interface components {
     }
     UpdatePreviousQualificationsRequest: {
       /**
-       * Format: uuid
-       * @description A unique reference for a PreviousQualifications resource (if it already exists).
-       * @example c88a6c48-97e2-4c04-93b5-98619966447b
-       */
-      reference?: string
-      /**
        * @example null
        * @enum {string}
        */
@@ -733,6 +743,12 @@ export interface components {
        * @example null
        */
       qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
+      /**
+       * Format: uuid
+       * @description A unique reference for a PreviousQualifications resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
     }
     UpdatePreviousTrainingRequest: {
       /**
@@ -753,16 +769,16 @@ export interface components {
         | 'NONE'
       )[]
       /**
+       * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
+       * @example null
+       */
+      trainingTypeOther?: string
+      /**
        * Format: uuid
        * @description A unique reference for a PreviousTraining resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       reference?: string
-      /**
-       * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
-       * @example null
-       */
-      trainingTypeOther?: string
     }
     UpdatePreviousWorkExperiencesRequest: {
       /**
@@ -770,12 +786,6 @@ export interface components {
        * @enum {string}
        */
       hasWorkedBefore: 'YES' | 'NO' | 'NOT_RELEVANT'
-      /**
-       * Format: uuid
-       * @description A unique reference for a PreviousWorkExperiences resource (if it already exists).
-       * @example c88a6c48-97e2-4c04-93b5-98619966447b
-       */
-      reference?: string
       /**
        * @description The reason why the whether the prisoner has worked before is not relevant. Mandatory when 'hasWorkedBefore' is 'NOT_RELEVANT'
        * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
@@ -786,19 +796,25 @@ export interface components {
        * @example null
        */
       experiences?: components['schemas']['PreviousWorkExperience'][]
+      /**
+       * Format: uuid
+       * @description A unique reference for a PreviousWorkExperiences resource (if it already exists).
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference?: string
     }
     UpdateWorkOnReleaseRequest: {
+      /**
+       * @example null
+       * @enum {string}
+       */
+      hopingToWork: 'YES' | 'NO' | 'NOT_SURE'
       /**
        * Format: uuid
        * @description A unique reference for a WorkOnRelease resource.
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
       reference: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      hopingToWork: 'YES' | 'NO' | 'NOT_SURE'
       /**
        * @description Factors affecting the Prisoner's ability to work.
        * @example null
@@ -846,7 +862,9 @@ export interface components {
         | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
         | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
         | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_TEMP_ABSENCE'
         | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_RELEASE_HOSPITAL'
         | 'EXEMPT_PRISONER_DEATH'
         | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
@@ -881,7 +899,9 @@ export interface components {
         | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
         | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
         | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_TEMP_ABSENCE'
         | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_RELEASE_HOSPITAL'
         | 'EXEMPT_PRISONER_DEATH'
         | 'EXEMPT_PRISONER_MERGE'
         | 'EXEMPT_UNKNOWN'
@@ -928,11 +948,6 @@ export interface components {
     }
     UpdateStepRequest: {
       /**
-       * @example null
-       * @enum {string}
-       */
-      status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
-      /**
        * @description A title describing the step
        * @example Book first aid course
        */
@@ -943,6 +958,11 @@ export interface components {
        * @example 1
        */
       sequenceNumber: number
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETE'
       /**
        * Format: uuid
        * @description Optional reference number for the Step. The Step's unique reference. This is used as an identifier to update the required Step. It is not possible or supported to update the `stepReference` for an existing step. If the Step reference is not supplied this will be treated as a new Step and will be added to the Goal.
@@ -1443,62 +1463,6 @@ export interface components {
     }
     ScheduledActionPlanReviewResponse: {
       /**
-       * Format: uuid
-       * @description The unique reference of this Review
-       * @example c88a6c48-97e2-4c04-93b5-98619966447b
-       */
-      reference: string
-      /**
-       * Format: date
-       * @description An ISO-8601 date representing date that the Review window starts.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window starts from.
-       * @example Sun Nov 19 00:00:00 UTC 2023
-       */
-      reviewDateFrom: string
-      /**
-       * Format: date
-       * @description An ISO-8601 date representing date that the Review window ends. This is the Review deadline date.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window ends, and that the Review should be completed by.
-       * @example Tue Dec 19 00:00:00 UTC 2023
-       */
-      reviewDateTo: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      status:
-        | 'SCHEDULED'
-        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
-        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
-        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
-        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
-        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
-        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
-        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
-        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
-        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
-        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
-        | 'EXEMPT_PRISONER_TRANSFER'
-        | 'EXEMPT_PRISONER_RELEASE'
-        | 'EXEMPT_PRISONER_DEATH'
-        | 'EXEMPT_PRISONER_MERGE'
-        | 'EXEMPT_UNKNOWN'
-        | 'COMPLETED'
-      /**
-       * @example null
-       * @enum {string}
-       */
-      calculationRule:
-        | 'PRISONER_READMISSION'
-        | 'PRISONER_TRANSFER'
-        | 'BETWEEN_RELEASE_AND_3_MONTHS_TO_SERVE'
-        | 'BETWEEN_3_MONTHS_AND_3_MONTHS_7_DAYS_TO_SERVE'
-        | 'BETWEEN_3_MONTHS_8_DAYS_AND_6_MONTHS_TO_SERVE'
-        | 'BETWEEN_6_AND_12_MONTHS_TO_SERVE'
-        | 'BETWEEN_12_AND_60_MONTHS_TO_SERVE'
-        | 'MORE_THAN_60_MONTHS_TO_SERVE'
-        | 'INDETERMINATE_SENTENCE'
-        | 'PRISONER_ON_REMAND'
-        | 'PRISONER_UN_SENTENCED'
-      /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
        */
@@ -1540,6 +1504,66 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * Format: uuid
+       * @description The unique reference of this Review
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing date that the Review window starts.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window starts from.
+       * @example Sun Nov 19 00:00:00 UTC 2023
+       */
+      reviewDateFrom: string
+      /**
+       * Format: date
+       * @description An ISO-8601 date representing date that the Review window ends. This is the Review deadline date.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window ends, and that the Review should be completed by.
+       * @example Tue Dec 19 00:00:00 UTC 2023
+       */
+      reviewDateTo: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      status:
+        | 'SCHEDULED'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_TEMP_ABSENCE'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_RELEASE_HOSPITAL'
+        | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
+        | 'EXEMPT_UNKNOWN'
+        | 'COMPLETED'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      calculationRule:
+        | 'PRISONER_READMISSION'
+        | 'PRISONER_TRANSFER'
+        | 'PRISONER_TRANSFER_AFTER_FINAL_REVIEW'
+        | 'BETWEEN_RELEASE_AND_3_MONTHS_TO_SERVE'
+        | 'BETWEEN_3_MONTHS_AND_3_MONTHS_7_DAYS_TO_SERVE'
+        | 'BETWEEN_3_MONTHS_8_DAYS_AND_6_MONTHS_TO_SERVE'
+        | 'BETWEEN_6_AND_12_MONTHS_TO_SERVE'
+        | 'BETWEEN_12_AND_60_MONTHS_TO_SERVE'
+        | 'MORE_THAN_60_MONTHS_TO_SERVE'
+        | 'INDETERMINATE_SENTENCE'
+        | 'PRISONER_ON_REMAND'
+        | 'PRISONER_UN_SENTENCED'
+        | 'RELEASE_DATE_IN_PAST'
       /**
        * @description An optional reason as to why the Review Schedule is exempted.  Only present when the `status` field is one of the `EXEMPTION_` statuses and the user entered an exemption  reason when marking the Review as Exempted.
        * @example null
@@ -1652,9 +1676,31 @@ export interface components {
        */
       events: components['schemas']['TimelineEventResponse'][]
     }
+    Attachment: {
+      /**
+       * Format: int32
+       * @description The number of the attachment which will match any corresponding reference in the content section
+       */
+      attachmentNumber: number
+      /** @description The name or description of the attachment which will be included in the report */
+      name: string
+      /** @description The content type of the attachment */
+      contentType: string
+      /** @description The url to be used to download the attachment file */
+      url: string
+      /**
+       * Format: int32
+       * @description The size of the attachment file in bytes
+       */
+      filesize: number
+      /** @description The filename of attachment file */
+      filename: string
+    }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: unknown
+      /** @description The details of any attachments for the subject access request response */
+      attachments?: components['schemas']['Attachment'][]
     }
     ErrorResponse: {
       /** Format: int32 */
@@ -1859,30 +1905,6 @@ export interface components {
     }
     EducationResponse: {
       /**
-       * Format: uuid
-       * @description A unique reference for this EducationResponse.
-       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
-       */
-      reference: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      educationLevel:
-        | 'PRIMARY_SCHOOL'
-        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
-        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
-        | 'FURTHER_EDUCATION_COLLEGE'
-        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
-        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
-        | 'NO_FORMAL_EDUCATION'
-        | 'NOT_SURE'
-      /**
-       * @description A list of achieved qualifications. Can be empty but not null.
-       * @example null
-       */
-      qualifications: components['schemas']['AchievedQualificationResponse'][]
-      /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
        */
@@ -1924,6 +1946,30 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * Format: uuid
+       * @description A unique reference for this EducationResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      educationLevel:
+        | 'PRIMARY_SCHOOL'
+        | 'SECONDARY_SCHOOL_LEFT_BEFORE_TAKING_EXAMS'
+        | 'SECONDARY_SCHOOL_TOOK_EXAMS'
+        | 'FURTHER_EDUCATION_COLLEGE'
+        | 'UNDERGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
+        | 'NO_FORMAL_EDUCATION'
+        | 'NOT_SURE'
+      /**
+       * @description A list of achieved qualifications. Can be empty but not null.
+       * @example null
+       */
+      qualifications: components['schemas']['AchievedQualificationResponse'][]
     }
     FutureWorkInterestsResponse: {
       /**
@@ -2453,52 +2499,6 @@ export interface components {
     }
     InductionScheduleResponse: {
       /**
-       * Format: uuid
-       * @description A unique reference for this InductionScheduleResponse.
-       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
-       */
-      reference: string
-      /**
-       * @description The ID of the prisoner
-       * @example A1234BC
-       */
-      prisonNumber: string
-      /**
-       * Format: date
-       * @description The deadline for the induction to be completed
-       * @example Mon Jun 19 00:00:00 UTC 2023
-       */
-      deadlineDate: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      scheduleCalculationRule: 'NEW_PRISON_ADMISSION' | 'EXISTING_PRISONER'
-      /**
-       * @example null
-       * @enum {string}
-       */
-      scheduleStatus:
-        | 'PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS'
-        | 'SCHEDULED'
-        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
-        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
-        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
-        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
-        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
-        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
-        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
-        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
-        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
-        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
-        | 'EXEMPT_PRISONER_TRANSFER'
-        | 'EXEMPT_PRISONER_RELEASE'
-        | 'EXEMPT_PRISONER_DEATH'
-        | 'EXEMPT_PRISONER_MERGE'
-        | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
-        | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
-        | 'COMPLETED'
-      /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
        */
@@ -2541,6 +2541,57 @@ export interface components {
        */
       updatedAtPrison: string
       /**
+       * Format: uuid
+       * @description A unique reference for this InductionScheduleResponse.
+       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
+       */
+      reference: string
+      /**
+       * @description The ID of the prisoner
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @description The deadline for the induction to be completed
+       * @example Mon Jun 19 00:00:00 UTC 2023
+       */
+      deadlineDate: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      scheduleCalculationRule:
+        | 'NEW_PRISON_ADMISSION'
+        | 'EXISTING_PRISONER'
+        | 'NEW_PRISON_ADMISSION_EXTENDED_DEADLINE_PERIOD'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      scheduleStatus:
+        | 'PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS'
+        | 'SCHEDULED'
+        | 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY'
+        | 'EXEMPT_PRISONER_OTHER_HEALTH_ISSUES'
+        | 'EXEMPT_PRISONER_FAILED_TO_ENGAGE'
+        | 'EXEMPT_PRISONER_ESCAPED_OR_ABSCONDED'
+        | 'EXEMPT_PRISONER_SAFETY_ISSUES'
+        | 'EXEMPT_PRISON_REGIME_CIRCUMSTANCES'
+        | 'EXEMPT_PRISON_STAFF_REDEPLOYMENT'
+        | 'EXEMPT_PRISON_OPERATION_OR_SECURITY_ISSUE'
+        | 'EXEMPT_SECURITY_ISSUE_RISK_TO_STAFF'
+        | 'EXEMPT_SYSTEM_TECHNICAL_ISSUE'
+        | 'EXEMPT_PRISONER_TRANSFER'
+        | 'EXEMPT_TEMP_ABSENCE'
+        | 'EXEMPT_PRISONER_RELEASE'
+        | 'EXEMPT_PRISONER_RELEASE_HOSPITAL'
+        | 'EXEMPT_PRISONER_DEATH'
+        | 'EXEMPT_PRISONER_MERGE'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS'
+        | 'EXEMPT_SCREENING_AND_ASSESSMENT_INCOMPLETE'
+        | 'COMPLETED'
+      /**
        * @description The name of the person who completed the review.
        * @example John smith
        */
@@ -2579,6 +2630,10 @@ export interface components {
        * @example null
        */
       inductionSchedules: components['schemas']['InductionScheduleResponse'][]
+    }
+    EducationAssessmentRequired: {
+      /** @example null */
+      basicSkillsAssessmentRequired?: boolean
     }
     ActionPlanResponse: {
       /**
@@ -2696,19 +2751,6 @@ export interface components {
     }
     NoteResponse: {
       /**
-       * Format: uuid
-       * @description The Notes unique reference. This is used as an identifier to archive the required Note.
-       * @example c88a6c48-97e2-4c04-93b5-98619966447b
-       */
-      reference: string
-      /** @example Peter would like to work in the library to help with his English levels. */
-      content: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION' | 'REVIEW' | 'INDUCTION'
-      /**
        * @description The DPS username of the person who created this resource.
        * @example asmith_gen
        */
@@ -2750,6 +2792,19 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * Format: uuid
+       * @description The Notes unique reference. This is used as an identifier to archive the required Note.
+       * @example c88a6c48-97e2-4c04-93b5-98619966447b
+       */
+      reference: string
+      /** @example Peter would like to work in the library to help with his English levels. */
+      content: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      type: 'GOAL' | 'GOAL_ARCHIVAL' | 'GOAL_COMPLETION' | 'REVIEW' | 'INDUCTION'
     }
     StepResponse: {
       /**
@@ -3707,6 +3762,28 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['InductionSchedulesResponse']
+        }
+      }
+    }
+  }
+  checkEligibilityOfAssessments: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['EducationAssessmentRequired']
         }
       }
     }

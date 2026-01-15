@@ -237,6 +237,74 @@ describe('educationAndWorkPlanClient', () => {
     })
   })
 
+  describe('getGoal', () => {
+    const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
+
+    it('should get Goal', async () => {
+      // Given
+      const expectedResponseBody = aValidGoalResponse({ goalReference })
+      educationAndWorkPlanApi //
+        .get(`/action-plans/${prisonNumber}/goals/${goalReference}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getGoal(prisonNumber, goalReference, username)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not get Goal given the API returns a 404', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 404,
+        errorCode: null as string,
+        userMessage: 'Goal not found',
+        developerMessage: null as string,
+        moreInfo: null as string,
+      }
+      educationAndWorkPlanApi //
+        .get(`/action-plans/${prisonNumber}/goals/${goalReference}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getGoal(prisonNumber, goalReference, username)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not get Goal given API returns an error response', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/goals/${goalReference}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, expectedResponseBody)
+
+      const expectedError = new Error('Internal Server Error')
+
+      // When
+      const actual = await educationAndWorkPlanClient.getGoal(prisonNumber, goalReference, username).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given
