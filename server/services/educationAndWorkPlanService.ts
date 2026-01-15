@@ -9,11 +9,11 @@ import type {
   UpdateGoalDto,
 } from 'dto'
 import type { CreateGoalsRequest } from 'educationAndWorkPlanApiClient'
-import type { ActionPlan, Goals, PrisonerGoals } from 'viewModels'
+import type { ActionPlan, Goal, Goals, PrisonerGoals } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toCompleteGoalRequest from '../data/mappers/completeGoalMapper'
 import { toCreateGoalRequest } from '../data/mappers/createGoalMapper'
-import { toActionPlan, toGoals } from '../data/mappers/actionPlanMapper'
+import { toActionPlan, toGoal, toGoals } from '../data/mappers/actionPlanMapper'
 import logger from '../../logger'
 import { toUpdateGoalRequest } from '../data/mappers/updateGoalMapper'
 import toArchiveGoalRequest from '../data/mappers/archiveGoalMapper'
@@ -74,6 +74,16 @@ export default class EducationAndWorkPlanService {
     } catch (error) {
       logger.error(`Error retrieving goals with status [${status}] for Prisoner [${prisonNumber}]: ${error}`)
       return { goals: [], problemRetrievingData: true }
+    }
+  }
+
+  async getPrisonerGoalByReference(prisonNumber: string, goalReference: string, username: string): Promise<Goal> {
+    try {
+      const response = await this.educationAndWorkPlanClient.getGoal(prisonNumber, goalReference, username)
+      return response ? toGoal(response, {}) : null
+    } catch (e) {
+      logger.error(`Error retrieving goal [${goalReference}] for Prisoner [${prisonNumber}]: ${e}`)
+      throw e
     }
   }
 

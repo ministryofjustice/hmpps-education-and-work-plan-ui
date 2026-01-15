@@ -15,6 +15,7 @@ import type {
   EducationResponse,
   GetActionPlanSummariesRequest,
   GetGoalsResponse,
+  GoalResponse,
   InductionResponse,
   InductionScheduleResponse,
   PrisonerIdsRequest,
@@ -81,6 +82,16 @@ export default class EducationAndWorkPlanClient extends RestClient {
         query: {
           status,
         },
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async getGoal(prisonNumber: string, goalReference: string, username: string): Promise<GoalResponse> {
+    return this.get<GoalResponse>(
+      {
+        path: `/action-plans/${prisonNumber}/goals/${goalReference}`,
         errorHandler: restClientErrorHandler({ ignore404: true }),
       },
       asSystem(username),

@@ -208,6 +208,54 @@ describe('educationAndWorkPlanService', () => {
     })
   })
 
+  describe('getPrisonerGoalByReference', () => {
+    const goalReference = 'c77cd2fb-40e0-4354-982a-5c8017e92b26'
+
+    it('should get goals by reference', async () => {
+      // Given
+      educationAndWorkPlanClient.getGoal.mockResolvedValue({
+        ...aValidGoalResponse(),
+        createdAtPrison: 'BXI',
+        updatedAtPrison: 'BXI',
+      })
+      const expectedResponse = aValidGoal({ createdAtPrisonName: 'BXI', updatedAtPrisonName: 'BXI' })
+
+      // When
+      const actual = await educationAndWorkPlanService.getPrisonerGoalByReference(prisonNumber, goalReference, username)
+
+      // Then
+      expect(educationAndWorkPlanClient.getGoal).toHaveBeenCalledWith(prisonNumber, goalReference, username)
+      expect(actual).toEqual(expectedResponse)
+    })
+
+    it('should rethrow error given API returns an error', async () => {
+      // Given
+      const expectedError = new Error('Some error')
+      educationAndWorkPlanClient.getGoal.mockRejectedValue(expectedError)
+
+      // When
+      const actual = await educationAndWorkPlanService
+        .getPrisonerGoalByReference(prisonNumber, goalReference, username)
+        .catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(educationAndWorkPlanClient.getGoal).toHaveBeenCalledWith(prisonNumber, goalReference, username)
+    })
+
+    it('should return null given the service returns null indicating the goal was not found', async () => {
+      // Given
+      educationAndWorkPlanClient.getGoal.mockResolvedValue(null)
+
+      // When
+      const actual = await educationAndWorkPlanService.getPrisonerGoalByReference(prisonNumber, goalReference, username)
+
+      // Then
+      expect(actual).toBeNull()
+      expect(educationAndWorkPlanClient.getGoal).toHaveBeenCalledWith(prisonNumber, goalReference, username)
+    })
+  })
+
   describe('updateGoal', () => {
     it('should update Goal', async () => {
       // Given
