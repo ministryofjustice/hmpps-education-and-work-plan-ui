@@ -1,4 +1,6 @@
 import * as fs from 'fs'
+import path from 'node:path'
+import webpackPreprocessor from '@cypress/webpack-batteries-included-preprocessor'
 import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
@@ -16,6 +18,17 @@ import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
 import supportAdditionalNeedsApi from './integration_tests/mockApis/supportAdditionalNeedsApi'
 import learnerRecordsApi from './integration_tests/mockApis/learnerRecordsApi'
 
+function preprocessorOptions() {
+  const replacementModulesPath = path.resolve(__dirname, './integration_tests/support/replacementModules')
+  const options = webpackPreprocessor.defaultOptions
+  options.typescript = require.resolve('typescript')
+  options.webpackOptions.resolve.alias = {
+    bunyan: path.join(replacementModulesPath, 'bunyan.ts'),
+    'bunyan-format': path.join(replacementModulesPath, 'bunyan-format.ts'),
+  }
+  return options
+}
+
 export default defineConfig({
   chromeWebSecurity: false,
   fixturesFolder: 'integration_tests/fixtures',
@@ -31,6 +44,7 @@ export default defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on) {
+      on('file:preprocessor', webpackPreprocessor(preprocessorOptions()))
       on('task', {
         reset: resetStubs,
         ...auth,
