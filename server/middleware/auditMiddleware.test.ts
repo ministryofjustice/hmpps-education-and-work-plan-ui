@@ -4,20 +4,20 @@ import { v4 as uuidV4 } from 'uuid'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
 import PrisonerListService from '../services/prisonerListService'
-import PrisonerSearchService from '../services/prisonerSearchService'
+import PrisonerService from '../services/prisonerService'
 import PrisonService from '../services/prisonService'
 import JourneyDataService from '../services/journeyDataService'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 
 jest.mock('../services/auditService')
-jest.mock('../services/prisonerSearchService')
+jest.mock('../services/prisonerService')
 jest.mock('../services/prisonerListService')
 jest.mock('../services/prisonService')
 jest.mock('../services/journeyDataService')
 
 let app: Express
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
+const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
 const prisonerListService = new PrisonerListService(null, null, null) as jest.Mocked<PrisonerListService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const journeyDataService = new JourneyDataService(null) as jest.Mocked<JourneyDataService>
@@ -26,7 +26,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
-      prisonerSearchService,
+      prisonerService,
       prisonerListService,
       prisonService,
       journeyDataService,
@@ -168,7 +168,7 @@ describe('auditMiddleware', () => {
     // Given
     const journeyId = uuidV4()
     const prisonNumber = 'A1234AA'
-    prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(aValidPrisoner({ prisonNumber }))
+    prisonerService.getPrisonerByPrisonNumber.mockResolvedValue(aValidPrisoner({ prisonNumber }))
 
     // When
     const response = await request(app).get(`/plan/${prisonNumber}/goals/${journeyId}/create`)

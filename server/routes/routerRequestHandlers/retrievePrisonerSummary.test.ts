@@ -1,14 +1,14 @@
 import createError from 'http-errors'
 import { Request, Response } from 'express'
-import PrisonerSearchService from '../../services/prisonerSearchService'
+import PrisonerService from '../../services/prisonerService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import retrievePrisonerSummary from './retrievePrisonerSummary'
 
-jest.mock('../../services/prisonerSearchService')
+jest.mock('../../services/prisonerService')
 
 describe('retrievePrisonerSummary', () => {
-  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
-  const requestHandler = retrievePrisonerSummary(prisonerSearchService)
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
+  const requestHandler = retrievePrisonerSummary(prisonerService)
 
   const username = 'a-dps-user'
   const prisonNumber = 'A1234GC'
@@ -33,41 +33,41 @@ describe('retrievePrisonerSummary', () => {
     // Given
     const prisonId = 'MDI'
     const expectedPrisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
-    prisonerSearchService.getPrisonerByPrisonNumber.mockResolvedValue(expectedPrisonerSummary)
+    prisonerService.getPrisonerByPrisonNumber.mockResolvedValue(expectedPrisonerSummary)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+    expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toEqual(expectedPrisonerSummary)
     expect(next).toHaveBeenCalled()
   })
 
   it('should call next function with error given retrieving prisoner fails with a 404', async () => {
     // Given
-    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(createError(404, 'Not Found'))
+    prisonerService.getPrisonerByPrisonNumber.mockRejectedValue(createError(404, 'Not Found'))
     const expectedError = createError(404, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+    expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 
   it('should call next function with error given retrieving prisoner fails with a 500', async () => {
     // Given
-    prisonerSearchService.getPrisonerByPrisonNumber.mockRejectedValue(createError(500, 'Service unavailable'))
+    prisonerService.getPrisonerByPrisonNumber.mockRejectedValue(createError(500, 'Service unavailable'))
     const expectedError = createError(500, `Prisoner ${prisonNumber} not returned by the Prisoner Search Service API`)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(prisonerSearchService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
+    expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })

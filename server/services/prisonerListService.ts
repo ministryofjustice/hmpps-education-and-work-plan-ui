@@ -1,18 +1,18 @@
 import type { PrisonerSearchSummary } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import CiagInductionClient from '../data/ciagInductionClient'
-import PrisonerSearchService from './prisonerSearchService'
+import PrisonerService from './prisonerService'
 import SearchPlanStatus from '../enums/searchPlanStatus'
 
 export default class PrisonerListService {
   constructor(
-    private readonly prisonerSearchService: PrisonerSearchService,
+    private readonly prisonerService: PrisonerService,
     private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient,
     private readonly ciagInductionClient: CiagInductionClient,
   ) {}
 
   async getPrisonerSearchSummariesForPrisonId(prisonId: string, username: string): Promise<PrisonerSearchSummary[]> {
-    const prisonerSummaries = (await this.prisonerSearchService.getPrisonersByPrisonId(prisonId, username)).prisoners
+    const prisonerSummaries = (await this.prisonerService.getPrisonersByPrisonId(prisonId, username)).prisoners
 
     const prisonNumbers: string[] = prisonerSummaries.map(prisoner => prisoner.prisonNumber)
 

@@ -7,8 +7,8 @@ import SessionListController from './sessionListController'
 import retrieveSessionsSummary from '../routerRequestHandlers/retrieveSessionsSummary'
 
 const sessionListRoutes = (router: Router, services: Services) => {
-  const { prisonerSearchService, sessionService } = services
-  const sessionListController = new SessionListController(prisonerSearchService, sessionService)
+  const { prisonerService, sessionService } = services
+  const sessionListController = new SessionListController(prisonerService, sessionService)
 
   router.use('/sessions', [
     checkUserHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES),

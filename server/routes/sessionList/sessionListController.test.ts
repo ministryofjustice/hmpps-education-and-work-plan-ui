@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
 import type { PrisonerSummaryPrisonerSession, SessionsSummary } from 'viewModels'
-import PrisonerSearchService from '../../services/prisonerSearchService'
+import PrisonerService from '../../services/prisonerService'
 import SessionService from '../../services/sessionService'
 import SessionListController from './sessionListController'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
@@ -11,13 +11,13 @@ import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
 import SessionStatusValue from '../../enums/sessionStatusValue'
 import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuilder'
 
-jest.mock('../../services/prisonerSearchService')
+jest.mock('../../services/prisonerService')
 jest.mock('../../services/sessionService')
 
 describe('sessionListController', () => {
-  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const sessionService = new SessionService(null) as jest.Mocked<SessionService>
-  const controller = new SessionListController(prisonerSearchService, sessionService)
+  const controller = new SessionListController(prisonerService, sessionService)
 
   const sessionsSummary = aValidSessionsSummary()
 
@@ -108,7 +108,7 @@ describe('sessionListController', () => {
     req.session.sessionListSortOptions = undefined
     req.query = {}
 
-    prisonerSearchService.getPrisonersByPrisonId.mockResolvedValue(prisonerSummaries)
+    prisonerService.getPrisonersByPrisonId.mockResolvedValue(prisonerSummaries)
   })
 
   describe('getDueSessionsView', () => {
@@ -154,7 +154,7 @@ describe('sessionListController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
       expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
-      expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+      expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
         SessionStatusValue.DUE,
@@ -206,7 +206,7 @@ describe('sessionListController', () => {
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
         expect(req.session.sessionListSortOptions).toEqual('name,descending')
-        expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+        expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
           SessionStatusValue.DUE,
@@ -256,7 +256,7 @@ describe('sessionListController', () => {
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
         expect(req.session.sessionListSortOptions).toEqual('release-date,ascending')
-        expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+        expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
           SessionStatusValue.DUE,
@@ -305,7 +305,7 @@ describe('sessionListController', () => {
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
         expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
-        expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+        expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
           SessionStatusValue.DUE,
@@ -352,7 +352,7 @@ describe('sessionListController', () => {
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
         expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
-        expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+        expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
         expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
           ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
           SessionStatusValue.DUE,
@@ -402,7 +402,7 @@ describe('sessionListController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/onHoldSessions', expectedView)
       expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
-      expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+      expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
         SessionStatusValue.ON_HOLD,
@@ -451,7 +451,7 @@ describe('sessionListController', () => {
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/overdueSessions', expectedView)
       expect(req.session.sessionListSortOptions).toEqual('due-by,ascending')
-      expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
+      expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(activeCaseLoadId, username)
       expect(sessionService.getSessionsInStatusForPrisoners).toHaveBeenCalledWith(
         ['A1234BC', 'B1234BC', 'C1234BC', 'D1234BC', 'E1234BC'],
         SessionStatusValue.OVERDUE,

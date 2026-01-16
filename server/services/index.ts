@@ -1,7 +1,7 @@
 import { dataAccess } from '../data'
 import AuditService from './auditService'
 import UserService from './userService'
-import PrisonerSearchService from './prisonerSearchService'
+import PrisonerService from './prisonerService'
 import EducationAndWorkPlanService from './educationAndWorkPlanService'
 import CuriousService from './curiousService'
 import PrisonerListService from './prisonerListService'
@@ -37,18 +37,14 @@ export const services = () => {
 
   const auditService = new AuditService(hmppsAuditClient)
   const userService = new UserService(manageUsersApiClient)
-  const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
+  const prisonerService = new PrisonerService(prisonerSearchClient, prisonerSearchStore)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
   const searchService = new SearchService(educationAndWorkPlanClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
   const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService)
   const inductionService = new InductionService(educationAndWorkPlanClient)
   const curiousService = new CuriousService(curiousClient)
-  const prisonerListService = new PrisonerListService(
-    prisonerSearchService,
-    educationAndWorkPlanClient,
-    ciagInductionClient,
-  )
+  const prisonerListService = new PrisonerListService(prisonerService, educationAndWorkPlanClient, ciagInductionClient)
   const timelineService = new TimelineService(educationAndWorkPlanClient, prisonService)
   const sessionService = new SessionService(educationAndWorkPlanClient)
   const journeyDataService = new JourneyDataService(journeyDataStore)
@@ -59,7 +55,7 @@ export const services = () => {
     applicationInfo,
     auditService,
     userService,
-    prisonerSearchService,
+    prisonerService,
     searchService,
     educationAndWorkPlanService,
     reviewService,
@@ -80,7 +76,7 @@ export type Services = ReturnType<typeof services>
 export {
   AuditService,
   UserService,
-  PrisonerSearchService,
+  PrisonerService,
   SearchService,
   EducationAndWorkPlanService,
   ReviewService,
