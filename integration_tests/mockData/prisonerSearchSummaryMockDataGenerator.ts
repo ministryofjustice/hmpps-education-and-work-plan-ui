@@ -1,5 +1,6 @@
 import type { PrisonerSearchSummary } from 'viewModels'
 import { addDays, startOfToday, subDays } from 'date-fns'
+import SearchPlanStatus from '../../server/enums/searchPlanStatus'
 
 /**
  * Generator function that can be called as a cypress task that generates and returns an array of random `PrisonerSearchSummary`
@@ -23,6 +24,7 @@ const prisonerSearchSummaryMockDataGenerator = (numberOfRecords = 500): Array<Pr
       supportingPrisonId: 'MDI',
       hasCiagInduction: randomNumber(0, 1) === 1,
       hasActionPlan: randomNumber(0, 1) === 1,
+      planStatus: randomPlanStatus(),
     }
   })
 }
@@ -78,6 +80,12 @@ const randomNumbers = (numberOfNumbers: number): string => {
 
 const randomNumber = (min: number, max: number): number => Math.floor(Math.random() * (max + 1 - min) + min)
 
+const randomPlanStatus = (): SearchPlanStatus => {
+  const values = Object.keys(SearchPlanStatus)
+  const enumKey = values[Math.floor(Math.random() * values.length)]
+  return SearchPlanStatus[enumKey]
+}
+
 const ALPHABET = [
   'A',
   'B',
@@ -103,8 +111,8 @@ const ALPHABET = [
   'V',
   'W',
   'X',
-  'Z',
   'Y',
+  'Z',
 ]
 
 const FORENAMES = [

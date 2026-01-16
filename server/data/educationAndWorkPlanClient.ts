@@ -18,6 +18,7 @@ import type {
   GoalResponse,
   InductionResponse,
   InductionScheduleResponse,
+  PersonSearchResult,
   PrisonerIdsRequest,
   SessionResponses,
   SessionSummaryResponse,
@@ -35,6 +36,9 @@ import SessionStatusValue from '../enums/sessionStatusValue'
 import TimelineApiFilterOptions from './timelineApiFilterOptions'
 import logger from '../../logger'
 import restClientErrorHandler from './restClientErrorHandler'
+import SearchSortDirection from '../enums/searchSortDirection'
+import SearchSortField from '../enums/searchSortField'
+import SearchPlanStatus from '../enums/searchPlanStatus'
 
 export default class EducationAndWorkPlanClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -325,6 +329,33 @@ export default class EducationAndWorkPlanClient extends RestClient {
         query: {
           status,
         },
+      },
+      asSystem(username),
+    )
+  }
+
+  async searchByPrison(
+    prisonId: string,
+    username: string,
+    prisonerNameOrNumber?: string,
+    planStatus?: SearchPlanStatus,
+    page?: number,
+    pageSize?: number,
+    sortBy?: SearchSortField,
+    sortDirection?: SearchSortDirection,
+  ): Promise<PersonSearchResult> {
+    return this.get<PersonSearchResult>(
+      {
+        path: `/search/prisons/${prisonId}/people`,
+        query: {
+          prisonerNameOrNumber,
+          planStatus,
+          page,
+          pageSize,
+          sortBy,
+          sortDirection,
+        },
+        errorHandler: restClientErrorHandler({ ignore404: true }),
       },
       asSystem(username),
     )

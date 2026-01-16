@@ -13,6 +13,7 @@ import SessionService from './sessionService'
 import JourneyDataService from './journeyDataService'
 import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
 import LearnerRecordsService from './learnerRecordsService'
+import SearchService from './searchService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -38,6 +39,7 @@ export const services = () => {
   const userService = new UserService(manageUsersApiClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
   const prisonService = new PrisonService(prisonRegisterStore, prisonRegisterClient)
+  const searchService = new SearchService(educationAndWorkPlanClient)
   const educationAndWorkPlanService = new EducationAndWorkPlanService(educationAndWorkPlanClient, prisonService)
   const reviewService = new ReviewService(educationAndWorkPlanClient, prisonService)
   const inductionService = new InductionService(educationAndWorkPlanClient)
@@ -58,6 +60,7 @@ export const services = () => {
     auditService,
     userService,
     prisonerSearchService,
+    searchService,
     educationAndWorkPlanService,
     reviewService,
     inductionService,
@@ -78,6 +81,7 @@ export {
   AuditService,
   UserService,
   PrisonerSearchService,
+  SearchService,
   EducationAndWorkPlanService,
   ReviewService,
   InductionService,

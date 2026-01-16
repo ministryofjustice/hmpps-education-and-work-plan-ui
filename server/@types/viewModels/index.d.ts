@@ -13,6 +13,7 @@ declare module 'viewModels' {
   import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
   import AssessmentTypeValue from '../../enums/assessmentTypeValue'
   import AlnAssessmentReferral from '../../enums/alnAssessmentReferral'
+  import SearchPlanStatus from '../../enums/searchPlanStatus'
 
   export interface SessionsSummary {
     overdueSessionCount: number
@@ -21,6 +22,9 @@ declare module 'viewModels' {
     problemRetrievingData: boolean
   }
 
+  /**
+   * @deprecated
+   */
   export interface PrisonerSummaries {
     problemRetrievingData: boolean
     prisoners: Array<PrisonerSummary>
@@ -53,13 +57,48 @@ declare module 'viewModels' {
     receptionDate?: Date
     dateOfBirth?: Date
     location: string
-    restrictedPatient: boolean
+    restrictedPatient?: boolean
     supportingPrisonId?: string
   }
 
   export interface PrisonerSearchSummary extends PrisonerSummary {
-    hasCiagInduction: boolean
-    hasActionPlan: boolean
+    /**
+     * @deprecated field
+     */
+    hasCiagInduction?: boolean
+    /**
+     * @deprecated field
+     */
+    hasActionPlan?: boolean
+    planStatus: SearchPlanStatus
+  }
+
+  export interface PrisonerSearch {
+    pagination: MojPaginationParams
+    prisoners: PrisonerSearchSummary[]
+  }
+
+  export interface MojPaginationParams {
+    items: {
+      type?: string
+      text?: string
+      href?: string
+      selected?: boolean
+    }[]
+    results?: {
+      count: number
+      from: number
+      to: number
+      text?: string
+    }
+    previous?: {
+      text: string
+      href: string
+    }
+    next?: {
+      text: string
+      href: string
+    }
   }
 
   /**

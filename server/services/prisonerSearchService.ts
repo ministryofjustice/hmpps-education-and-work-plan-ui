@@ -20,6 +20,8 @@ export default class PrisonerSearchService {
    * The HMPPS `prisoner-search` API is a paged API. This function calls the API starting from page 0 until there are no
    * more pages remaining. The cumulative array of Prisoner records from all API calls are mapped and
    * grouped into an array of `PrisonerSummary` within the returned `PrisonerSummaries` object.
+   *
+   * @deprecated Use SearchService.searchPrisonersInPrison instead
    */
   async getPrisonersByPrisonId(prisonId: string, username: string): Promise<PrisonerSummaries> {
     try {

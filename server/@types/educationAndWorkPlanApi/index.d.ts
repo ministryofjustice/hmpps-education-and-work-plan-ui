@@ -927,7 +927,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       targetCompletionDate: string
       /**
@@ -1054,7 +1054,7 @@ export interface components {
       /**
        * Format: date
        * @description The deadline for the induction to be completed
-       * @example Mon Jun 19 00:00:00 UTC 2023
+       * @example 2023-06-19
        */
       deadlineDate: string
       /**
@@ -1071,7 +1071,7 @@ export interface components {
       /**
        * Format: date
        * @description if applicable this will be the date of the exemption
-       * @example Mon Jun 19 00:00:00 UTC 2023
+       * @example 2023-06-19
        */
       exemptionDate?: string
     }
@@ -1180,7 +1180,7 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Induction was conducted on.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       conductedAt?: string
       /**
@@ -1392,7 +1392,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       targetCompletionDate: string
       /**
@@ -1438,7 +1438,7 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Review was conducted on.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       conductedAt: string
       /**
@@ -1513,13 +1513,13 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing date that the Review window starts.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window starts from.
-       * @example Sun Nov 19 00:00:00 UTC 2023
+       * @example 2023-11-19
        */
       reviewDateFrom: string
       /**
        * Format: date
        * @description An ISO-8601 date representing date that the Review window ends. This is the Review deadline date.  A prisoner's Review should be conducted within a given timeframe and this field represents the date that the Review window ends, and that the Review should be completed by.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       reviewDateTo: string
       /**
@@ -1623,9 +1623,7 @@ export interface components {
         | 'PRISON_TRANSFER'
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
-       * @example {
-       *       "GOAL_TITLE": "Learn French"
-       *     }
+       * @example {GOAL_TITLE=Learn French}
        */
       contextualInfo: {
         [key: string]: string
@@ -1748,80 +1746,93 @@ export interface components {
        */
       exemptInductions?: number
     }
-    Pagination: {
+    PaginationMetaData: {
       /**
        * Format: int32
        * @description Total number of elements matching the criteria
-       * @example null
+       * @example 100
        */
       totalElements: number
       /**
        * Format: int32
        * @description Total number of pages
-       * @example null
+       * @example 5
        */
       totalPages: number
       /**
        * Format: int32
        * @description Current page number
-       * @example null
+       * @example 2
        */
       page: number
       /**
        * @description Indicates this is the last page
-       * @example null
+       * @example false
        */
       last: boolean
       /**
        * @description Indicates this is the first page
-       * @example null
+       * @example false
        */
       first: boolean
       /**
        * Format: int32
        * @description Number of items per page
-       * @example null
+       * @example 20
        */
       pageSize: number
     }
     PersonResponse: {
-      /** @example Smith, Bob */
-      name: string
-      /** @example A1234BC */
+      /**
+       * @description The prisoner's forename.
+       * @example Bob
+       */
+      forename: string
+      /**
+       * @description The prisoner's surname.
+       * @example Smith
+       */
+      surname: string
+      /**
+       * @description The prisoner's NOMIS number.
+       * @example A1234BC
+       */
       prisonNumber: string
       /**
        * Format: date
-       * @example null
+       * @description The prisoner's date of birth.
+       * @example 1999-12-01
        */
       dateOfBirth: string
-      /** @example null */
-      hasPlan: boolean
-      /** @example B-3-047 */
+      /**
+       * @description The status of the persons plan.
+       * @example null
+       * @enum {string}
+       */
+      planStatus: 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
+      /**
+       * @description The prisoner's cell location within prison
+       * @example B-3-047
+       */
       cellLocation?: string
       /**
        * Format: date
-       * @example null
+       * @description The date the person entered prison returned by prisoner-search-api.
+       * @example 2035-11-01
+       */
+      enteredPrisonOn?: string
+      /**
+       * Format: date
+       * @description The prisoner's release date as returned by prisoner-search-api.
+       * @example 2035-11-01
        */
       releaseDate?: string
-      /** @example null */
-      releaseType?: string
-      /**
-       * Format: date
-       * @example null
-       */
-      nextActionDate?: string
-      /**
-       * Format: date
-       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
-       * @example null
-       */
-      planLastUpdated?: string
     }
     PersonSearchResult: {
       /** @example null */
-      pagination: components['schemas']['Pagination']
+      pagination: components['schemas']['PaginationMetaData']
       /**
-       * @description A List containing zero or more PersonResponse.
+       * @description A List containing zero or more people matching the search.
        * @example null
        */
       people: components['schemas']['PersonResponse'][]
@@ -2554,7 +2565,7 @@ export interface components {
       /**
        * Format: date
        * @description The deadline for the induction to be completed
-       * @example Mon Jun 19 00:00:00 UTC 2023
+       * @example 2023-06-19
        */
       deadlineDate: string
       /**
@@ -2604,7 +2615,7 @@ export interface components {
       /**
        * Format: date
        * @description the date when this resource was updated.
-       * @example Mon Jun 19 00:00:00 UTC 2023
+       * @example 2023-06-19
        */
       inductionPerformedAt?: string
       /**
@@ -2668,7 +2679,7 @@ export interface components {
       /**
        * Format: date
        * @description An optional ISO-8601 date representing the target completion date of the Goal.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       targetCompletionDate: string
       /**
@@ -2849,13 +2860,13 @@ export interface components {
       /**
        * Format: date
        * @description An ISO-8601 date representing the deadline for this Review to have been completed by.
-       * @example Tue Dec 19 00:00:00 UTC 2023
+       * @example 2023-12-19
        */
       deadlineDate: string
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Review was completed on.  Clients can infer whether this Review was completed on time or not by comparing the deadlineDate and completedDate.
-       * @example Mon Dec 04 00:00:00 UTC 2023
+       * @example 2023-12-04
        */
       completedDate: string
       /** @example null */
@@ -3689,15 +3700,15 @@ export interface operations {
     parameters: {
       query?: {
         prisonerNameOrNumber?: string
-        hasActionPlan?: boolean
-        releaseDateBefore?: string
-        releaseDateAfter?: string
-        actionPlanLastUpdatedBefore?: string
-        actionPlanLastUpdatedAfter?: string
-        nextActionDateBefore?: string
-        nextActionDateAfter?: string
-        sortBy?: string
-        sortDirection?: string
+        planStatus?: 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
+        sortBy?:
+          | 'PRISONER_NAME'
+          | 'PRISON_NUMBER'
+          | 'CELL_LOCATION'
+          | 'RELEASE_DATE'
+          | 'ENTERED_PRISON_DATE'
+          | 'PLAN_STATUS'
+        sortDirection?: 'ASC' | 'DESC'
         page?: number
         pageSize?: number
       }
