@@ -1,20 +1,17 @@
 import createError from 'http-errors'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import PrisonerSearchService from '../../services/prisonerSearchService'
+import PrisonerService from '../../services/prisonerService'
 
 /**
  *  Middleware function that returns a Request handler function to look up the prisoner from prisoner-search, map to a PrisonerSummary, and store on res.locals
  */
-const retrievePrisonerSummary = (prisonerSearchService: PrisonerSearchService): RequestHandler => {
+const retrievePrisonerSummary = (prisonerService: PrisonerService): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
 
     try {
       // Lookup the prisoner and store on res.locals
-      res.locals.prisonerSummary = await prisonerSearchService.getPrisonerByPrisonNumber(
-        prisonNumber,
-        req.user.username,
-      )
+      res.locals.prisonerSummary = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
       next()
     } catch (error) {
       next(

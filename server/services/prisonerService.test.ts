@@ -1,7 +1,7 @@
 import type { PrisonerSummaries } from 'viewModels'
 import PrisonerSearchClient from '../data/prisonerSearchClient'
 import RedisPrisonerSearchStore from '../data/prisonerSearchStore/redisPrisonerSearchStore'
-import PrisonerSearchService from './prisonerSearchService'
+import PrisonerService from './prisonerService'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import toPrisonerSummary from '../data/mappers/prisonerSummaryMapper'
@@ -11,13 +11,13 @@ jest.mock('../data/mappers/prisonerSummaryMapper')
 jest.mock('../data/prisonerSearchClient')
 jest.mock('../data/prisonerSearchStore/redisPrisonerSearchStore')
 
-describe('prisonerSearchService', () => {
+describe('prisonerService', () => {
   const mockedPrisonerSummaryMapper = toPrisonerSummary as jest.MockedFunction<typeof toPrisonerSummary>
 
   const prisonerSearchClient = new PrisonerSearchClient(null) as jest.Mocked<PrisonerSearchClient>
   const prisonerSearchStore = new RedisPrisonerSearchStore(null) as jest.Mocked<RedisPrisonerSearchStore>
 
-  const prisonerSearchService = new PrisonerSearchService(prisonerSearchClient, prisonerSearchStore)
+  const prisonerService = new PrisonerService(prisonerSearchClient, prisonerSearchStore)
 
   const prisonNumber = 'A1234BC'
   const prisonId = 'BXI'
@@ -39,7 +39,7 @@ describe('prisonerSearchService', () => {
       mockedPrisonerSummaryMapper.mockReturnValue(expectedPrisonerSummary)
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, username)
+      const actual = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedPrisonerSummary)
@@ -58,7 +58,7 @@ describe('prisonerSearchService', () => {
       mockedPrisonerSummaryMapper.mockReturnValue(expectedPrisonerSummary)
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, username)
+      const actual = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedPrisonerSummary)
@@ -74,7 +74,7 @@ describe('prisonerSearchService', () => {
       prisonerSearchClient.getPrisonerByPrisonNumber.mockRejectedValue(Error('Not Found'))
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, username).catch(error => {
+      const actual = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, username).catch(error => {
         return error
       })
 
@@ -98,7 +98,7 @@ describe('prisonerSearchService', () => {
       mockedPrisonerSummaryMapper.mockReturnValue(expectedPrisonerSummary)
 
       // When
-      const actual = await prisonerSearchService.getPrisonerByPrisonNumber(prisonNumber, username)
+      const actual = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, username)
 
       // Then
       expect(actual).toEqual(expectedPrisonerSummary)
@@ -134,7 +134,7 @@ describe('prisonerSearchService', () => {
       }
 
       // When
-      const actual = await prisonerSearchService.getPrisonersByPrisonId(prisonId, username)
+      const actual = await prisonerService.getPrisonersByPrisonId(prisonId, username)
 
       // Then
       expect(actual).toEqual(expected)
@@ -178,7 +178,7 @@ describe('prisonerSearchService', () => {
       }
 
       // When
-      const actual = await prisonerSearchService.getPrisonersByPrisonId(prisonId, username)
+      const actual = await prisonerService.getPrisonersByPrisonId(prisonId, username)
 
       // Then
       expect(actual).toEqual(expected)
@@ -204,7 +204,7 @@ describe('prisonerSearchService', () => {
       } as PrisonerSummaries
 
       // When
-      const actual = await prisonerSearchService.getPrisonersByPrisonId(prisonId, username)
+      const actual = await prisonerService.getPrisonersByPrisonId(prisonId, username)
 
       // Then
       expect(actual).toEqual(expected)
@@ -241,7 +241,7 @@ describe('prisonerSearchService', () => {
       } as PrisonerSummaries
 
       // When
-      const actual = await prisonerSearchService.getPrisonersByPrisonId(prisonId, username)
+      const actual = await prisonerService.getPrisonersByPrisonId(prisonId, username)
 
       // Then
       expect(actual).toEqual(expected)
@@ -260,7 +260,7 @@ describe('prisonerSearchService', () => {
       } as PrisonerSummaries
 
       // When
-      const actual = await prisonerSearchService.getPrisonersByPrisonId(prisonId, username)
+      const actual = await prisonerService.getPrisonersByPrisonId(prisonId, username)
 
       // Then
       expect(actual).toEqual(expected)

@@ -75,7 +75,7 @@ export default function routes(services: Services): Router {
 
 // Setup prisoner summary session for routes with prisonNumber param and check the prisoner is in the users caseloads
 function prisonerSummarySetup(router: Router, services: Services) {
-  router.param('prisonNumber', retrievePrisonerSummary(services.prisonerSearchService))
+  router.param('prisonNumber', retrievePrisonerSummary(services.prisonerService))
   router.param(
     'prisonNumber',
     checkPrisonerInCaseload({

@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import SessionListView from './sessionListView'
-import { PrisonerSearchService, SessionService } from '../../services'
+import { PrisonerService, SessionService } from '../../services'
 import SessionStatusValue from '../../enums/sessionStatusValue'
 import PagedPrisonerSummaryPrisonerSession, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSummaryPrisonerSession'
 import config from '../../config'
@@ -11,7 +11,7 @@ const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
 
 export default class SessionListController {
   constructor(
-    private readonly prisonerSearchService: PrisonerSearchService,
+    private readonly prisonerService: PrisonerService,
     private readonly sessionService: SessionService,
   ) {}
 
@@ -84,8 +84,7 @@ export default class SessionListController {
     status: SessionStatusValue,
   ): Promise<PagedPrisonerSummaryPrisonerSession> => {
     const sessionListUiPageSize = config.sessionListUiDefaultPaginationPageSize
-    const prisonerSummaries = (await this.prisonerSearchService.getPrisonersByPrisonId(activeCaseLoadId, username))
-      .prisoners
+    const prisonerSummaries = (await this.prisonerService.getPrisonersByPrisonId(activeCaseLoadId, username)).prisoners
     const prisonNumbers = prisonerSummaries.map(prisoner => prisoner.prisonNumber)
 
     const prisonerSessions = (

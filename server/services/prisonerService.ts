@@ -8,7 +8,7 @@ import config from '../config'
 
 const PRISONER_CACHE_TTL_HOURS = 1
 
-export default class PrisonerSearchService {
+export default class PrisonerService {
   constructor(
     private readonly prisonerSearchClient: PrisonerSearchClient,
     private readonly prisonerSearchStore: PrisonerSearchStore,

@@ -1,5 +1,5 @@
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import PrisonerSearchService from './prisonerSearchService'
+import PrisonerService from './prisonerService'
 import PrisonerListService from './prisonerListService'
 import CiagInductionClient from '../data/ciagInductionClient'
 import aValidCiagInductionSummaryListResponse from '../testsupport/ciagInductionSummaryListResponseTestDataBuilder'
@@ -9,19 +9,15 @@ import aValidCiagInductionSummaryResponse from '../testsupport/ciagInductionSumm
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 
 jest.mock('../data/educationAndWorkPlanClient')
-jest.mock('./prisonerSearchService')
+jest.mock('./prisonerService')
 jest.mock('../data/ciagInductionClient')
 
 describe('prisonerListService', () => {
-  const prisonerSearchService = new PrisonerSearchService(null, null) as jest.Mocked<PrisonerSearchService>
+  const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
   const educationAndWorkPlanClient = new EducationAndWorkPlanClient(null) as jest.Mocked<EducationAndWorkPlanClient>
   const ciagInductionClient = new CiagInductionClient(null) as jest.Mocked<CiagInductionClient>
 
-  const prisonerListService = new PrisonerListService(
-    prisonerSearchService,
-    educationAndWorkPlanClient,
-    ciagInductionClient,
-  )
+  const prisonerListService = new PrisonerListService(prisonerService, educationAndWorkPlanClient, ciagInductionClient)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -54,7 +50,7 @@ describe('prisonerListService', () => {
       problemRetrievingData: false,
       prisoners: [fred, jim, bill, albert],
     }
-    prisonerSearchService.getPrisonersByPrisonId.mockResolvedValue(prisonerSummaries)
+    prisonerService.getPrisonersByPrisonId.mockResolvedValue(prisonerSummaries)
 
     const fredsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'A1234BC' })
     const jimsCiagInduction = aValidCiagInductionSummaryResponse({ prisonNumber: 'F4329JC' })
@@ -90,7 +86,7 @@ describe('prisonerListService', () => {
 
     // Then
     expect(actual).toEqual(expectedPrisonerSearchSummaries)
-    expect(prisonerSearchService.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, username)
+    expect(prisonerService.getPrisonersByPrisonId).toHaveBeenCalledWith(prisonId, username)
     expect(ciagInductionClient.getCiagInductionsForPrisonNumbers).toHaveBeenCalledWith(expectedPrisonNumbers, username)
     expect(educationAndWorkPlanClient.getActionPlans).toHaveBeenCalledWith(expectedPrisonNumbers, username)
   })
