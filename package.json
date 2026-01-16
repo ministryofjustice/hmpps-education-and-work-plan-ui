@@ -117,6 +117,7 @@
     "zod": "^4.3.4"
   },
   "devDependencies": {
+    "@cypress/webpack-batteries-included-preprocessor": "^4.0.4",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.2",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
@@ -143,7 +144,7 @@
     "cheerio": "^1.1.2",
     "chokidar": "^3.6.0",
     "concurrently": "^9.2.1",
-    "cypress": "^15.8.2",
+    "cypress": "^15.9.0",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
     "esbuild": "^0.27.2",
