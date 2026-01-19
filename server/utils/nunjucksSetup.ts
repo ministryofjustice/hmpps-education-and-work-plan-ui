@@ -43,6 +43,7 @@ import {
 } from '../filters/formatSupportStrategyTypeFilter'
 import formatStrengthCategoryScreenValueFilter from '../filters/formatStrengthCategoryFilter'
 import formatChallengeCategoryScreenValueFilter from '../filters/formatChallengeCategoryFilter'
+import formatPrisonerNameFilter, { NameFormat } from '../filters/formatPrisonerNameFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -136,6 +137,20 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatSupportStrategyTypeHintText', formatSupportStrategyTypeHintTextFilter)
   njkEnv.addFilter('formatStrengthCategoryScreenValue', formatStrengthCategoryScreenValueFilter)
   njkEnv.addFilter('formatChallengeCategoryScreenValue', formatChallengeCategoryScreenValueFilter)
+
+  // Name format filters
+  njkEnv.addFilter('formatFIRST_NAME_ONLY', formatPrisonerNameFilter(NameFormat.FIRST_NAME_ONLY))
+  njkEnv.addFilter('formatLAST_NAME_ONLY', formatPrisonerNameFilter(NameFormat.LAST_NAME_ONLY))
+  njkEnv.addFilter('formatFIRST_NAME_LAST_NAME', formatPrisonerNameFilter(NameFormat.FIRST_NAME_LAST_NAME))
+  njkEnv.addFilter('formatLAST_NAME_FIRST_NAME', formatPrisonerNameFilter(NameFormat.LAST_NAME_FIRST_NAME))
+  njkEnv.addFilter('formatFIRST_NAME_COMMA_LAST_NAME', formatPrisonerNameFilter(NameFormat.FIRST_NAME_COMMA_LAST_NAME))
+  njkEnv.addFilter('formatLAST_NAME_COMMA_FIRST_NAME', formatPrisonerNameFilter(NameFormat.LAST_NAME_COMMA_FIRST_NAME))
+  njkEnv.addFilter('formatFirst_name_only', formatPrisonerNameFilter(NameFormat.First_name_only))
+  njkEnv.addFilter('formatLast_name_only', formatPrisonerNameFilter(NameFormat.Last_name_only))
+  njkEnv.addFilter('formatFirst_name_Last_name', formatPrisonerNameFilter(NameFormat.First_name_Last_name))
+  njkEnv.addFilter('formatLast_name_First_name', formatPrisonerNameFilter(NameFormat.Last_name_First_name))
+  njkEnv.addFilter('formatFirst_name_comma_Last_name', formatPrisonerNameFilter(NameFormat.First_name_comma_Last_name))
+  njkEnv.addFilter('formatLast_name_comma_First_name', formatPrisonerNameFilter(NameFormat.Last_name_comma_First_name))
 
   njkEnv.addFilter('addMonths', addMonths)
 
