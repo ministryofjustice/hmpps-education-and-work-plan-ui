@@ -1,12 +1,14 @@
 import createError from 'http-errors'
-import { SessionData } from 'express-session'
+import { NextFunction, Request, Response } from 'express'
 import { startOfDay } from 'date-fns'
 import type { PrisonerSearchSummary } from 'viewModels'
-import type { Locals } from 'express-serve-static-core'
-import { NextFunction, Request, Response } from 'express'
 import PrisonerListController from './prisonerListController'
 import { PrisonerListService } from '../../services'
 import aValidPrisonerSearchSummary from '../../testsupport/prisonerSearchSummaryTestDataBuilder'
+import aValidPrisonerSearch from '../../testsupport/prisonerSearchTestDataBuilder'
+import SearchPlanStatus from '../../enums/searchPlanStatus'
+import SortBy from '../../enums/sortBy'
+import SortOrder from '../../enums/sortDirection'
 
 describe('prisonerListController', () => {
   const jimmyLilac = aValidPrisonerSearchSummary({
@@ -39,31 +41,51 @@ describe('prisonerListController', () => {
   const controller = new PrisonerListController(prisonerListService as unknown as PrisonerListService)
 
   const req = {
-    session: {} as SessionData,
+    session: {},
     query: {},
-    user: {} as Express.User,
-  }
+    user: { username: 'AUSER_GEN' },
+  } as unknown as Request
   const res = {
     render: jest.fn(),
-    locals: {} as Locals,
-  }
+    locals: {
+      user: {
+        activeCaseLoadId: 'BXI',
+      },
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
     prisonerListService.getPrisonerSearchSummariesForPrisonId.mockResolvedValue(prisonerSearchSummaries)
 
-    res.locals = {
-      user: {
-        activeCaseLoadId: 'BXI',
-      },
-    }
-    req.user.username = 'AUSER_GEN'
-    req.session = {} as SessionData
+    req.session.prisonerListSortOptions = undefined
   })
 
   describe('getPrisonerListView', () => {
-    it('should get prisoner list view given no filtering, paging or sorting query string parameters', async () => {
+    it('should get prisoners list view', async () => {
+      // Given
+      const prisonerListResults = aValidPrisonerSearch()
+      const searchOptions = {
+        searchTerm: 'John',
+        statusFilter: SearchPlanStatus.ACTIVE_PLAN,
+        sortBy: SortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
+        page: 1,
+      }
+      res.locals.prisonerListResults = prisonerListResults
+      res.locals.searchOptions = searchOptions
+
+      // When
+      await controller.getPrisonerListView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/prisonerList/index', { prisonerListResults, searchOptions })
+    })
+  })
+
+  describe('getOldPrisonerListView', () => {
+    it('should get old prisoner list view given no filtering, paging or sorting query string parameters', async () => {
       // Given
       req.query = {}
 
@@ -90,7 +112,7 @@ describe('prisonerListController', () => {
       }
 
       // When
-      await controller.getPrisonerListView(
+      await controller.getOldPrisonerListView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -101,7 +123,7 @@ describe('prisonerListController', () => {
       expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
     })
 
-    it('should not get prisoner list view given error calling service to get prisoner list summaries', async () => {
+    it('should not get old prisoner list view given error calling service to get prisoner list summaries', async () => {
       // Given
       req.query = {}
 
@@ -111,7 +133,7 @@ describe('prisonerListController', () => {
       const expectedError = createError(500, `Error producing prisoner list for prison BXI`)
 
       // When
-      await controller.getPrisonerListView(
+      await controller.getOldPrisonerListView(
         req as undefined as Request,
         res as undefined as Response,
         next as undefined as NextFunction,
@@ -124,7 +146,7 @@ describe('prisonerListController', () => {
     })
 
     describe('filtering', () => {
-      it('should get prisoner list view given name filtering', async () => {
+      it('should get old prisoner list view given name filtering', async () => {
         // Given
         req.query = {
           searchTerm: 'Jimmy',
@@ -153,7 +175,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,
@@ -164,7 +186,7 @@ describe('prisonerListController', () => {
         expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       })
 
-      it('should get prisoner list view given status filtering', async () => {
+      it('should get old prisoner list view given status filtering', async () => {
         // Given
         req.query = {
           statusFilter: 'NEEDS_PLAN',
@@ -193,7 +215,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,
@@ -204,7 +226,7 @@ describe('prisonerListController', () => {
         expect(prisonerListService.getPrisonerSearchSummariesForPrisonId).toHaveBeenCalledWith('BXI', 'AUSER_GEN')
       })
 
-      it('should get prisoner list view given name and status filtering', async () => {
+      it('should get old prisoner list view given name and status filtering', async () => {
         // Given
         req.query = {
           searchTerm: 'Jimmy',
@@ -234,7 +256,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,
@@ -247,7 +269,7 @@ describe('prisonerListController', () => {
     })
 
     describe('sorting', () => {
-      it('should get prisoner list view given sorting by name ascending via query string parameter', async () => {
+      it('should get old prisoner list view given sorting by name ascending via query string parameter', async () => {
         // Given
         req.query = {
           sort: 'name,ascending',
@@ -276,7 +298,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,
@@ -288,7 +310,7 @@ describe('prisonerListController', () => {
         expect(req.session.prisonerListSortOptions).toEqual('name,ascending') // expect current sort options saved in session
       })
 
-      it('should get prisoner list view given invalid sort options via query string parameter', async () => {
+      it('should get old prisoner list view given invalid sort options via query string parameter', async () => {
         // Given
         req.query = {
           sort: 'unknown-field,nearest-neighbour',
@@ -317,7 +339,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,
@@ -329,7 +351,7 @@ describe('prisonerListController', () => {
         expect(req.session.prisonerListSortOptions).toEqual('reception-date,descending') // expect default sort options saved in session
       })
 
-      it('should get prisoner list view given sorting by name ascending via session variable', async () => {
+      it('should get old prisoner list view given sorting by name ascending via session variable', async () => {
         // Given
         req.query = {}
         req.session.prisonerListSortOptions = 'name,ascending'
@@ -357,7 +379,7 @@ describe('prisonerListController', () => {
         }
 
         // When
-        await controller.getPrisonerListView(
+        await controller.getOldPrisonerListView(
           req as undefined as Request,
           res as undefined as Response,
           next as undefined as NextFunction,

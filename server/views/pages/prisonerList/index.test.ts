@@ -1,6 +1,12 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import assetMapFilter from '../../../filters/assetMapFilter'
+import aValidPrisonerSearch from '../../../testsupport/prisonerSearchTestDataBuilder'
+import { Result } from '../../../utils/result/result'
+import formatPrisonerNameFilter, { NameFormat } from '../../../filters/formatPrisonerNameFilter'
+import formatDateFilter from '../../../filters/formatDateFilter'
+import aValidPrisonerSearchSummary from '../../../testsupport/prisonerSearchSummaryTestDataBuilder'
+import SearchPlanStatus from '../../../enums/searchPlanStatus'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -14,16 +20,82 @@ const njkEnv = nunjucks.configure([
 
 njkEnv //
   .addFilter('assetMap', assetMapFilter)
+  .addFilter('formatLast_name_comma_First_name', formatPrisonerNameFilter(NameFormat.Last_name_comma_First_name))
+  .addFilter('formatDate', formatDateFilter)
+  .addGlobal('featureToggles', { newSearchApiEnabled: true })
 
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   userHasPermissionTo,
+  prisonerListResults: Result.fulfilled(aValidPrisonerSearch()),
+  searchOptions: {},
 }
 
 describe('prisoner list page', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     userHasPermissionTo.mockReturnValue(false)
+  })
+
+  it('should render page', () => {
+    const params = {
+      ...templateParams,
+      prisonerListResults: Result.fulfilled(
+        aValidPrisonerSearch({
+          prisoners: [
+            aValidPrisonerSearchSummary({ prisonNumber: 'A1234BC', planStatus: SearchPlanStatus.ACTIVE_PLAN }),
+            aValidPrisonerSearchSummary({ prisonNumber: 'B4567CD', planStatus: SearchPlanStatus.NEEDS_PLAN }),
+            aValidPrisonerSearchSummary({ prisonNumber: 'C8901EF', planStatus: SearchPlanStatus.EXEMPT }),
+          ],
+        }),
+      ),
+    }
+
+    // When
+    const content = nunjucks.render('index.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=search-options-form]').length).toEqual(1)
+    expect($('[data-qa=search-results-form]').length).toEqual(1)
+    expect($('[data-qa=prisoner-list-results-table] tbody tr').length).toEqual(3)
+    expect($('[data-qa=zero-results-message]').length).toEqual(0)
+  })
+
+  it('should render page given search service returns zero results', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      prisonerListResults: Result.fulfilled(aValidPrisonerSearch({ prisoners: [] })),
+      searchOptions: { searchTerm: 'some unknown prisoner' },
+    }
+
+    // When
+    const content = nunjucks.render('index.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=search-options-form]').length).toEqual(1)
+    expect($('[data-qa=search-results-form]').length).toEqual(0)
+    expect($('[data-qa=zero-results-message]').length).toEqual(1)
+    expect($('[data-qa=zero-results-message]').text().trim()).toEqual('0 results for "some unknown prisoner"')
+  })
+
+  it('should render page given search service returns an error', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      prisonerListResults: Result.rejected(new Error('Failed to get search results')),
+    }
+
+    // When
+    const content = nunjucks.render('index.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=search-options-form]').length).toEqual(1)
+    expect($('[data-qa=search-results-form]').length).toEqual(0)
+    expect($('[data-qa=zero-results-message]').length).toEqual(0)
   })
 
   describe('breadcrumb link tests', () => {
