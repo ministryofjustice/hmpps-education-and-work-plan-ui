@@ -1,9 +1,11 @@
 import type { PrisonerSearch } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
-import SearchSortField from '../enums/searchSortField'
-import SearchSortDirection from '../enums/searchSortDirection'
 import SearchPlanStatus from '../enums/searchPlanStatus'
 import { toPrisonerSearch } from '../data/mappers/prisonerSearchMapper'
+import SortBy from '../enums/sortBy'
+import SortOrder from '../enums/sortDirection'
+import toSearchSortDirection from '../data/mappers/searchSortDirectionMapper'
+import toSearchSortField from '../data/mappers/searchSortFieldMapper'
 
 export default class SearchService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
@@ -13,11 +15,13 @@ export default class SearchService {
     username: string,
     page: number,
     pageSize: number,
-    sortBy: SearchSortField,
-    sortDirection: SearchSortDirection,
+    sortBy: SortBy,
+    sortOrder: SortOrder,
     prisonerNameOrNumber?: string,
     planStatus?: SearchPlanStatus,
   ): Promise<PrisonerSearch> {
+    const searchSortField = toSearchSortField(sortBy)
+    const searchSortDirection = toSearchSortDirection(sortOrder)
     return toPrisonerSearch(
       await this.educationAndWorkPlanClient.searchByPrison(
         prisonId,
@@ -26,13 +30,13 @@ export default class SearchService {
         planStatus,
         page,
         pageSize,
-        sortBy,
-        sortDirection,
+        searchSortField,
+        searchSortDirection,
       ),
       {
         prisonId,
-        sortField: sortBy,
-        sortDirection,
+        sortBy,
+        sortOrder,
         searchTerm: prisonerNameOrNumber,
       },
     )
