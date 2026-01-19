@@ -13,6 +13,15 @@ export default class PrisonerListController {
   constructor(private readonly prisonerListService: PrisonerListService) {}
 
   getPrisonerListView: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonerListResults, searchOptions } = res.locals
+    return res.render('pages/prisonerList/index', { prisonerListResults, searchOptions })
+  }
+
+  /**
+   * @deprecated - this uses the old way of getting prisoner lists / filtering, sorting & pagination.
+   * Use getPrisonerListView instead.
+   */
+  getOldPrisonerListView: RequestHandler = async (req, res, next): Promise<void> => {
     const prisonId = res.locals.user.activeCaseLoadId
 
     try {
@@ -56,7 +65,7 @@ export default class PrisonerListController {
     }
   }
 
-  getPagedPrisonerSearchSummaryForAllPrisoners = async (
+  private getPagedPrisonerSearchSummaryForAllPrisoners = async (
     prisonId: string,
     user: Express.User,
   ): Promise<PagedPrisonerSearchSummary> => {
