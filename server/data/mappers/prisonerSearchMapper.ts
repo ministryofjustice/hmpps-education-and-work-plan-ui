@@ -1,14 +1,14 @@
 import { startOfDay } from 'date-fns'
 import type { MojPaginationParams, PrisonerSearch, PrisonerSearchSummary } from 'viewModels'
 import type { PaginationMetaData, PersonResponse, PersonSearchResult } from 'educationAndWorkPlanApiClient'
-import SearchSortField from '../../enums/searchSortField'
-import SearchSortDirection from '../../enums/searchSortDirection'
 import SearchPlanStatus from '../../enums/searchPlanStatus'
+import SortBy from '../../enums/sortBy'
+import SortOrder from '../../enums/sortDirection'
 
 type SearchOptions = {
   prisonId: string
-  sortField: SearchSortField
-  sortDirection: SearchSortDirection
+  sortBy: SortBy
+  sortOrder: SortOrder
   searchTerm?: string
   planStatus?: SearchPlanStatus
 }
@@ -86,7 +86,7 @@ const buildQueryString = (searchOptions: SearchOptions, page: number): string =>
   const queryStringParams = [
     searchOptions.searchTerm && `searchTerm=${decodeURIComponent(searchOptions.searchTerm)}`,
     searchOptions.planStatus && `planStatus=${decodeURIComponent(searchOptions.planStatus)}`,
-    `sort=${searchOptions.sortField},${searchOptions.sortDirection}`,
+    `sort=${searchOptions.sortBy},${searchOptions.sortOrder}`,
     `page=${page}`,
   ].filter(val => !!val)
   return `?${queryStringParams.join('&')}`

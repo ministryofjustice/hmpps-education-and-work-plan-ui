@@ -8,6 +8,8 @@ import SearchPlanStatus from '../enums/searchPlanStatus'
 import aPersonResponse from '../testsupport/personResponseTestDataBuilder'
 import aPersonSearchResult from '../testsupport/personSearchResultTestDataBuilder'
 import aValidPrisonerSearch from '../testsupport/prisonerSearchTestDataBuilder'
+import SortBy from '../enums/sortBy'
+import SortOrder from '../enums/sortDirection'
 
 jest.mock('../data/educationAndWorkPlanClient')
 
@@ -24,8 +26,10 @@ describe('searchService', () => {
     const username = 'some-username'
     const page = 3
     const pageSize = 25
-    const sortBy = SearchSortField.CELL_LOCATION
-    const sortDirection = SearchSortDirection.ASC
+    const searchSortField = SearchSortField.CELL_LOCATION
+    const sortBy = SortBy.LOCATION
+    const searchSortDirection = SearchSortDirection.ASC
+    const sortOrder = SortOrder.ASCENDING
     const prisonerNameOrNumber = 'A1234BC'
     const planStatus = SearchPlanStatus.ACTIVE_PLAN
 
@@ -84,7 +88,7 @@ describe('searchService', () => {
         page,
         pageSize,
         sortBy,
-        sortDirection,
+        sortOrder,
         prisonerNameOrNumber,
         planStatus,
       )
@@ -98,8 +102,8 @@ describe('searchService', () => {
         planStatus,
         page,
         pageSize,
-        sortBy,
-        sortDirection,
+        searchSortField,
+        searchSortDirection,
       )
     })
 
@@ -116,7 +120,7 @@ describe('searchService', () => {
           page,
           pageSize,
           sortBy,
-          sortDirection,
+          sortOrder,
           prisonerNameOrNumber,
           planStatus,
         )
@@ -131,8 +135,8 @@ describe('searchService', () => {
         planStatus,
         page,
         pageSize,
-        sortBy,
-        sortDirection,
+        searchSortField,
+        searchSortDirection,
       )
     })
   })

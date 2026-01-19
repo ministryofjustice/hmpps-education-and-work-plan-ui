@@ -2,8 +2,8 @@ import type { PersonSearchResult } from 'educationAndWorkPlanApiClient'
 import { startOfDay } from 'date-fns'
 import { toPrisonerSearch, toPrisonerSearchSummary } from './prisonerSearchMapper'
 import aValidPrisonerSearchSummary from '../../testsupport/prisonerSearchSummaryTestDataBuilder'
-import SearchSortField from '../../enums/searchSortField'
-import SearchSortDirection from '../../enums/searchSortDirection'
+import SortBy from '../../enums/sortBy'
+import SortOrder from '../../enums/sortDirection'
 import SearchPlanStatus from '../../enums/searchPlanStatus'
 import aPersonResponse from '../../testsupport/personResponseTestDataBuilder'
 import aPersonSearchResult from '../../testsupport/personSearchResultTestDataBuilder'
@@ -43,17 +43,17 @@ describe('prisonerSearchMapper', () => {
           to: 2,
         },
         items: [
-          { text: '1', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=PRISONER_NAME,ASC&page=1', selected: false },
-          { text: '2', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=PRISONER_NAME,ASC&page=2', selected: true },
-          { text: '3', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=PRISONER_NAME,ASC&page=3', selected: false },
+          { text: '1', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=1', selected: false },
+          { text: '2', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=2', selected: true },
+          { text: '3', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=3', selected: false },
         ],
         previous: {
           text: 'Previous',
-          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=PRISONER_NAME,ASC&page=1',
+          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=1',
         },
         next: {
           text: 'Next',
-          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=PRISONER_NAME,ASC&page=3',
+          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=3',
         },
         prisoners: [
           aValidPrisonerSearchSummary({
@@ -76,8 +76,8 @@ describe('prisonerSearchMapper', () => {
 
       const searchOptions = {
         prisonId,
-        sortField: SearchSortField.PRISONER_NAME,
-        sortDirection: SearchSortDirection.ASC,
+        sortBy: SortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
         searchTerm: 'Peigh',
         planStatus: SearchPlanStatus.EXEMPT,
       }
@@ -121,8 +121,8 @@ describe('prisonerSearchMapper', () => {
 
       const searchOptions = {
         prisonId,
-        sortField: SearchSortField.PRISONER_NAME,
-        sortDirection: SearchSortDirection.ASC,
+        sortBy: SortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
         searchTerm: 'Peigh',
         planStatus: SearchPlanStatus.EXEMPT,
       }
@@ -158,8 +158,8 @@ describe('prisonerSearchMapper', () => {
 
       const searchOptions = {
         prisonId,
-        sortField: SearchSortField.PRISONER_NAME,
-        sortDirection: SearchSortDirection.ASC,
+        sortBy: SortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
         searchTerm: 'Peigh',
         planStatus: SearchPlanStatus.EXEMPT,
       }
