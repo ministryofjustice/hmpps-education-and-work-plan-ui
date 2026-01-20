@@ -28,6 +28,7 @@ generic-service:
     SUPPORT_ADDITIONAL_NEEDS_UI_URL: "https://support-for-additional-needs-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: 'DEV'
     LRS_INTEGRATION_ENABLED: true
+    NEW_SEARCH_API_ENABLED: true
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32

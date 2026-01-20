@@ -11,9 +11,6 @@ context('Update previous work experience types in the Induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')

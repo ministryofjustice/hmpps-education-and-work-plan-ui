@@ -2,6 +2,7 @@
  * Cypress scenarios for the Session Summary page
  */
 import type { PrisonerSearchSummary } from 'viewModels'
+import type { PersonResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import PrisonerListPage from '../../pages/prisonerList/PrisonerListPage'
@@ -71,6 +72,30 @@ context(`Display the Sessions Summary screen`, () => {
         cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
         cy.task('stubCiagInductionListFromPrisonerSearchSummaries', summaries)
         cy.task('stubActionPlansListFromPrisonerSearchSummaries', summaries)
+
+        const personResponses: Array<PersonResponse> = prisonerSearchSummaries.map(prisoner => ({
+          prisonNumber: prisoner.prisonNumber,
+          forename: prisoner.firstName,
+          surname: prisoner.lastName,
+          dateOfBirth: prisoner.dateOfBirth,
+          releaseDate: prisoner.releaseDate,
+          enteredPrisonOn: prisoner.receptionDate,
+          cellLocation: prisoner.location,
+          planStatus: 'ACTIVE_PLAN',
+        }))
+
+        cy.task('stubSearchByPrison', {
+          pageOfPrisoners: personResponses,
+          totalRecords: personResponses.length,
+        })
+
+        personResponses.forEach(personResponse => {
+          cy.task('stubSearchByPrison', {
+            prisonerNameOrNumber: `${personResponse.forename} ${personResponse.surname}`,
+            pageOfPrisoners: [personResponse],
+            totalRecords: 1,
+          })
+        })
       })
     })
 

@@ -15,10 +15,6 @@ context('Remove exemption from Induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
-    cy.task('stubGetAllPrisons')
     cy.task('getActionPlan404Error', prisonNumber)
     cy.task('getPrisonerById', prisonNumber)
     cy.task('stubLearnerAssessments', prisonNumber)

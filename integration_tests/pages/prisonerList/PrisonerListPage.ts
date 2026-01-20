@@ -1,4 +1,5 @@
 import Page, { PageElement } from '../page'
+import OverviewPage from '../overview/OverviewPage'
 
 export default class PrisonerListPage extends Page {
   constructor() {
@@ -109,6 +110,25 @@ export default class PrisonerListPage extends Page {
     return this
   }
 
+  gotoOverviewPageForPrisoner(prisonNumber: string): OverviewPage {
+    this.prisonerListResultsTable() //
+      .find(`tr td:contains('${prisonNumber}')`)
+      .parent()
+      .find('td a')
+      .click()
+    return Page.verifyOnPage(OverviewPage)
+  }
+
+  searchUnavailableMessageIsNotDisplayed(): PrisonerListPage {
+    this.searchUnavailableMessage().should('not.exist')
+    return this
+  }
+
+  searchUnavailableMessageIsDisplayed(): PrisonerListPage {
+    this.searchUnavailableMessage().should('be.visible')
+    return this
+  }
+
   searchTermField = (): PageElement => cy.get('#searchTerm')
 
   statusFilterDropdown = (): PageElement => cy.get('#statusFilter')
@@ -133,4 +153,6 @@ export default class PrisonerListPage extends Page {
   paginationNextPageLink = (): PageElement => cy.get('[data-qa=prisoner-list-pagination] .govuk-pagination__next a')
 
   sortableTableHeaders = (): PageElement => cy.get('[data-qa=sortable-table-headers]')
+
+  private searchUnavailableMessage = (): PageElement => cy.get('[data-qa=search-unavailable-message]')
 }

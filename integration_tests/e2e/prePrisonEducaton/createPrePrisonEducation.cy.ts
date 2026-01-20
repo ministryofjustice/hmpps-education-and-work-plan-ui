@@ -19,9 +19,6 @@ context('Create a prisoners pre-prison education', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
