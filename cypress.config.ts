@@ -17,6 +17,7 @@ import sessionResponseMockDataGenerator from './integration_tests/mockData/sessi
 import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
 import supportAdditionalNeedsApi from './integration_tests/mockApis/supportAdditionalNeedsApi'
 import learnerRecordsApi from './integration_tests/mockApis/learnerRecordsApi'
+import personMockDataGenerator from './integration_tests/mockData/personMockDataGenerator'
 
 function preprocessorOptions() {
   const replacementModulesPath = path.resolve(__dirname, './integration_tests/support/replacementModules')
@@ -75,6 +76,7 @@ export default defineConfig({
         ...prisonRegisterApi,
         ...supportAdditionalNeedsApi,
         ...prisonerSearchSummaryMockDataGenerator,
+        ...personMockDataGenerator,
         ...sessionResponseMockDataGenerator,
         ...ciagInductionUi,
         ...learnerRecordsApi,

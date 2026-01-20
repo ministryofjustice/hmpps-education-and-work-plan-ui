@@ -7,9 +7,6 @@ context('Prisoner Overview page - History tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById', 'G6115VJ')
     cy.task('getPrisonerById', 'H4115SD')
     cy.task('getPrisonerById', 'G5005GD')
@@ -20,7 +17,6 @@ context('Prisoner Overview page - History tab', () => {
     cy.task('stubLearnerQualifications', 'G6115VJ')
     cy.task('stubLearnerQualifications', 'H4115SD')
     cy.task('stubLearnerQualifications', 'G5005GD')
-    cy.task('stubGetAllPrisons')
     cy.task('getActionPlan')
   })
 

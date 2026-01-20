@@ -9,9 +9,6 @@ context('Update highest level of education within an Induction', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')

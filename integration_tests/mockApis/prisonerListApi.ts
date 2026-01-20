@@ -2,28 +2,6 @@ import type { PrisonerSearchSummary } from 'viewModels'
 import { format } from 'date-fns'
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
-import prisoners from '../mockData/prisonerByIdData'
-
-const stubPrisonerList = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAgentRequest =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPathPattern: `/prisoner-search-api/prisoner-search/prison/${prisonId}`,
-      queryParameters: {
-        page: { equalTo: `${page}` },
-        size: { equalTo: `${pageSize}` },
-      },
-    },
-    response: {
-      status: 200,
-      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      jsonBody: {
-        content: Object.values(prisoners)
-          .filter(prisoner => prisoner.response.jsonBody.prisonId === prisonId)
-          .map(prisoner => prisoner.response.jsonBody),
-      },
-    },
-  })
 
 const stubPrisonerListFromPrisonerSearchSummaries = (
   prisonerSearchSummaries: Array<PrisonerSearchSummary>,
@@ -68,24 +46,6 @@ const stubPrisonerListFromPrisonerSearchSummaries = (
     },
   })
 
-const stubPrisonerList500error = (prisonId = 'BXI', page = 0, pageSize = 9999): SuperAgentRequest =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPathPattern: `/prisoner-search-api/prisoner-search/prison/${prisonId}`,
-      queryParameters: {
-        page: { equalTo: `${page}` },
-        size: { equalTo: `${pageSize}` },
-      },
-    },
-    response: {
-      status: 500,
-      body: 'Unexpected error',
-    },
-  })
-
 export default {
-  stubPrisonerList,
-  stubPrisonerList500error,
   stubPrisonerListFromPrisonerSearchSummaries,
 }

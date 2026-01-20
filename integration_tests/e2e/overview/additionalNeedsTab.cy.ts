@@ -6,9 +6,6 @@ context('Prisoner Overview page - Additional Needs tab', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')

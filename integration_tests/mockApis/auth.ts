@@ -5,6 +5,8 @@ import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 import stubPing from './common'
 import manageUsersApi from './manageUsersApi'
+import educationAndWorkPlanApi from './educationAndWorkPlanApi'
+import prisonRegisterApi from './prisonRegisterApi'
 
 const createToken = ({ roles = [], name = 'john smith' }: { roles?: Array<string>; name?: string }) => {
   // authorities in the session are always prefixed by ROLE.
@@ -108,7 +110,7 @@ export default {
   }: {
     roles?: Array<string>
     name?: string
-  } = {}): Promise<[Response, Response, Response, Response, Response, Response]> =>
+  } = {}): Promise<[Response, Response, Response, Response, Response, Response, Response, Response]> =>
     Promise.all([
       favicon(),
       redirect(),
@@ -116,5 +118,7 @@ export default {
       token({ roles, name }),
       tokenVerification.stubVerifyToken(),
       manageUsersApi.stubGetUserCaseloads(),
+      educationAndWorkPlanApi.stubSearchByPrison(),
+      prisonRegisterApi.stubGetAllPrisons(),
     ]),
 }

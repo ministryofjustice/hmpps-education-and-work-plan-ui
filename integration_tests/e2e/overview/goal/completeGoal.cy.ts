@@ -16,16 +16,12 @@ context('Complete a goal', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
-    cy.task('stubPrisonerList')
-    cy.task('stubCiagInductionList')
-    cy.task('stubActionPlansList')
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
     cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
-    cy.task('stubGetAllPrisons')
     cy.task('completeGoal', { prisonNumber, goalReference })
   })
 

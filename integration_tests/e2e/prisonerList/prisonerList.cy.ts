@@ -1,7 +1,8 @@
-import type { PrisonerSearchSummary } from 'viewModels'
+import type { PersonResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import PrisonerListPage from '../../pages/prisonerList/PrisonerListPage'
-import Error500Page from '../../pages/error500'
+import SearchSortField from '../../../server/enums/searchSortField'
+import OverviewPage from '../../pages/overview/OverviewPage'
 
 /**
  * Cypress scenarios for the Prisoner List page.
@@ -13,34 +14,46 @@ import Error500Page from '../../pages/error500'
  * in order to set specific stubs in the Action Plan API for the specific prisoner clicked on.
  */
 context(`Display the prisoner list screen`, () => {
-  let prisonerSearchSummaries: Array<PrisonerSearchSummary>
+  let peopleGroupedByPageRequest: Array<Array<PersonResponse>>
+
+  const processGeneratedPeopleIntoPagedApiResponses = (people: Array<PersonResponse>) => {
+    peopleGroupedByPageRequest = new Array(15)
+    for (let i = 0; i < 15; i += 1) {
+      peopleGroupedByPageRequest[i] = people.slice(i * 50, (i + 1) * 50)
+    }
+    peopleGroupedByPageRequest.forEach((pageOfPeople, idx) => {
+      cy.task('stubSearchByPrison', {
+        page: idx + 1,
+        pageOfPrisoners: pageOfPeople,
+        totalRecords: 725,
+        sortBy: SearchSortField.ENTERED_PRISON_DATE,
+      })
+    })
+  }
 
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
 
-    // Generate 725 Prisoner Search Summaries that will be displayed on the Prisoner List page by virtue of using them in the prisoner-search, CIAG, and Action Plan stubs
+    // Generate 725 PersonResponse records that will be displayed on the Prisoner List page by virtue of using them in the search API stub.
     // 725 is a very specific number and is used because it will mean we have 15 pages (14 pages of 50, plus 1 of 25)
     // This means we can assert elements of the paging such as Previous, Next, the number of page links, the "sliding window of 10" page links etc
-    cy.task('generatePrisonerSearchSummaries', 725).then(summaries => {
-      prisonerSearchSummaries = summaries as Array<PrisonerSearchSummary>
-      cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
-      cy.task('stubCiagInductionListFromPrisonerSearchSummaries', summaries)
-      cy.task('stubActionPlansListFromPrisonerSearchSummaries', summaries)
-    })
+    cy.task('generatePeople', 725).then(processGeneratedPeopleIntoPagedApiResponses)
   })
 
   it('should be able to navigate directly to the prisoner list page', () => {
     // Given
     cy.signIn()
-    const expectedResultCount = prisonerSearchSummaries.length
+    const expectedResultCount = 725
 
     // When
     cy.visit('/')
 
     // Then
-    const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-    prisonerListPage.hasResultsDisplayed(expectedResultCount)
+    Page.verifyOnPage(PrisonerListPage) //
+      .apiErrorBannerIsNotDisplayed()
+      .hasResultsDisplayed(expectedResultCount)
+      .searchUnavailableMessageIsNotDisplayed()
   })
   ;['VIEW', 'CONTRIBUTOR'].forEach(authority => {
     it(`users with authority ${authority} should get the prisoner list page as their landing page straight after login`, () => {
@@ -50,165 +63,32 @@ context(`Display the prisoner list screen`, () => {
       } else if (authority === 'CONTRIBUTOR') {
         cy.task('stubSignInAsUserWithContributorRole')
       }
-      const expectedResultCount = prisonerSearchSummaries.length
+      cy.task('generatePeople', 725).then(processGeneratedPeopleIntoPagedApiResponses)
+      const expectedResultCount = 725
 
       // When
       cy.signIn()
 
       // Then
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-      prisonerListPage.hasResultsDisplayed(expectedResultCount)
+      Page.verifyOnPage(PrisonerListPage) //
+        .apiErrorBannerIsNotDisplayed()
+        .hasResultsDisplayed(expectedResultCount)
+        .searchUnavailableMessageIsNotDisplayed()
     })
   })
 
-  it('should display service unavailable message given prisoner-search API returns a 500', () => {
+  it('should display service unavailable message given search API returns a 500', () => {
     // Given
     cy.signIn()
-    cy.task('stubPrisonerList500error')
+    cy.task('stubSearchByPrison500Error')
 
     // When
     cy.visit('/', { failOnStatusCode: false })
 
     // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  it('should display service unavailable message given CIAG API returns a 500', () => {
-    // Given
-    cy.signIn()
-    cy.task('stubCiagInductionList500error')
-
-    // When
-    cy.visit('/', { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  it('should display service unavailable message given Action Plans API returns a 500', () => {
-    // Given
-    cy.signIn()
-    cy.task('stubActionPlansList500error')
-
-    // When
-    cy.visit('/', { failOnStatusCode: false })
-
-    // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  describe('filtering', () => {
-    it('should filter for non existent prisoner and get zero results', () => {
-      // Given
-      cy.signIn()
-      cy.visit('/')
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-
-      // When
-      prisonerListPage //
-        .setNameFilter('some non existent search term')
-        .applyFilters()
-
-      // Then
-      prisonerListPage.hasNoResultsDisplayed()
-    })
-
-    it('should filter for prisoners named John', () => {
-      // Given
-      cy.signIn()
-      cy.visit('/')
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-
-      const numberOfPrisonersNamedJohn = prisonerSearchSummaries.filter(
-        prisonerSearchSummary =>
-          prisonerSearchSummary.firstName.includes('JOHN') || prisonerSearchSummary.lastName.includes('JOHN'),
-      ).length
-
-      // When
-      prisonerListPage //
-        .setNameFilter('John')
-        .applyFilters()
-
-      // Then
-      prisonerListPage //
-        .hasResultsDisplayed(numberOfPrisonersNamedJohn)
-    })
-    ;['VIEW', 'CONTRIBUTOR', 'MANAGER'].forEach(authority => {
-      it(`users with authority ${authority} should be able to clear filters to reset the search and be left on the prisoner list page with no active filters set`, () => {
-        // Given
-        if (authority === 'VIEW') {
-          cy.task('stubSignInAsReadOnlyUser')
-        } else if (authority === 'MANAGER') {
-          cy.task('stubSignInAsUserWithManagerRole')
-        } else if (authority === 'CONTRIBUTOR') {
-          cy.task('stubSignInAsUserWithContributorRole')
-        }
-        cy.signIn()
-        cy.visit(authority === 'MANAGER' ? '/search' : '/') // prisoner-list route is '/' for read only or contributors; but is '/search' for managers
-
-        const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-        prisonerListPage //
-          .setNameFilter('some non existent search term')
-          .setStatusFilter('NEEDS_PLAN')
-          .applyFilters()
-          .hasNoResultsDisplayed()
-
-        const expectedResultCount = prisonerSearchSummaries.length
-
-        // When
-        prisonerListPage.clearFilters()
-
-        // Then
-        Page.verifyOnPage(PrisonerListPage)
-        prisonerListPage //
-          .hasResultsDisplayed(expectedResultCount)
-          .hasNoSearchTerm()
-          .hasNoStatusFilter()
-      })
-    })
-  })
-
-  describe('sorting', () => {
-    it('should be sorted by reception-date descending as the default sort order', () => {
-      // Given
-      cy.signIn()
-      cy.visit('/')
-
-      // When
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-
-      // Then
-      prisonerListPage //
-        .isSortedBy('reception-date', 'descending')
-    })
-
-    it('should sort by location descending', () => {
-      // Given
-      cy.signIn()
-      cy.visit('/')
-      const prisonerListPage = Page.verifyOnPage(PrisonerListPage)
-
-      const expectedFirstRowInTable = prisonerSearchSummaries
-        .map(summary => ({ ...summary }))
-        .sort((left: PrisonerSearchSummary, right: PrisonerSearchSummary): number => {
-          if (left.location === right.location) {
-            return 0
-          }
-          return left.location > right.location ? -1 : 1
-        })[0]
-
-      // When
-      prisonerListPage.sortBy('location').sortBy('location') // Need to click twice as the first click sorts ascending; 2nd click sorts descending
-
-      // Then
-      prisonerListPage //
-        .isSortedBy('location', 'descending')
-        .firstRowNameIs(
-          `${capitalize(expectedFirstRowInTable.lastName)}, ${capitalize(expectedFirstRowInTable.firstName)}`,
-        )
-        .firstRowPrisonNumberIs(expectedFirstRowInTable.prisonNumber)
-        .firstRowLocationIs(expectedFirstRowInTable.location)
-    })
+    Page.verifyOnPage(PrisonerListPage) //
+      .apiErrorBannerIsDisplayed()
+      .searchUnavailableMessageIsDisplayed()
   })
 
   describe('pagination', () => {
@@ -259,9 +139,20 @@ context(`Display the prisoner list screen`, () => {
         .hasNextLinkDisplayed()
     })
   })
-})
 
-const capitalize = (name: string): string => {
-  const trimmedLowercaseName = name.trim().toLowerCase()
-  return trimmedLowercaseName.charAt(0).toUpperCase() + trimmedLowercaseName.slice(1)
-}
+  it('should be able to click a prisoner on the search page to arrive on the Overview page', () => {
+    // Given
+    cy.task('reset')
+    cy.task('stubSignInAsReadOnlyUser')
+    cy.signIn()
+    cy.visit('/search')
+
+    // Then
+    Page.verifyOnPage(PrisonerListPage) //
+      .gotoOverviewPageForPrisoner('G6115VJ')
+
+    // When
+    Page.verifyOnPage(OverviewPage) //
+      .isForPrisoner('G6115VJ')
+  })
+})
