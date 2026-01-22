@@ -6,12 +6,13 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import AuditService, { BaseAuditData } from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ArchiveGoalController from './archiveGoalController'
-import { aValidGoal, aValidStep } from '../../testsupport/actionPlanTestDataBuilder'
+import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
 import validateArchiveGoalForm from './archiveGoalFormValidator'
 import aValidArchiveGoalForm from '../../testsupport/archiveGoalFormTestDataBuilder'
 import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
+import { Result } from '../../utils/result/result'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
@@ -35,6 +36,7 @@ describe('archiveGoalController', () => {
   const goalReference = '1a2eae63-8102-4155-97cb-43d8fb739caf'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber, prisonId })
   const requestId = 'deff305c-2460-4d07-853e-f8762a8a52c6'
+  const goal = Result.fulfilled(aValidGoal({ goalReference }))
 
   const flash = jest.fn()
   const req = {
@@ -51,7 +53,7 @@ describe('archiveGoalController', () => {
     redirectWithSuccess: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-    locals: { prisonerSummary },
+    locals: { prisonerSummary, goal },
   } as unknown as Response
   const next = jest.fn()
 
@@ -62,118 +64,42 @@ describe('archiveGoalController', () => {
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
-    res.locals = { prisonerSummary }
 
     errors = []
   })
 
   describe('getArchiveGoalView', () => {
-    it('Should load the page with archive goal form that does not have anything selected yet', async () => {
+    it('should get archive goal view given there is no form on the prisoner context', async () => {
       // Given
-      const step = aValidStep()
-      const goal = aValidGoal({ goalReference, steps: [step] })
-      res.locals.goals = {
-        problemRetrievingData: false,
-        goals: [goal],
-      }
+      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
+      const expectedForm = {}
 
-      const expectedForm: ArchiveGoalForm = {
-        reference: goalReference,
-        title: goal.title,
-      }
-      const expectedView = {
+      // When
+      await controller.getArchiveGoalView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', {
         prisonerSummary,
-        form: expectedForm,
-      }
+        goal,
+        archiveGoalForm: expectedForm,
+      })
+      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
+    })
+
+    it('should get archive goal view given there is already a form on the prisoner context', async () => {
+      // Given
+      const expectedForm = aValidArchiveGoalForm(goalReference)
+      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = expectedForm
 
       // When
       await controller.getArchiveGoalView(req, res, next)
 
       // Then
-      expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-    })
-
-    it('Should not use form from session if it is a different goal', async () => {
-      // Given
-      const alternativeReference = 'some other goal reference'
-      const step = aValidStep()
-      const goal = aValidGoal({ goalReference: alternativeReference, steps: [step] })
-      res.locals.goals = {
-        problemRetrievingData: false,
-        goals: [goal],
-      }
-
-      req.params.goalReference = alternativeReference
-      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = aValidArchiveGoalForm(goalReference)
-
-      const expectedForm: ArchiveGoalForm = {
-        reference: alternativeReference,
-        title: goal.title,
-      }
-      const expectedView = {
+      expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', {
         prisonerSummary,
-        form: expectedForm,
-      }
-
-      // When
-      await controller.getArchiveGoalView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-    })
-
-    it('Should use form from session if it is the same goal, e.g., a validation error', async () => {
-      // Given
-      const archiveGoalForm = aValidArchiveGoalForm(goalReference)
-      getPrisonerContext(req.session, prisonNumber).archiveGoalForm = archiveGoalForm
-
-      const expectedView = {
-        prisonerSummary,
-        form: archiveGoalForm,
-      }
-
-      // When
-      await controller.getArchiveGoalView(req, res, next)
-
-      // Then
-      expect(res.render).toHaveBeenCalledWith('pages/goal/archive/reason', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-    })
-
-    it('should not get archive goal view given problem retrieving prisoner goals', async () => {
-      // Given
-      res.locals.goals = {
-        problemRetrievingData: true,
-      }
-
-      const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
-
-      // When
-      await controller.getArchiveGoalView(req, res, next)
-
-      // Then
-      expect(next).toHaveBeenCalledWith(expectedError)
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
-    })
-
-    it('should not get archive goal view given requested goal reference is not part of the prisoners action plan', async () => {
-      // Given
-      const someOtherGoalReference = 'd31d22bc-b9be-4d13-9e47-d633d6815454'
-      const goal = aValidGoal({ goalReference: someOtherGoalReference })
-      res.locals.goals = {
-        problemRetrievingData: false,
-        goals: [goal],
-      }
-
-      const expectedError = createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`)
-
-      // When
-      await controller.getArchiveGoalView(req, res, next)
-
-      // Then
-      expect(next).toHaveBeenCalledWith(expectedError)
+        goal,
+        archiveGoalForm: expectedForm,
+      })
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toBeUndefined()
     })
   })

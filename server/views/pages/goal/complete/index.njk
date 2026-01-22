@@ -11,57 +11,64 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Are you sure you want to mark this goal as completed?</h1>
-      <section class="complete-goal-summary">
-        <h3 class="govuk-heading-s">Goal</h3>
-        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-summary">{{ form.title }}</p>
-      </section>
+      {% if goal.isFulfilled() %}
+        {% set goal = goal.value %}
 
-      <form class="form" method="post" novalidate="">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-        <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+        <h1 class="govuk-heading-l">Are you sure you want to mark this goal as completed?</h1>
+        <section class="complete-goal-summary">
+          <h3 class="govuk-heading-s">Goal</h3>
+          <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-summary">{{ goal.title }}</p>
+        </section>
 
-        <div class="govuk-form-group">
+        <form class="form" method="post" novalidate="">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
           <div class="govuk-form-group">
-            {{ govukTextarea({
-              name: "notes",
-              id: "notes",
-              value: form.notes,
-              label: {
-                html: '<h2 class="govuk-label--m">Add a note (optional)</h2>'
+            <div class="govuk-form-group">
+              {{ govukTextarea({
+                name: "notes",
+                id: "notes",
+                value: form.notes,
+                label: {
+                  html: '<h2 class="govuk-label--m">Add a note (optional)</h2>'
+                },
+                hint: {
+                  text: "Learning and work plans, including notes, are shared with prisoners and other staff"
+                }
+              }) }}
+            </div>
+
+            {{ govukButton({
+              id: "submit-button",
+              name: "action",
+              value: "submit-form",
+              text: "Yes, complete goal",
+              classes: "moj-button-menu__item",
+              attributes: {
+                'data-qa': 'goal-complete-submit-button'
               },
-              hint: {
-                text: "Learning and work plans, including notes, are shared with prisoners and other staff"
-              }
+              preventDoubleClick: true
+            }) }}
+
+            {{ govukButton({
+              type: "a",
+              href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview",
+              id: "back-to-overview-button",
+              text: "No, go back to learning and work plan",
+              classes: "moj-button-menu__item govuk-button--secondary",
+              attributes: {
+                'data-qa': 'goal-complete-back-button'
+              },
+              preventDoubleClick: true
             }) }}
           </div>
+        </form>
 
-          {{ govukButton({
-            id: "submit-button",
-            name: "action",
-            value: "submit-form",
-            text: "Yes, complete goal",
-            classes: "moj-button-menu__item",
-            attributes: {
-              'data-qa': 'goal-complete-submit-button'
-            },
-            preventDoubleClick: true
-          }) }}
+      {% else %}
 
-          {{ govukButton({
-            type: "a",
-            href: "/plan/" + prisonerSummary.prisonNumber + "/view/overview",
-            id: "back-to-overview-button",
-            text: "No, go back to learning and work plan",
-            classes: "moj-button-menu__item govuk-button--secondary",
-            attributes: {
-              'data-qa': 'goal-complete-back-button'
-            },
-            preventDoubleClick: true
-          }) }}
-        </div>
-      </form>
+        <h2 class="govuk-heading-s" data-qa="goal-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
     </div>
   </div>
 

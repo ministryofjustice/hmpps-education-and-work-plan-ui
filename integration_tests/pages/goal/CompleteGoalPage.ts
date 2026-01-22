@@ -5,11 +5,6 @@ export default class CompleteGoalPage extends Page {
     super('complete-goal')
   }
 
-  isForGoal(expected: string) {
-    this.goalReferenceInputValue().should('have.value', expected)
-    return this
-  }
-
   enterNotes(value: string): CompleteGoalPage {
     this.notesField().clear().type(value, { delay: 0 })
     return this
@@ -19,8 +14,6 @@ export default class CompleteGoalPage extends Page {
     this.notesField().clear()
     return this
   }
-
-  private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
   private notesField = (): PageElement => cy.get('#notes')
 

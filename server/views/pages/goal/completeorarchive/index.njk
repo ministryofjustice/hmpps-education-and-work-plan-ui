@@ -11,46 +11,53 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Do you want to mark this goal as completed or archive it?</h1>
-      <h2 class="govuk-heading-m">Archived goals can be reactivated.</h2>
-      <section class="complete-goal-summary">
-        <h3 class="govuk-heading-s">Goal</h3>
-        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-or-archived-summary">{{ form.title }}</p>
-      </section>
+      {% if goal.isFulfilled() %}
+        {% set goal = goal.value %}
 
-      <form class="form" method="post" novalidate="">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-        <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+        <h1 class="govuk-heading-l">Do you want to mark this goal as completed or archive it?</h1>
+        <h2 class="govuk-heading-m">Archived goals can be reactivated.</h2>
+        <section class="complete-goal-summary">
+          <h3 class="govuk-heading-s">Goal</h3>
+          <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-completed-or-archived-summary">{{ goal.title }}</p>
+        </section>
 
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-two-thirds">
-            {{ govukRadios({
-              name: "archiveOrComplete",
-              items: [
-                {
-                  value: "COMPLETE",
-                  text: "Mark goal as completed",
-                  checked: true
-                },
-                {
-                  value: "ARCHIVE",
-                  text: "Archive this goal",
-                  checked: false
-                }
-              ]
-            }) }}
+        <form class="form" method="post" novalidate="">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-            {{ govukButton({
-              id: "submit-button",
-              text: "Continue",
-              type: "submit",
-              attributes: {"data-qa": "submit-button"},
-              preventDoubleClick: true
-            }) }}
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              {{ govukRadios({
+                name: "archiveOrComplete",
+                items: [
+                  {
+                    value: "COMPLETE",
+                    text: "Mark goal as completed",
+                    checked: true
+                  },
+                  {
+                    value: "ARCHIVE",
+                    text: "Archive this goal",
+                    checked: false
+                  }
+                ]
+              }) }}
+
+              {{ govukButton({
+                id: "submit-button",
+                text: "Continue",
+                type: "submit",
+                attributes: {"data-qa": "submit-button"},
+                preventDoubleClick: true
+              }) }}
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+
+      {% else %}
+
+        <h2 class="govuk-heading-s" data-qa="goal-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
     </div>
   </div>
 

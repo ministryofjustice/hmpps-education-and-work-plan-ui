@@ -1,9 +1,6 @@
 import type { RequestHandler, Request } from 'express'
 import type { ArchiveGoalForm } from 'forms'
-import type { Goal } from 'viewModels'
-import createError from 'http-errors'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import ArchiveGoalView from './archiveGoalView'
 import validateArchiveGoalForm from './archiveGoalFormValidator'
 import ReviewArchiveGoalView from './reviewArchiveGoalView'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
@@ -24,30 +21,14 @@ export default class ArchiveGoalController {
   ) {}
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, goals } = res.locals
+    const { prisonNumber } = req.params
+    const { prisonerSummary, goal } = res.locals
 
-    let { archiveGoalForm } = getPrisonerContext(req.session, prisonNumber)
-    if (!archiveGoalForm || archiveGoalForm.reference !== goalReference) {
-      if (goals.problemRetrievingData) {
-        return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
-      }
-
-      const goalToArchive = (goals.goals as Array<Goal>).find(goal => goal.goalReference === goalReference)
-      if (!goalToArchive) {
-        return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
-      }
-
-      archiveGoalForm = {
-        reference: goalReference,
-        title: goalToArchive.title,
-      }
-    }
+    const archiveGoalForm = getPrisonerContext(req.session, prisonNumber).archiveGoalForm || {}
 
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
-    const view = new ArchiveGoalView(prisonerSummary, archiveGoalForm)
-    return res.render('pages/goal/archive/reason', { ...view.renderArgs })
+    return res.render('pages/goal/archive/reason', { prisonerSummary, goal, archiveGoalForm })
   }
 
   submitArchiveGoalForm: RequestHandler = async (req, res, next): Promise<void> => {

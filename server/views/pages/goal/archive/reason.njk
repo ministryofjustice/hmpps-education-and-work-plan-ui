@@ -11,17 +11,20 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Select a reason for archiving this goal</h1>
-      <section class="archive-goal-summary">
-        <h3 class="govuk-heading-s">Goal</h3>
-        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-archived-summary">{{ form.title }}</p>
-      </section>
+      {% if goal.isFulfilled() %}
+        {% set goal = goal.value %}
+
+        <h1 class="govuk-heading-l">Select a reason for archiving this goal</h1>
+        <section class="archive-goal-summary">
+          <h3 class="govuk-heading-s">Goal</h3>
+          <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-archived-summary">{{ goal.title }}</p>
+        </section>
 
         <form class="form" method="post" novalidate="">
           <div class="govuk-form-group">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-            <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+            <input type="hidden" name="reference" value="{{ goal.goalReference }}" data-qa="goal-reference" />
+            <input type="hidden" name="title" value="{{ goal.title }}" data-qa="goal-title" />
 
             {% set reasonHtml %}
               {{ govukCharacterCount({
@@ -99,6 +102,13 @@
           }) }}
 
         </form>
+
+
+      {% else %}
+
+        <h2 class="govuk-heading-s" data-qa="goal-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
 
     </div>
   </div>

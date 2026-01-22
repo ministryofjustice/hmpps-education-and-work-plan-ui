@@ -7,7 +7,7 @@ import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoal
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
 import CompleteGoalPage from '../../../pages/goal/CompleteGoalPage'
 import GoalsPage from '../../../pages/overview/GoalsPage'
-import GoalStatusValue from '../../../../server/enums/goalStatusValue'
+import Error404Page from '../../../pages/error404'
 
 context('Complete a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -19,7 +19,7 @@ context('Complete a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
+    cy.task('getGoal', { prisonNumber, goalReference })
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('completeGoal', { prisonNumber, goalReference })
@@ -33,8 +33,7 @@ context('Complete a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/complete`)
 
     // Then
-    const completeGoalPage = Page.verifyOnPage(CompleteGoalPage)
-    completeGoalPage.isForGoal(goalReference)
+    Page.verifyOnPage(CompleteGoalPage)
   })
 
   it('should be able to navigate to complete goals page from overview', () => {
@@ -137,5 +136,30 @@ context('Complete a goal', () => {
           ),
         ),
     )
+  })
+
+  it('should not be able to navigate directly to complete goal page given goal does not exist', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal404Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/complete`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
+  })
+
+  it('should navigate directly to complete goal page and show error message given retrieving goal returns an error', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal500Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/complete`)
+
+    // Then
+    Page.verifyOnPage(CompleteGoalPage) //
+      .apiErrorBannerIsDisplayed()
   })
 })
