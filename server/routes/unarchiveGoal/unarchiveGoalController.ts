@@ -1,14 +1,13 @@
 import type { Request, RequestHandler } from 'express'
-import createError from 'http-errors'
-import type { UnarchiveGoalForm } from 'forms'
-import type { Goal } from 'viewModels'
-import UnarchiveGoalView from './unarchiveGoalView'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import toUnarchiveGoalDto from './mappers/unarchiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class UnarchiveGoalController {
   constructor(
@@ -17,34 +16,23 @@ export default class UnarchiveGoalController {
   ) {}
 
   getUnarchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, goals } = res.locals
+    const { prisonerSummary, goal } = res.locals
 
-    if (goals.problemRetrievingData) {
-      return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
-    }
+    clearRedirectPendingFlag(req)
 
-    const goalToUnarchive = (goals.goals as Array<Goal>).find(goal => goal.goalReference === goalReference)
-    if (!goalToUnarchive) {
-      return next(createError(404, `Archived goal ${goalReference} does not exist in the prisoner's plan`))
-    }
-
-    const unarchiveGoalForm: UnarchiveGoalForm = {
-      reference: goalReference,
-      title: goalToUnarchive.title,
-    }
-
-    const view = new UnarchiveGoalView(prisonerSummary, unarchiveGoalForm)
-    return res.render('pages/goal/unarchive/index', { ...view.renderArgs })
+    return res.render('pages/goal/unarchive/index', { prisonerSummary, goal })
   }
 
   submitUnarchiveGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = res.locals
-    const unarchiveGoalForm: UnarchiveGoalForm = { ...req.body }
 
     const { prisonId } = prisonerSummary
-    const unarchiveGoalDto = toUnarchiveGoalDto(prisonNumber, prisonId, unarchiveGoalForm)
+    const unarchiveGoalDto = {
+      goalReference,
+      prisonNumber,
+      prisonId,
+    }
 
     const { apiErrorCallback } = res.locals
     const apiResult = await Result.wrap(
@@ -58,6 +46,7 @@ export default class UnarchiveGoalController {
     }
 
     this.auditService.logUnarchiveGoal(unarchiveGoalAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
     return res.redirectWithSuccess(`/plan/${prisonNumber}/view/overview`, 'Goal reactivated')
   }
 }
