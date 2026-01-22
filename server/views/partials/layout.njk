@@ -102,8 +102,6 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the
   <body>, to avoid blocking the initial render. #}
-  <script src="/assets/js/jquery.min.js"></script>
-
   <script type="module" src="{{ '/assets/js/app.js' | assetMap }}"></script>
   <script nonce="{{ cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
