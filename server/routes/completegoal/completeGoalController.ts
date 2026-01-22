@@ -1,10 +1,6 @@
+import type { CompleteGoalDto } from 'dto'
 import type { Request, RequestHandler } from 'express'
-import createError from 'http-errors'
-import type { CompleteGoalForm } from 'forms'
-import type { Goal } from 'viewModels'
-import CompleteGoalView from './completeGoalView'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import toCompleteGoalDto from './mappers/completeGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { Result } from '../../utils/result/result'
@@ -21,37 +17,20 @@ export default class CompleteGoalController {
   ) {}
 
   getCompleteGoalView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, goals } = res.locals
+    const { prisonerSummary, goal } = res.locals
 
     clearRedirectPendingFlag(req)
 
-    if (goals.problemRetrievingData) {
-      return next(createError(500, `Error retrieving plan for prisoner ${prisonNumber}`))
-    }
-
-    const goalToComplete = (goals.goals as Array<Goal>).find(goal => goal.goalReference === goalReference)
-    if (!goalToComplete) {
-      return next(createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`))
-    }
-
-    const completeGoalForm: CompleteGoalForm = {
-      reference: goalReference,
-      title: goalToComplete.title,
-      notes: '',
-    }
-
-    const view = new CompleteGoalView(prisonerSummary, completeGoalForm)
-    return res.render('pages/goal/complete/index', { ...view.renderArgs })
+    return res.render('pages/goal/complete/index', { prisonerSummary, goal, form: { notes: '' } })
   }
 
   submitCompleteGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber } = req.params
+    const { prisonNumber, goalReference } = req.params
     const { prisonerSummary } = res.locals
-    const completeGoalForm: CompleteGoalForm = { ...req.body }
+    const completeGoalForm = { ...req.body }
 
     const { prisonId } = prisonerSummary
-    const completeGoalDto = toCompleteGoalDto(prisonNumber, prisonId, completeGoalForm)
+    const completeGoalDto = toCompleteGoalDto(prisonNumber, goalReference, prisonId, completeGoalForm)
 
     const { apiErrorCallback } = res.locals
     const apiResult = await Result.wrap(
@@ -80,3 +59,15 @@ const completeGoalAuditData = (req: Request): BaseAuditData => {
     correlationId: req.id,
   }
 }
+
+const toCompleteGoalDto = (
+  prisonNumber: string,
+  goalReference: string,
+  prisonId: string,
+  form: { notes?: string },
+): CompleteGoalDto => ({
+  goalReference,
+  prisonNumber,
+  note: form.notes?.trim() || null,
+  prisonId,
+})

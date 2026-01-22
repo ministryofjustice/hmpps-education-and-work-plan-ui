@@ -9,7 +9,7 @@ import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import GoalsPage from '../../../pages/overview/GoalsPage'
 import CompleteOrArchiveGoalPage from '../../../pages/goal/CompleteOrArchiveGoalPage'
 import CompleteOrArchiveGoalValue from '../../../../server/enums/CompleteOrArchiveGoalValue'
-import GoalStatusValue from '../../../../server/enums/goalStatusValue'
+import Error404Page from '../../../pages/error404'
 
 context('Archive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -21,7 +21,7 @@ context('Archive a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ACTIVE })
+    cy.task('getGoal', { prisonNumber, goalReference })
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('archiveGoal')
@@ -235,5 +235,30 @@ context('Archive a goal', () => {
           ),
         ),
     )
+  })
+
+  it('should not be able to navigate directly to archive goal page given goal does not exist', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal404Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
+  })
+
+  it('should navigate directly to archive goal page and show error message given retrieving goal returns an error', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal500Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
+
+    // Then
+    Page.verifyOnPage(ArchiveGoalPage) //
+      .apiErrorBannerIsDisplayed()
   })
 })

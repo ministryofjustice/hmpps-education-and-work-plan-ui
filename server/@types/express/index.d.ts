@@ -1,5 +1,5 @@
 import type { PageFlow } from 'viewModels'
-import type { ArchiveGoalForm, CreateGoalsForm, CompleteGoalForm, UpdateGoalForm } from 'forms'
+import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
@@ -23,7 +23,6 @@ declare module 'express-session' {
     // Goal related forms
     updateGoalForm?: UpdateGoalForm
     archiveGoalForm?: ArchiveGoalForm
-    completeGoalForm?: CompleteGoalForm
   }
 
   export type PrisonerContexts = Record<string, PrisonerContext>

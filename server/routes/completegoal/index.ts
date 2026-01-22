@@ -3,8 +3,7 @@ import { Services } from '../../services'
 import CompleteGoalController from './completeGoalController'
 import { checkUserHasPermissionTo } from '../../middleware/roleBasedAccessControl'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import retrieveGoals from '../routerRequestHandlers/retrieveGoals'
-import GoalStatusValue from '../../enums/goalStatusValue'
+import retrieveGoal from '../routerRequestHandlers/retrieveGoal'
 import ApplicationAction from '../../enums/applicationAction'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
@@ -19,7 +18,7 @@ export default (router: Router, services: Services) => {
     checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
   ])
   router.get('/plan/:prisonNumber/goals/:goalReference/complete', [
-    retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
+    retrieveGoal(educationAndWorkPlanService),
     asyncMiddleware(completeGoalController.getCompleteGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/complete', [
