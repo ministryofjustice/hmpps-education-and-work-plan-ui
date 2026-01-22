@@ -11,45 +11,52 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Are you sure you want to reactivate this goal?</h1>
-      <p class='govuk-body'>Reactivating goals moves them back to in progress.</p>
+      {% if goal.isFulfilled() %}
+        {% set goal = goal.value %}
 
-      <section class="archive-goal-summary">
-        <h3 class="govuk-heading-s">Goal</h3>
-        <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-archived-summary">{{ form.title }}</p>
-      </section>
+        <h1 class="govuk-heading-l">Are you sure you want to reactivate this goal?</h1>
+        <p class='govuk-body'>Reactivating goals moves them back to in progress.</p>
 
-      <form class="form" method="post" novalidate="">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        <input type="hidden" name="reference" value="{{ form.reference }}" data-qa="goal-reference" />
-        <input type="hidden" name="title" value="{{ form.title }}" data-qa="goal-title" />
+        <section class="archive-goal-summary">
+          <h3 class="govuk-heading-s">Goal</h3>
+          <p class="govuk-body app-u-multiline-text" data-qa="goal-to-be-archived-summary">{{ goal.title }}</p>
+        </section>
 
-        <div class="govuk-form-group">
-          {{ govukButton({
-            id: "submit-button",
-            name: "action",
-            text: "Yes, reactivate goal",
-            classes: "moj-button-menu__item",
-            attributes: {
-              'data-qa': 'goal-unarchive-submit-button'
-            },
-            preventDoubleClick: true
-          }) }}
+        <form class="form" method="post" novalidate="">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-          {{ govukButton({
-            type: "a",
-            href: "/plan/" + prisonerSummary.prisonNumber + "/view/goals#archived-goals",
-            id: "back-to-archive-goal-button",
-            text: "No, go back to archived goals",
-            classes: "moj-button-menu__item govuk-button--secondary",
-            attributes: {
-              'data-qa': 'goal-unarchive-back-button'
-            },
-            preventDoubleClick: true
-          }) }}
-        </div>
+          <div class="govuk-form-group">
+            {{ govukButton({
+              id: "submit-button",
+              name: "action",
+              text: "Yes, reactivate goal",
+              classes: "moj-button-menu__item",
+              attributes: {
+                'data-qa': 'goal-unarchive-submit-button'
+              },
+              preventDoubleClick: true
+            }) }}
 
-      </form>
+            {{ govukButton({
+              type: "a",
+              href: "/plan/" + prisonerSummary.prisonNumber + "/view/goals#archived-goals",
+              id: "back-to-archive-goal-button",
+              text: "No, go back to archived goals",
+              classes: "moj-button-menu__item govuk-button--secondary",
+              attributes: {
+                'data-qa': 'goal-unarchive-back-button'
+              },
+              preventDoubleClick: true
+            }) }}
+          </div>
+        </form>
+
+      {% else %}
+
+        <h2 class="govuk-heading-s" data-qa="goal-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
+
     </div>
   </div>
 

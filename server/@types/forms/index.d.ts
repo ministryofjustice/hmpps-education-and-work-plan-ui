@@ -50,11 +50,6 @@ declare module 'forms' {
     notes?: string
   }
 
-  export interface UnarchiveGoalForm {
-    reference: string
-    title: string
-  }
-
   export interface HighestLevelOfEducationForm {
     educationLevel: EducationLevelValue
   }

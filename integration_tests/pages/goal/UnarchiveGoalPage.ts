@@ -5,11 +5,6 @@ export default class UnarchiveGoalPage extends Page {
     super('unarchive-goal')
   }
 
-  isForGoal(expected: string) {
-    this.goalReferenceInputValue().should('have.value', expected)
-    return this
-  }
-
   clickYes() {
     this.yesButton().click()
   }
@@ -17,8 +12,6 @@ export default class UnarchiveGoalPage extends Page {
   clickNo() {
     this.noButton().click()
   }
-
-  private goalReferenceInputValue = (): PageElement => cy.get('[data-qa=goal-reference]')
 
   private yesButton = (): PageElement => cy.get('[data-qa=goal-unarchive-submit-button]')
 

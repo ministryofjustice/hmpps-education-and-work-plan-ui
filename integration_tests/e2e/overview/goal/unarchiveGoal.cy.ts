@@ -6,7 +6,7 @@ import { putRequestedFor } from '../../../mockApis/wiremock/requestPatternBuilde
 import { matchingJsonPath } from '../../../mockApis/wiremock/matchers/content'
 import AuthorisationErrorPage from '../../../pages/authorisationError'
 import GoalsPage from '../../../pages/overview/GoalsPage'
-import GoalStatusValue from '../../../../server/enums/goalStatusValue'
+import Error404Page from '../../../pages/error404'
 
 context('Unarchive a goal', () => {
   const prisonNumber = 'G6115VJ'
@@ -18,7 +18,7 @@ context('Unarchive a goal', () => {
     cy.task('getPrisonerById')
     cy.task('stubGetInduction')
     cy.task('getActionPlan')
-    cy.task('getGoalsByStatus', { prisonNumber, status: GoalStatusValue.ARCHIVED })
+    cy.task('getGoal', { prisonNumber, goalReference })
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
     cy.task('unarchiveGoal')
@@ -32,8 +32,7 @@ context('Unarchive a goal', () => {
     cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/unarchive`)
 
     // Then
-    const unarchiveGoalPage = Page.verifyOnPage(UnarchiveGoalPage)
-    unarchiveGoalPage.isForGoal(goalReference)
+    Page.verifyOnPage(UnarchiveGoalPage)
   })
 
   it('should be able to navigate to the unarchive goal page from the overview page', () => {
@@ -49,8 +48,8 @@ context('Unarchive a goal', () => {
     // Then
     const goalsPage = Page.verifyOnPage(GoalsPage)
     const archivedGoalsPage = goalsPage.clickArchivedGoalsTab()
-    const unarchiveGoalPage = archivedGoalsPage.clickReactivateButtonForGoal(goalReference, 1)
-    unarchiveGoalPage.isForGoal(goalReference)
+    archivedGoalsPage.clickReactivateButtonForGoal(goalReference, 1)
+    Page.verifyOnPage(UnarchiveGoalPage)
   })
 
   it('should not be able to get to the unarchive goal page given user does not have edit authority', () => {
@@ -102,5 +101,30 @@ context('Unarchive a goal', () => {
     cy.wiremockVerifyNoInteractions(
       putRequestedFor(urlEqualTo(`/action-plans/${prisonNumber}/goals/${goalReference}/unarchive`)),
     )
+  })
+
+  it('should not be able to navigate directly to unarchive goal page given goal does not exist', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal404Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/unarchive`, { failOnStatusCode: false })
+
+    // Then
+    Page.verifyOnPage(Error404Page)
+  })
+
+  it('should navigate directly to unarchive goal page and show error message given retrieving goal returns an error', () => {
+    // Given
+    cy.signIn()
+    cy.task('getGoal500Error', { prisonNumber, goalReference })
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/goals/${goalReference}/unarchive`)
+
+    // Then
+    Page.verifyOnPage(UnarchiveGoalPage) //
+      .apiErrorBannerIsDisplayed()
   })
 })
