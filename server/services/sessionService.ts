@@ -1,9 +1,15 @@
-import type { Sessions, SessionsSummary } from 'viewModels'
+import type { Sessions, SessionSearch, SessionsSummary } from 'viewModels'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import toSessionsSummary from '../data/mappers/sessionsSummaryMapper'
 import logger from '../../logger'
 import SessionStatusValue from '../enums/sessionStatusValue'
 import toPrisonerSessions from '../data/mappers/prisonerSessionMapper'
+import SortOrder from '../enums/sortDirection'
+import SessionSortBy from '../enums/sessionSortBy'
+import toSearchSortDirection from '../data/mappers/searchSortDirectionMapper'
+import toSessionSearchSortField from '../data/mappers/sessionSearchSortFieldMapper'
+import SessionTypeValue from '../enums/sessionTypeValue'
+import { toSessionSearch } from '../data/mappers/sessionSearchMapper'
 
 export default class SessionService {
   constructor(private readonly educationAndWorkPlanClient: EducationAndWorkPlanClient) {}
@@ -34,5 +40,41 @@ export default class SessionService {
         problemRetrievingData: true,
       } as Sessions
     }
+  }
+
+  async searchSessionsInPrison(
+    prisonId: string,
+    username: string,
+    page: number,
+    pageSize: number,
+    sortBy: SessionSortBy,
+    sortOrder: SortOrder,
+    sessionStatusType?: SessionStatusValue,
+    prisonerNameOrNumber?: string,
+    sessionType?: SessionTypeValue,
+  ): Promise<SessionSearch> {
+    const searchSortField = toSessionSearchSortField(sortBy)
+    const searchSortDirection = toSearchSortDirection(sortOrder)
+
+    return toSessionSearch(
+      await this.educationAndWorkPlanClient.searchSessionsByPrison(
+        prisonId,
+        username,
+        sessionStatusType,
+        prisonerNameOrNumber,
+        sessionType,
+        page,
+        pageSize,
+        searchSortField,
+        searchSortDirection,
+      ),
+      {
+        sortBy,
+        sortOrder,
+        searchTerm: prisonerNameOrNumber,
+        sessionStatusType,
+        sessionType,
+      },
+    )
   }
 }

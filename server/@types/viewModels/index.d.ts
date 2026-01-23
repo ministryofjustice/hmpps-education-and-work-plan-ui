@@ -46,6 +46,11 @@ declare module 'viewModels' {
     }
   }
 
+  export interface SessionSearch {
+    pagination: MojPaginationParams
+    sessions: Array<PrisonerSession>
+  }
+
   export interface PrisonerSummaryPrisonerSession extends PrisonerSummary, PrisonerSession {}
 
   export interface PrisonerSummary {

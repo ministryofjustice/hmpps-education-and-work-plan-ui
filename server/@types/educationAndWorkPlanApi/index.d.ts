@@ -328,7 +328,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/search/prisons/{prisonId}/people': {
+  '/session/prisons/{prisonId}/search': {
     parameters: {
       query?: never
       header?: never
@@ -336,6 +336,22 @@ export interface paths {
       cookie?: never
     }
     get: operations['getPrisoners']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/search/prisons/{prisonId}/people': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getPrisoners_1']
     put?: never
     post?: never
     delete?: never
@@ -1051,6 +1067,11 @@ export interface components {
        * @example A1234BC
        */
       prisonNumber: string
+      /**
+       * @description The schedule calculation rule
+       * @example A1234BC
+       */
+      scheduleCalculationRule: string
       /**
        * Format: date
        * @description The deadline for the induction to be completed
@@ -1781,6 +1802,71 @@ export interface components {
        * @example 20
        */
       pageSize: number
+    }
+    SessionSearchResponse: {
+      /**
+       * @description The prisoner's forename.
+       * @example Bob
+       */
+      forename: string
+      /**
+       * @description The prisoner's surname.
+       * @example Smith
+       */
+      surname: string
+      /**
+       * @description The prisoner's NOMIS number.
+       * @example A1234BC
+       */
+      prisonNumber: string
+      /**
+       * Format: date
+       * @description The prisoner's date of birth.
+       * @example 1999-12-01
+       */
+      dateOfBirth: string
+      /**
+       * @description The prisoner's cell location within prison
+       * @example B-3-047
+       */
+      cellLocation: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      sessionType: 'INDUCTION' | 'REVIEW' | 'PRE_RELEASE_REVIEW' | 'TRANSFER_REVIEW'
+      /**
+       * Format: date
+       * @description The prisoner's release date as returned by prisoner-search-api.
+       * @example 2035-11-01
+       */
+      releaseDate?: string
+      /**
+       * @description if applicable this will be the reason for the exemption
+       * @example could not attend due to illness
+       */
+      exemptionReason?: string
+      /**
+       * Format: date
+       * @description if applicable this will be the date of the exemption
+       * @example 2023-06-19
+       */
+      exemptionDate?: string
+      /**
+       * Format: date
+       * @description The deadline for the induction to be completed
+       * @example 2023-06-19
+       */
+      deadlineDate?: string
+    }
+    SessionSearchResponses: {
+      /**
+       * @description A List containing zero or more SessionSearchResponse.
+       * @example null
+       */
+      sessions: components['schemas']['SessionSearchResponse'][]
+      /** @example null */
+      pagination?: components['schemas']['PaginationMetaData']
     }
     PersonResponse: {
       /**
@@ -3697,6 +3783,44 @@ export interface operations {
     }
   }
   getPrisoners: {
+    parameters: {
+      query?: {
+        prisonerNameOrNumber?: string
+        sessionType?: 'INDUCTION' | 'REVIEW' | 'PRE_RELEASE_REVIEW' | 'TRANSFER_REVIEW'
+        sessionStatusType?: 'ON_HOLD' | 'DUE' | 'OVERDUE'
+        sortBy?:
+          | 'PRISONER_NAME'
+          | 'PRISON_NUMBER'
+          | 'CELL_LOCATION'
+          | 'RELEASE_DATE'
+          | 'SESSION_TYPE'
+          | 'DUE_BY'
+          | 'EXEMPTION_DATE'
+          | 'EXEMPTION_REASON'
+        sortDirection?: 'ASC' | 'DESC'
+        page?: number
+        pageSize?: number
+      }
+      header?: never
+      path: {
+        prisonId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SessionSearchResponses']
+        }
+      }
+    }
+  }
+  getPrisoners_1: {
     parameters: {
       query?: {
         prisonerNameOrNumber?: string
