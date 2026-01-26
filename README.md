@@ -199,3 +199,4 @@ Features can be toggled by setting the relevant environment variable.
 | SOME_TOGGLE_ENABLED     | false         | Boolean  | Example feature toggle, for demonstration purposes.     |
 | LRS_INTEGRATION_ENABLED | false         | Boolean  | Set to true to show qualifications from LRS             |
 | NEW_SEARCH_API_ENABLED  | false         | Boolean  | Set to true to use the prisoner search API from LWP API |
+| NEW_SESSION_API_ENABLED | false         | Boolean  | Set to true to use the new session API from LWP API     |
