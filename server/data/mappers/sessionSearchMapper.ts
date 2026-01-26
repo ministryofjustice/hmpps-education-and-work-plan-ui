@@ -21,6 +21,10 @@ const toSessionSearch = (apiResponse: SessionSearchResponses, searchOptions: Sea
 
 const toPrisonerSession = (apiResponse: SessionSearchResponse): PrisonerSession => ({
   prisonNumber: apiResponse.prisonNumber,
+  firstName: apiResponse.forename,
+  lastName: apiResponse.surname,
+  releaseDate: apiResponse.releaseDate ? startOfDay(apiResponse.releaseDate) : null,
+  location: apiResponse.cellLocation,
   deadlineDate: apiResponse.deadlineDate ? startOfDay(apiResponse.deadlineDate) : null,
   sessionType: apiResponse.sessionType,
   exemption:

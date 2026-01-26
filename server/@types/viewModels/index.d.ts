@@ -38,6 +38,10 @@ declare module 'viewModels' {
   export interface PrisonerSession {
     prisonNumber: string
     reference: string
+    releaseDate?: Date
+    firstName: string
+    lastName: string
+    location: string
     sessionType: SessionTypeValue
     deadlineDate: Date
     exemption?: {

@@ -19,6 +19,10 @@ const toPrisonerSession = (sessionResponse: SessionResponse): PrisonerSession =>
           exemptionDate: startOfDay(sessionResponse.exemptionDate),
         }
       : undefined,
+  releaseDate: null,
+  firstName: null,
+  lastName: null,
+  location: null,
 })
 
 export default toPrisonerSessions

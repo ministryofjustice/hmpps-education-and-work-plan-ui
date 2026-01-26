@@ -74,6 +74,10 @@ describe('sessionSearchMapper', () => {
         sessions: [
           aValidPrisonerSession({
             prisonNumber: 'A1234BC',
+            firstName: 'IFEREECA',
+            lastName: 'PEIGH',
+            location: 'A-1-102',
+            releaseDate: startOfDay('2025-12-31'),
             sessionType: SessionTypeValue.PRE_RELEASE_REVIEW,
             deadlineDate: startOfDay('2025-12-20'),
             exemption: {
@@ -201,6 +205,10 @@ describe('sessionSearchMapper', () => {
 
       const expected = aValidPrisonerSession({
         prisonNumber: 'A1234BC',
+        firstName: 'IFEREECA',
+        lastName: 'PEIGH',
+        location: 'A-1-102',
+        releaseDate: startOfDay('2025-12-31'),
         sessionType: SessionTypeValue.PRE_RELEASE_REVIEW,
         deadlineDate: startOfDay('2025-12-20'),
         exemption: {

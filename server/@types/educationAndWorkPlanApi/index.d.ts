@@ -1586,6 +1586,11 @@ export interface components {
         | 'PRISONER_UN_SENTENCED'
         | 'RELEASE_DATE_IN_PAST'
       /**
+       * @example null
+       * @enum {string}
+       */
+      reviewType?: 'REVIEW' | 'PRE_RELEASE_REVIEW' | 'TRANSFER_REVIEW'
+      /**
        * @description An optional reason as to why the Review Schedule is exempted.  Only present when the `status` field is one of the `EXEMPTION_` statuses and the user entered an exemption  reason when marking the Review as Exempted.
        * @example null
        */
