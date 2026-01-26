@@ -30,6 +30,10 @@ describe('prisonerSessionMapper', () => {
           sessionType: SessionTypeValue.REVIEW,
           deadlineDate: startOfDay('2025-02-10'),
           exemption: undefined,
+          firstName: null,
+          lastName: null,
+          location: null,
+          releaseDate: null,
         }),
       ],
     })
@@ -67,6 +71,10 @@ describe('prisonerSessionMapper', () => {
             exemptionReason: ReviewScheduleStatusValue.EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY,
             exemptionDate: startOfDay('2025-02-05'),
           },
+          firstName: null,
+          lastName: null,
+          location: null,
+          releaseDate: null,
         }),
       ],
     })
@@ -103,6 +111,10 @@ describe('prisonerSessionMapper', () => {
             exemptionReason: InductionScheduleStatusValue.EXEMPT_SCREENING_AND_ASSESSMENT_IN_PROGRESS,
             exemptionDate: startOfDay('2025-02-05'),
           },
+          firstName: null,
+          lastName: null,
+          location: null,
+          releaseDate: null,
         }),
       ],
     })

@@ -116,8 +116,20 @@ describe('SessionService', () => {
       const expected = aValidSessions({
         problemRetrievingData: false,
         sessions: [
-          aValidPrisonerSession({ prisonNumber: 'A1234BC' }),
-          aValidPrisonerSession({ prisonNumber: 'B5544GD' }),
+          aValidPrisonerSession({
+            prisonNumber: 'A1234BC',
+            firstName: null,
+            lastName: null,
+            location: null,
+            releaseDate: null,
+          }),
+          aValidPrisonerSession({
+            prisonNumber: 'B5544GD',
+            firstName: null,
+            lastName: null,
+            location: null,
+            releaseDate: null,
+          }),
         ],
       })
 
@@ -232,6 +244,10 @@ describe('SessionService', () => {
         sessions: [
           aValidPrisonerSession({
             prisonNumber: 'A1234BC',
+            firstName: 'IFEREECA',
+            lastName: 'PEIGH',
+            location: 'A-1-102',
+            releaseDate: startOfDay('2025-12-31'),
             sessionType: SessionTypeValue.PRE_RELEASE_REVIEW,
             deadlineDate: startOfDay('2025-12-20'),
             exemption: {

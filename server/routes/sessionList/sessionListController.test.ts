@@ -58,18 +58,30 @@ describe('sessionListController', () => {
 
   const jimmyLilacSession = aValidPrisonerSession({
     prisonNumber: 'A1234BC',
+    firstName: 'Jimmy',
+    lastName: 'Lilac',
+    releaseDate: startOfDay('2023-10-01'),
+    location: 'A-1-102',
     sessionType: SessionTypeValue.INDUCTION,
     deadlineDate: startOfDay('2025-10-01'),
     exemption: undefined,
   })
   const jimmyOrangeSession = aValidPrisonerSession({
     prisonNumber: 'B1234BC',
+    firstName: 'Jimmy',
+    lastName: 'Orange',
+    releaseDate: startOfDay('2000-07-23'),
+    location: 'A-1-102',
     sessionType: SessionTypeValue.REVIEW,
     deadlineDate: startOfDay('2025-09-30'),
     exemption: undefined,
   })
   const valhallaCavalierSession = aValidPrisonerSession({
     prisonNumber: 'C1234BC',
+    firstName: 'Valhalla',
+    lastName: 'Cavalier',
+    releaseDate: startOfDay('2020-09-10'),
+    location: 'A-1-102',
     sessionType: SessionTypeValue.REVIEW,
     deadlineDate: startOfDay('2025-11-15'),
     exemption: {
@@ -79,6 +91,10 @@ describe('sessionListController', () => {
   })
   const johnnyPurpleSession = aValidPrisonerSession({
     prisonNumber: 'E1234BC',
+    firstName: 'Johny',
+    lastName: 'Purple',
+    releaseDate: startOfDay('2023-04-12'),
+    location: 'A-1-102',
     sessionType: SessionTypeValue.INDUCTION,
     deadlineDate: startOfDay('2025-01-10'),
     exemption: undefined,
