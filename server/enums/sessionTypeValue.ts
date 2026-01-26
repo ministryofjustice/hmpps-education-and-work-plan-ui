@@ -1,6 +1,8 @@
 enum SessionTypeValue {
   INDUCTION = 'INDUCTION',
   REVIEW = 'REVIEW',
+  PRE_RELEASE_REVIEW = 'PRE_RELEASE_REVIEW',
+  TRANSFER_REVIEW = 'TRANSFER_REVIEW',
 }
 
 export default SessionTypeValue

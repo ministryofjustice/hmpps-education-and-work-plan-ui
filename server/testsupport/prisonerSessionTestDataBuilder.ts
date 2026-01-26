@@ -23,7 +23,7 @@ const aValidPrisonerSession = (options?: {
   }
 }): PrisonerSession => ({
   prisonNumber: options?.prisonNumber || 'A1234BC',
-  reference: options?.reference || 'c88a6c48-97e2-4c04-93b5-98619966447b',
+  reference: options?.reference === null ? null : options?.reference || 'c88a6c48-97e2-4c04-93b5-98619966447b',
   sessionType: options?.sessionType || SessionTypeValue.REVIEW,
   deadlineDate: options?.deadlineDate || startOfDay('2025-02-10'),
   exemption: options?.exemption,

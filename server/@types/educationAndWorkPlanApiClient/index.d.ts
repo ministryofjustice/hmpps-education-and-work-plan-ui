@@ -65,6 +65,8 @@ declare module 'educationAndWorkPlanApiClient' {
   export type PrisonerIdsRequest = components['schemas']['PrisonerIdsRequest']
   export type SessionResponses = components['schemas']['SessionResponses']
   export type SessionResponse = components['schemas']['SessionResponse']
+  export type SessionSearchResponses = components['schemas']['SessionSearchResponses']
+  export type SessionSearchResponse = components['schemas']['SessionSearchResponse']
 
   export type PersonSearchResult = components['schemas']['PersonSearchResult']
   export type PaginationMetaData = components['schemas']['PaginationMetaData']
