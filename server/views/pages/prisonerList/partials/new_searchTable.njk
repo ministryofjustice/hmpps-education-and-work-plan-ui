@@ -7,14 +7,13 @@
 
   {% if prisoners | length %}
 
-    {# Wrap the Prisoner List table in a form that contains hidden fields for the current search term, status filter and page.
+    {# Wrap the Prisoner List table in a form that contains hidden fields for the current search term, and status filter.
      This ensures that when then Prisoner List page is sorted via the buttons in the table header the current
-     search term, status filter and page are maintained.
+     search term and status filter are maintained.
     #}
     <form class="form" method="get" data-qa="search-results-form">
       <input type="hidden" name="searchTerm" value="{{ searchOptions.searchTerm }}" />
       <input type="hidden" name="statusFilter" value="{{ searchOptions.statusFilter }}" />
-      <input type="hidden" name="page" value="{{ searchOptions.page }}" />
 
       <table class="govuk-table" data-qa="prisoner-list-results-table">
         <caption><span class="govuk-visually-hidden">column headers with buttons are sortable.</span></caption>

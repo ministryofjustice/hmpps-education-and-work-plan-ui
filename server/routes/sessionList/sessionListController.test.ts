@@ -10,6 +10,9 @@ import SessionTypeValue from '../../enums/sessionTypeValue'
 import ReviewScheduleStatusValue from '../../enums/reviewScheduleStatusValue'
 import SessionStatusValue from '../../enums/sessionStatusValue'
 import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuilder'
+import SortOrder from '../../enums/sortDirection'
+import aSessionSearch from '../../testsupport/sessionSearchTestDataBuilder'
+import SessionSortBy from '../../enums/sessionSortBy'
 
 jest.mock('../../services/prisonerService')
 jest.mock('../../services/sessionService')
@@ -128,7 +131,32 @@ describe('sessionListController', () => {
   })
 
   describe('getDueSessionsView', () => {
-    it('should get due sessions view given no filtering, paging or sorting query string parameters', async () => {
+    it('should due sessions view', async () => {
+      // Given
+      const sessionListSearchResults = aSessionSearch()
+      const searchOptions = {
+        searchTerm: 'John',
+        sessionType: SessionTypeValue.TRANSFER_REVIEW,
+        sortBy: SessionSortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
+        page: 1,
+      }
+      res.locals.sessionListSearchResults = sessionListSearchResults
+      res.locals.searchOptions = searchOptions
+
+      // When
+      await controller.getDueSessionsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/sessionList/new_dueSessions', {
+        sessionListSearchResults,
+        searchOptions,
+      })
+    })
+  })
+
+  describe('getOldDueSessionsView', () => {
+    it('should get old due sessions view given no filtering, paging or sorting query string parameters', async () => {
       // Given
       req.query = {}
 
@@ -165,7 +193,7 @@ describe('sessionListController', () => {
       }
 
       // When
-      await controller.getDueSessionsView(req, res, next)
+      await controller.getOldDueSessionsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
@@ -179,7 +207,7 @@ describe('sessionListController', () => {
     })
 
     describe('sorting', () => {
-      it('should get due sessions view given sorting applied via session variable', async () => {
+      it('should get old due sessions view given sorting applied via session variable', async () => {
         // Given
         req.query = {}
         req.session.sessionListSortOptions = 'name,descending'
@@ -217,7 +245,7 @@ describe('sessionListController', () => {
         }
 
         // When
-        await controller.getDueSessionsView(req, res, next)
+        await controller.getOldDueSessionsView(req, res, next)
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
@@ -230,7 +258,7 @@ describe('sessionListController', () => {
         )
       })
 
-      it('should get due sessions view given sorting applied via query string param', async () => {
+      it('should get old due sessions view given sorting applied via query string param', async () => {
         // Given
         req.query = { sort: 'release-date,ascending' }
 
@@ -267,7 +295,7 @@ describe('sessionListController', () => {
         }
 
         // When
-        await controller.getDueSessionsView(req, res, next)
+        await controller.getOldDueSessionsView(req, res, next)
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
@@ -282,7 +310,7 @@ describe('sessionListController', () => {
     })
 
     describe('filtering', () => {
-      it('should get due sessions view given name filtering', async () => {
+      it('should old get due sessions view given name filtering', async () => {
         // Given
         req.query = { searchTerm: 'orange' }
 
@@ -316,7 +344,7 @@ describe('sessionListController', () => {
         }
 
         // When
-        await controller.getDueSessionsView(req, res, next)
+        await controller.getOldDueSessionsView(req, res, next)
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)
@@ -329,7 +357,7 @@ describe('sessionListController', () => {
         )
       })
 
-      it('should get due sessions view given session type filtering', async () => {
+      it('should get old due sessions view given session type filtering', async () => {
         // Given
         req.query = { sessionType: 'INDUCTION' }
 
@@ -363,7 +391,7 @@ describe('sessionListController', () => {
         }
 
         // When
-        await controller.getDueSessionsView(req, res, next)
+        await controller.getOldDueSessionsView(req, res, next)
 
         // Then
         expect(res.render).toHaveBeenCalledWith('pages/sessionList/dueSessions', expectedView)

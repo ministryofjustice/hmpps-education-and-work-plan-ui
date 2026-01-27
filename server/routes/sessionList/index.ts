@@ -5,6 +5,9 @@ import ApplicationAction from '../../enums/applicationAction'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import SessionListController from './sessionListController'
 import retrieveSessionsSummary from '../routerRequestHandlers/retrieveSessionsSummary'
+import config from '../../config'
+import sessionListSearch from '../routerRequestHandlers/sessionListSearch'
+import SessionStatusValue from '../../enums/sessionStatusValue'
 
 const sessionListRoutes = (router: Router, services: Services) => {
   const { prisonerService, sessionService } = services
@@ -15,7 +18,15 @@ const sessionListRoutes = (router: Router, services: Services) => {
     retrieveSessionsSummary(sessionService),
   ])
 
-  router.get('/sessions/due', [asyncMiddleware(sessionListController.getDueSessionsView)])
+  router.get(
+    '/sessions/due',
+    config.featureToggles.newSessionApiEnabled
+      ? [
+          sessionListSearch(sessionService, SessionStatusValue.DUE),
+          asyncMiddleware(sessionListController.getDueSessionsView),
+        ]
+      : [asyncMiddleware(sessionListController.getOldDueSessionsView)],
+  )
 
   router.get('/sessions/overdue', [asyncMiddleware(sessionListController.getOverdueSessionsView)])
 
