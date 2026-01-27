@@ -7,6 +7,7 @@ import retrieveActionPlanReviews from './retrieveActionPlanReviews'
 import NoteTypeValue from '../../enums/noteTypeValue'
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
+import SessionTypeValue from '../../enums/sessionTypeValue'
 
 jest.mock('../../services/reviewService')
 
@@ -72,6 +73,7 @@ describe('retrieveActionPlanReviews', () => {
         reviewDateTo: startOfDay('2024-10-15'),
         calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
         status: ActionPlanReviewStatusValue.SCHEDULED,
+        reviewType: SessionTypeValue.REVIEW,
         createdAt: parseISO('2023-06-19T09:39:44.000Z'),
         createdAtPrison: 'Moorland (HMP & YOI)',
         createdBy: 'asmith_gen',

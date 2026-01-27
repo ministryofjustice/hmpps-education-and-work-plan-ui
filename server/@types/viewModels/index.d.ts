@@ -260,6 +260,7 @@ declare module 'viewModels' {
     reviewDateTo: Date
     status: ActionPlanReviewStatusValue
     calculationRule: ActionPlanReviewCalculationRuleValue
+    reviewType: SessionTypeValue
     createdBy: string
     createdByDisplayName: string
     createdAt: Date

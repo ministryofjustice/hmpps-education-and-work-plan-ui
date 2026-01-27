@@ -14,6 +14,7 @@ import aValidCreateActionPlanReviewResponse from '../testsupport/createActionPla
 import aValidCreatedActionPlanReview from '../testsupport/createdActionPlanReviewTestDataBuilder'
 import aValidReviewExemptionDto from '../testsupport/reviewExemptionDtoTestDataBuilder'
 import ReviewScheduleStatusValue from '../enums/reviewScheduleStatusValue'
+import SessionTypeValue from '../enums/sessionTypeValue'
 
 jest.mock('../data/educationAndWorkPlanClient')
 jest.mock('./prisonService')
@@ -74,6 +75,7 @@ describe('reviewService', () => {
           reviewDateTo: startOfDay('2024-10-15'),
           calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
           status: ActionPlanReviewStatusValue.SCHEDULED,
+          reviewType: SessionTypeValue.REVIEW,
           createdAt: parseISO('2023-06-19T09:39:44.000Z'),
           createdAtPrison: 'Moorland (HMP & YOI)',
           createdBy: 'asmith_gen',
@@ -134,6 +136,7 @@ describe('reviewService', () => {
           reviewDateTo: startOfDay('2024-10-15'),
           calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
           status: ActionPlanReviewStatusValue.SCHEDULED,
+          reviewType: SessionTypeValue.REVIEW,
           createdAt: parseISO('2023-06-19T09:39:44.000Z'),
           createdAtPrison: 'MDI',
           createdBy: 'asmith_gen',
