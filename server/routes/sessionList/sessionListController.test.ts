@@ -407,7 +407,32 @@ describe('sessionListController', () => {
   })
 
   describe('getOnHoldSessionsView', () => {
-    it('should get on-hold sessions view given no filtering, paging or sorting query string parameters', async () => {
+    it('should on-hold sessions view', async () => {
+      // Given
+      const sessionListSearchResults = aSessionSearch()
+      const searchOptions = {
+        searchTerm: 'John',
+        sessionType: SessionTypeValue.TRANSFER_REVIEW,
+        sortBy: SessionSortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
+        page: 1,
+      }
+      res.locals.sessionListSearchResults = sessionListSearchResults
+      res.locals.searchOptions = searchOptions
+
+      // When
+      await controller.getOnHoldSessionsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/sessionList/new_onHoldSessions', {
+        sessionListSearchResults,
+        searchOptions,
+      })
+    })
+  })
+
+  describe('getOldOnHoldSessionsView', () => {
+    it('should get old on-hold sessions view given no filtering, paging or sorting query string parameters', async () => {
       // Given
       req.query = {}
 
@@ -441,7 +466,7 @@ describe('sessionListController', () => {
       }
 
       // When
-      await controller.getOnHoldSessionsView(req, res, next)
+      await controller.getOldOnHoldSessionsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/onHoldSessions', expectedView)

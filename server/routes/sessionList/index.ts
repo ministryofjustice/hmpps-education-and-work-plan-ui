@@ -38,7 +38,15 @@ const sessionListRoutes = (router: Router, services: Services) => {
       : [asyncMiddleware(sessionListController.getOldOverdueSessionsView)],
   )
 
-  router.get('/sessions/on-hold', [asyncMiddleware(sessionListController.getOnHoldSessionsView)])
+  router.get(
+    '/sessions/on-hold',
+    config.featureToggles.newSessionApiEnabled
+      ? [
+          sessionListSearch(sessionService, SessionStatusValue.ON_HOLD),
+          asyncMiddleware(sessionListController.getOnHoldSessionsView),
+        ]
+      : [asyncMiddleware(sessionListController.getOldOnHoldSessionsView)],
+  )
 }
 
 export default sessionListRoutes
