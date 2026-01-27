@@ -1,0 +1,56 @@
+{% extends "../../partials/layout.njk" %}
+{% from "../../components/sortable-table-header/macro.njk" import sortableTableHeader %}
+{% from "./macros/nonJavascriptTabBar.njk" import nonJavascriptTabBar %}
+{% from "./macros/new_searchResultsTable.njk" import searchResultsTable %}
+
+{% set pageId = 'on-hold-sessions-list-page' %}
+{% set pageTitle = "Sessions on hold" %}
+
+{% block beforeContent %}
+  <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ dpsUrl }}">Digital Prison Services</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{{ prisonerListUrl }}">Manage learning and work progress</a>
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">Sessions on hold</h1>
+
+      {%set nameHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
+      {%set locationHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
+      {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
+      {%set exemptionEnteredOnHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'exemption-entered-on', headerText: 'Exemption entered on' }) }}{% endset %}
+      {%set exemptionReasonHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'exemption-reason', headerText: 'Exemption reason' }) }}{% endset %}
+      {%set removeExemptionHeader %}<th scope="col" class="govuk-table__header" aria-sort="none" data-qa="remove-exemption-column-header">&nbsp;</th>{% endset %}
+
+      {% set tabContent %}
+        {% include './_newSearchBox.njk' %}
+
+        {{ searchResultsTable({
+          columnHeadings: [nameHeader, locationHeader, sessionTypeHeader, exemptionEnteredOnHeader, exemptionReasonHeader, removeExemptionHeader],
+          sessionListSearchResults: sessionListSearchResults,
+          searchOptions: searchOptions
+        }) }}
+      {% endset %}
+
+      {{ nonJavascriptTabBar({
+        activeTab: 'ON_HOLD_SESSIONS',
+        overdueSessionCount: sessionsSummary.overdueSessionCount,
+        dueSessionCount: sessionsSummary.dueSessionCount,
+        onHoldSessionCount: sessionsSummary.onHoldSessionCount,
+        content: tabContent
+      }) }}
+
+    </div>
+  </div>
+
+{% endblock %}

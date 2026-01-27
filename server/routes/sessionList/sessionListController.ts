@@ -72,6 +72,11 @@ export default class SessionListController {
   }
 
   getOnHoldSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { sessionListSearchResults, searchOptions } = res.locals
+    return res.render('pages/sessionList/new_onHoldSessions', { sessionListSearchResults, searchOptions })
+  }
+
+  getOldOnHoldSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const {
       sessionsSummary,
       user: { activeCaseLoadId, username },
