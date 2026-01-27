@@ -18,7 +18,7 @@ const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
  *    * sessionListSearchResults - A wrapped promise (Result.wrap) containing a `SessionSearch` instance which contains the
  *                                 search results and pagination data
  *    * searchOptions - A simple object containing the search options from the request so that the view can render them
- *                      (searchTerm, sessionTypeFilter, sortBy, sortOrder, and page)
+ *                      (searchTerm, sessionType, sortBy, sortOrder, and page)
  */
 const sessionListSearch = (sessionService: SessionService, sessionStatusType: SessionStatusValue): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +37,7 @@ const sessionListSearch = (sessionService: SessionService, sessionStatusType: Se
     req.session.sessionListSortOptions = `${sortBy},${sortOrder}` // save last sort options to session so that they are remembered when coming back to Session List screen
 
     const searchTerm = req.query.searchTerm as string
-    const sessionTypeFilter = Object.values(SessionTypeValue).find(values => values === req.query.sessionTypeFilter)
+    const sessionType = Object.values(SessionTypeValue).find(values => values === req.query.sessionType)
 
     const { apiErrorCallback } = res.locals
     res.locals.sessionListSearchResults = await Result.wrap(
@@ -50,11 +50,11 @@ const sessionListSearch = (sessionService: SessionService, sessionStatusType: Se
         sortOrder,
         sessionStatusType,
         searchTerm,
-        sessionTypeFilter,
+        sessionType,
       ),
       apiErrorCallback,
     )
-    res.locals.searchOptions = { searchTerm, sessionTypeFilter, sortBy, sortOrder, page }
+    res.locals.searchOptions = { searchTerm, sessionType, sortBy, sortOrder, page }
 
     return next()
   }

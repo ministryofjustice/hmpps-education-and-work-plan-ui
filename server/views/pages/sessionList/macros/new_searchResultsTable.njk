@@ -1,0 +1,105 @@
+{#  -------------------------------------------------------------
+    Search Results, specifically for the Session List pages
+
+    `config` argument is an object with the following properties:
+      * columnHeadings - an array of <th> table column headings
+      * sessionListSearchResults
+      * searchOptions
+    ------------------------------------------------------------- #}
+
+{% macro searchResultsTable(config) %}
+  {% from "moj/components/pagination/macro.njk" import mojPagination %}
+
+  {% set columnHeadings = config.columnHeadings %}
+  {% set searchOptions = config.searchOptions %}
+
+  {% if config.sessionListSearchResults.isFulfilled() %}
+    {% set sessionListSearchResults = config.sessionListSearchResults.value %}
+    {% set sessions = sessionListSearchResults.sessions %}
+    {% set pagination = sessionListSearchResults.pagination %}
+
+    {# Wrap the Session List table in a form that contains hidden fields for the current search term and, sessionType filter.
+     This ensures that when then Session List page is sorted via the buttons in the table header the current
+     search term and sessionType filter are maintained.
+    #}
+    <form class="form" method="get">
+      <input type="hidden" name="searchTerm" value="{{ searchOptions.searchTerm }}" />
+      <input type="hidden" name="sessionType" value="{{ searchOptions.sessionType }}" />
+
+      <table class="govuk-table" data-qa="session-list-results-table">
+        <caption><span class="govuk-visually-hidden">column headers with buttons are sortable.</span></caption>
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row" data-qa="sortable-table-headers">
+            {% for columnHeading in columnHeadings %}
+              {{ columnHeading | safe }}
+            {% endfor %}
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+          {% for session in sessions %}
+            <tr class="govuk-table__row">
+              {% for columnHeading in columnHeadings %}
+                <td class="govuk-table__cell">
+                  {% set columnName = columnHeading.match('data-qa="(.+)-column-header"')[1] %} {# extract the column name from the data-qa attribute of the <th> element using a regex #}
+                  {% if columnName === 'name' %}
+                    <a href="/plan/{{ session.prisonNumber }}/view/overview" data-id="session-list-prisoner-{{ session.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">
+                      {{ session | formatLast_name_comma_First_name }}
+                    </a>
+                    <span class="app-print-only">{{ session | formatLast_name_comma_First_name }}</span>
+                    <br>
+                    <span class='govuk-hint govuk-!-margin-bottom-0'>{{ session.prisonNumber }}</span>
+                  {% elseif columnName === 'location' %}
+                    {{ session.location }}
+                  {% elseif columnName === 'session-type' %}
+                    {% if session.sessionType === 'INDUCTION' %}
+                      Induction
+                    {% elseif session.sessionType === 'REVIEW' %}
+                      Review
+                    {% elseif session.sessionType === 'PRE_RELEASE_REVIEW' %}
+                      Pre-release review
+                    {% elseif session.sessionType === 'TRANSFER_REVIEW' %}
+                      Review due to transfer
+                    {% endif %}
+                  {% elseif columnName === 'release-date' %}
+                    {{ session.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}
+                  {% elseif columnName === 'due-by' %}
+                    {{ session.deadlineDate | formatDate('D MMMM YYYY') }}
+                  {% elseif columnName === 'exemption-entered-on' %}
+                    {{ session.exemption.exemptionDate | formatDate('D MMMM YYYY') }}
+                  {% elseif columnName === 'exemption-reason' %}
+                    {% if session.sessionType === 'INDUCTION' %}
+                      {{ session.exemption.exemptionReason | formatInductionExemptionReason }}
+                    {% else %}
+                      {{ session.exemption.exemptionReason | formatReviewExemptionReason }}
+                    {% endif %}
+                  {% elseif columnName === 'remove-exemption' %}
+                    {% if session.sessionType === 'INDUCTION' %}
+                      <a href="/prisoners/{{ session.prisonNumber }}/induction/exemption/remove" class="govuk-link">Remove exemption</a>
+                    {% else %}
+                      <a href="/plan/{{ session.prisonNumber }}/review/exemption/remove" class="govuk-link">Remove exemption</a>
+                    {% endif %}
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    <section data-qa="session-list-pagination">
+      {{ mojPagination({
+        items: pagination.items,
+        results: pagination.results,
+        previous: pagination.previous if pagination.previous.href,
+        next: pagination.next if pagination.next.href
+      }) }}
+    </section>
+
+  {% else %}
+    <h2 class="govuk-heading-m" data-qa="sessions-search-unavailable-message">We cannot show these details right now</h2>
+    <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+  {% endif %}
+
+{% endmacro %}

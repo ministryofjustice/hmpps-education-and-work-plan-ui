@@ -16,6 +16,11 @@ export default class SessionListController {
   ) {}
 
   getDueSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { sessionListSearchResults, searchOptions } = res.locals
+    return res.render('pages/sessionList/new_dueSessions', { sessionListSearchResults, searchOptions })
+  }
+
+  getOldDueSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const {
       sessionsSummary,
       user: { activeCaseLoadId, username },

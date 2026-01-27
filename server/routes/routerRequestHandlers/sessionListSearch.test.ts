@@ -55,7 +55,7 @@ describe('sessionListSearch', () => {
         searchTerm: undefined as string,
         sortBy: 'due-by',
         sortOrder: 'ascending',
-        sessionTypeFilter: undefined as string,
+        sessionType: undefined as string,
       }
       const expectedSortOptions = 'due-by,ascending'
 
@@ -85,7 +85,7 @@ describe('sessionListSearch', () => {
       req.query = {
         page: '7',
         searchTerm: 'John',
-        sessionTypeFilter: 'PRE_RELEASE_REVIEW',
+        sessionType: 'PRE_RELEASE_REVIEW',
         sort: 'location,descending',
       }
 
@@ -97,7 +97,7 @@ describe('sessionListSearch', () => {
         searchTerm: 'John',
         sortBy: 'location',
         sortOrder: 'descending',
-        sessionTypeFilter: 'PRE_RELEASE_REVIEW',
+        sessionType: 'PRE_RELEASE_REVIEW',
       }
       const expectedSortOptions = 'location,descending'
 
@@ -131,7 +131,7 @@ describe('sessionListSearch', () => {
         searchTerm: undefined as string,
         sortBy: 'due-by',
         sortOrder: 'ascending',
-        sessionTypeFilter: undefined as string,
+        sessionType: undefined as string,
       }
       const expectedSortOptions = 'due-by,ascending'
 
