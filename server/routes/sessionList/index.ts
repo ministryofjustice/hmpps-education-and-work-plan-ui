@@ -28,7 +28,15 @@ const sessionListRoutes = (router: Router, services: Services) => {
       : [asyncMiddleware(sessionListController.getOldDueSessionsView)],
   )
 
-  router.get('/sessions/overdue', [asyncMiddleware(sessionListController.getOverdueSessionsView)])
+  router.get(
+    '/sessions/overdue',
+    config.featureToggles.newSessionApiEnabled
+      ? [
+          sessionListSearch(sessionService, SessionStatusValue.OVERDUE),
+          asyncMiddleware(sessionListController.getOverdueSessionsView),
+        ]
+      : [asyncMiddleware(sessionListController.getOldOverdueSessionsView)],
+  )
 
   router.get('/sessions/on-hold', [asyncMiddleware(sessionListController.getOnHoldSessionsView)])
 }

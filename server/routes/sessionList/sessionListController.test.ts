@@ -456,7 +456,32 @@ describe('sessionListController', () => {
   })
 
   describe('getOverdueSessionsView', () => {
-    it('should get overdue sessions view given no filtering, paging or sorting query string parameters', async () => {
+    it('should overdue sessions view', async () => {
+      // Given
+      const sessionListSearchResults = aSessionSearch()
+      const searchOptions = {
+        searchTerm: 'John',
+        sessionType: SessionTypeValue.TRANSFER_REVIEW,
+        sortBy: SessionSortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
+        page: 1,
+      }
+      res.locals.sessionListSearchResults = sessionListSearchResults
+      res.locals.searchOptions = searchOptions
+
+      // When
+      await controller.getOverdueSessionsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/sessionList/new_overdueSessions', {
+        sessionListSearchResults,
+        searchOptions,
+      })
+    })
+  })
+
+  describe('getOldOverdueSessionsView', () => {
+    it('should get old overdue sessions view given no filtering, paging or sorting query string parameters', async () => {
       // Given
       req.query = {}
 
@@ -490,7 +515,7 @@ describe('sessionListController', () => {
       }
 
       // When
-      await controller.getOverdueSessionsView(req, res, next)
+      await controller.getOldOverdueSessionsView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/sessionList/overdueSessions', expectedView)
