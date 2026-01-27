@@ -2,6 +2,7 @@ import { format, startOfDay } from 'date-fns'
 import type { ScheduledActionPlanReviewResponse } from 'educationAndWorkPlanApiClient'
 import ActionPlanReviewStatusValue from '../enums/actionPlanReviewStatusValue'
 import ActionPlanReviewCalculationRuleValue from '../enums/actionPlanReviewCalculationRuleValue'
+import SessionTypeValue from '../enums/sessionTypeValue'
 
 const aValidScheduledActionPlanReviewResponse = (
   options?: CoreBuilderOptions & {
@@ -9,6 +10,7 @@ const aValidScheduledActionPlanReviewResponse = (
     reviewDateTo?: Date
     calculationRule?: ActionPlanReviewCalculationRuleValue
     status?: ActionPlanReviewStatusValue
+    reviewType?: SessionTypeValue
   },
 ): ScheduledActionPlanReviewResponse => ({
   ...baseActionPlanReviewsResponseTemplate(options),
@@ -16,6 +18,7 @@ const aValidScheduledActionPlanReviewResponse = (
   reviewDateTo: options?.reviewDateFrom ? format(startOfDay(options.reviewDateTo), 'yyyy-MM-dd') : '2024-10-15',
   calculationRule: options?.calculationRule || ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
   status: options?.status || ActionPlanReviewStatusValue.SCHEDULED,
+  reviewType: options?.reviewType || SessionTypeValue.REVIEW,
 })
 
 type CoreBuilderOptions = {

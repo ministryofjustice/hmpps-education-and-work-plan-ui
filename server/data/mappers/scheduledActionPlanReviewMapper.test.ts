@@ -4,6 +4,7 @@ import aValidScheduledActionPlanReviewResponse from '../../testsupport/scheduled
 import toScheduledActionPlanReview from './scheduledActionPlanReviewMapper'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import ActionPlanReviewCalculationRuleValue from '../../enums/actionPlanReviewCalculationRuleValue'
+import SessionTypeValue from '../../enums/sessionTypeValue'
 
 describe('scheduledActionPlanReviewMapper', () => {
   const examplePrisonNamesById = {
@@ -21,6 +22,7 @@ describe('scheduledActionPlanReviewMapper', () => {
       reviewDateTo: startOfDay(parseISO('2024-10-15')),
       calculationRule: ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
       status: ActionPlanReviewStatusValue.SCHEDULED,
+      reviewType: SessionTypeValue.REVIEW,
       createdAt: parseISO('2023-06-19T09:39:44.000Z'),
       createdAtPrison: 'Moorland (HMP & YOI)',
       createdBy: 'asmith_gen',

@@ -2,6 +2,7 @@ import type { ScheduledActionPlanReview } from 'viewModels'
 import { parseISO, startOfDay } from 'date-fns'
 import ActionPlanReviewCalculationRuleValue from '../enums/actionPlanReviewCalculationRuleValue'
 import ActionPlanReviewStatusValue from '../enums/actionPlanReviewStatusValue'
+import SessionTypeValue from '../enums/sessionTypeValue'
 
 const aValidScheduledActionPlanReview = (options?: {
   reference?: string
@@ -9,6 +10,7 @@ const aValidScheduledActionPlanReview = (options?: {
   reviewDateTo?: Date
   calculationRule?: ActionPlanReviewCalculationRuleValue
   status?: ActionPlanReviewStatusValue
+  reviewType?: SessionTypeValue
   createdAt?: Date
   createdAtPrison?: string
   createdBy?: string
@@ -23,6 +25,7 @@ const aValidScheduledActionPlanReview = (options?: {
   reviewDateTo: options?.reviewDateTo || startOfDay('2024-10-15'),
   calculationRule: options?.calculationRule || ActionPlanReviewCalculationRuleValue.BETWEEN_6_AND_12_MONTHS_TO_SERVE,
   status: options?.status || ActionPlanReviewStatusValue.SCHEDULED,
+  reviewType: options?.reviewType || SessionTypeValue.REVIEW,
   createdAt: options?.createdAt || parseISO('2023-06-19T09:39:44.000Z'),
   createdAtPrison: options?.createdAtPrison || 'Moorland (HMP & YOI)',
   createdBy: options?.createdBy || 'asmith_gen',
