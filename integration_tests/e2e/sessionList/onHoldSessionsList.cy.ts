@@ -1,36 +1,28 @@
 /**
  * Cypress scenarios for the OnHold Sessions Lst page
  */
-import type { PrisonerSearchSummary } from 'viewModels'
-import type { SessionResponse } from 'educationAndWorkPlanApiClient'
+import type { SessionSearchResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import SessionStatusValue from '../../../server/enums/sessionStatusValue'
 import OnHoldSessionsPage from '../../pages/sessionList/OnHoldSessionsPage'
-import Error500Page from '../../pages/error500'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('On Hold sessions list page', () => {
-  let prisonerSearchSummaries: Array<PrisonerSearchSummary>
-  let prisonerSessions: Array<SessionResponse>
-
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubGetSessionSummary')
 
     // Generate 11 records (to match 11 on-hold from the sessionSummary stub)
-    cy.task('generatePrisonerSearchSummaries', 11).then(summaries => {
-      prisonerSearchSummaries = summaries as Array<PrisonerSearchSummary>
-      const prisonNumbers = prisonerSearchSummaries.map(prisoner => prisoner.prisonNumber)
-      cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
-      cy.task('generatePrisonerSessionResponses', { prisonNumbers, status: SessionStatusValue.ON_HOLD }).then(
-        sessions => {
-          prisonerSessions = sessions as Array<SessionResponse>
-          cy.task('stubGetSessionsForPrisoners', { prisonerSessions, status: SessionStatusValue.ON_HOLD })
-        },
-      )
-    })
+    cy.task('generateSessionSearchResponses', { numberOfRecords: 11, sessionStatus: SessionStatusValue.ON_HOLD }).then(
+      (sessions: Array<SessionSearchResponse>) => {
+        cy.task('stubSearchSessionsByPrison', {
+          sessionStatusType: SessionStatusValue.ON_HOLD,
+          pageOfSessions: sessions,
+        })
+      },
+    )
 
     cy.signIn()
   })
@@ -43,7 +35,8 @@ context('On Hold sessions list page', () => {
       .clickToGoToOnHoldSessionsPage()
 
     // Then
-    Page.verifyOnPage(OnHoldSessionsPage)
+    Page.verifyOnPage(OnHoldSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
   it('should navigate directly to on-hold sessions page', () => {
@@ -53,31 +46,21 @@ context('On Hold sessions list page', () => {
     cy.visit(`/sessions/on-hold`)
 
     // Then
-    Page.verifyOnPage(OnHoldSessionsPage)
+    Page.verifyOnPage(OnHoldSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling prisoner search for the list of prisoners', () => {
+  it('display error page given problem calling education and work plan API for the list of sessions', () => {
     // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.ON_HOLD)
+    cy.task('stubSearchSessionsByPrison', { sessionStatusType: SessionStatusValue.ON_HOLD })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //
       .clickToGoToOnHoldSessionsPage()
 
     // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  it('display error page given problem calling education and work plan API for the list of prisoner sessions', () => {
-    // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.ON_HOLD)
-
-    // When
-    Page.verifyOnPage(SessionsSummaryPage) //
-      .clickToGoToOnHoldSessionsPage()
-
-    // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(OnHoldSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
   it('should not navigate directly to on-hold sessions page given user does not have manager role', () => {

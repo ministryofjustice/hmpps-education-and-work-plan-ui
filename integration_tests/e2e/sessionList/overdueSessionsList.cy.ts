@@ -1,36 +1,28 @@
 /**
  * Cypress scenarios for the Overdue Sessions Lst page
  */
-import type { PrisonerSearchSummary } from 'viewModels'
-import type { SessionResponse } from 'educationAndWorkPlanApiClient'
+import type { SessionSearchResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import SessionStatusValue from '../../../server/enums/sessionStatusValue'
 import OverdueSessionsPage from '../../pages/sessionList/OverdueSessionsPage'
-import Error500Page from '../../pages/error500'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 
 context('Overdue sessions list page', () => {
-  let prisonerSearchSummaries: Array<PrisonerSearchSummary>
-  let prisonerSessions: Array<SessionResponse>
-
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubGetSessionSummary')
 
     // Generate 3 records (to match 3 overdue from the sessionSummary stub)
-    cy.task('generatePrisonerSearchSummaries', 3).then(summaries => {
-      prisonerSearchSummaries = summaries as Array<PrisonerSearchSummary>
-      const prisonNumbers = prisonerSearchSummaries.map(prisoner => prisoner.prisonNumber)
-      cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
-      cy.task('generatePrisonerSessionResponses', { prisonNumbers, status: SessionStatusValue.OVERDUE }).then(
-        sessions => {
-          prisonerSessions = sessions as Array<SessionResponse>
-          cy.task('stubGetSessionsForPrisoners', { prisonerSessions, status: SessionStatusValue.OVERDUE })
-        },
-      )
-    })
+    cy.task('generateSessionSearchResponses', { numberOfRecords: 3, sessionStatus: SessionStatusValue.OVERDUE }).then(
+      (sessions: Array<SessionSearchResponse>) => {
+        cy.task('stubSearchSessionsByPrison', {
+          sessionStatusType: SessionStatusValue.OVERDUE,
+          pageOfSessions: sessions,
+        })
+      },
+    )
 
     cy.signIn()
   })
@@ -43,7 +35,8 @@ context('Overdue sessions list page', () => {
       .clickToGoToOverdueSessionsPage()
 
     // Then
-    Page.verifyOnPage(OverdueSessionsPage)
+    Page.verifyOnPage(OverdueSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
   it('should navigate directly to overdue sessions page', () => {
@@ -53,31 +46,21 @@ context('Overdue sessions list page', () => {
     cy.visit(`/sessions/overdue`)
 
     // Then
-    Page.verifyOnPage(OverdueSessionsPage)
+    Page.verifyOnPage(OverdueSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling prisoner search for the list of prisoners', () => {
+  it('display error page given problem calling education and work plan API for the list of sessions', () => {
     // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.OVERDUE)
+    cy.task('stubSearchSessionsByPrison500Error', { sessionStatusType: SessionStatusValue.OVERDUE })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //
       .clickToGoToOverdueSessionsPage()
 
     // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  it('display error page given problem calling education and work plan API for the list of prisoner sessions', () => {
-    // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.OVERDUE)
-
-    // When
-    Page.verifyOnPage(SessionsSummaryPage) //
-      .clickToGoToOverdueSessionsPage()
-
-    // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(OverdueSessionsPage) //
+      .apiErrorBannerIsDisplayed()
   })
 
   it('should not navigate directly to overdue sessions page given user does not have manager role', () => {

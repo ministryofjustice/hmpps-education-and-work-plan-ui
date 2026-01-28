@@ -1,34 +1,25 @@
 /**
  * Cypress scenarios for the Due Sessions Lst page
  */
-import type { PrisonerSearchSummary } from 'viewModels'
-import type { SessionResponse } from 'educationAndWorkPlanApiClient'
+import type { SessionSearchResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import SessionStatusValue from '../../../server/enums/sessionStatusValue'
-import Error500Page from '../../pages/error500'
 import AuthorisationErrorPage from '../../pages/authorisationError'
 import DueSessionsPage from '../../pages/sessionList/DueSessionsPage'
 
 context('Due sessions list page', () => {
-  let prisonerSearchSummaries: Array<PrisonerSearchSummary>
-  let prisonerSessions: Array<SessionResponse>
-
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsUserWithManagerRole')
     cy.task('stubGetSessionSummary')
 
     // Generate 7 records (to match 7 due from the sessionSummary stub)
-    cy.task('generatePrisonerSearchSummaries', 7).then(summaries => {
-      prisonerSearchSummaries = summaries as Array<PrisonerSearchSummary>
-      const prisonNumbers = prisonerSearchSummaries.map(prisoner => prisoner.prisonNumber)
-      cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
-      cy.task('generatePrisonerSessionResponses', { prisonNumbers, status: SessionStatusValue.DUE }).then(sessions => {
-        prisonerSessions = sessions as Array<SessionResponse>
-        cy.task('stubGetSessionsForPrisoners', { prisonerSessions, status: SessionStatusValue.DUE })
-      })
-    })
+    cy.task('generateSessionSearchResponses', { numberOfRecords: 7, sessionStatus: SessionStatusValue.DUE }).then(
+      (sessions: Array<SessionSearchResponse>) => {
+        cy.task('stubSearchSessionsByPrison', { sessionStatusType: SessionStatusValue.DUE, pageOfSessions: sessions })
+      },
+    )
 
     cy.signIn()
   })
@@ -41,7 +32,8 @@ context('Due sessions list page', () => {
       .clickToGoToDueSessionsPage()
 
     // Then
-    Page.verifyOnPage(DueSessionsPage)
+    Page.verifyOnPage(DueSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
   it('should navigate directly to due sessions page', () => {
@@ -51,31 +43,21 @@ context('Due sessions list page', () => {
     cy.visit(`/sessions/due`)
 
     // Then
-    Page.verifyOnPage(DueSessionsPage)
+    Page.verifyOnPage(DueSessionsPage) //
+      .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling prisoner search for the list of prisoners', () => {
+  it('display error page given problem calling education and work plan API for the list of sessions', () => {
     // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.DUE)
+    cy.task('stubSearchSessionsByPrison500Error', { sessionStatusType: SessionStatusValue.DUE })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //
       .clickToGoToDueSessionsPage()
 
     // Then
-    Page.verifyOnPage(Error500Page)
-  })
-
-  it('display error page given problem calling education and work plan API for the list of prisoner sessions', () => {
-    // Given
-    cy.task('stubGetSessionsForPrisoners500Error', SessionStatusValue.DUE)
-
-    // When
-    Page.verifyOnPage(SessionsSummaryPage) //
-      .clickToGoToDueSessionsPage()
-
-    // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(DueSessionsPage) //
+      .apiErrorBannerIsDisplayed()
   })
 
   it('should not navigate directly to due sessions page given user does not have manager role', () => {
