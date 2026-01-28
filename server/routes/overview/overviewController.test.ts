@@ -10,6 +10,7 @@ import aValidInductionSchedule from '../../testsupport/inductionScheduleTestData
 import { Result } from '../../utils/result/result'
 import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
+import SessionTypeValue from '../../enums/sessionTypeValue'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -117,6 +118,7 @@ describe('overviewController', () => {
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
+        reviewType: SessionTypeValue.REVIEW,
       },
       inductionSchedule: {
         problemRetrievingData: false,
@@ -271,6 +273,7 @@ describe('overviewController', () => {
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
+        reviewType: SessionTypeValue.REVIEW,
       },
       inductionSchedule: {
         problemRetrievingData: false,
@@ -336,6 +339,7 @@ describe('overviewController', () => {
         reviewStatus: 'OVERDUE',
         reviewDueDate: startOfDay('2024-10-15'),
         exemptionReason: undefined as string,
+        reviewType: SessionTypeValue.REVIEW,
       },
       inductionSchedule: {
         problemRetrievingData: false,

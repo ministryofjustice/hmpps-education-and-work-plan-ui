@@ -6,6 +6,8 @@ import formatDateFilter from '../../../filters/formatDateFilter'
 import formatReviewExemptionReasonFilter from '../../../filters/formatReviewExemptionReasonFilter'
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import ActionPlanReviewStatusValue from '../../../enums/actionPlanReviewStatusValue'
+import formatReviewTypeScreenValueFilter from '../../../filters/formatReviewTypeFilter'
+import SessionTypeValue from '../../../enums/sessionTypeValue'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -14,8 +16,10 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-njkEnv.addFilter('formatDate', formatDateFilter)
-njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
+njkEnv
+  .addFilter('formatDate', formatDateFilter)
+  .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
+  .addFilter('formatReviewTypeScreenValue', formatReviewTypeScreenValueFilter)
 
 const userHasPermissionTo = jest.fn()
 const templateParams: ActionsCardParams = {
@@ -27,6 +31,7 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NOT_DUE',
     reviewDueDate: startOfDay('2025-02-15'),
+    reviewType: SessionTypeValue.REVIEW,
   },
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
@@ -46,6 +51,7 @@ describe('_reviewActions', () => {
         problemRetrievingData: false,
         reviewStatus: 'NOT_DUE',
         reviewDueDate: startOfDay('2025-02-15'),
+        reviewType: SessionTypeValue.REVIEW,
       },
     }
 
@@ -68,7 +74,17 @@ describe('_reviewActions', () => {
     expect($('[data-qa=record-exemption-button]').length).toEqual(1)
   })
 
-  it('should render review actions given review due', () => {
+  it.each([
+    { reviewType: SessionTypeValue.REVIEW, expectedDueReviewLabel: 'Review due by 15 Feb 2025' },
+    {
+      reviewType: SessionTypeValue.TRANSFER_REVIEW,
+      expectedDueReviewLabel: 'Review due to transfer due by 15 Feb 2025',
+    },
+    {
+      reviewType: SessionTypeValue.PRE_RELEASE_REVIEW,
+      expectedDueReviewLabel: 'Pre-release review due by 15 Feb 2025',
+    },
+  ])('should render review actions given review of type %reviewType due', ({ reviewType, expectedDueReviewLabel }) => {
     // Given
     const params = {
       ...templateParams,
@@ -76,6 +92,7 @@ describe('_reviewActions', () => {
         problemRetrievingData: false,
         reviewStatus: 'DUE',
         reviewDueDate: startOfDay('2025-02-15'),
+        reviewType,
       },
     }
 
@@ -86,7 +103,7 @@ describe('_reviewActions', () => {
     // Then
     expect($('[data-qa=review-actions]').length).toEqual(1)
     expect($('[data-qa=review-not-due]').length).toEqual(0)
-    expect($('[data-qa=review-due]').text().trim()).toEqual('Review due by 15 Feb 2025')
+    expect($('[data-qa=review-due]').text().trim()).toEqual(expectedDueReviewLabel)
     expect($('[data-qa=review-overdue]').length).toEqual(0)
     expect($('[data-qa=review-on-hold]').length).toEqual(0)
     expect($('[data-qa=reason-on-hold]').length).toEqual(0)
@@ -98,67 +115,95 @@ describe('_reviewActions', () => {
     expect($('[data-qa=record-exemption-button]').length).toEqual(1)
   })
 
-  it('should render review actions given review overdue', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      actionPlanReview: {
-        problemRetrievingData: false,
-        reviewStatus: 'OVERDUE',
-        reviewDueDate: startOfDay('2025-02-15'),
-      },
-    }
+  it.each([
+    { reviewType: SessionTypeValue.REVIEW, expectedOverdueReviewLabel: 'Review was due by 15 Feb 2025' },
+    {
+      reviewType: SessionTypeValue.TRANSFER_REVIEW,
+      expectedOverdueReviewLabel: 'Review due to transfer was due by 15 Feb 2025',
+    },
+    {
+      reviewType: SessionTypeValue.PRE_RELEASE_REVIEW,
+      expectedOverdueReviewLabel: 'Pre-release review was due by 15 Feb 2025',
+    },
+  ])(
+    'should render review actions given review of type %reviewType overdue',
+    ({ reviewType, expectedOverdueReviewLabel }) => {
+      // Given
+      const params = {
+        ...templateParams,
+        actionPlanReview: {
+          problemRetrievingData: false,
+          reviewStatus: 'OVERDUE',
+          reviewDueDate: startOfDay('2025-02-15'),
+          reviewType,
+        },
+      }
 
-    // When
-    const content = nunjucks.render('_reviewActions.njk', { params })
-    const $ = cheerio.load(content)
+      // When
+      const content = nunjucks.render('_reviewActions.njk', { params })
+      const $ = cheerio.load(content)
 
-    // Then
-    expect($('[data-qa=review-actions]').length).toEqual(1)
-    expect($('[data-qa=review-not-due]').length).toEqual(0)
-    expect($('[data-qa=review-due]').length).toEqual(0)
-    expect($('[data-qa=review-overdue]').text().trim()).toEqual('Review was due by 15 Feb 2025')
-    expect($('[data-qa=review-on-hold]').length).toEqual(0)
-    expect($('[data-qa=reason-on-hold]').length).toEqual(0)
-    expect($('[data-qa=no-reviews-due]').length).toEqual(0)
-    expect($('[data-qa=release-on]').length).toEqual(0)
+      // Then
+      expect($('[data-qa=review-actions]').length).toEqual(1)
+      expect($('[data-qa=review-not-due]').length).toEqual(0)
+      expect($('[data-qa=review-due]').length).toEqual(0)
+      expect($('[data-qa=review-overdue]').text().trim()).toEqual(expectedOverdueReviewLabel)
+      expect($('[data-qa=review-on-hold]').length).toEqual(0)
+      expect($('[data-qa=reason-on-hold]').length).toEqual(0)
+      expect($('[data-qa=no-reviews-due]').length).toEqual(0)
+      expect($('[data-qa=release-on]').length).toEqual(0)
 
-    expect($('[data-qa=reviews-action-items] li').length).toEqual(2)
-    expect($('[data-qa=mark-review-complete-button]').length).toEqual(1)
-    expect($('[data-qa=record-exemption-button]').length).toEqual(1)
-  })
+      expect($('[data-qa=reviews-action-items] li').length).toEqual(2)
+      expect($('[data-qa=mark-review-complete-button]').length).toEqual(1)
+      expect($('[data-qa=record-exemption-button]').length).toEqual(1)
+    },
+  )
 
-  it('should render review actions given review has been exempted', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      actionPlanReview: {
-        problemRetrievingData: false,
-        reviewStatus: 'ON_HOLD',
-        exemptionReason: ActionPlanReviewStatusValue.EXEMPT_PRISONER_FAILED_TO_ENGAGE,
-        reviewDueDate: startOfDay('2025-02-15'),
-      },
-    }
+  it.each([
+    { reviewType: SessionTypeValue.REVIEW, expectedOnHoldReviewLabel: 'Review on hold' },
+    {
+      reviewType: SessionTypeValue.TRANSFER_REVIEW,
+      expectedOnHoldReviewLabel: 'Review due to transfer on hold',
+    },
+    {
+      reviewType: SessionTypeValue.PRE_RELEASE_REVIEW,
+      expectedOnHoldReviewLabel: 'Pre-release review on hold',
+    },
+  ])(
+    'should render review actions given review of type %reviewType has been exempted',
+    ({ reviewType, expectedOnHoldReviewLabel }) => {
+      // Given
+      const params = {
+        ...templateParams,
+        actionPlanReview: {
+          problemRetrievingData: false,
+          reviewStatus: 'ON_HOLD',
+          exemptionReason: ActionPlanReviewStatusValue.EXEMPT_PRISONER_FAILED_TO_ENGAGE,
+          reviewDueDate: startOfDay('2025-02-15'),
+          reviewType,
+        },
+      }
 
-    // When
-    const content = nunjucks.render('_reviewActions.njk', { params })
-    const $ = cheerio.load(content)
+      // When
+      const content = nunjucks.render('_reviewActions.njk', { params })
+      const $ = cheerio.load(content)
 
-    // Then
-    expect($('[data-qa=review-actions]').length).toEqual(1)
-    expect($('[data-qa=review-not-due]').length).toEqual(0)
-    expect($('[data-qa=review-due]').length).toEqual(0)
-    expect($('[data-qa=review-overdue]').length).toEqual(0)
-    expect($('[data-qa=review-on-hold]').text().trim()).toEqual('Review on hold')
-    expect($('[data-qa=reason-on-hold]').text().trim()).toEqual(
-      `Reason: Has failed to engage or cooperate for a reason outside contractor's control`,
-    )
-    expect($('[data-qa=no-reviews-due]').length).toEqual(0)
-    expect($('[data-qa=release-on]').length).toEqual(0)
+      // Then
+      expect($('[data-qa=review-actions]').length).toEqual(1)
+      expect($('[data-qa=review-not-due]').length).toEqual(0)
+      expect($('[data-qa=review-due]').length).toEqual(0)
+      expect($('[data-qa=review-overdue]').length).toEqual(0)
+      expect($('[data-qa=review-on-hold]').text().trim()).toEqual(expectedOnHoldReviewLabel)
+      expect($('[data-qa=reason-on-hold]').text().trim()).toEqual(
+        `Reason: Has failed to engage or cooperate for a reason outside contractor's control`,
+      )
+      expect($('[data-qa=no-reviews-due]').length).toEqual(0)
+      expect($('[data-qa=release-on]').length).toEqual(0)
 
-    expect($('[data-qa=reviews-action-items] li').length).toEqual(1)
-    expect($('[data-qa=remove-exemption-button]').length).toEqual(1)
-  })
+      expect($('[data-qa=reviews-action-items] li').length).toEqual(1)
+      expect($('[data-qa=remove-exemption-button]').length).toEqual(1)
+    },
+  )
 
   it('should render review actions given prisoner has had their last review', () => {
     // Given
@@ -167,6 +212,7 @@ describe('_reviewActions', () => {
       actionPlanReview: {
         problemRetrievingData: false,
         reviewStatus: 'HAS_HAD_LAST_REVIEW',
+        reviewType: SessionTypeValue.REVIEW,
       },
     }
 
@@ -195,6 +241,7 @@ describe('_reviewActions', () => {
       actionPlanReview: {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewType: SessionTypeValue.REVIEW,
       },
     }
 
@@ -223,6 +270,7 @@ describe('_reviewActions', () => {
       actionPlanReview: {
         problemRetrievingData: false,
         reviewStatus: 'NO_SCHEDULED_REVIEW',
+        reviewType: SessionTypeValue.REVIEW,
       },
       inductionSchedule: {
         problemRetrievingData: false,

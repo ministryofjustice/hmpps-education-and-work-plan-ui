@@ -6,6 +6,8 @@ import type { ActionPlanReviewScheduleView, InductionScheduleView } from '../../
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import formatDateFilter from '../../../filters/formatDateFilter'
 import formatReviewExemptionReasonFilter from '../../../filters/formatReviewExemptionReasonFilter'
+import SessionTypeValue from '../../../enums/sessionTypeValue'
+import formatReviewTypeScreenValueFilter from '../../../filters/formatReviewTypeFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -14,8 +16,10 @@ const njkEnv = nunjucks.configure([
   __dirname,
 ])
 
-njkEnv.addFilter('formatDate', formatDateFilter)
-njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
+njkEnv
+  .addFilter('formatDate', formatDateFilter)
+  .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
+  .addFilter('formatReviewTypeScreenValue', formatReviewTypeScreenValueFilter)
 
 const userHasPermissionTo = jest.fn()
 const templateParams: ActionsCardParams = {
@@ -27,6 +31,7 @@ const templateParams: ActionsCardParams = {
     problemRetrievingData: false,
     reviewStatus: 'NOT_DUE',
     reviewDueDate: startOfDay('2025-02-15'),
+    reviewType: SessionTypeValue.REVIEW,
   },
   prisonerSummary: aValidPrisonerSummary(),
   userHasPermissionTo,
@@ -132,6 +137,7 @@ describe('Tests for actions card component', () => {
         problemRetrievingData: false,
         reviewStatus: 'DUE',
         reviewDueDate: startOfDay('2025-02-15'),
+        reviewType: SessionTypeValue.REVIEW,
       },
     }
 

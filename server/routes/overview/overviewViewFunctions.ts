@@ -27,6 +27,10 @@ const toActionPlanReviewScheduleView = (actionPlanReviews?: ActionPlanReviews): 
     problemRetrievingData: actionPlanReviews == null ? false : actionPlanReviews.problemRetrievingData,
     reviewStatus,
     reviewDueDate,
+    reviewType:
+      !problemRetrievingData && actionPlanReviews?.latestReviewSchedule
+        ? actionPlanReviews.latestReviewSchedule.reviewType
+        : undefined,
     exemptionReason: reviewStatus === 'ON_HOLD' ? actionPlanReviews.latestReviewSchedule.status : undefined,
   }
 }
