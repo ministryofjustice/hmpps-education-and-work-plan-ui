@@ -1,5 +1,6 @@
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
 import InductionScheduleStatusValue from '../../enums/inductionScheduleStatusValue'
+import SessionTypeValue from '../../enums/sessionTypeValue'
 
 type OverviewViewRenderArgs = {
   prisonerGoals: {
@@ -36,6 +37,7 @@ type OverviewViewRenderArgs = {
 type ActionPlanReviewScheduleView = {
   problemRetrievingData: boolean
   reviewStatus: 'NOT_DUE' | 'DUE' | 'OVERDUE' | 'NO_SCHEDULED_REVIEW' | 'ON_HOLD' | 'HAS_HAD_LAST_REVIEW'
+  reviewType: SessionTypeValue
   reviewDueDate?: Date
   exemptionReason?: ActionPlanReviewStatusValue
 }

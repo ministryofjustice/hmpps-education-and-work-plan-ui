@@ -8,6 +8,7 @@ import { ActionPlanReviewScheduleView, InductionScheduleView } from './overviewV
 import aValidActionPlanReviews from '../../testsupport/actionPlanReviewsTestDataBuilder'
 import aValidScheduledActionPlanReview from '../../testsupport/scheduledActionPlanReviewTestDataBuilder'
 import ActionPlanReviewStatusValue from '../../enums/actionPlanReviewStatusValue'
+import SessionTypeValue from '../../enums/sessionTypeValue'
 
 describe('overviewViewFunctions', () => {
   const today = startOfToday()
@@ -285,6 +286,7 @@ describe('overviewViewFunctions', () => {
         latestReviewSchedule: aValidScheduledActionPlanReview({
           status: ActionPlanReviewStatusValue.COMPLETED,
           reviewDateTo: yesterday,
+          reviewType: SessionTypeValue.REVIEW,
         }),
       })
 
@@ -293,6 +295,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'HAS_HAD_LAST_REVIEW',
         exemptionReason: undefined,
         reviewDueDate: yesterday,
+        reviewType: SessionTypeValue.REVIEW,
       }
 
       // When
@@ -321,6 +324,7 @@ describe('overviewViewFunctions', () => {
           latestReviewSchedule: aValidScheduledActionPlanReview({
             status: scheduleStatus,
             reviewDateTo: yesterday,
+            reviewType: SessionTypeValue.REVIEW,
           }),
         })
 
@@ -329,6 +333,7 @@ describe('overviewViewFunctions', () => {
           reviewStatus: 'ON_HOLD',
           exemptionReason: scheduleStatus,
           reviewDueDate: yesterday,
+          reviewType: SessionTypeValue.REVIEW,
         }
 
         // When
@@ -346,6 +351,7 @@ describe('overviewViewFunctions', () => {
           status: ActionPlanReviewStatusValue.SCHEDULED,
           reviewDateFrom: aMonthAgo,
           reviewDateTo: yesterday,
+          reviewType: SessionTypeValue.REVIEW,
         }),
       })
 
@@ -354,6 +360,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'OVERDUE',
         exemptionReason: undefined,
         reviewDueDate: yesterday,
+        reviewType: SessionTypeValue.REVIEW,
       }
 
       // When
@@ -370,6 +377,7 @@ describe('overviewViewFunctions', () => {
           status: ActionPlanReviewStatusValue.SCHEDULED,
           reviewDateFrom: aMonthAgo,
           reviewDateTo: tomorrow,
+          reviewType: SessionTypeValue.REVIEW,
         }),
       })
 
@@ -378,6 +386,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'DUE',
         exemptionReason: undefined,
         reviewDueDate: tomorrow,
+        reviewType: SessionTypeValue.REVIEW,
       }
 
       // When
@@ -394,6 +403,7 @@ describe('overviewViewFunctions', () => {
           status: ActionPlanReviewStatusValue.SCHEDULED,
           reviewDateFrom: tomorrow,
           reviewDateTo: twoMonthsAndOneDayAway,
+          reviewType: SessionTypeValue.REVIEW,
         }),
       })
 
@@ -402,6 +412,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'NOT_DUE',
         exemptionReason: undefined,
         reviewDueDate: twoMonthsAndOneDayAway,
+        reviewType: SessionTypeValue.REVIEW,
       }
 
       // When
@@ -420,6 +431,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'NO_SCHEDULED_REVIEW',
         exemptionReason: undefined,
         reviewDueDate: undefined,
+        reviewType: undefined,
       }
 
       // When
@@ -438,6 +450,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: 'NO_SCHEDULED_REVIEW',
         exemptionReason: undefined,
         reviewDueDate: undefined,
+        reviewType: undefined,
       }
 
       // When
@@ -456,6 +469,7 @@ describe('overviewViewFunctions', () => {
         reviewStatus: undefined,
         exemptionReason: undefined,
         reviewDueDate: undefined,
+        reviewType: undefined,
       }
 
       // When

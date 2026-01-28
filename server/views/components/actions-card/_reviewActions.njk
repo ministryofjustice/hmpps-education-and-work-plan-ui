@@ -1,46 +1,55 @@
 {# Review based actions #}
+{% set prisonerSummary = params.prisonerSummary %}
+{% set userHasPermissionTo = params.userHasPermissionTo %}
+{% set actionPlanReview = params.actionPlanReview %}
+{% set reviewStatus = actionPlanReview.reviewStatus %}
+{% set reviewType = actionPlanReview.reviewType %}
+{% set reviewDueDate = actionPlanReview.reviewDueDate %}
+{% set exemptionReason = actionPlanReview.exemptionReason %}
+{% set inductionSchedule = params.inductionSchedule %}
+{% set inductionStatus = inductionSchedule.inductionStatus %}
 <div class="govuk-summary-card__content govuk-!-padding-bottom-0 govuk-!-padding-top-2" data-qa="review-actions">
   <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Reviews</h3>
 
-  {% if params.actionPlanReview.reviewStatus and (params.inductionSchedule.inductionStatus == 'COMPLETE' or params.inductionSchedule.inductionStatus == 'NO_SCHEDULED_INDUCTION') %}
+  {% if reviewStatus and (inductionStatus == 'COMPLETE' or inductionStatus == 'NO_SCHEDULED_INDUCTION') %}
 
-    {% if params.actionPlanReview.reviewStatus == 'NOT_DUE' %}
+    {% if reviewStatus == 'NOT_DUE' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-not-due">
-        Review due by {{ params.actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+        Review due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
       </span>
-    {% elseif params.actionPlanReview.reviewStatus == 'DUE' %}
+    {% elseif reviewStatus == 'DUE' %}
       <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-due">
-        Review due by {{ params.actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+        {{ reviewType | formatReviewTypeScreenValue }} due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
       </span>
-    {% elseif params.actionPlanReview.reviewStatus == 'OVERDUE' %}
+    {% elseif reviewStatus == 'OVERDUE' %}
       <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-overdue">
-        Review was due by {{ params.actionPlanReview.reviewDueDate | formatDate('D MMM YYYY') }}
+        {{ reviewType | formatReviewTypeScreenValue }} was due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
       </span>
-    {% elseif params.actionPlanReview.reviewStatus == 'ON_HOLD' %}
+    {% elseif reviewStatus == 'ON_HOLD' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-on-hold">
-        Review on hold
+        {{ reviewType | formatReviewTypeScreenValue }} on hold
       </span>
       <p class="govuk-body" data-qa="reason-on-hold">
-        Reason: {{ params.actionPlanReview.exemptionReason | formatReviewExemptionReason }}
+        Reason: {{ exemptionReason | formatReviewExemptionReason }}
       </p>
-    {% elseif params.actionPlanReview.reviewStatus == 'HAS_HAD_LAST_REVIEW' or params.actionPlanReview.reviewStatus == 'NO_SCHEDULED_REVIEW' %}
+    {% elseif reviewStatus == 'HAS_HAD_LAST_REVIEW' or reviewStatus == 'NO_SCHEDULED_REVIEW' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="no-reviews-due">
         No reviews due
       </span>
-      {% if params.prisonerSummary.releaseDate %}
+      {% if prisonerSummary.releaseDate %}
         <p class="govuk-body" data-qa="release-on">
-          release on {{ params.prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
+          release on {{ prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
         </p>
       {% endif %}
     {% endif %}
 
     <ul class="govuk-list govuk-!-margin-0" data-qa="reviews-action-items">
-      {% if params.actionPlanReview.reviewStatus != 'NO_SCHEDULED_REVIEW' and params.actionPlanReview.reviewStatus != 'HAS_HAD_LAST_REVIEW' %}
-        {% if params.actionPlanReview.reviewStatus == 'ON_HOLD' %}
+      {% if reviewStatus != 'NO_SCHEDULED_REVIEW' and reviewStatus != 'HAS_HAD_LAST_REVIEW' %}
+        {% if reviewStatus == 'ON_HOLD' %}
 
-          {% if params.userHasPermissionTo('REMOVE_REVIEW_EXEMPTION') %}
+          {% if userHasPermissionTo('REMOVE_REVIEW_EXEMPTION') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
-              <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review/exemption/remove" data-qa="remove-exemption-button">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption/remove" data-qa="remove-exemption-button">
                 <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon" />
                 Remove exemption from reviews
               </a>
@@ -49,17 +58,17 @@
 
         {% else %}
 
-          {% if params.userHasPermissionTo('RECORD_REVIEW') %}
+          {% if userHasPermissionTo('RECORD_REVIEW') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
-              <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">
                 <img src="/assets/images/icon-mark-review-complete.svg" alt="" role="presentation" class="action-icon" />
                 Mark review as complete
               </a>
             </li>
           {% endif %}
-          {% if params.userHasPermissionTo('EXEMPT_REVIEW') %}
+          {% if userHasPermissionTo('EXEMPT_REVIEW') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
-              <a class="govuk-link" href="/plan/{{ params.prisonerSummary.prisonNumber }}/review/exemption" data-qa="record-exemption-button">
+              <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption" data-qa="record-exemption-button">
                 <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />
                 Record exemption for this prisoner
               </a>
