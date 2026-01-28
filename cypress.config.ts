@@ -9,15 +9,13 @@ import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import educationAndWorkPlanApi from './integration_tests/mockApis/educationAndWorkPlanApi'
 import curiousApi from './integration_tests/mockApis/curiousApi'
-import ciagInducationApi from './integration_tests/mockApis/ciagInducationApi'
-import prisonerListApi from './integration_tests/mockApis/prisonerListApi'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegisterApi'
 import prisonerSearchSummaryMockDataGenerator from './integration_tests/mockData/prisonerSearchSummaryMockDataGenerator'
-import sessionResponseMockDataGenerator from './integration_tests/mockData/sessionResponseMockDataGenerator'
 import ciagInductionUi from './integration_tests/mockApis/ciagInductionUi'
 import supportAdditionalNeedsApi from './integration_tests/mockApis/supportAdditionalNeedsApi'
 import learnerRecordsApi from './integration_tests/mockApis/learnerRecordsApi'
 import personMockDataGenerator from './integration_tests/mockData/personMockDataGenerator'
+import sessionSearchResponseMockDataGenerator from './integration_tests/mockData/sessionSearchResponseMockDataGenerator'
 
 function preprocessorOptions() {
   const replacementModulesPath = path.resolve(__dirname, './integration_tests/support/replacementModules')
@@ -71,13 +69,11 @@ export default defineConfig({
         ...prisonerSearchApi,
         ...educationAndWorkPlanApi,
         ...curiousApi,
-        ...ciagInducationApi,
-        ...prisonerListApi,
         ...prisonRegisterApi,
         ...supportAdditionalNeedsApi,
         ...prisonerSearchSummaryMockDataGenerator,
         ...personMockDataGenerator,
-        ...sessionResponseMockDataGenerator,
+        ...sessionSearchResponseMockDataGenerator,
         ...ciagInductionUi,
         ...learnerRecordsApi,
       })

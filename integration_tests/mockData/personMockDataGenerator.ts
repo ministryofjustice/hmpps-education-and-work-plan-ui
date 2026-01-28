@@ -77,7 +77,7 @@ const randomNumber = (min: number, max: number): number => Math.floor(Math.rando
 
 const getRandomEnumValue = (enumeration: unknown) => {
   const values = Object.keys(enumeration)
-  const enumKey = values[randomNumber(1, values.length)]
+  const enumKey = values[randomNumber(1, values.length) - 1]
   return enumeration[enumKey]
 }
 

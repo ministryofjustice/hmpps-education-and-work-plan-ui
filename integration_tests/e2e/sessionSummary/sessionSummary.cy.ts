@@ -1,7 +1,6 @@
 /**
  * Cypress scenarios for the Session Summary page
  */
-import type { PrisonerSearchSummary } from 'viewModels'
 import type { PersonResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
@@ -63,33 +62,18 @@ context(`Display the Sessions Summary screen`, () => {
   })
 
   describe('scenarios that arrive on the prisoner list page', () => {
-    let prisonerSearchSummaries: Array<PrisonerSearchSummary>
+    let prisoners: Array<PersonResponse>
 
     beforeEach(() => {
       // Generate 10 Prisoner Search Summaries that will be displayed on the Prisoner List page by virtue of using them in the prisoner-search, CIAG, and Action Plan stubs
-      cy.task('generatePrisonerSearchSummaries', 10).then(summaries => {
-        prisonerSearchSummaries = summaries as Array<PrisonerSearchSummary>
-        cy.task('stubPrisonerListFromPrisonerSearchSummaries', summaries)
-        cy.task('stubCiagInductionListFromPrisonerSearchSummaries', summaries)
-        cy.task('stubActionPlansListFromPrisonerSearchSummaries', summaries)
-
-        const personResponses: Array<PersonResponse> = prisonerSearchSummaries.map(prisoner => ({
-          prisonNumber: prisoner.prisonNumber,
-          forename: prisoner.firstName,
-          surname: prisoner.lastName,
-          dateOfBirth: prisoner.dateOfBirth,
-          releaseDate: prisoner.releaseDate,
-          enteredPrisonOn: prisoner.receptionDate,
-          cellLocation: prisoner.location,
-          planStatus: 'ACTIVE_PLAN',
-        }))
-
+      cy.task('generatePeople', 10).then((people: Array<PersonResponse>) => {
+        prisoners = people
         cy.task('stubSearchByPrison', {
-          pageOfPrisoners: personResponses,
-          totalRecords: personResponses.length,
+          pageOfPrisoners: prisoners,
+          totalRecords: prisoners.length,
         })
 
-        personResponses.forEach(personResponse => {
+        prisoners.forEach(personResponse => {
           cy.task('stubSearchByPrison', {
             prisonerNameOrNumber: `${personResponse.forename} ${personResponse.surname}`,
             pageOfPrisoners: [personResponse],
@@ -116,7 +100,7 @@ context(`Display the Sessions Summary screen`, () => {
       // Given
       cy.signIn()
 
-      const nameToSearchFor = `${prisonerSearchSummaries.at(1).firstName} ${prisonerSearchSummaries.at(1).lastName}`
+      const nameToSearchFor = `${prisoners.at(1).forename} ${prisoners.at(1).surname}`
 
       // When
       Page.verifyOnPage(SessionsSummaryPage) //

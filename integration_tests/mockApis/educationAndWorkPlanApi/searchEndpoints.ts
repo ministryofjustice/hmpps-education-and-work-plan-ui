@@ -54,8 +54,8 @@ const stubSearchByPrison = (options?: {
         planStatus: options?.planStatus ? { equalTo: options?.planStatus } : { absent: true },
         page: { equalTo: `${page}` },
         pageSize: { equalTo: `${pageSize}` },
-        sortBy: { equalTo: `${sortBy}` },
-        sortDirection: { equalTo: `${sortDirection}` },
+        sortBy: { equalTo: sortBy },
+        sortDirection: { equalTo: sortDirection },
       },
     },
     response: {
@@ -104,8 +104,8 @@ const stubSearchByPrison500Error = (options?: {
         planStatus: options?.planStatus ? { equalTo: options?.planStatus } : { absent: true },
         page: { equalTo: `${page}` },
         pageSize: { equalTo: `${pageSize}` },
-        sortBy: { equalTo: `${sortBy}` },
-        sortDirection: { equalTo: `${sortDirection}` },
+        sortBy: { equalTo: sortBy },
+        sortDirection: { equalTo: sortDirection },
       },
     },
     response: {
