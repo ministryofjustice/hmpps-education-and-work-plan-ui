@@ -35,6 +35,7 @@ njkEnv.addFilter(
   previousWorkExperienceObjectsSortedInScreenOrderFilter,
 )
 
+const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
@@ -48,6 +49,7 @@ const templateParams = {
     inductionStatus: 'COMPLETE',
     inductionDueDate: startOfDay('2025-02-15'),
   },
+  prisonNamesById,
 }
 
 describe('Tests for _inductionQuestionSet.njk partial', () => {
@@ -85,7 +87,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
 
     // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
-    expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
+    expect(lastUpdated).toEqual('Last updated 10 May 2021 by Some User, Moorland (HMP & YOI)')
     expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
@@ -116,7 +118,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
 
     // Then
     const lastUpdated = $('[data-qa=work-interests-last-updated]').first().text().trim()
-    expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Future User')
+    expect(lastUpdated).toEqual('Last updated 20 June 2024 by Future User, Moorland (HMP & YOI)')
     expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
@@ -147,7 +149,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
 
     // Then
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
-    expect(lastUpdated).toEqual('Last updated: 10 May 2021 by Some User')
+    expect(lastUpdated).toEqual('Last updated 10 May 2021 by Some User, Moorland (HMP & YOI)')
     const hasWorkedBeforeAnswer = $('[data-qa=has-worked-before-answer]').first().text().trim()
     expect(hasWorkedBeforeAnswer).toEqual('Not entered.')
     const hasWorkedBeforeLink = $('[data-qa=has-worked-before-change-link]').first().text().trim()
@@ -181,7 +183,7 @@ describe('Tests for _inductionQuestionSet.njk partial', () => {
 
     // Then
     const lastUpdated = $('[data-qa=work-experience-last-updated]').first().text().trim()
-    expect(lastUpdated).toEqual('Last updated: 20 June 2024 by Worked Before User')
+    expect(lastUpdated).toEqual('Last updated 20 June 2024 by Worked Before User, Moorland (HMP & YOI)')
     const hasWorkedBeforeAnswer = $('[data-qa=has-worked-before-answer]').first().text().trim()
     expect(hasWorkedBeforeAnswer).toEqual('Yes')
     const hasWorkedBeforeLink = $('[data-qa=has-worked-before-change-link]').first().text().trim()

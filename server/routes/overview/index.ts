@@ -86,6 +86,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [
+    retrievePrisonNamesById(prisonService),
     retrieveInductionSchedule(inductionService),
     retrieveInduction(inductionService),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),

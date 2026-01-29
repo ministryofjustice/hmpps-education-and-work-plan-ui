@@ -15,6 +15,7 @@ import previousWorkExperienceObjectsSortedInScreenOrderFilter from '../../../../
 import formatInPrisonWorkInterestFilter from '../../../../../filters/formatInPrisonWorkInterestFilter'
 import formatSkillFilter from '../../../../../filters/formatSkillFilter'
 import formatPersonalInterestFilter from '../../../../../filters/formatPersonalInterestFilter'
+import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -44,6 +45,7 @@ njkEnv.addFilter('formatPersonalInterest', formatPersonalInterestFilter)
 const prisonerSummary = aValidPrisonerSummary()
 const template = 'workAndInterestsTabContents.njk'
 
+const prisonNamesById = Result.fulfilled({ BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' })
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary,
@@ -57,6 +59,7 @@ const templateParams = {
     inductionStatus: 'INDUCTION_DUE',
     inductionDueDate: startOfDay('2025-02-15'),
   },
+  prisonNamesById,
 }
 
 describe('workAndInterestsTabContents', () => {
