@@ -68,7 +68,10 @@
     </dl>
 
     {% if inductionHasSkillsRecorded or inductionHasInterestsRecorded %}
-      <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">Last updated: {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}</span></p>
+      <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
+        {% set prisonName = prisonNamesById[induction.inductionDto.personalSkillsAndInterests.updatedAtPrison] | default(induction.inductionDto.personalSkillsAndInterests.updatedAtPrison) %}
+        Last updated {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}, {{  prisonName }}</span>
+      </p>
     {% endif %}
   </div>
 </div>

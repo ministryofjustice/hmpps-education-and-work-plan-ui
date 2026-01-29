@@ -86,9 +86,15 @@ questions are different.
         {% endif %}
       </dl>
       {% if induction.inductionDto.previousWorkExperiences %}
-        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">Last updated: {{ induction.inductionDto.previousWorkExperiences.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousWorkExperiences.updatedByDisplayName }}</span></p>
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">
+          {% set prisonName = prisonNamesById[induction.inductionDto.previousWorkExperiences.updatedAtPrison] | default(induction.inductionDto.previousWorkExperiences.updatedAtPrison) %}
+          Last updated {{ induction.inductionDto.previousWorkExperiences.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.previousWorkExperiences.updatedByDisplayName }}, {{ prisonName }}</span>
+        </p>
       {% else %}
-        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">Last updated: {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}</span></p>
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-experience-last-updated">
+          {% set prisonName = prisonNamesById[induction.inductionDto.workOnRelease.updatedAtPrison] | default(induction.inductionDto.workOnRelease.updatedAtPrison) %}
+          Last updated {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}, {{ prisonName }}</span>
+        </p>
       {% endif %}
     </div>
   </div>
@@ -191,9 +197,15 @@ questions are different.
         {% endif %}
       </dl>
       {% if induction.inductionDto.futureWorkInterests %}
-        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">Last updated: {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}</span></p>
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">
+          {% set prisonName = prisonNamesById[induction.inductionDto.futureWorkInterests.updatedAtPrison] | default(induction.inductionDto.futureWorkInterests.updatedAtPrison) %}
+          Last updated {{ induction.inductionDto.futureWorkInterests.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.futureWorkInterests.updatedByDisplayName }}, {{ prisonName }}</span>
+        </p>
       {% else %}
-        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">Last updated: {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('DD MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}</span></p>
+        <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="work-interests-last-updated">
+          {% set prisonName = prisonNamesById[induction.inductionDto.workOnRelease.updatedAtPrison] | default(induction.inductionDto.workOnRelease.updatedAtPrison) %}
+          Last updated {{ induction.inductionDto.workOnRelease.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.workOnRelease.updatedByDisplayName }}, {{ prisonName }}</span>
+        </p>
       {% endif %}
     </div>
   </div>

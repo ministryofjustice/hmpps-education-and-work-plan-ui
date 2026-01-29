@@ -19,26 +19,26 @@ describe('workAndInterestsController', () => {
     inductionDto: aValidInductionDto(),
   }
   const inductionSchedule = aValidInductionSchedule({ scheduleStatus: InductionScheduleStatusValue.COMPLETED })
+  const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
 
-  let req: Request
-  let res: Response
+  const req = {
+    params: {
+      tab: expectedTab,
+    },
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    locals: {
+      induction,
+      prisonerSummary,
+      inductionSchedule,
+      prisonNamesById,
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
     jest.resetAllMocks()
-    req = {
-      params: {
-        tab: expectedTab,
-      },
-    } as unknown as Request
-    res = {
-      render: jest.fn(),
-      locals: {
-        induction,
-        prisonerSummary,
-        inductionSchedule,
-      },
-    } as unknown as Response
   })
 
   it('should get work and interests view', async () => {
@@ -52,6 +52,7 @@ describe('workAndInterestsController', () => {
         inductionStatus: 'COMPLETE',
         inductionDueDate: startOfDay('2024-12-10'),
       },
+      prisonNamesById,
     }
 
     // When

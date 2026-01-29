@@ -20,6 +20,7 @@ njkEnv
   .addFilter('formatSkill', formatSkillFilter)
   .addFilter('formatPersonalInterest', formatPersonalInterestFilter)
 
+const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
@@ -33,6 +34,7 @@ const templateParams = {
     inductionStatus: 'COMPLETE',
     inductionDueDate: startOfDay('2025-02-15'),
   },
+  prisonNamesById,
 }
 
 describe('_personalSkillsAndInterestsSummaryCard', () => {
@@ -72,7 +74,9 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect(personalInterests).toEqual(['Creative', 'Digital', 'Other - Renewable energy'])
     expect($('[data-qa=personal-interests-not-recorded]').length).toEqual(0)
     expect($('[data-qa=personal-interests-change-link]').text().trim()).toEqual('Change personal interests')
-    expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 19 June 2023 by Alex Smith')
+    expect($('[data-qa=last-updated]').text().trim()).toEqual(
+      'Last updated 19 June 2023 by Alex Smith, Moorland (HMP & YOI)',
+    )
     expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
