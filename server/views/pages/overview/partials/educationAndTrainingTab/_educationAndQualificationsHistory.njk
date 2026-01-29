@@ -141,8 +141,10 @@ never happen.
 
           {% set updatedAt = education.educationDto.updatedAt if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAt %}
           {% set updatedBy = education.educationDto.updatedByDisplayName if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedByDisplayName %}
+          {% set prisonId = education.educationDto.updatedAtPrison if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAtPrison %}
+          {% set prisonName = prisonNamesById[prisonId] | default(prisonId) %}
           <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
-            Last updated: {{ updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ updatedBy }}</span>
+            Last updated {{ updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ updatedBy }}, {{ prisonName }}</span>
           </p>
 
         {% else %}
@@ -171,7 +173,8 @@ never happen.
           </dl>
 
           <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
-            Last updated: {{ education.educationDto.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ education.educationDto.updatedByDisplayName }}</span>
+            {% set prisonName = prisonNamesById[education.educationDto.updatedAtPrison] | default(education.educationDto.updatedAtPrison) %}
+            Last updated {{ education.educationDto.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ education.educationDto.updatedByDisplayName }}, {{ prisonName }}</span>
           </p>
 
           <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">

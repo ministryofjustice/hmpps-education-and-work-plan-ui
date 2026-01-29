@@ -27,6 +27,7 @@ njkEnv
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatAdditionalTraining', formatAdditionalTrainingFilter)
 
+const prisonNamesById = { BXI: 'Brixton (HMP)', MDI: 'Moorland (HMP & YOI)' }
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary: aValidPrisonerSummary(),
@@ -44,6 +45,7 @@ const templateParams = {
     inductionStatus: 'COMPLETE',
     inductionDueDate: startOfDay('2025-02-15'),
   },
+  prisonNamesById,
 }
 
 describe('_educationAndQualificationsHistory', () => {
@@ -163,7 +165,9 @@ describe('_educationAndQualificationsHistory', () => {
       const $ = cheerio.load(content)
 
       // Then
-      expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 19 June 2023 by Albert Smith')
+      expect($('[data-qa=last-updated]').text().trim()).toEqual(
+        'Last updated 19 June 2023 by Albert Smith, Moorland (HMP & YOI)',
+      )
     })
 
     it('should show the last updated fields from the induction given that the induction was updated more recently than the education', () => {
@@ -192,7 +196,9 @@ describe('_educationAndQualificationsHistory', () => {
       const $ = cheerio.load(content)
 
       // Then
-      expect($('[data-qa=last-updated]').text().trim()).toEqual('Last updated: 23 June 2023 by Barry Jones')
+      expect($('[data-qa=last-updated]').text().trim()).toEqual(
+        'Last updated 23 June 2023 by Barry Jones, Moorland (HMP & YOI)',
+      )
     })
 
     it('should not show prompts to create induction given induction schedule is on hold', () => {
