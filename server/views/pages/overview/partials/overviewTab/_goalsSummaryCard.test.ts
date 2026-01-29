@@ -55,7 +55,7 @@ describe('_goalsSummaryCard', () => {
       `/plan/${prisonerSummary.prisonNumber}/view/goals#completed-goals`,
     )
     expect($('[data-qa="goal-last-updated-hint"]').text().trim()).toEqual(
-      'Updated on 21 January 2024 by Elaine Benes, Brixton (HMP)',
+      'Last updated 21 January 2024 by Elaine Benes, Brixton (HMP)',
     )
     expect($('[data-qa="goals-unavailable-message"]').length).toEqual(0)
   })

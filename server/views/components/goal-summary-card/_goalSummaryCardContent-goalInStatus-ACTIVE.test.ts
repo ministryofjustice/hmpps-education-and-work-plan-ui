@@ -41,7 +41,7 @@ describe('_goalSummaryCardContent-goalInStatus-ACTIVE', () => {
     // Then
     expect($('[data-qa=goal-notes-expander]').length).toEqual(0)
     expect($('[data-qa=goal-last-updated-hint]').text().trim()).toEqual(
-      'Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)',
+      'Last updated 23 September 2023 by Alex Smith, Brixton (HMP)',
     )
   })
 
@@ -85,7 +85,7 @@ describe('_goalSummaryCardContent-goalInStatus-ACTIVE', () => {
       'Prisoner is not good at listening',
     )
     expect($('[data-qa=goal-last-updated-hint]').text().trim()).toEqual(
-      'Last updated on 23 September 2023 by Alex Smith, Brixton (HMP)',
+      'Last updated 23 September 2023 by Alex Smith, Brixton (HMP)',
     )
   })
 })

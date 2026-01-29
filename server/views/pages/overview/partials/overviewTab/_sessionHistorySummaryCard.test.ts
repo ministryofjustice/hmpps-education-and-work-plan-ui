@@ -43,7 +43,7 @@ describe('_sessionHistorySummaryCard', () => {
     // Then
     expect($('[data-qa="action-plan-reviews-count"]').text().trim()).toEqual('3')
     expect($('[data-qa="induction-or-review-last-updated-hint"]').text().trim()).toEqual(
-      'Updated on 21 January 2024 by Elaine Benes, Brixton (HMP)',
+      'Last updated 21 January 2024 by Elaine Benes, Brixton (HMP)',
     )
     expect($('[data-qa="view-timeline-button"]').attr('href')).toEqual(
       `/plan/${prisonerSummary.prisonNumber}/view/history?filterOptions=INDUCTION&filterOptions=REVIEWS`,
