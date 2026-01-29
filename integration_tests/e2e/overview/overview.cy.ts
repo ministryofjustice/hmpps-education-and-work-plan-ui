@@ -90,7 +90,7 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     overviewPage //
       .isForPrisoner(prisonNumber)
       .activeTabIs('Overview')
-      .hasLastUpdatedHint('Updated on 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
+      .hasLastUpdatedHint('Last updated 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
   })
 
   it('should display courses if completed in the last 12 months', () => {
