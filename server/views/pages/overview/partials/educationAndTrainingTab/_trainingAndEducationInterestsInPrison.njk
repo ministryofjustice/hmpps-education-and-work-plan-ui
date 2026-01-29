@@ -56,7 +56,10 @@ where the InductionDto contains any in-prison training interests the prisoner ha
         </dl>
 
         {% if inductionHasInPrisonTrainingInterestsRecorded %}
-          <p class="govuk-hint govuk-body govuk-!-font-size-16">Last updated: {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('D MMMM YYYY') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}</span></p>
+          <p class="govuk-hint govuk-body govuk-!-font-size-16">
+            {% set prisonName = prisonNamesById[induction.inductionDto.inPrisonInterests.updatedAtPrison] | default(induction.inductionDto.inPrisonInterests.updatedAtPrison) %}
+            Last updated {{ induction.inductionDto.inPrisonInterests.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.inPrisonInterests.updatedByDisplayName }}, {{ prisonName }}</span>
+          </p>
         {% endif %}
       </div>
 
