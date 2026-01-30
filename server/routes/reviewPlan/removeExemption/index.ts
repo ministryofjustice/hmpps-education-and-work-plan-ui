@@ -6,6 +6,7 @@ import ConfirmExemptionRemovalController from './confirmExemptionRemovalControll
 import ExemptionRemovedController from './exemptionRemovedController'
 import { checkUserHasPermissionTo } from '../../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../../enums/applicationAction'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 /**
  * Route definitions to remove the exemption on a prisoner's Action Plan Review
@@ -24,7 +25,13 @@ export default function exemptionRemovalActionPlanReviewRoutes(services: Service
     retrieveActionPlanReviews(reviewService),
     asyncMiddleware(confirmExemptionRemovalController.getConfirmExemptionRemovalView),
   ])
-  router.post('/exemption/remove', [asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval)])
+  router.post('/exemption/remove', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Review Plan Remove Exemption',
+      redirectTo: '/plan/:prisonNumber/:journeyId/review/exemption/removed',
+    }),
+    asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval),
+  ])
 
   router.get('/exemption/removed', [
     retrieveActionPlanReviews(reviewService),

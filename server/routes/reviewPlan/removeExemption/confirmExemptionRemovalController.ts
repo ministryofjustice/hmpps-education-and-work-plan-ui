@@ -1,9 +1,13 @@
 import type { Request, RequestHandler } from 'express'
-import createError from 'http-errors'
 import { AuditService, ReviewService } from '../../../services'
-import ConfirmExemptionRemovalView from './confirmExemptionRemovalView'
 import { BaseAuditData } from '../../../services/auditService'
 import ReviewScheduleStatusValue from '../../../enums/reviewScheduleStatusValue'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import { Result } from '../../../utils/result/result'
+import logger from '../../../../logger'
 
 export default class ConfirmExemptionRemovalController {
   constructor(
@@ -13,32 +17,39 @@ export default class ConfirmExemptionRemovalController {
 
   getConfirmExemptionRemovalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonerSummary, actionPlanReviews } = res.locals
+    clearRedirectPendingFlag(req)
 
     // TODO - add validation that the review is in an exempt state and that it is possible to remove the exemption
 
-    const view = new ConfirmExemptionRemovalView(prisonerSummary, actionPlanReviews)
     return res.render('pages/reviewPlan/removeExemption/confirmRemoval/index', {
-      ...view.renderArgs,
+      prisonerSummary,
+      exemptionReason: actionPlanReviews.latestReviewSchedule.status,
     })
   }
 
   submitConfirmExemptionRemoval: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, journeyId } = req.params
+    const { prisonNumber } = req.params
     const { prisonId } = res.locals.prisonerSummary
 
-    try {
-      await this.reviewService.updateActionPlanReviewScheduleStatus(
+    const { apiErrorCallback } = res.locals
+    const apiResult = await Result.wrap(
+      this.reviewService.updateActionPlanReviewScheduleStatus(
         dtoToClearExemption(prisonNumber, prisonId),
         req.user.username,
+      ),
+      apiErrorCallback,
+    )
+    if (!apiResult.isFulfilled()) {
+      apiResult.getOrHandle(e =>
+        logger.error(`Error removing exemption for Action Plan Review for prisoner ${prisonNumber}`, e),
       )
-
-      this.auditService.logRemoveExemptionActionPlanReview(exemptActionPlanReviewAuditData(req)) // no need to wait for response
-      return res.redirect(`/plan/${prisonNumber}/${journeyId}/review/exemption/removed`)
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return next(createError(500, `Error removing exemption for Action Plan Review for prisoner ${prisonNumber}`))
+      req.flash('pageHasApiErrors', 'true')
+      return res.redirect('remove')
     }
+
+    this.auditService.logRemoveExemptionActionPlanReview(exemptActionPlanReviewAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
+    return res.redirect('removed')
   }
 }
 

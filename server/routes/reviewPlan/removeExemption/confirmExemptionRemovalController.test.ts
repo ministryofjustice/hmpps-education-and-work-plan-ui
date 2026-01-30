@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import createError from 'http-errors'
 import { v4 as uuidV4 } from 'uuid'
 import ReviewService from '../../../services/reviewService'
 import AuditService from '../../../services/auditService'
@@ -27,23 +26,22 @@ describe('confirmExemptionRemovalController', () => {
     }),
   })
 
-  let req: Request
-  let res: Response
+  const flash = jest.fn()
+  const req = {
+    user: { username: 'a-dps-user' },
+    params: { prisonNumber, journeyId },
+    session: {},
+    flash,
+  } as unknown as Request
+  const res = {
+    render: jest.fn(),
+    redirect: jest.fn(),
+    locals: { prisonerSummary, actionPlanReviews },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
-    req = {
-      user: { username: 'a-dps-user' },
-      params: { prisonNumber, journeyId },
-      session: {},
-    } as unknown as Request
-    res = {
-      render: jest.fn(),
-      redirect: jest.fn(),
-      locals: { prisonerSummary, actionPlanReviews },
-    } as unknown as Response
-
-    jest.clearAllMocks()
+    jest.resetAllMocks()
   })
 
   describe('getConfirmExemptionRemovalView', () => {
@@ -78,14 +76,20 @@ describe('confirmExemptionRemovalController', () => {
       await controller.submitConfirmExemptionRemoval(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/A1234BC/${journeyId}/review/exemption/removed`)
+      expect(res.redirect).toHaveBeenCalledWith('removed')
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(expectedDtp, 'a-dps-user')
       expect(auditService.logRemoveExemptionActionPlanReview).toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pendingRedirectAtEndOfJourney', 'true')
     })
 
     it('should not redirect to Exemption Removed page given service throws an error', async () => {
       // Given
-      reviewService.updateActionPlanReviewScheduleStatus.mockRejectedValue(new Error('Service failure'))
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      reviewService.updateActionPlanReviewScheduleStatus.mockRejectedValue(apiErrorResponse)
 
       const expectedDtp = {
         prisonNumber,
@@ -98,11 +102,10 @@ describe('confirmExemptionRemovalController', () => {
       await controller.submitConfirmExemptionRemoval(req, res, next)
 
       // Then
-      expect(next).toHaveBeenCalledWith(
-        createError(500, 'Error removing exemption for Action Plan Review for prisoner A1234BC'),
-      )
+      expect(res.redirect).toHaveBeenCalledWith('remove')
       expect(reviewService.updateActionPlanReviewScheduleStatus).toHaveBeenCalledWith(expectedDtp, 'a-dps-user')
       expect(auditService.logExemptActionPlanReview).not.toHaveBeenCalled()
+      expect(flash).toHaveBeenCalledWith('pageHasApiErrors', 'true')
     })
   })
 })
