@@ -56,6 +56,17 @@
             Work and interests
           </a>
         </li>
+        {% if featureToggles.employabilitySkillsEnabled and userHasPermissionTo('VIEW_EMPLOYABILITY_SKILLS') %}
+          <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+              data-qa="tab-employability-skills"
+              {% if tab === 'employability-skills' %}aria-current="page"{% endif %}
+              href="employability-skills"
+            >
+              Employability skills
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </nav>
   </div>

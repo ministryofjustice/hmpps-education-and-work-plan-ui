@@ -25,6 +25,9 @@ import retrieveSupportForAdditionalNeedsAlnScreeners from '../routerRequestHandl
 import retrieveSupportForAdditionalNeedsChallenges from '../routerRequestHandlers/retrieveSupportForAdditionalNeedsChallenges'
 import retrieveVerifiedQualifications from '../routerRequestHandlers/retrieveVerifiedQualifications'
 import config from '../../config'
+import { checkUserHasPermissionTo } from '../../middleware/roleBasedAccessControl'
+import ApplicationAction from '../../enums/applicationAction'
+import EmployabilitySkillsController from './employabilitySkillsController'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -47,6 +50,7 @@ export default (router: Router, services: Services) => {
   const workAndInterestsController = new WorkAndInterestsController()
   const educationAndTrainingController = new EducationAndTrainingController()
   const viewGoalsController = new ViewGoalsController()
+  const employabilitySkillsController = new EmployabilitySkillsController()
 
   router.use('/plan/:prisonNumber/view', [removeFormDataFromSession])
 
@@ -104,4 +108,11 @@ export default (router: Router, services: Services) => {
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     asyncMiddleware(viewGoalsController.viewGoals),
   ])
+
+  if (config.featureToggles.employabilitySkillsEnabled) {
+    router.get('/plan/:prisonNumber/view/employability-skills', [
+      checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
+      asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
+    ])
+  }
 }
