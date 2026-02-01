@@ -30,6 +30,7 @@ generic-service:
     LRS_INTEGRATION_ENABLED: true
     NEW_SEARCH_API_ENABLED: true
     NEW_SESSION_API_ENABLED: true
+    EMPLOYABILITY_SKILLS_ENABLED: true
 
   allowlist:
     uservision-accessibility-testers: 5.181.59.114/32

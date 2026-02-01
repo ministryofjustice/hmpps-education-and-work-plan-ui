@@ -22,6 +22,7 @@ const pageViewEventMap: Record<string, Page> = {
   '/plan/:prisonNumber/view/history': Page.HISTORY,
   '/plan/:prisonNumber/view/archived-goals': Page.VIEW_ARCHIVED_GOALS,
   '/plan/:prisonNumber/view/goals': Page.VIEW_GOALS,
+  '/plan/:prisonNumber/view/employability-skills': Page.EMPLOYABILITY_SKILLS,
 
   // Review journey pages
   '/plan/:prisonNumber/review': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId

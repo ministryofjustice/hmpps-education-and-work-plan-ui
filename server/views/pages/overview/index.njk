@@ -34,18 +34,16 @@
 
   {% if tab === 'overview' %}
     {% include './partials/overviewTab/overviewTabContents.njk' %}
-  {% endif %}
-  {% if tab === 'history' %}
+  {% elseif tab === 'history' %}
     {% include './partials/historyTab/historyTabContents.njk' %}
-  {% endif %}
-  {% if tab === 'additional-needs' %}
+  {% elseif tab === 'additional-needs' %}
     {% include './partials/additionalNeedsTab/additionalNeedsTabContents.njk' %}
-  {% endif %}
-  {% if tab === 'education-and-training' %}
+  {% elseif tab === 'education-and-training' %}
     {% include './partials/educationAndTrainingTab/educationAndTrainingTabContents.njk' %}
-  {% endif %}
-  {% if tab === 'work-and-interests' %}
+  {% elseif tab === 'work-and-interests' %}
     {% include './partials/workAndInterestsTab/workAndInterestsTabContents.njk' %}
+  {% elseif tab === 'employability-skills' %}
+    {% include './partials/employabilitySkillsTab/employabilitySkillsTabContents.njk' %}
   {% endif %}
 
 {% endblock %}
