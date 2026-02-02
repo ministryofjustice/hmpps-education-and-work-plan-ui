@@ -13,6 +13,151 @@ Data supplied to this template:
         <h2 class="govuk-summary-card__title">Employability skills ratings</h2>
       </div>
       <div class="govuk-summary-card__content">
+
+        <table class="govuk-table" id="employability-skills-ratings-table">
+          <caption class="govuk-visually-hidden">Employability skills ratings</caption>
+
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Skill</th>
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Adaptability</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ADAPTABILITY" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s adaptability skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ADAPTABILITY/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s adaptability skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Communication</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/COMMUNICATION" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s communication skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/COMMUNICATION/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s communication skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Creativity</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/CREATIVITY" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s creativity skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/CREATIVITY/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s creativity skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Initiative</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/INITIATIVE" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s initiative skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/INITIATIVE/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s initiative skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Organisation</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ORGANISATION" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s organisation skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ORGANISATION/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s organisation skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Problem solving</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PROBLEM_SOLVING" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s problem solving skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PROBLEM_SOLVING/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s problem solving skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Planning</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PLANNING" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s planning skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PLANNING/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s planning skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Reliability</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/RELIABILITY" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s reliability skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/RELIABILITY/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s reliability skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Teamwork</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TEAMWORK" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s teamwork skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TEAMWORK/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s teamwork skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Timekeeping</th>
+              <td class="govuk-table__cell">
+                <ul class="govuk-list employability-skills-actions">
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TIMEKEEPING" class="govuk-link">View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s timekeeping skill ratings</span></a>
+                  </li>
+                  <li>
+                    <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TIMEKEEPING/add" class="govuk-link">Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s timekeeping skill</span></a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
       </div>
     </div>
 

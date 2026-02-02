@@ -1,0 +1,20 @@
+#employability-skills-ratings-table {
+
+  .employability-skills-actions {
+    display: flex;
+    justify-content: right;
+    margin-bottom: 0;
+
+    li {
+      margin-bottom: 0;
+    }
+    li:after {
+      content: '|';
+      padding: 0 0.5em;
+      margin-left: -1px;
+    }
+    li:last-of-type:after {
+      display: none;
+    }
+  }
+}
