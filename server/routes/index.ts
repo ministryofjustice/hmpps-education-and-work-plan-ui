@@ -25,6 +25,8 @@ import sessionSummaryRoutes from './sessionSummary'
 import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateActiveCaseloadPrisonName'
 import sessionListRoutes from './sessionList'
 import lrsQualificationsRoutes from './lrsQualifications'
+import employabilitySkillsRoutes from './employabilitySkills'
+import config from '../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -41,6 +43,10 @@ export default function routes(services: Services): Router {
   inPrisonCoursesAndQualifications(router, services)
 
   router.use('/plan/:prisonNumber/', [functionalSkillsRoutes(services), lrsQualificationsRoutes(services)])
+
+  if (config.featureToggles.employabilitySkillsEnabled) {
+    router.use('/plan/:prisonNumber/employability-skills/:skillType', employabilitySkillsRoutes())
+  }
 
   overview(router, services)
   createGoal(router, services)

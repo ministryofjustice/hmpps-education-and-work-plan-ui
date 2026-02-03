@@ -1,0 +1,34 @@
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = "Employability skill ratings" %}
+{% set pageId = "employability-skill-ratings" %}
+
+{% block content %}
+  <div class="govuk-grid-row govuk-!-margin-top-6" data-qa="{{ skillType }}-employability-skill-ratings">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+      <span class="govuk-caption-l">Learner: {{ prisonerSummary | formatFirst_name_Last_name }}</span>
+      <h1 class="govuk-heading-l">{{ skillType | formatEmployabilitySkill }} skills rating</h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      {% include "../../partials/printThisPage.njk" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <p class="govuk-body" data-qa="no=employability-skill-ratings-recorded">
+        {{ prisonerSummary | formatFirst_name_Last_name }} has no recorded {{ skillType | formatEmployabilitySkill | lower }} skills rating.
+      </p>
+
+      {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
+        <p class="govuk-body">
+          <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/{{ skillType }}/add" class="govuk-link govuk-!-display-none-print" data-qa="add-rating-link">
+            Add employability skills ratings<span class="govuk-visually-hidden"> for {{ prisonerSummary | formatFirst_name_Last_name }}</span>
+          </a>
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}
