@@ -45,6 +45,7 @@ import formatStrengthCategoryScreenValueFilter from '../filters/formatStrengthCa
 import formatChallengeCategoryScreenValueFilter from '../filters/formatChallengeCategoryFilter'
 import formatPrisonerNameFilter, { NameFormat } from '../filters/formatPrisonerNameFilter'
 import formatReviewTypeScreenValueFilter from '../filters/formatReviewTypeFilter'
+import formatEmployabilitySkillsFilter from '../filters/formatEmployabilitySkillsFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -139,6 +140,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatStrengthCategoryScreenValue', formatStrengthCategoryScreenValueFilter)
   njkEnv.addFilter('formatChallengeCategoryScreenValue', formatChallengeCategoryScreenValueFilter)
   njkEnv.addFilter('formatReviewTypeScreenValue', formatReviewTypeScreenValueFilter)
+  njkEnv.addFilter('formatEmployabilitySkill', formatEmployabilitySkillsFilter)
 
   // Name format filters
   njkEnv.addFilter('formatFIRST_NAME_ONLY', formatPrisonerNameFilter(NameFormat.FIRST_NAME_ONLY))

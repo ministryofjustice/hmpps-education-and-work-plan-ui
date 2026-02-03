@@ -173,6 +173,9 @@ const pageViewEventMap: Record<string, Page> = {
   // LRS Qualifications
   '/plan/:prisonNumber/lrs-qualifications': Page.LRS_QUALIFICATIONS,
 
+  // Employability Skills pages
+  '/plan/:prisonNumber/employability-skills/:skillType': Page.VIEW_EMPLOYABILITY_SKILL_RATINGS,
+
   // Non audit routes. These routes do not raise an audit event
   '/': null,
   '/plan/:prisonNumber/induction-created': null,

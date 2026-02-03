@@ -4,14 +4,14 @@
     display: flex;
     justify-content: right;
     margin-bottom: 0;
+    @extend .govuk-\!-display-none-print;
 
     li {
       margin-bottom: 0;
     }
     li:after {
       content: '|';
-      padding: 0 0.5em;
-      margin-left: -1px;
+      padding: 0 5px 0 2px;
     }
     li:last-of-type:after {
       display: none;
