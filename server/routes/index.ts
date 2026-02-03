@@ -45,7 +45,7 @@ export default function routes(services: Services): Router {
   router.use('/plan/:prisonNumber/', [functionalSkillsRoutes(services), lrsQualificationsRoutes(services)])
 
   if (config.featureToggles.employabilitySkillsEnabled) {
-    router.use('/plan/:prisonNumber/employability-skills/:skillType', employabilitySkillsRoutes())
+    router.use('/plan/:prisonNumber/employability-skills/:skillType', employabilitySkillsRoutes(services))
   }
 
   overview(router, services)

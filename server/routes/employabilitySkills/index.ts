@@ -1,17 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express'
 import createError from 'http-errors'
-import { checkUserHasPermissionTo } from '../../middleware/roleBasedAccessControl'
-import ApplicationAction from '../../enums/applicationAction'
-import EmployabilitySkillsController from './employabilitySkillsController'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
+import viewEmployabilitySkillRatingsRoutes from './view'
+import addEmployabilitySkillRatingsRoutes from './add'
+import { Services } from '../../services'
 
-const employabilitySkillsRoutes = (): Router => {
-  const employabilitySkillsController = new EmployabilitySkillsController()
-
+const employabilitySkillsRoutes = (services: Services): Router => {
   const router = Router({ mergeParams: true })
 
-  router.use('/', async (req: Request, res: Response, next: NextFunction) => {
+  router.use(async (req: Request, res: Response, next: NextFunction) => {
     const { skillType } = req.params
     if (Object.keys(EmployabilitySkillsValue).includes(skillType)) {
       return next()
@@ -19,10 +16,7 @@ const employabilitySkillsRoutes = (): Router => {
     return next(createError(404, `Unknown employability skill type ${skillType}`))
   })
 
-  router.get('/', [
-    checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILL_RATINGS),
-    asyncMiddleware(employabilitySkillsController.getEmployabilitySkillRatingsView),
-  ])
+  router.use([viewEmployabilitySkillRatingsRoutes(), addEmployabilitySkillRatingsRoutes(services)])
 
   return router
 }

@@ -175,6 +175,8 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Employability Skills pages
   '/plan/:prisonNumber/employability-skills/:skillType': Page.VIEW_EMPLOYABILITY_SKILL_RATINGS,
+  '/plan/:prisonNumber/employability-skills/:skillType/add': null, // route without the journeyId does not raise an audit event because it redirects to the route with a journeyId
+  '/plan/:prisonNumber/employability-skills/:skillType/:journeyId/add': Page.ADD_EMPLOYABILITY_SKILL_RATING,
 
   // Non audit routes. These routes do not raise an audit event
   '/': null,
