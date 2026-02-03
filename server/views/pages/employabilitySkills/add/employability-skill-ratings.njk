@@ -15,8 +15,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">Agree an {{ skillType | formatEmployabilitySkill | lower }} skill with {{ prisonerSummary | formatFirst_name_Last_name }}</h1>
-      <p class="govuk-body">How do they feel about their ability to understand, accept and adjust to change?</p>
+      <h1 class="govuk-heading-l">Agree a rating with {{ prisonerSummary | formatFirst_name_Last_name }} for their {{ skillType | formatEmployabilitySkill | lower }} skills</h1>
+      <p class="govuk-body">{{ skillType | formatEmployabilitySkillQuestionText }}</p>
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -61,7 +61,7 @@
 
         <h3 class="govuk-heading-s">Add evidence for this rating</h3>
         {{ govukWarningText({
-          html: "<p class='govuk-body'>This will be shared with the learner and prison staff</p>",
+          text: "This will be shared with the learner and prison staff",
           iconFallbackText: "Warning",
           classes: "govuk-!-margin-bottom-2"
         }) }}
