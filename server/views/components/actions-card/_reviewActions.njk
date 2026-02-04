@@ -15,19 +15,31 @@
 
     {% if reviewStatus == 'NOT_DUE' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-not-due">
-        Review due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
+        Review due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
       </span>
     {% elseif reviewStatus == 'DUE' %}
       <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-due">
-        {{ reviewType | formatReviewTypeScreenValue }} due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
+        {% if featureToggles.newSessionApiEnabled %}
+          {{ reviewType | formatReviewTypeScreenValue }} due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
+        {% else %}
+          Review due by {{ params.actionPlanReview.reviewDueDate | formatDate('d MMM yyyy') }}
+        {% endif %}
       </span>
     {% elseif reviewStatus == 'OVERDUE' %}
       <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-overdue">
-        {{ reviewType | formatReviewTypeScreenValue }} was due by {{ reviewDueDate | formatDate('D MMM YYYY') }}
+        {% if featureToggles.newSessionApiEnabled %}
+          {{ reviewType | formatReviewTypeScreenValue }} was due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
+        {% else %}
+          Review was due by {{ params.actionPlanReview.reviewDueDate | formatDate('d MMM yyyy') }}
+        {% endif %}
       </span>
     {% elseif reviewStatus == 'ON_HOLD' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-on-hold">
-        {{ reviewType | formatReviewTypeScreenValue }} on hold
+        {% if featureToggles.newSessionApiEnabled %}
+          {{ reviewType | formatReviewTypeScreenValue }} on hold
+        {% else %}
+          Review on hold
+        {% endif %}
       </span>
       <p class="govuk-body" data-qa="reason-on-hold">
         Reason: {{ exemptionReason | formatReviewExemptionReason }}
@@ -38,7 +50,7 @@
       </span>
       {% if prisonerSummary.releaseDate %}
         <p class="govuk-body" data-qa="release-on">
-          release on {{ prisonerSummary.releaseDate | formatDate('D MMM YYYY') }}
+          release on {{ prisonerSummary.releaseDate | formatDate('d MMM yyyy') }}
         </p>
       {% endif %}
     {% endif %}
