@@ -8,6 +8,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import ActionPlanReviewStatusValue from '../../../enums/actionPlanReviewStatusValue'
 import formatReviewTypeScreenValueFilter from '../../../filters/formatReviewTypeFilter'
 import SessionTypeValue from '../../../enums/sessionTypeValue'
+import config from '../../../config'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -20,6 +21,7 @@ njkEnv
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatReviewExemptionReason', formatReviewExemptionReasonFilter)
   .addFilter('formatReviewTypeScreenValue', formatReviewTypeScreenValueFilter)
+  .addGlobal('featureToggles', { ...config.featureToggles, newSessionApiEnabled: true })
 
 const userHasPermissionTo = jest.fn()
 const templateParams: ActionsCardParams = {
