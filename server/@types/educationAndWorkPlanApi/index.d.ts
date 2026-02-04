@@ -276,6 +276,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/action-plans/{prisonNumber}/employability-skills': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getGoals_1']
+    put?: never
+    post: operations['createEmployabilitySkills']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/timelines/{prisonNumber}': {
     parameters: {
       query?: never
@@ -1608,6 +1624,56 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['CreateGoalRequest'][]
+    }
+    CreateEmployabilitySkillRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillType:
+        | 'TEAMWORK'
+        | 'TIMEKEEPING'
+        | 'COMMUNICATION'
+        | 'PLANNING'
+        | 'ORGANISATION'
+        | 'PROBLEM_SOLVING'
+        | 'INITIATIVE'
+        | 'ADAPTABILITY'
+        | 'RELIABILITY'
+        | 'CREATIVITY'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
+      /**
+       * @description The name of the activity where the skill was assessed.
+       * @example null
+       */
+      activityName: string
+      /**
+       * @description Any evidence to support the skill rating.
+       * @example null
+       */
+      evidence: string
+      /**
+       * Format: date
+       * @description The date the conversation about skills took place (optional).
+       * @example 1999-12-01
+       */
+      conversationDate?: string
+    }
+    CreateEmployabilitySkillsRequest: {
+      /**
+       * @description A List of at least one employability skill.
+       * @example null
+       */
+      employabilitySkills: components['schemas']['CreateEmployabilitySkillRequest'][]
     }
     TimelineEventResponse: {
       /**
@@ -3040,6 +3106,93 @@ export interface components {
        */
       goals: components['schemas']['GoalResponse'][]
     }
+    GetEmployabilitySkillResponses: {
+      /**
+       * @description A List of at least one employability skills.
+       * @example null
+       */
+      employabilitySkills: components['schemas']['GetEmployabilitySkillsResponse'][]
+    }
+    GetEmployabilitySkillsResponse: {
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillType:
+        | 'TEAMWORK'
+        | 'TIMEKEEPING'
+        | 'COMMUNICATION'
+        | 'PLANNING'
+        | 'ORGANISATION'
+        | 'PROBLEM_SOLVING'
+        | 'INITIATIVE'
+        | 'ADAPTABILITY'
+        | 'RELIABILITY'
+        | 'CREATIVITY'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
+      /**
+       * @description The name of the activity where the skill was assessed.
+       * @example null
+       */
+      activityName: string
+      /**
+       * @description Any evidence to support the skill rating.
+       * @example null
+       */
+      evidence: string
+      /**
+       * Format: date
+       * @description The date the conversation about skills took place (optional).
+       * @example 1999-12-01
+       */
+      conversationDate?: string
+    }
   }
   responses: never
   parameters: never
@@ -3650,6 +3803,52 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateGoalsRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getGoals_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GetEmployabilitySkillResponses']
+        }
+      }
+    }
+  }
+  createEmployabilitySkills: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEmployabilitySkillsRequest']
       }
     }
     responses: {

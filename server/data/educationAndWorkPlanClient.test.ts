@@ -44,6 +44,8 @@ import SearchPlanStatus from '../enums/searchPlanStatus'
 import { aSessionSearchResponse, aSessionSearchResponses } from '../testsupport/sessionSearchResponsesTestDataBuilder'
 import SessionSearchSortField from '../enums/sessionSearchSortField'
 import SessionTypeValue from '../enums/sessionTypeValue'
+import { aCreateEmployabilitySkillsRequest } from '../testsupport/createEmployabilitySkillsRequestTestDataBuilder'
+import { aGetEmployabilitySkillResponses } from '../testsupport/getEmployabilitySkillResponsesTestDataBuilder'
 
 jest.mock('@ministryofjustice/hmpps-auth-clients')
 
@@ -1802,6 +1804,123 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedError)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
       expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('getEmployabilitySkills', () => {
+    it('should get Employability Skills', async () => {
+      // Given
+      const getEmployabilitySkillResponses = aGetEmployabilitySkillResponses()
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/employability-skills`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(200, getEmployabilitySkillResponses)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getEmployabilitySkills(prisonNumber, username)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(getEmployabilitySkillResponses)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not get Employability Skills given no Employability Skills returned for specified prisoner', async () => {
+      // Given
+      const expectedResponseBody = {
+        status: 404,
+        userMessage: `Employability Skills not found for prisoner [${prisonNumber}]`,
+      }
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/employability-skills`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(404, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.getEmployabilitySkills(prisonNumber, username)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toBeNull()
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not get Employability Skills given API returns error response', async () => {
+      // Given
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+      }
+      educationAndWorkPlanApi
+        .get(`/action-plans/${prisonNumber}/employability-skills`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .thrice()
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
+
+      // When
+      const actual = await educationAndWorkPlanClient.getEmployabilitySkills(prisonNumber, username).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+  })
+
+  describe('createEmployabilitySkills', () => {
+    it('should create Employability Skills', async () => {
+      // Given
+      const createEmployabilitySkillsRequest = aCreateEmployabilitySkillsRequest()
+      const expectedResponseBody = {}
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}/employability-skills`, requestBody =>
+          isEqual(requestBody, createEmployabilitySkillsRequest),
+        )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(201, expectedResponseBody)
+
+      // When
+      const actual = await educationAndWorkPlanClient.createEmployabilitySkills(
+        prisonNumber,
+        createEmployabilitySkillsRequest,
+        username,
+      )
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+      expect(actual).toEqual(expectedResponseBody)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
+    })
+
+    it('should not create Employability Skills given API returns an error response', async () => {
+      // Given
+      const createEmployabilitySkillsRequest = aCreateEmployabilitySkillsRequest()
+      const apiErrorResponse = {
+        status: 500,
+        userMessage: 'Service unavailable',
+        developerMessage: 'Service unavailable',
+      }
+      educationAndWorkPlanApi
+        .post(`/action-plans/${prisonNumber}/employability-skills`, requestBody =>
+          isEqual(requestBody, createEmployabilitySkillsRequest),
+        )
+        .matchHeader('authorization', `Bearer ${systemToken}`)
+        .reply(500, apiErrorResponse)
+
+      const expectedError = new Error('Internal Server Error')
+
+      // When
+      const actual = await educationAndWorkPlanClient
+        .createEmployabilitySkills(prisonNumber, createEmployabilitySkillsRequest, username)
+        .catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })
 })

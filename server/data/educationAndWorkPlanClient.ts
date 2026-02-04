@@ -10,10 +10,12 @@ import type {
   CreateActionPlanReviewRequest,
   CreateActionPlanReviewResponse,
   CreateEducationRequest,
+  CreateEmployabilitySkillRequest,
   CreateGoalsRequest,
   CreateInductionRequest,
   EducationResponse,
   GetActionPlanSummariesRequest,
+  GetEmployabilitySkillResponses,
   GetGoalsResponse,
   GoalResponse,
   InductionResponse,
@@ -388,6 +390,30 @@ export default class EducationAndWorkPlanClient extends RestClient {
           sortDirection,
         },
         errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async getEmployabilitySkills(prisonNumber: string, username: string): Promise<GetEmployabilitySkillResponses> {
+    return this.get<GetEmployabilitySkillResponses>(
+      {
+        path: `/action-plans/${prisonNumber}/employability-skills`,
+        errorHandler: restClientErrorHandler({ ignore404: true }),
+      },
+      asSystem(username),
+    )
+  }
+
+  async createEmployabilitySkills(
+    prisonNumber: string,
+    createEmployabilitySkillRequest: CreateEmployabilitySkillRequest,
+    username: string,
+  ): Promise<void> {
+    return this.post(
+      {
+        path: `/action-plans/${prisonNumber}/employability-skills`,
+        data: createEmployabilitySkillRequest,
       },
       asSystem(username),
     )

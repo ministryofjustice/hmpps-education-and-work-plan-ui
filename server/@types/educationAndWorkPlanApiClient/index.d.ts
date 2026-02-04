@@ -71,4 +71,9 @@ declare module 'educationAndWorkPlanApiClient' {
   export type PersonSearchResult = components['schemas']['PersonSearchResult']
   export type PaginationMetaData = components['schemas']['PaginationMetaData']
   export type PersonResponse = components['schemas']['PersonResponse']
+
+  export type GetEmployabilitySkillResponses = components['schemas']['GetEmployabilitySkillResponses']
+  export type GetEmployabilitySkillsResponse = components['schemas']['GetEmployabilitySkillsResponse']
+  export type CreateEmployabilitySkillsRequest = components['schemas']['CreateEmployabilitySkillsRequest']
+  export type CreateEmployabilitySkillRequest = components['schemas']['CreateEmployabilitySkillRequest']
 }
