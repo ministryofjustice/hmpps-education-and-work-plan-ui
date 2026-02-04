@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import formatEmployabilitySkillsFilter from '../../../filters/formatEmployabilitySkillsFilter'
+import { formatEmployabilitySkillsFilter } from '../../../filters/formatEmployabilitySkillsFilter'
 import EmployabilitySkillsValue from '../../../enums/employabilitySkillsValue'
 
 export default class AddEmployabilitySkillRatingsController {
