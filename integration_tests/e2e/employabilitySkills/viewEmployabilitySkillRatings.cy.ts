@@ -21,11 +21,13 @@ context('View employability skill rating', () => {
     cy.task('stubGetChallenges')
     cy.task('stubGetStrengths')
     cy.task('stubGetAlnScreeners')
+    cy.task('stubGetEmployabilitySkills')
     cy.signIn()
   })
 
-  it('should show be able to view all employability skills ratings', () => {
+  it('should be able to view all employability skills ratings', () => {
     // Given
+    cy.task('stubGetEmployabilitySkills') // stub has skill ratings recorded for Organisaton and Problem Solving. These are the only 2 where we expect to see any data
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/employability-skills`)
@@ -33,52 +35,72 @@ context('View employability skill rating', () => {
     // Then
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.ADAPTABILITY)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.ADAPTABILITY)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.ADAPTABILITY)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.TEAMWORK)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.TEAMWORK)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.TEAMWORK)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.TIMEKEEPING)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.TIMEKEEPING)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.TIMEKEEPING)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.PLANNING)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.PLANNING)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.PLANNING)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.ORGANISATION)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.ORGANISATION)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.ORGANISATION)
+      .hasSkillRatingsDisplayed(EmployabilitySkillsValue.ORGANISATION)
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.COMMUNICATION)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.COMMUNICATION)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.COMMUNICATION)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.CREATIVITY)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.CREATIVITY)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.CREATIVITY)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.RELIABILITY)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.RELIABILITY)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.RELIABILITY)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.INITIATIVE)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.INITIATIVE)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.INITIATIVE)
+      .hasNoSkillRatingsRecorded() // stub has no skill ratings recorded for this type
     cy.go('back')
 
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToViewSkillRatings(EmployabilitySkillsValue.PROBLEM_SOLVING)
-    Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(EmployabilitySkillsValue.PROBLEM_SOLVING)
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.PROBLEM_SOLVING)
+      .hasSkillRatingsDisplayed(EmployabilitySkillsValue.PROBLEM_SOLVING)
   })
 
   Array.from(Object.keys(EmployabilitySkillsValue)).forEach((skillType: EmployabilitySkillsValue) => {
@@ -89,7 +111,9 @@ context('View employability skill rating', () => {
       cy.visit(`/plan/${prisonNumber}/employability-skills/${skillType}`)
 
       // Then
-      Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(skillType)
+      Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+        .isForSkill(skillType)
+        .apiErrorBannerIsNotDisplayed()
     })
   })
 
@@ -102,5 +126,19 @@ context('View employability skill rating', () => {
 
     // Then
     Page.verifyOnPage(Error404Page)
+  })
+
+  it('should display employability skills unavailable message given support strategies API is unavailable', () => {
+    // Given
+    cy.task('stubGetEmployabilitySkills500Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/employability-skills/PROBLEM_SOLVING`)
+
+    // Then
+    Page.verifyOnPage(EmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.PROBLEM_SOLVING)
+      .apiErrorBannerIsDisplayed()
+      .hasEmployabilitySkillsUnavailableMessageDisplayed()
   })
 })

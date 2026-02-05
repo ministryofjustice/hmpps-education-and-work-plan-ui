@@ -16,7 +16,7 @@ const employabilitySkillsRoutes = (services: Services): Router => {
     return next(createError(404, `Unknown employability skill type ${skillType}`))
   })
 
-  router.use([viewEmployabilitySkillRatingsRoutes(), addEmployabilitySkillRatingsRoutes(services)])
+  router.use([viewEmployabilitySkillRatingsRoutes(services), addEmployabilitySkillRatingsRoutes(services)])
 
   return router
 }

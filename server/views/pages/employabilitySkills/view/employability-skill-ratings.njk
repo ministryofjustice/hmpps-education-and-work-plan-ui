@@ -4,7 +4,7 @@
 {% set pageId = "employability-skill-ratings" %}
 
 {% block content %}
-  <div class="govuk-grid-row govuk-!-margin-top-6" data-qa="{{ skillType }}-employability-skill-ratings">
+  <div class="govuk-grid-row govuk-!-margin-top-6" data-qa="{{ skillType }}-employability-skill-ratings-header">
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       <span class="govuk-caption-l">Learner: {{ prisonerSummary | formatFirst_name_Last_name }}</span>
       <h1 class="govuk-heading-l">{{ skillType | formatEmployabilitySkill }} skills rating</h1>
@@ -17,16 +17,53 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      <p class="govuk-body" data-qa="no=employability-skill-ratings-recorded">
-        {{ prisonerSummary | formatFirst_name_Last_name }} has no recorded {{ skillType | formatEmployabilitySkill | lower }} skills rating.
-      </p>
+      {% if employabilitySkills.isFulfilled() %}
+        {% set employabilitySkills = employabilitySkills.value.employabilitySkills | filterArrayOnProperty('employabilitySkillType', skillType) | sort(attribute = 'updatedAt', reverse = true) %}
+        {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
-      {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-        <p class="govuk-body">
-          <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/{{ skillType }}/add" class="govuk-link govuk-!-display-none-print" data-qa="add-rating-link">
-            Add employability skills ratings<span class="govuk-visually-hidden"> for {{ prisonerSummary | formatFirst_name_Last_name }}</span>
-          </a>
-        </p>
+        {% if employabilitySkills.length %}
+
+          <table class="govuk-table" data-qa="{{ skillType }}-employability-skill-ratings-table">
+            <caption class="govuk-visually-hidden">{{ skillType | formatEmployabilitySkill }} employability skills ratings</caption>
+
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Rating</th>
+                <th scope="col" class="govuk-table__header">Added by</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for employabilitySkill in employabilitySkills %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ employabilitySkill.employabilitySkillRating | formatEmployabilitySkillRating }}</td>
+                  <td class="govuk-table__cell">
+                    {% set prisonName = prisonNamesById[employabilitySkill.createdAtPrison] | default(employabilitySkill.createdAtPrison) %}
+                    {{ employabilitySkill.createdByDisplayName }},<br/>
+                    {{ prisonName }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        {% else %}
+          <p class="govuk-body" data-qa="no-employability-skill-ratings-recorded">
+            {{ prisonerSummary | formatFirst_name_Last_name }} has no recorded {{ skillType | formatEmployabilitySkill | lower }} skills rating.
+          </p>
+        {% endif %}
+
+        {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
+          <p class="govuk-body">
+            <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/{{ skillType }}/add" class="govuk-link govuk-!-display-none-print" data-qa="add-rating-link">
+              Add employability skills ratings<span class="govuk-visually-hidden"> for {{ prisonerSummary | formatFirst_name_Last_name }}</span>
+            </a>
+          </p>
+        {% endif %}
+
+      {% else %}
+
+        <h2 class="govuk-heading-s" data-qa="employability-skills-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
       {% endif %}
     </div>
   </div>
