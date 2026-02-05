@@ -2,8 +2,38 @@
 
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
+  * employabilitySkills
 #}
 
+{% macro employabilitySkillRow(params) %}
+  {% set skillRatings = (params.employabilitySkillsGroupedBySkillType[params.skillType] or []) | sort(attribute = 'updatedAt', reverse = true) %}
+  {% set currentRating = skillRatings[0].employabilitySkillRating %}
+  {% set previousRating = skillRatings[1].employabilitySkillRating %}
+
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header">{{ params.skillType | formatEmployabilitySkill }}</th>
+    <td class="govuk-table__cell govuk-!-display-none">{{ currentRating | formatEmployabilitySkillRating | default('Not assessed') }}</td>
+    <td class="govuk-table__cell govuk-!-display-none">{{ previousRating | formatEmployabilitySkillRating | default('N/A') }}</td>
+    <td class="govuk-table__cell">
+      <ul class="govuk-list employability-skills-actions">
+        {% if params.userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
+          <li>
+            <a href="/plan/{{ params.prisonerSummary.prisonNumber }}/employability-skills/{{ params.skillType }}" class="govuk-link" data-qa="view-{{ params.skillType }}-ratings-link">
+              View<span class="govuk-visually-hidden"> {{ params.prisonerSummary | formatFirst_name_Last_name }}'s {{ params.skillType | formatEmployabilitySkill | lower }} skill ratings</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if params.userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
+          <li>
+            <a href="/plan/{{ params.prisonerSummary.prisonNumber }}/employability-skills/{{ params.skillType }}/add" class="govuk-link" data-qa="add-{{ params.skillType }}-ratings-link">
+              Add<span class="govuk-visually-hidden"> a rating for {{ params.prisonerSummary | formatFirst_name_Last_name }}'s {{ params.skillType | formatEmployabilitySkill | lower }} skill</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </td>
+  </tr>
+{% endmacro %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds app-u-print-full-width">
@@ -14,229 +44,100 @@ Data supplied to this template:
       </div>
       <div class="govuk-summary-card__content">
 
-        <table class="govuk-table" id="employability-skills-ratings-table">
-          <caption class="govuk-visually-hidden">Employability skills ratings</caption>
+        {% if employabilitySkills.isFulfilled() %}
+          {% set employabilitySkillsGroupedBySkillType = employabilitySkills.value.employabilitySkills | groupArrayByProperty('employabilitySkillType') %}
 
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Skill</th>
-              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
-            </tr>
-          </thead>
+          <table class="govuk-table" id="employability-skills-ratings-table" data-qa="employability-skills-ratings-table">
+            <caption class="govuk-visually-hidden">Employability skills ratings</caption>
 
-          <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Adaptability</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ADAPTABILITY" class="govuk-link" data-qa="view-ADAPTABILITY-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s adaptability skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ADAPTABILITY/add" class="govuk-link" data-qa="add-ADAPTABILITY-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s adaptability skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Communication</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/COMMUNICATION" class="govuk-link" data-qa="view-COMMUNICATION-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s communication skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/COMMUNICATION/add" class="govuk-link" data-qa="add-COMMUNICATION-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s communication skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Creativity</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/CREATIVITY" class="govuk-link" data-qa="view-CREATIVITY-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s creativity skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/CREATIVITY/add" class="govuk-link" data-qa="add-CREATIVITY-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s creativity skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Initiative</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/INITIATIVE" class="govuk-link" data-qa="view-INITIATIVE-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s initiative skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/INITIATIVE/add" class="govuk-link" data-qa="add-INITIATIVE-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s initiative skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Organisation</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ORGANISATION" class="govuk-link" data-qa="view-ORGANISATION-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s organisation skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/ORGANISATION/add" class="govuk-link" data-qa="add-ORGANISATION-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s organisation skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Problem solving</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PROBLEM_SOLVING" class="govuk-link" data-qa="view-PROBLEM_SOLVING-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s problem solving skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PROBLEM_SOLVING/add" class="govuk-link" data-qa="add-PROBLEM_SOLVING-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s problem solving skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Planning</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PLANNING" class="govuk-link" data-qa="view-PLANNING-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s planning skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/PLANNING/add" class="govuk-link" data-qa="add-PLANNING-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s planning skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Reliability</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/RELIABILITY" class="govuk-link" data-qa="view-RELIABILITY-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s reliability skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/RELIABILITY/add" class="govuk-link" data-qa="add-RELIABILITY-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s reliability skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Teamwork</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TEAMWORK" class="govuk-link" data-qa="view-TEAMWORK-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s teamwork skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TEAMWORK/add" class="govuk-link" data-qa="add-TEAMWORK-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s teamwork skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header">Timekeeping</th>
-              <td class="govuk-table__cell">
-                <ul class="govuk-list employability-skills-actions">
-                  {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TIMEKEEPING" class="govuk-link" data-qa="view-TIMEKEEPING-ratings-link">
-                        View<span class="govuk-visually-hidden"> {{ prisonerSummary | formatFirst_name_Last_name }}'s timekeeping skill ratings</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if userHasPermissionTo('ADD_EMPLOYABILITY_SKILLS_RATING') %}
-                    <li>
-                      <a href="/plan/{{ prisonerSummary.prisonNumber }}/employability-skills/TIMEKEEPING/add" class="govuk-link" data-qa="add-TIMEKEEPING-ratings-link">
-                        Add<span class="govuk-visually-hidden"> a rating for {{ prisonerSummary | formatFirst_name_Last_name }}'s timekeeping skill</span>
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Skill</th>
+                <th scope="col" class="govuk-table__header govuk-!-display-none">Current level</th>
+                <th scope="col" class="govuk-table__header govuk-!-display-none">Previous level</th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+
+            <tbody class="govuk-table__body">
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'ADAPTABILITY'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'COMMUNICATION'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'CREATIVITY'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'INITIATIVE'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'ORGANISATION'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'PROBLEM_SOLVING'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'PLANNING'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'RELIABILITY'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'TEAMWORK'
+              }) }}
+
+              {{ employabilitySkillRow({
+                prisonerSummary: prisonerSummary,
+                userHasPermissionTo: userHasPermissionTo,
+                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                skillType: 'TIMEKEEPING'
+              }) }}
+
+            </tbody>
+          </table>
+
+        {% else %}
+          <h3 class="govuk-heading-s" data-qa="employability-skills-unavailable-message">We cannot show these details right now</h3>
+          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+        {% endif %}
 
       </div>
     </div>

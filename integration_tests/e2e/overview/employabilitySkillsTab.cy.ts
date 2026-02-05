@@ -3,6 +3,8 @@ import Page from '../../pages/page'
 import EmployabilitySkillsPage from '../../pages/overview/EmployabilitySkillsPage'
 
 context('Prisoner Overview page - Employability Skills tab', () => {
+  const prisonNumber = 'G6115VJ'
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignInAsReadOnlyUser')
@@ -22,7 +24,8 @@ context('Prisoner Overview page - Employability Skills tab', () => {
 
   it('should display Employability Skills tab', () => {
     // Given
-    const prisonNumber = 'G6115VJ'
+    cy.task('stubGetEmployabilitySkills')
+
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
 
@@ -30,6 +33,20 @@ context('Prisoner Overview page - Employability Skills tab', () => {
     overviewPage.selectTab('Employability skills')
 
     // Then
-    Page.verifyOnPage(EmployabilitySkillsPage)
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .apiErrorBannerIsNotDisplayed()
+  })
+
+  it('should display employability skills unavailable message given employability skills API is unavailable', () => {
+    // Given
+    cy.task('stubGetEmployabilitySkills500Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/view/employability-skills`)
+
+    // Then
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .apiErrorBannerIsDisplayed()
+      .hasEmployabilitySkillsUnavailableMessageDisplayed()
   })
 })

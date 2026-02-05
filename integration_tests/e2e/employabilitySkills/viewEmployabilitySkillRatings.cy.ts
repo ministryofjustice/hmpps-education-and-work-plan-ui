@@ -128,7 +128,7 @@ context('View employability skill rating', () => {
     Page.verifyOnPage(Error404Page)
   })
 
-  it('should display employability skills unavailable message given support strategies API is unavailable', () => {
+  it('should display employability skills unavailable message given employability skills API is unavailable', () => {
     // Given
     cy.task('stubGetEmployabilitySkills500Error')
 

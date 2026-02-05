@@ -10,7 +10,7 @@ describe('viewEmployabilitySkillRatingsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
-  const employabilitySkills = anEmployabilitySkillsList()
+  const employabilitySkills = Result.fulfilled(anEmployabilitySkillsList())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
   const skillType = EmployabilitySkillsValue.RELIABILITY
 

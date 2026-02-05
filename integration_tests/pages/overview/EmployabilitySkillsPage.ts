@@ -21,6 +21,11 @@ export default class EmployabilitySkillsPage extends Page {
     return Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(employabilitySkill)
   }
 
+  hasEmployabilitySkillsUnavailableMessageDisplayed(): EmployabilitySkillsPage {
+    this.employabilitySkillsUnavailableMessage().should('be.visible')
+    return this
+  }
+
   private activeTab = (): PageElement => cy.get('.moj-sub-navigation__link[aria-current=page]')
 
   private viewRatingsLink = (employabilitySkill: EmployabilitySkillsValue): PageElement =>
@@ -28,4 +33,7 @@ export default class EmployabilitySkillsPage extends Page {
 
   private addRatingsLink = (employabilitySkill: EmployabilitySkillsValue): PageElement =>
     cy.get(`[data-qa=add-${employabilitySkill}-ratings-link]`)
+
+  private employabilitySkillsUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=employability-skills-unavailable-message]')
 }
