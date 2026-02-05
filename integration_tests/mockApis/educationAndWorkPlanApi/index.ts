@@ -8,6 +8,7 @@ import schedulesEndpoints from './schedulesEndpoints'
 import searchEndpoints from './searchEndpoints'
 import sessionsEndpoints from './sessionsEndpoints'
 import timelineEndpoints from './timelineEndpoints'
+import employabilitySkillsEndpoints from './employabilitySkillsEndpoints'
 
 export default {
   stubEducationAndWorkPlanApiPing: stubPing(),
@@ -20,4 +21,5 @@ export default {
   ...searchEndpoints,
   ...sessionsEndpoints,
   ...timelineEndpoints,
+  ...employabilitySkillsEndpoints,
 }

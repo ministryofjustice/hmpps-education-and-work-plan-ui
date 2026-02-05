@@ -14,6 +14,7 @@ import JourneyDataService from './journeyDataService'
 import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
 import LearnerRecordsService from './learnerRecordsService'
 import SearchService from './searchService'
+import EmployabilitySkillsService from './employabilitySkillsService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -50,6 +51,7 @@ export const services = () => {
   const journeyDataService = new JourneyDataService(journeyDataStore)
   const supportAdditionalNeedsService = new SupportAdditionalNeedsService(supportAdditionalNeedsApiClient)
   const learnerRecordsService = new LearnerRecordsService(learnerRecordsApiClient)
+  const employabilitySkillsService = new EmployabilitySkillsService(educationAndWorkPlanClient)
 
   return {
     applicationInfo,
@@ -68,6 +70,7 @@ export const services = () => {
     journeyDataService,
     supportAdditionalNeedsService,
     learnerRecordsService,
+    employabilitySkillsService,
   }
 }
 
@@ -89,4 +92,5 @@ export {
   SupportAdditionalNeedsService,
   JourneyDataService,
   LearnerRecordsService,
+  EmployabilitySkillsService,
 }
