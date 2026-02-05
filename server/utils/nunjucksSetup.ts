@@ -50,6 +50,7 @@ import {
   formatEmployabilitySkillQuestionTextFilter,
 } from '../filters/formatEmployabilitySkillsFilter'
 import formatEmployabilitySkillRatingFilter from '../filters/formatEmployabilitySkillRatingFilter'
+import groupArrayByPropertyFilter from '../filters/groupArrayByPropertyFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -137,6 +138,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatReviewExemptionReason', formatReviewExemptionReasonValueFilter)
   njkEnv.addFilter('formatInductionExemptionReason', formatInductionExemptionReasonFilter)
   njkEnv.addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
+  njkEnv.addFilter('groupArrayByProperty', groupArrayByPropertyFilter)
   njkEnv.addFilter('formatAlnAssessmentReferralScreenValue', formatAlnAssessmentReferralScreenValueFilter)
   njkEnv.addFilter('formatConditionTypeScreenValue', formatConditionTypeScreenValueFilter)
   njkEnv.addFilter('formatSupportStrategyTypeScreenValue', formatSupportStrategyTypeScreenValueFilter)

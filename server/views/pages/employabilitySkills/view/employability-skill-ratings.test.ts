@@ -46,6 +46,7 @@ const templateParams = {
 describe('View Employability Skill Ratings Page tests', () => {
   beforeEach(() => {
     jest.resetAllMocks()
+    userHasPermissionTo.mockReturnValue(true)
   })
 
   it('should render the page', () => {
