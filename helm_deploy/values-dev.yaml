@@ -29,7 +29,6 @@ generic-service:
     ENVIRONMENT_NAME: 'DEV'
     LRS_INTEGRATION_ENABLED: true
     NEW_SEARCH_API_ENABLED: true
-    NEW_SESSION_API_ENABLED: true
     EMPLOYABILITY_SKILLS_ENABLED: true
 
   allowlist:
