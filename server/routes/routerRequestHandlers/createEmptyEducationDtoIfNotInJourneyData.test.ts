@@ -5,7 +5,7 @@ import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 
 describe('createEmptyEducationDtoIfNotInJourneyData', () => {
   const req = {
-    journetryData: {},
+    journeyData: {},
     params: {},
   } as unknown as Request
   const res = {} as unknown as Response

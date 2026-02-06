@@ -108,6 +108,7 @@ enum AuditableUserAction {
   REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION = 'REMOVE_PRISONER_ACTION_PLAN_REVIEW_EXEMPTION',
   MARK_PRISONER_INDUCTION_AS_EXEMPT = 'MARK_PRISONER_INDUCTION_AS_EXEMPT',
   REMOVE_PRISONER_INDUCTION_EXEMPTION = 'REMOVE_PRISONER_INDUCTION_EXEMPTION',
+  ADD_EMPLOYABILITY_SKILL_RATING = 'ADD_EMPLOYABILITY_SKILL_RATING',
 }
 
 export interface BaseAuditData {
@@ -190,6 +191,13 @@ export default class AuditService {
     return this.logAuditEvent({
       ...baseAuditData,
       what: AuditableUserAction.REMOVE_PRISONER_INDUCTION_EXEMPTION,
+    })
+  }
+
+  async logAddEmployabilitySkillRating(baseAuditData: BaseAuditData) {
+    return this.logAuditEvent({
+      ...baseAuditData,
+      what: AuditableUserAction.ADD_EMPLOYABILITY_SKILL_RATING,
     })
   }
 }

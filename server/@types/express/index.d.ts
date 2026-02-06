@@ -1,6 +1,6 @@
 import type { PageFlow } from 'viewModels'
 import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
-import type { EducationDto, ReviewPlanDto, ReviewExemptionDto } from 'dto'
+import type { EducationDto, ReviewPlanDto, ReviewExemptionDto, CreateEmployabilitySkillDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
 import type { UserDetails } from '../../services/userService'
 import QualificationLevelValue from '../../enums/qualificationLevelValue'
@@ -44,6 +44,7 @@ export declare global {
       createGoalsForm?: CreateGoalsForm
       educationDto?: EducationDto
       qualificationLevel?: QualificationLevelValue
+      createEmployabilitySkillDto?: CreateEmployabilitySkillDto
     }
 
     interface Response {
