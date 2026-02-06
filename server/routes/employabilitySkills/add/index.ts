@@ -6,11 +6,19 @@ import { Services } from '../../../services'
 import setupJourneyData from '../../routerRequestHandlers/setupJourneyData'
 import AddEmployabilitySkillRatingsController from './addEmployabilitySkillRatingsController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import employabilitySkillRatingsSchema from '../validationSchemas/employabilitySkillRatingsSchema'
+import { validate } from '../../routerRequestHandlers/validationMiddleware'
+import createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData from '../../routerRequestHandlers/createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData'
+import checkCreateEmployabilitySkillDtoExistsInJourneyData from '../../routerRequestHandlers/checkCreateEmployabilitySkillDtoExistsInJourneyData'
+import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 const addEmployabilitySkillRatingsRoutes = (services: Services): Router => {
-  const { journeyDataService } = services
+  const { auditService, employabilitySkillsService, journeyDataService } = services
 
-  const addEmployabilitySkillRatingsController = new AddEmployabilitySkillRatingsController()
+  const addEmployabilitySkillRatingsController = new AddEmployabilitySkillRatingsController(
+    employabilitySkillsService,
+    auditService,
+  )
 
   const router = Router({ mergeParams: true })
 
@@ -21,14 +29,19 @@ const addEmployabilitySkillRatingsRoutes = (services: Services): Router => {
 
   router.use('/:journeyId', [setupJourneyData(journeyDataService)])
 
-  router.get(
-    '/:journeyId/add',
+  router.get('/:journeyId/add', [
+    createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData,
     asyncMiddleware(addEmployabilitySkillRatingsController.getEmployabilitySkillRatingsView),
-  )
-  router.post(
-    '/:journeyId/add',
+  ])
+  router.post('/:journeyId/add', [
+    checkRedirectAtEndOfJourneyIsNotPending({
+      journey: 'Add employability skill rating',
+      redirectTo: '/plan/:prisonNumber/view/employability-skills',
+    }),
+    checkCreateEmployabilitySkillDtoExistsInJourneyData,
+    validate(employabilitySkillRatingsSchema),
     asyncMiddleware(addEmployabilitySkillRatingsController.submitEmployabilitySkillRatingsForm),
-  )
+  ])
 
   return router
 }

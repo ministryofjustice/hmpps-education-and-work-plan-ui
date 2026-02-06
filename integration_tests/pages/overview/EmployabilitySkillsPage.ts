@@ -1,6 +1,7 @@
 import Page, { PageElement } from '../page'
 import EmployabilitySkillsValue from '../../../server/enums/employabilitySkillsValue'
 import EmployabilitySkillRatingsPage from '../employabilitySkills/EmployabilitySkillRatingsPage'
+import AddEmployabilitySkillRatingsPage from '../employabilitySkills/AddEmployabilitySkillRatingsPage'
 
 /**
  * Cypress page class representing the Employability Skills tab of the Overview Page
@@ -21,8 +22,25 @@ export default class EmployabilitySkillsPage extends Page {
     return Page.verifyOnPage(EmployabilitySkillRatingsPage).isForSkill(employabilitySkill)
   }
 
+  clickToAddSkillRatings = (employabilitySkill: EmployabilitySkillsValue): AddEmployabilitySkillRatingsPage => {
+    this.addRatingsLink(employabilitySkill).click()
+    return Page.verifyOnPage(AddEmployabilitySkillRatingsPage).isForSkill(employabilitySkill)
+  }
+
   hasEmployabilitySkillsUnavailableMessageDisplayed(): EmployabilitySkillsPage {
     this.employabilitySkillsUnavailableMessage().should('be.visible')
+    return this
+  }
+
+  hasSuccessMessage(message: string): EmployabilitySkillsPage {
+    this.successMessage() //
+      .should('be.visible')
+      .and('contain.text', message)
+    return this
+  }
+
+  doesNotHaveSuccessMessage(): EmployabilitySkillsPage {
+    this.successMessage().should('not.exist')
     return this
   }
 
@@ -36,4 +54,6 @@ export default class EmployabilitySkillsPage extends Page {
 
   private employabilitySkillsUnavailableMessage = (): PageElement =>
     cy.get('[data-qa=employability-skills-unavailable-message]')
+
+  private successMessage = (): PageElement => cy.get('[data-qa=overview-success-message]')
 }

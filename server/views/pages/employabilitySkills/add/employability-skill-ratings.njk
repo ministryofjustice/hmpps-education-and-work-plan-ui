@@ -12,11 +12,15 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row" data-qa="{{ skillType }}-employability-skill-ratings-header">
     <div class="govuk-grid-column-two-thirds">
-
       <h1 class="govuk-heading-l">Agree a rating with {{ prisonerSummary | formatFirst_name_Last_name }} for their {{ skillType | formatEmployabilitySkill | lower }} skills</h1>
       <p class="govuk-body">{{ skillType | formatEmployabilitySkillQuestionText }}</p>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
       <form class="form" method="post" novalidate="">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />

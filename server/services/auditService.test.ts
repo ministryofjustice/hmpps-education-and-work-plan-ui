@@ -388,4 +388,39 @@ describe('Audit service', () => {
       )
     })
   })
+
+  describe('logAddEmployabilitySkillRating', () => {
+    it('should send add employability skill rating event audit message', async () => {
+      // Given
+
+      const baseArchiveAuditData: BaseAuditData = {
+        correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+        details: {
+          skillType: 'PROBLEM_SOLVING',
+        },
+        subjectId: 'A1234BC',
+        subjectType: 'PRISONER_ID',
+        who: 'a-dps-user',
+      }
+
+      // When
+      const actual = await auditService.logAddEmployabilitySkillRating(baseArchiveAuditData)
+
+      // Then
+      expect(actual).toEqual(expectedSqsMessageResponse)
+      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith(
+        {
+          what: 'ADD_EMPLOYABILITY_SKILL_RATING',
+          correlationId: '49380145-d73d-4ad2-8460-f26b039249cc',
+          details: {
+            skillType: 'PROBLEM_SOLVING',
+          },
+          subjectId: 'A1234BC',
+          subjectType: 'PRISONER_ID',
+          who: 'a-dps-user',
+        },
+        expectedHmppsAuditClientToThrowOnError,
+      )
+    })
+  })
 })

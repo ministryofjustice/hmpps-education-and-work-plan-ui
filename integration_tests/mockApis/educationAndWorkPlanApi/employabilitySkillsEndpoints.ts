@@ -103,4 +103,41 @@ const stubGetEmployabilitySkills500Error = (prisonNumber = 'G6115VJ'): SuperAgen
     },
   })
 
-export default { stubGetEmployabilitySkills, stubGetEmployabilitySkills404Error, stubGetEmployabilitySkills500Error }
+const stubCreateEmployabilitySkillRatings = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: `/action-plans/${prisonNumber}/employability-skills`,
+    },
+    response: {
+      status: 201,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    },
+  })
+
+const stubCreateEmployabilitySkillRatings500Error = (prisonNumber = 'G6115VJ'): SuperAgentRequest =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: `/action-plans/${prisonNumber}/employability-skills`,
+    },
+    response: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        status: 500,
+        errorCode: null,
+        userMessage: 'An unexpected error occurred',
+        developerMessage: 'An unexpected error occurred',
+        moreInfo: null,
+      },
+    },
+  })
+
+export default {
+  stubGetEmployabilitySkills,
+  stubGetEmployabilitySkills404Error,
+  stubGetEmployabilitySkills500Error,
+  stubCreateEmployabilitySkillRatings,
+  stubCreateEmployabilitySkillRatings500Error,
+}
