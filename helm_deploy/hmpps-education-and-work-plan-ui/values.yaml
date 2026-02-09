@@ -59,7 +59,7 @@ generic-service:
     AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
     AUDIT_ENABLED: "true"
     LRS_INTEGRATION_ENABLED: false
-    NEW_SEARCH_API_ENABLED: false
+    NEW_SEARCH_API_ENABLED: true
     NEW_SESSION_API_ENABLED: true
     EMPLOYABILITY_SKILLS_ENABLED: false
 
