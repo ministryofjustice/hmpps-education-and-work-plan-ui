@@ -60,7 +60,7 @@ generic-service:
     AUDIT_ENABLED: "true"
     LRS_INTEGRATION_ENABLED: false
     NEW_SEARCH_API_ENABLED: true
-    NEW_SESSION_API_ENABLED: false
+    NEW_SESSION_API_ENABLED: true
     EMPLOYABILITY_SKILLS_ENABLED: false
 
     # Comma delimited list of prison IDs that our service is rolled out into (active agencies)
