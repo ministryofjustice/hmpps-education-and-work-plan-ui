@@ -22,7 +22,7 @@ export default class AddEmployabilitySkillRatingsController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary, invalidForm } = res.locals
+    const { employabilitySkills, invalidForm, prisonerSummary } = res.locals
     const { skillType } = req.params
 
     clearRedirectPendingFlag(req)
@@ -33,6 +33,7 @@ export default class AddEmployabilitySkillRatingsController {
     res.render('pages/employabilitySkills/add/employability-skill-ratings.njk', {
       prisonerSummary,
       skillType,
+      employabilitySkills,
       form: employabilitySkillRatingsForm,
     })
   }

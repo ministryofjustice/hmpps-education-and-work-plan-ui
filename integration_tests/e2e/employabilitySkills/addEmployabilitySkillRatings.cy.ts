@@ -45,6 +45,8 @@ context('Add employability skill rating', () => {
 
   it('should add skill rating, triggering validation on every question', () => {
     // Given
+    cy.task('stubGetEmployabilitySkills404Error')
+
     cy.visit(`/plan/${prisonNumber}/view/employability-skills`)
     Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickToAddSkillRatings(EmployabilitySkillsValue.ORGANISATION)
@@ -105,11 +107,24 @@ context('Add employability skill rating', () => {
     // When
     Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
       .isForSkill(EmployabilitySkillsValue.ORGANISATION)
-      .selectRating(EmployabilitySkillRatingValue.QUITE_CONFIDENT)
+      .selectRating(EmployabilitySkillRatingValue.VERY_CONFIDENT)
       .enterEvidence(
         'Chris demonstrated their organisation skills in the Woodworking workshop by having a consistently tidy bench area',
       )
       .submitPage()
+
+    // Then
+    Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.ORGANISATION)
+      .apiErrorBannerIsDisplayed()
+  })
+
+  it('should not display skill rating form given given calling API to get Employability Skills Ratings is not successful', () => {
+    // Given
+    cy.task('stubGetEmployabilitySkills500Error')
+
+    // When
+    cy.visit(`/plan/${prisonNumber}/employability-skills/ORGANISATION/add`)
 
     // Then
     Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
