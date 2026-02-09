@@ -11,6 +11,7 @@ import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData from '../../routerRequestHandlers/createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData'
 import checkCreateEmployabilitySkillDtoExistsInJourneyData from '../../routerRequestHandlers/checkCreateEmployabilitySkillDtoExistsInJourneyData'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import retrieveEmployabilitySkills from '../../routerRequestHandlers/retrieveEmployabilitySkills'
 
 const addEmployabilitySkillRatingsRoutes = (services: Services): Router => {
   const { auditService, employabilitySkillsService, journeyDataService } = services
@@ -31,6 +32,7 @@ const addEmployabilitySkillRatingsRoutes = (services: Services): Router => {
 
   router.get('/:journeyId/add', [
     createEmptyCreateEmployabilitySkillDtoIfNotInJourneyData,
+    retrieveEmployabilitySkills(employabilitySkillsService),
     asyncMiddleware(addEmployabilitySkillRatingsController.getEmployabilitySkillRatingsView),
   ])
   router.post('/:journeyId/add', [

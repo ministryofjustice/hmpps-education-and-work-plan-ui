@@ -22,77 +22,88 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <form class="form" method="post" novalidate="">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      {% if employabilitySkills.isFulfilled() %}
+        {% set employabilitySkillsGroupedBySkillType = employabilitySkills.value.employabilitySkills | groupArrayByProperty('employabilitySkillType') %}
+        {% set skillRatings = (employabilitySkillsGroupedBySkillType[skillType] or []) | sort(attribute = 'updatedAt', reverse = true) %}
+        {% set currentRating = skillRatings[0].employabilitySkillRating %}
 
-        {{ govukRadios({
-          name: 'rating',
-          id: 'rating',
-          fieldset: {
-            legend: {
-              text: "Select a rating",
-              classes: "govuk-fieldset__legend--s"
+        <form class="form" method="post" novalidate="" data-qa="{{ skillType }}-employability-skill-ratings-form">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukRadios({
+            name: 'rating',
+            id: 'rating',
+            fieldset: {
+              legend: {
+                text: "Select a rating",
+                classes: "govuk-fieldset__legend--s"
+              },
+              classes: "govuk-!-margin-top-6"
             },
-            classes: "govuk-!-margin-top-6"
-          },
-          hint: {
-            text: "Current rating is preselected. It is saved when you update it."
-          },
-          items: [
-            {
-              value: "NOT_CONFIDENT",
-              text: "NOT_CONFIDENT" | formatEmployabilitySkillRating,
-              checked: true if form.rating == 'NOT_CONFIDENT' else false
+            hint: {
+              text: "Current rating is preselected. It is saved when you update it."
             },
-            {
-              value: "LITTLE_CONFIDENCE",
-              text: "LITTLE_CONFIDENCE" | formatEmployabilitySkillRating,
-              checked: true if form.rating == 'LITTLE_CONFIDENCE' else false
+            items: [
+              {
+                value: "NOT_CONFIDENT",
+                text: "NOT_CONFIDENT" | formatEmployabilitySkillRating + (' (Current rating)' if currentRating == 'NOT_CONFIDENT'),
+                checked: true if form.rating == 'NOT_CONFIDENT' or (not form.rating and currentRating == 'NOT_CONFIDENT') else false
+              },
+              {
+                value: "LITTLE_CONFIDENCE",
+                text: "LITTLE_CONFIDENCE" | formatEmployabilitySkillRating + (' (Current rating)' if currentRating == 'LITTLE_CONFIDENCE'),
+                checked: true if form.rating == 'LITTLE_CONFIDENCE' or (not form.rating and currentRating == 'LITTLE_CONFIDENCE') else false
+              },
+              {
+                value: "QUITE_CONFIDENT",
+                text: "QUITE_CONFIDENT" | formatEmployabilitySkillRating + (' (Current rating)' if currentRating == 'QUITE_CONFIDENT'),
+                checked: true if form.rating == 'QUITE_CONFIDENT' or (not form.rating and currentRating == 'QUITE_CONFIDENT') else false
+              },
+              {
+                value: "VERY_CONFIDENT",
+                text: "VERY_CONFIDENT" | formatEmployabilitySkillRating + (' (Current rating)' if currentRating == 'VERY_CONFIDENT'),
+                checked: true if form.rating == 'VERY_CONFIDENT' or (not form.rating and currentRating == 'VERY_CONFIDENT') else false
+              }
+            ],
+            errorMessage: errors | findError('rating')
+          }) }}
+
+          <h3 class="govuk-heading-s">Add evidence for this rating</h3>
+          {{ govukWarningText({
+            text: "This will be shared with the learner and prison staff",
+            iconFallbackText: "Warning",
+            classes: "govuk-!-margin-bottom-2"
+          }) }}
+
+          {{ govukCharacterCount({
+            id: "evidence",
+            name: "evidence",
+            rows: "2",
+            value: form.evidence,
+            maxlength: 200,
+            label: {
+              text: "What evidence is there for this rating?",
+              attributes: { "aria-live": "polite" }
             },
-            {
-              value: "QUITE_CONFIDENT",
-              text: "QUITE_CONFIDENT" | formatEmployabilitySkillRating,
-              checked: true if form.rating == 'QUITE_CONFIDENT' else false
-            },
-            {
-              value: "VERY_CONFIDENT",
-              text: "VERY_CONFIDENT" | formatEmployabilitySkillRating,
-              checked: true if form.rating == 'VERY_CONFIDENT' else false
-            }
-          ],
-          errorMessage: errors | findError('rating')
-        }) }}
-
-        <h3 class="govuk-heading-s">Add evidence for this rating</h3>
-        {{ govukWarningText({
-          text: "This will be shared with the learner and prison staff",
-          iconFallbackText: "Warning",
-          classes: "govuk-!-margin-bottom-2"
-        }) }}
-
-        {{ govukCharacterCount({
-          id: "evidence",
-          name: "evidence",
-          rows: "2",
-          value: form.evidence,
-          maxlength: 200,
-          label: {
-            text: "What evidence is there for this rating?",
-            attributes: { "aria-live": "polite" }
-          },
-          attributes: { "aria-label" : "Give details as to the evidence supporting the rating" },
-          errorMessage: errors | findError('evidence')
-        }) }}
+            attributes: { "aria-label" : "Give details as to the evidence supporting the rating" },
+            errorMessage: errors | findError('evidence')
+          }) }}
 
 
-        {{ govukButton({
-          id: 'submit-button',
-          text: 'Save assessment',
-          type: 'submit',
-          attributes: {'data-qa': 'submit-button'},
-          preventDoubleClick: true
-        }) }}
-      </form>
+          {{ govukButton({
+            id: 'submit-button',
+            text: 'Save assessment',
+            type: 'submit',
+            attributes: {'data-qa': 'submit-button'},
+            preventDoubleClick: true
+          }) }}
+        </form>
+
+      {% else %}
+
+        <h2 class="govuk-heading-s" data-qa="employability-skills-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
 
     </div>
   </div>

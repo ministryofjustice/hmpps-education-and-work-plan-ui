@@ -7,6 +7,8 @@ import aCreateEmployabilitySkillDto from '../../../testsupport/ createEmployabil
 import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataBuilder'
 import EmployabilitySkillsValue from '../../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../../enums/employabilitySkillRatingValue'
+import { anEmployabilitySkillsList } from '../../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
+import { Result } from '../../../utils/result/result'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/employabilitySkillsService')
@@ -21,6 +23,7 @@ describe('addEmployabilitySkillRatingsController', () => {
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const skillType = EmployabilitySkillsValue.PROBLEM_SOLVING
+  const employabilitySkills = Result.fulfilled(anEmployabilitySkillsList())
 
   const flash = jest.fn()
   const apiErrorCallback = jest.fn()
@@ -37,7 +40,7 @@ describe('addEmployabilitySkillRatingsController', () => {
     redirect: jest.fn(),
     redirectWithSuccess: jest.fn(),
     render: jest.fn(),
-    locals: { prisonerSummary, apiErrorCallback },
+    locals: { prisonerSummary, employabilitySkills, apiErrorCallback },
   } as unknown as Response
   const next = jest.fn()
 
@@ -63,6 +66,7 @@ describe('addEmployabilitySkillRatingsController', () => {
         form: expectedForm,
         prisonerSummary,
         skillType,
+        employabilitySkills,
       }
 
       // When
@@ -90,6 +94,7 @@ describe('addEmployabilitySkillRatingsController', () => {
         form: expectedForm,
         prisonerSummary,
         skillType,
+        employabilitySkills,
       }
 
       // When
@@ -111,6 +116,7 @@ describe('addEmployabilitySkillRatingsController', () => {
         form: invalidForm,
         prisonerSummary,
         skillType,
+        employabilitySkills,
       }
 
       // When
@@ -161,6 +167,7 @@ describe('addEmployabilitySkillRatingsController', () => {
           correlationId: requestId,
         }),
       )
+      expect(apiErrorCallback).not.toHaveBeenCalled()
     })
 
     it('should submit form and redirect to next route given calling API is not successful', async () => {
@@ -172,7 +179,8 @@ describe('addEmployabilitySkillRatingsController', () => {
         evidence: 'Supervisor has reported this',
       }
 
-      employabilitySkillsService.createEmployabilitySkills.mockRejectedValue(new Error('Internal Server Error'))
+      const serviceError = new Error('Internal Server Error')
+      employabilitySkillsService.createEmployabilitySkills.mockRejectedValue(serviceError)
 
       const expectedEmployabilitySkillDtos = [
         {
@@ -197,6 +205,7 @@ describe('addEmployabilitySkillRatingsController', () => {
         username,
       )
       expect(auditService.logAddEmployabilitySkillRating).not.toHaveBeenCalled()
+      expect(apiErrorCallback).toHaveBeenCalledWith(serviceError)
     })
   })
 })
