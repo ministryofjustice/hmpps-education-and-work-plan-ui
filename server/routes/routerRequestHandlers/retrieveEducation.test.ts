@@ -1,10 +1,10 @@
-import type { EducationDto } from 'dto'
 import { Request, Response } from 'express'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
 import retrieveEducation from './retrieveEducation'
 import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 
 jest.mock('../../services/educationAndWorkPlanService')
+
 describe('retrieveEducation', () => {
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
     null,
@@ -35,16 +35,12 @@ describe('retrieveEducation', () => {
     const educationDto = aValidEducationDto()
     educationAndWorkPlanService.getEducation.mockResolvedValue(educationDto)
 
-    const expected = {
-      problemRetrievingData: false,
-      educationDto,
-    }
-
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(res.locals.education.isFulfilled()).toEqual(true)
+    expect(res.locals.education.value).toEqual(educationDto)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
@@ -61,16 +57,11 @@ describe('retrieveEducation', () => {
     }
     educationAndWorkPlanService.getEducation.mockRejectedValue(educationServiceError)
 
-    const expected = {
-      problemRetrievingData: true,
-      educationDto: undefined as EducationDto,
-    }
-
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(res.locals.education.isFulfilled()).toEqual(false)
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })
@@ -79,16 +70,12 @@ describe('retrieveEducation', () => {
     // Given
     educationAndWorkPlanService.getEducation.mockResolvedValue(null)
 
-    const expected = {
-      problemRetrievingData: false,
-      educationDto: null as EducationDto,
-    }
-
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.education).toEqual(expected)
+    expect(res.locals.education.isFulfilled()).toEqual(true)
+    expect(res.locals.education.value).toBeNull()
     expect(educationAndWorkPlanService.getEducation).toHaveBeenCalledWith(prisonNumber, username)
     expect(next).toHaveBeenCalled()
   })

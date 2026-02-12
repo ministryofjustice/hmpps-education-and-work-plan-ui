@@ -3,10 +3,7 @@
 
 Data supplied to this template:prisonerSummary: PrisonerSummary
     prisonerSummary: PrisonerSummary
-    education: {
-      problemRetrievingData: boolean
-      educationDto?: EducationDto
-    }
+    education: Result.wrapped EducationDto
     induction: {
       problemRetrievingData: boolean
       inductionDto?: InductionDto
@@ -33,11 +30,12 @@ never happen.
     <h2 class="govuk-summary-card__title">Education and qualifications history</h2>
   </div>
 
-  {% if not education.problemRetrievingData and not induction.problemRetrievingData%}
+  {% if education.isFulfilled() and not induction.problemRetrievingData %}
+    {% set educationDto = education.value %}
 
     {# Education and qualification related data is rendered first in this summary card #}
     <div class="govuk-summary-card__content">
-      {% if education.educationDto %}
+      {% if educationDto %}
         {# The prisoner has education and qualifications related data recorded (IE. an EducationDto) #}
 
         <div class="app-summary-card__change-link">
@@ -45,7 +43,7 @@ never happen.
           {% if userHasPermissionTo('UPDATE_EDUCATION') %}
             {%- set educationalQualificationsChangeLinkUrl -%}
               {# The target of the change link is different depending on whether the education record has qualifications already recorded on not #}
-              {%- if education.educationDto.qualifications | length -%}
+              {%- if educationDto.qualifications | length -%}
                 {# If the education record has qualifications the change link should be to the qualifications list screen, which allows the user to add/remove qualifications #}
                 /prisoners/{{ prisonerSummary.prisonNumber }}/education/qualifications
               {%- else -%}
@@ -59,7 +57,7 @@ never happen.
           {% endif %}
         </div>
 
-        {% if education.educationDto.qualifications | length %}
+        {% if educationDto.qualifications | length %}
           <table class="govuk-table govuk-!-margin-top-4" data-qa="educational-qualifications-table">
             <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">Details of prisoners educational qualifications</caption>
             <thead class="govuk-table__head">
@@ -70,7 +68,7 @@ never happen.
               </tr>
             </thead>
             <tbody class="govuk-table__body">
-              {% for qualification in education.educationDto.qualifications | achievedQualificationObjectsSortedInScreenOrder %}
+              {% for qualification in educationDto.qualifications | achievedQualificationObjectsSortedInScreenOrder %}
                 <tr class="govuk-table__row">
                   <td class="govuk-table__cell">{{ qualification.subject }}</td>
                   <td class="govuk-table__cell">{{ qualification.level | formatQualificationLevel }}</td>
@@ -101,7 +99,7 @@ never happen.
               </dt>
               <dd class="govuk-summary-list__value">
                 <p class='govuk-body' data-qa="highest-level-of-education">
-                  {{ education.educationDto.educationLevel | formatEducationLevel }}
+                  {{ educationDto.educationLevel | formatEducationLevel }}
                 </p>
               </dd>
               {% if userHasPermissionTo('UPDATE_EDUCATION') %}
@@ -139,9 +137,9 @@ never happen.
             </div>
           </dl>
 
-          {% set updatedAt = education.educationDto.updatedAt if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAt %}
-          {% set updatedBy = education.educationDto.updatedByDisplayName if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedByDisplayName %}
-          {% set prisonId = education.educationDto.updatedAtPrison if education.educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAtPrison %}
+          {% set updatedAt = educationDto.updatedAt if educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAt %}
+          {% set updatedBy = educationDto.updatedByDisplayName if educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedByDisplayName %}
+          {% set prisonId = educationDto.updatedAtPrison if educationDto.updatedAt > induction.inductionDto.updatedAt else induction.inductionDto.updatedAtPrison %}
           {% set prisonName = prisonNamesById[prisonId] | default(prisonId) %}
           <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
             Last updated {{ updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ updatedBy }}, {{ prisonName }}</span>
@@ -159,7 +157,7 @@ never happen.
               </dt>
               <dd class="govuk-summary-list__value">
                 <p class='govuk-body' data-qa="highest-level-of-education">
-                  {{ education.educationDto.educationLevel | formatEducationLevel }}
+                  {{ educationDto.educationLevel | formatEducationLevel }}
                 </p>
               </dd>
               {% if userHasPermissionTo('UPDATE_EDUCATION') %}
@@ -173,8 +171,8 @@ never happen.
           </dl>
 
           <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
-            {% set prisonName = prisonNamesById[education.educationDto.updatedAtPrison] | default(education.educationDto.updatedAtPrison) %}
-            Last updated {{ education.educationDto.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ education.educationDto.updatedByDisplayName }}, {{ prisonName }}</span>
+            {% set prisonName = prisonNamesById[educationDto.updatedAtPrison] | default(educationDto.updatedAtPrison) %}
+            Last updated {{ educationDto.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ educationDto.updatedByDisplayName }}, {{ prisonName }}</span>
           </p>
 
           <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">

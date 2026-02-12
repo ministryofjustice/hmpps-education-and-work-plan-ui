@@ -10,8 +10,10 @@ const retrieveCuriousInPrisonCourses = (curiousService: CuriousService): Request
     const { prisonNumber } = req.params
 
     // Lookup the prisoners In Prison Courses and store in res.locals
+    const { apiErrorCallback } = res.locals
     res.locals.curiousInPrisonCourses = await Result.wrap(
       curiousService.getPrisonerInPrisonCourses(prisonNumber, req.user.username),
+      apiErrorCallback,
     )
 
     return next()

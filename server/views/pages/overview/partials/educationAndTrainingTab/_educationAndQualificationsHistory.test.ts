@@ -1,7 +1,6 @@
 import nunjucks from 'nunjucks'
 import * as cheerio from 'cheerio'
 import { parseISO, startOfDay } from 'date-fns'
-import type { EducationDto } from 'dto'
 import type { InductionDto } from 'inductionDto'
 import formatDateFilter from '../../../../../filters/formatDateFilter'
 import aValidEducationDto from '../../../../../testsupport/educationDtoTestDataBuilder'
@@ -12,6 +11,7 @@ import formatQualificationLevel from '../../../../../filters/formatQualification
 import formatEducationLevel from '../../../../../filters/formatEducationLevelFilter'
 import sortedAlphabeticallyWithOtherLastFilter from '../../../../../filters/sortedAlphabeticallyWithOtherLastFilter'
 import formatAdditionalTrainingFilter from '../../../../../filters/formatAdditionalTrainingFilter'
+import { Result } from '../../../../../utils/result/result'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -36,10 +36,7 @@ const templateParams = {
     problemRetrievingData: false,
     inductionDto: aValidInductionDto(),
   },
-  education: {
-    problemRetrievingData: false,
-    educationDto: aValidEducationDto(),
-  },
+  education: Result.fulfilled(aValidEducationDto()),
   inductionSchedule: {
     problemRetrievingData: false,
     inductionStatus: 'COMPLETE',
@@ -154,10 +151,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto,
-        },
+        education: Result.fulfilled(educationDto),
       }
 
       // When
@@ -185,10 +179,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto,
-        },
+        education: Result.fulfilled(educationDto),
       }
 
       // When
@@ -258,10 +249,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto: undefined as EducationDto,
-        },
+        education: Result.fulfilled(null),
       }
 
       // When
@@ -296,10 +284,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto: undefined as EducationDto,
-        },
+        education: Result.fulfilled(null),
       }
 
       // When
@@ -324,10 +309,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto: undefined as EducationDto,
-        },
+        education: Result.fulfilled(null),
         inductionSchedule: {
           problemRetrievingData: false,
           inductionStatus: 'ON_HOLD',
@@ -354,10 +336,7 @@ describe('_educationAndQualificationsHistory', () => {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
         },
-        education: {
-          problemRetrievingData: false,
-          educationDto: undefined as EducationDto,
-        },
+        education: Result.fulfilled(null),
         inductionSchedule: {
           problemRetrievingData: true,
         },
@@ -405,9 +384,7 @@ describe('_educationAndQualificationsHistory', () => {
     // Given
     const params = {
       ...templateParams,
-      education: {
-        problemRetrievingData: true,
-      },
+      education: Result.rejected(new Error('Error retrieving education data')),
     }
 
     // When
