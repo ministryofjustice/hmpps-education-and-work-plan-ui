@@ -13,8 +13,10 @@ const retrieveCuriousFunctionalSkills = (
     const { prisonNumber } = req.params
 
     // Lookup the prisoners functional skills and store in res.locals
+    const { apiErrorCallback } = res.locals
     res.locals.prisonerFunctionalSkills = await Result.wrap(
       curiousService.getPrisonerFunctionalSkills(prisonNumber, req.user.username, options),
+      apiErrorCallback,
     )
 
     return next()
