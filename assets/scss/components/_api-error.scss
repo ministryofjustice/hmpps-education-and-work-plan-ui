@@ -20,3 +20,16 @@
     margin-top: 0;
   }
 }
+
+.govuk-summary-card__content {
+  .hmpps-api-error-banner {
+    background-color: govuk-colour('white');
+    margin-top: 0;
+    @include govuk-responsive-margin(4, 'bottom');
+
+    p {
+      font-weight: normal;
+      margin: 0;
+    }
+  }
+}

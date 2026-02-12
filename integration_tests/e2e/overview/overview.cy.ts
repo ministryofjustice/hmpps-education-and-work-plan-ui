@@ -14,6 +14,8 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
     cy.task('getActionPlan')
     cy.task('stubGetActionPlanReviews')
     cy.task('stubGetInductionSchedule')
+    cy.task('stubMatchLearnerEvents')
+    cy.task('stubGetEducation')
   })
 
   const prisonNumber = 'G6115VJ'
@@ -28,171 +30,6 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
     // Check
     overviewPage.hasBreadcrumb().breadcrumbDoesNotIncludeCurrentPage()
-  })
-
-  it('should display correct counts of in progress and archived goals', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNumberOfInProgressGoals(1)
-      .hasNumberOfArchivedGoals(2)
-  })
-
-  it('should display correct action plan review count', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      // If there is a session count it will always be at least 1 as the induction is included in the total
-      .hasNumberOfActionPlanReviews(2)
-  })
-
-  it('should display count of 1 action plan reviews given there is an induction but there are no action plan reviews', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubGetActionPlanReviews404Error')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNumberOfActionPlanReviews(1)
-  })
-
-  it('should display correct hint text showing details from the most recently updated goal', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasLastUpdatedHint('Last updated 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
-  })
-
-  it('should display courses if completed in the last 12 months', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerQualificationsWithCompletedCoursesInLast12Months')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasCourseCompletedInLast12Months('GCSE Maths')
-      .hasViewAllEducationAndTrainingButtonDisplayed()
-  })
-
-  it('should display the correct message if there are courses or qualifications but none completed in the last 12 months', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNoCoursesTableDisplayed()
-      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
-  })
-
-  it('should display the correct message if there are withdrawn or in progress courses or qualifications but no completed ones', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerQualificationsWithWithdrawnAndInProgressCourses')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNoCoursesTableDisplayed()
-      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
-  })
-
-  it('should display the correct message if there are no courses or qualifications recorded at all', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerQualificationsWithNoCourses')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNoCoursesTableDisplayed()
-      .hasNoCoursesCompletedInLast12MonthsMessageDisplayed()
-  })
-
-  it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerAssessments500Error')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNoFunctionalSkillsTableDisplayed()
-      .hasCuriousUnavailableMessageDisplayed()
-  })
-
-  it('should display Curious unavailable message given Curious errors when getting Most Recent Qualifications', () => {
-    // Given
-    cy.signIn()
-
-    // When
-    cy.task('stubLearnerQualifications500Error')
-    cy.visit(`/plan/${prisonNumber}/view/overview`)
-
-    // Then
-    const overviewPage = Page.verifyOnPage(OverviewPage)
-    overviewPage //
-      .isForPrisoner(prisonNumber)
-      .activeTabIs('Overview')
-      .hasNoCoursesTableDisplayed()
-      .hasCuriousUnavailableMessageDisplayed()
   })
 
   it('should be able to navigate to the Education and Training page from the link on the Overview page', () => {
@@ -221,6 +58,236 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
 
     // Then
     Page.verifyOnPage(Error404Page)
+  })
+
+  describe('Goals summary card', () => {
+    it('should display correct counts of in progress and archived goals', () => {
+      // Given
+      cy.signIn()
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasNumberOfInProgressGoals(1)
+        .hasNumberOfArchivedGoals(2)
+    })
+
+    it('should display correct hint text showing details from the most recently updated goal', () => {
+      // Given
+      cy.signIn()
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasLastUpdatedHint('Last updated 22 August 2023 by George Costanza, Moorland (HMP & YOI)')
+    })
+  })
+
+  describe('Sessions history summary card', () => {
+    it('should display correct action plan review count', () => {
+      // Given
+      cy.signIn()
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        // If there is a session count it will always be at least 1 as the induction is included in the total
+        .hasNumberOfActionPlanReviews(2)
+    })
+
+    it('should display count of 1 action plan reviews given there is an induction but there are no action plan reviews', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubGetActionPlanReviews404Error')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasNumberOfActionPlanReviews(1)
+    })
+  })
+
+  describe('Education and training summary card', () => {
+    it('should display functional skills and all qualification counts given in-prison courses completed in the last 12 months', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerAssessments')
+      cy.task('stubLearnerQualificationsWithCompletedCoursesInLast12Months')
+      cy.task('stubMatchLearnerEvents')
+      cy.task('stubGetEducation')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasFunctionalSkillsTableDisplayed()
+        .lrsVerifiedQualificationsCountIs(3)
+        .curiousInPrisonCourseCountIs(1)
+        .lwpQualificationsCountIs(1)
+        .educationAndTrainingSummaryCardApiErrorBannerIsNotDisplayed()
+    })
+
+    it('should display functional skills and all qualification counts given there are in-prison courses or qualifications but none completed in the last 12 months', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerAssessments')
+      cy.task('stubLearnerQualificationsWithCompletedCoursesOlderThanLast12Months')
+      cy.task('stubMatchLearnerEvents')
+      cy.task('stubGetEducation')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasFunctionalSkillsTableDisplayed()
+        .lrsVerifiedQualificationsCountIs(3)
+        .curiousInPrisonCourseCountIs(0)
+        .lwpQualificationsCountIs(1)
+        .educationAndTrainingSummaryCardApiErrorBannerIsNotDisplayed()
+    })
+
+    it('should display functional skills and all qualification counts given there are withdrawn or in progress in-prison courses or qualifications but no completed ones', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerAssessments')
+      cy.task('stubLearnerQualificationsWithWithdrawnAndInProgressCourses')
+      cy.task('stubMatchLearnerEvents')
+      cy.task('stubGetEducation')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasFunctionalSkillsTableDisplayed()
+        .lrsVerifiedQualificationsCountIs(3)
+        .curiousInPrisonCourseCountIs(0)
+        .lwpQualificationsCountIs(1)
+        .educationAndTrainingSummaryCardApiErrorBannerIsNotDisplayed()
+    })
+
+    it('should display functional skills and all qualification counts given there are no in-prison courses or qualifications recorded at all', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerAssessments')
+      cy.task('stubLearnerQualificationsWithNoCourses')
+      cy.task('stubMatchLearnerEvents')
+      cy.task('stubGetEducation')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasFunctionalSkillsTableDisplayed()
+        .lrsVerifiedQualificationsCountIs(3)
+        .curiousInPrisonCourseCountIs(0)
+        .lwpQualificationsCountIs(1)
+        .educationAndTrainingSummaryCardApiErrorBannerIsNotDisplayed()
+    })
+
+    it('should display Curious unavailable message given Curious errors when getting Functional Skills', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerAssessments500Error')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .hasNoFunctionalSkillsTableDisplayed()
+        .hasCuriousFunctionalSkillsUnavailableMessageDisplayed()
+        .educationAndTrainingSummaryCardApiErrorBannerIsDisplayed()
+    })
+
+    it('should display Curious In Prison Course unavailable message given Curious errors when getting In Prison Courses', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubLearnerQualifications500Error')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .curiousInPrisonCourseCountUnavailable()
+        .educationAndTrainingSummaryCardApiErrorBannerIsDisplayed()
+    })
+
+    it('should display LRS Qualifications unavailable message given LRS errors when getting LRS Qualifications', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubMatchLearnerEvents500Error')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .lrsVerifiedQualificationsCountUnavailable()
+        .educationAndTrainingSummaryCardApiErrorBannerIsDisplayed()
+    })
+
+    it('should display LWP Qualifications unavailable message given LWP errors when getting LWP Qualifications', () => {
+      // Given
+      cy.signIn()
+      cy.task('stubGetEducation500Error')
+
+      // When
+      cy.visit(`/plan/${prisonNumber}/view/overview`)
+
+      // Then
+      const overviewPage = Page.verifyOnPage(OverviewPage)
+      overviewPage //
+        .isForPrisoner(prisonNumber)
+        .activeTabIs('Overview')
+        .lwpQualificationsCountUnavailable()
+        .educationAndTrainingSummaryCardApiErrorBannerIsDisplayed()
+    })
   })
 
   describe('Actions Card', () => {
@@ -289,8 +356,9 @@ context('Prisoner Overview page - Common functionality for both pre and post ind
         .isForPrisoner(prisonNumber)
         .activeTabIs('Overview')
         .hasNoFunctionalSkillsTableDisplayed()
-        .hasNoCoursesTableDisplayed()
-        .hasCuriousUnavailableMessageDisplayed()
+        .hasCuriousFunctionalSkillsUnavailableMessageDisplayed()
+        .curiousInPrisonCourseCountUnavailable()
+        .educationAndTrainingSummaryCardApiErrorBannerIsDisplayed()
     })
   })
 })

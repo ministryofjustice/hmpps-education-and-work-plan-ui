@@ -11,6 +11,7 @@ export default class EducationAndTrainingController {
       induction,
       education,
       inductionSchedule,
+      verifiedQualifications,
     } = res.locals
 
     res.render('pages/overview/index', {
@@ -22,6 +23,7 @@ export default class EducationAndTrainingController {
       induction,
       education,
       inductionSchedule: toInductionScheduleView(inductionSchedule, induction.inductionDto),
+      verifiedQualifications,
     })
   }
 }

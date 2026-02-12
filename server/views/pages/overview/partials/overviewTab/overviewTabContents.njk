@@ -45,7 +45,11 @@ Data supplied to this template:
 
       {% include './_sessionHistorySummaryCard.njk' %}
 
-      {% include './_educationAndTrainingSummaryCard.njk' %}
+      {% if featureToggles.lrsIntegrationEnabled %}
+        {% include './_newEducationAndTrainingSummaryCard.njk' %}
+      {% else %}
+        {% include './_educationAndTrainingSummaryCard.njk' %}
+      {% endif %}
     </div>
 
     <div class="govuk-grid-column-one-third app-u-print-full-width">

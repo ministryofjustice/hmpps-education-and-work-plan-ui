@@ -64,6 +64,12 @@ export default (router: Router, services: Services) => {
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     retrievePrisonNamesById(prisonService),
+    config.featureToggles.lrsIntegrationEnabled
+      ? retrieveVerifiedQualifications(learnerRecordsService)
+      : async (req: Request, res: Response, next: NextFunction) => next(),
+    config.featureToggles.lrsIntegrationEnabled
+      ? retrieveEducation(educationAndWorkPlanService)
+      : async (req: Request, res: Response, next: NextFunction) => next(),
     asyncMiddleware(overviewController.getOverviewView),
   ])
 
