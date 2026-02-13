@@ -11,6 +11,8 @@ import { Result } from '../../utils/result/result'
 import validFunctionalSkills from '../../testsupport/functionalSkillsTestDataBuilder'
 import validInPrisonCourseRecords from '../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import SessionTypeValue from '../../enums/sessionTypeValue'
+import { verifiedQualifications as aVerifiedQualifications } from '../../testsupport/verifiedQualificationsTestDataBuilder'
+import aValidEducationDto from '../../testsupport/educationDtoTestDataBuilder'
 
 describe('overviewController', () => {
   const controller = new OverviewController()
@@ -21,6 +23,8 @@ describe('overviewController', () => {
   const prisonNamesById = { MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' }
   const curiousInPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
+  const verifiedQualifications = Result.fulfilled(aVerifiedQualifications())
+  const education = Result.fulfilled(aValidEducationDto())
 
   const inProgressGoal = {
     ...aValidGoalResponse(),
@@ -68,6 +72,8 @@ describe('overviewController', () => {
       },
       inductionSchedule,
       prisonNamesById: Result.fulfilled(prisonNamesById),
+      verifiedQualifications,
+      education,
     }
     jest.resetAllMocks()
   })
@@ -129,6 +135,8 @@ describe('overviewController', () => {
         status: 'fulfilled',
         value: prisonNamesById,
       }),
+      verifiedQualifications,
+      education,
     }
 
     // When
@@ -208,6 +216,8 @@ describe('overviewController', () => {
         status: 'fulfilled',
         value: prisonNamesById,
       }),
+      verifiedQualifications,
+      education,
     }
 
     // When
@@ -284,6 +294,8 @@ describe('overviewController', () => {
         status: 'fulfilled',
         value: prisonNamesById,
       }),
+      verifiedQualifications,
+      education,
     }
 
     // When
@@ -350,6 +362,8 @@ describe('overviewController', () => {
         status: 'fulfilled',
         value: prisonNamesById,
       }),
+      verifiedQualifications,
+      education,
     }
 
     // When

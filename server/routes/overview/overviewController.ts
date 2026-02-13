@@ -12,6 +12,8 @@ export default class OverviewController {
       prisonerFunctionalSkills,
       induction,
       prisonNamesById,
+      education,
+      verifiedQualifications,
     } = res.locals
 
     const view = new OverviewView(inductionSchedule, actionPlanReviews, allGoalsForPrisoner, induction, prisonNamesById)
@@ -23,6 +25,8 @@ export default class OverviewController {
       curiousInPrisonCourses,
       prisonerFunctionalSkills,
       prisonNamesById,
+      education,
+      verifiedQualifications,
     })
   }
 }

@@ -97,23 +97,18 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasCourseCompletedInLast12Months = (expectedCourseName: string): OverviewPage => {
-    this.courseName(expectedCourseName).should('be.visible')
+  hasCuriousFunctionalSkillsUnavailableMessageDisplayed(): OverviewPage {
+    this.curiousFunctionalSkillsUnavailableMessage().should('be.visible')
     return this
   }
 
-  hasCuriousUnavailableMessageDisplayed(): OverviewPage {
-    this.curiousUnavailableMessage().contains('We cannot show these details from Curious right now')
-    return this
-  }
-
-  hasNoCuriousUnavailableMessageDisplayed(): OverviewPage {
-    this.curiousUnavailableMessage().should('not.exist')
+  curiousFunctionalSkillsUnavailableMessageIsNotDisplayed(): OverviewPage {
+    this.curiousFunctionalSkillsUnavailableMessage().should('not.exist')
     return this
   }
 
   hasServiceUnavailableMessageDisplayed(): OverviewPage {
-    this.curiousUnavailableMessage().should('not.exist')
+    this.curiousFunctionalSkillsUnavailableMessage().should('not.exist')
     return this
   }
 
@@ -127,13 +122,8 @@ export default class OverviewPage extends Page {
     return this
   }
 
-  hasNoCoursesCompletedInLast12MonthsMessageDisplayed(): OverviewPage {
-    this.noCoursesCompletedInLast12MonthsMessage().should('be.visible')
-    return this
-  }
-
-  hasNoCoursesTableDisplayed(): OverviewPage {
-    this.completedCoursesinLast12MonthsTable().should('not.exist')
+  hasFunctionalSkillsTableDisplayed(): OverviewPage {
+    this.functionalSkillsTable().should('be.visible')
     return this
   }
 
@@ -219,6 +209,70 @@ export default class OverviewPage extends Page {
     return this
   }
 
+  lrsVerifiedQualificationsCountIs = (expected: number): OverviewPage => {
+    this.lrsVerifiedQualificationsCountUnavailableMessage().should('not.exist')
+    this.lrsVerifiedQualificationsCount().should('have.text', expected)
+    return this
+  }
+
+  lrsVerifiedQualificationsCountUnavailable = (): OverviewPage => {
+    this.lrsVerifiedQualificationsCount().should('not.exist')
+    this.lrsVerifiedQualificationsCountUnavailableMessage().should('be.visible')
+    return this
+  }
+
+  lwpQualificationsCountIs = (expected: number): OverviewPage => {
+    this.lwpQualificationsCountUnavailableMessage().should('not.exist')
+    this.lwpQualificationsCount().should('have.text', expected)
+    return this
+  }
+
+  lwpQualificationsCountUnavailable = (): OverviewPage => {
+    this.lwpQualificationsCount().should('not.exist')
+    this.lwpQualificationsCountUnavailableMessage().should('be.visible')
+    return this
+  }
+
+  curiousInPrisonCourseCountIs = (expected: number): OverviewPage => {
+    this.curiousInPrisonCourseCountUnavailableMessage().should('not.exist')
+    this.curiousInPrisonCourseCount().should('have.text', expected)
+    return this
+  }
+
+  curiousInPrisonCourseCountUnavailable = (): OverviewPage => {
+    this.curiousInPrisonCourseCount().should('not.exist')
+    this.curiousInPrisonCourseCountUnavailableMessage().should('be.visible')
+    return this
+  }
+
+  educationAndTrainingSummaryCardApiErrorBannerIsDisplayed = (): OverviewPage => {
+    this.educationAndTrainingSummaryCardApiErrorBanner().should('be.visible')
+    return this
+  }
+
+  educationAndTrainingSummaryCardApiErrorBannerIsNotDisplayed = (): OverviewPage => {
+    this.educationAndTrainingSummaryCardApiErrorBanner().should('not.exist')
+    return this
+  }
+
+  private lrsVerifiedQualificationsCount = (): PageElement => cy.get('[data-qa=lrs-verified-qualifications-count')
+
+  private lrsVerifiedQualificationsCountUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=lrs-verified-qualifications-unavailable-message')
+
+  private lwpQualificationsCount = (): PageElement => cy.get('[data-qa=lwp-qualifications-count')
+
+  private lwpQualificationsCountUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=lwp-qualifications-unavailable-message')
+
+  private curiousInPrisonCourseCount = (): PageElement => cy.get('[data-qa=curious-in-prison-courses-count')
+
+  private curiousInPrisonCourseCountUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=curious-in-prison-courses-unavailable-message')
+
+  private educationAndTrainingSummaryCardApiErrorBanner = (): PageElement =>
+    cy.get('[data-qa=education-and-training-summary-card-api-error-banner]')
+
   private prisonNumberLabel = (): PageElement => cy.get('[data-qa=prison-number]')
 
   private inProgressGoalsCount = (): PageElement => cy.get('[data-qa=in-progress-goals-count]')
@@ -239,13 +293,8 @@ export default class OverviewPage extends Page {
 
   private functionalSkillsTable = (): PageElement => cy.get('[data-qa=functional-skills-table]')
 
-  private completedCoursesinLast12MonthsTable = (): PageElement =>
-    cy.get('[data-qa=completed-in-prison-courses-in-last-12-months-table]')
-
-  private noCoursesCompletedInLast12MonthsMessage = (): PageElement =>
-    cy.get('[data-qa=no-courses-completed-in-last-12-months-message]')
-
-  private curiousUnavailableMessage = (): PageElement => cy.get('[data-qa=curious-unavailable-message]')
+  private curiousFunctionalSkillsUnavailableMessage = (): PageElement =>
+    cy.get('[data-qa=functional-skills-unavailable-message]')
 
   private actionPlanReviewsDataUnavailableMessage = (): PageElement =>
     cy.get('[data-qa=action-plan-reviews-data-unavailable-message]')
@@ -263,9 +312,6 @@ export default class OverviewPage extends Page {
     cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
 
   private printThisPageLink = (): PageElement => cy.get('#print-link')
-
-  private courseName = (expectedCourseName: string): PageElement =>
-    this.completedCoursesinLast12MonthsTable().find(`[data-qa=completed-course-name]:contains(${expectedCourseName})`)
 
   private successMessage = (): PageElement => cy.get('[data-qa=overview-success-message]')
 

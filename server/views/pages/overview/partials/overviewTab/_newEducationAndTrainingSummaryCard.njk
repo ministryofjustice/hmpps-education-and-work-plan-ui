@@ -1,0 +1,157 @@
+{# Nunjucks template to display a summary card of the prisoner's eduction and training
+
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * prisonerFunctionalSkills - Result.wrapped prisoner functional skills
+  * curiousInPrisonCourses - Result.wrapped prisoner in-prison courses
+  * verifiedQualifications - Result.wrapped verified qualifications from LRS
+  * education - Result.wrapped educationDto
+  * prisonNamesById - key/value pairs of prisonIDs to prison names
+#}
+
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title govuk-!-font-size-24">Education and training</h2>
+  </div>
+  <div class="govuk-summary-card__content">
+
+    {% if not (prisonerFunctionalSkills.isFulfilled() and verifiedQualifications.isFulfilled() and curiousInPrisonCourses.isFulfilled() and education.isFulfilled()) %}
+      <div class="hmpps-api-error-banner" data-qa="education-and-training-summary-card-api-error-banner">
+        <p>Some information is currently unavailable. Try again later.</p>
+      </div>
+    {% endif %}
+
+    <section class="govuk-!-margin-bottom-8" data-qa="curious-functional-skills">
+      <h3 class="govuk-heading-s" data-qa="functional-skills-heading">Functional skills initial assessment scores</h3>
+
+      {% if prisonerFunctionalSkills.isFulfilled() %}
+        {% set prisonerFunctionalSkills = prisonerFunctionalSkills.value %}
+        {% set mostRecentEnglishAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ENGLISH') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+        {% set mostRecentMathsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'MATHS') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+        {% set mostRecentDigitalSkillsAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'DIGITAL_LITERACY') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+        {% set mostRecentReadingAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'READING') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+        {% set mostRecentEsolAssessment = prisonerFunctionalSkills.assessments | filterArrayOnProperty('type', 'ESOL') | sort(attribute = 'assessmentDate', reverse = true) | first %}
+        {% set mostRecentAssessmentsOfType = [] %}
+        {% if mostRecentEnglishAssessment %}
+          {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEnglishAssessment), mostRecentAssessmentsOfType) %}
+        {% endif %}
+        {% if mostRecentMathsAssessment %}
+          {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentMathsAssessment), mostRecentAssessmentsOfType) %}
+        {% endif %}
+        {% if mostRecentDigitalSkillsAssessment %}
+          {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentDigitalSkillsAssessment), mostRecentAssessmentsOfType) %}
+        {% endif %}
+        {% if mostRecentReadingAssessment %}
+          {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentReadingAssessment), mostRecentAssessmentsOfType) %}
+        {% endif %}
+        {% if mostRecentEsolAssessment %}
+          {% set mostRecentAssessmentsOfType = (mostRecentAssessmentsOfType.push(mostRecentEsolAssessment), mostRecentAssessmentsOfType) %}
+        {% endif %}
+
+        <p class="govuk-hint" data-qa="functional-skills-hint">
+          Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to
+          <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training">
+            qualifications and courses from Curious
+          </a>
+          on the education and training page.
+        </p>
+
+        {% if mostRecentAssessmentsOfType.length %}
+          <table class="govuk-table govuk-!-margin-bottom-0" data-qa="functional-skills-table">
+            <thead class="govuk-table__head govuk-visually-hidden">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header app-u-width-20">Skill</th>
+                <th scope="col" class="govuk-table__header app-u-width-20">Assessment level</th>
+                <th scope="col" class="govuk-table__header app-u-width-60">Assessment date</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body" data-qa="functional-skills-table-body">
+
+              {% for functionalSkillAssessment in mostRecentAssessmentsOfType %}
+                <tr class="govuk-table__row {% if loop.last %}last-row-no-border{% endif %}">
+                  <td class="govuk-table__cell">
+                    <span class="govuk-body">{{functionalSkillAssessment.type | formatFunctionalSkillType }}</span>
+                  </td>
+                  <td class="govuk-table__cell">
+                    <span class="govuk-body">{{ functionalSkillAssessment.level }}</span>
+                  </td>
+                  <td class="govuk-table__cell">
+                    {% set prisonName = prisonNamesById[functionalSkillAssessment.prisonId] | default(functionalSkillAssessment.prisonId) %}
+                    <span class="govuk-hint">Assessed on {{ functionalSkillAssessment.assessmentDate | formatDate('d MMM yyyy') }}, {{ prisonName }}</span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        {% else %}
+          <p class="govuk-body govuk-!-margin-top-5" data-qa="no-functional-skills-in-curious-message">{{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }} has no functional skills assessment results recorded in Curious.</p>
+        {% endif %}
+
+      {% else %}
+        <p class="govuk-body" data-qa="functional-skills-unavailable-message">
+          We cannot show these details right now. Reload the page or try again later. Other parts of this service may still be available.
+        </p>
+      {% endif %}
+    </section>
+
+    <section class="govuk-!-margin-bottom-8" data-qa="qualifications-courses-and-assessments">
+      <h3 class="govuk-heading-s">Qualifications, courses and assessments</h3>
+
+      {% if verifiedQualifications.isFulfilled() or curiousInPrisonCourses.isFulfilled() or education.isFulfilled() %}
+        <div class="govuk-grid summary-counts-grid" data-qa="qualifications-courses-and-assessments-counts">
+          {# Count of LRS Verified Qualifications #}
+          <div class="govuk-grid-item">
+            <div class="summary-count-container">
+              {% if verifiedQualifications.isFulfilled() %}
+                {% set verifiedQualifications = verifiedQualifications.value %}
+                {% set qualifications = verifiedQualifications.qualifications | filterArrayOnProperty('source', 'AO') %}
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="lrs-verified-qualifications-count">{{ qualifications.length }}</span>
+                <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">From the Learning Record Service</span>
+              {% else %}
+                <span class="govuk-tag govuk-tag--blue" data-qa="lrs-verified-qualifications-unavailable-message">Learning Record Service data unavailable</span>
+              {% endif %}
+            </div>
+          </div>
+
+          {# Count of Curious qualifications #}
+          <div class="govuk-grid-item">
+            <div class="summary-count-container">
+              {% if curiousInPrisonCourses.isFulfilled() %}
+                {% set curiousInPrisonCourses = curiousInPrisonCourses.value %}
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="curious-in-prison-courses-count">{{ curiousInPrisonCourses.coursesCompletedInLast12Months.length }}</span>
+                <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Recorded in Curious</span>
+              {% else %}
+                <span class="govuk-tag govuk-tag--blue" data-qa="curious-in-prison-courses-unavailable-message">Curious data unavailable</span>
+              {% endif %}
+            </div>
+          </div>
+
+          {# Count of qualifications recorded in LWP #}
+          <div class="govuk-grid-item">
+            <div class="summary-count-container">
+              {% if education.isFulfilled() %}
+                {% set educationDto = education.value %}
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="lwp-qualifications-count">{{ educationDto.qualifications.length }}</span>
+                <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Other educational qualifications</span>
+              {% else %}
+                <span class="govuk-tag govuk-tag--blue" data-qa="lwp-qualifications-unavailable-message">Other educational qualifications data unavailable</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      {% else %}
+        <p class="govuk-body" data-qa="qualifications-courses-and-assessments-unavailable-message">
+          We cannot show these details right now. Reload the page or try again later. Other parts of this service may still be available.
+        </p>
+      {% endif %}
+    </section>
+
+    <p class="govuk-body govuk-!-margin-top-2 govuk-!-display-none-print">
+      <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training" data-qa="view-education-and-training-tab-button">
+        View all education and training<span class="govuk-visually-hidden"> functional skills</span>
+      </a>
+    </p>
+  </div>
+</div>

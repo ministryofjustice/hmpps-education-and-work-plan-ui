@@ -35,7 +35,7 @@
             </button>
           </div>
         </div>
-      {% if searchTerm or statusFilter %}
+      {% if searchOptions.searchTerm or searchOptions.statusFilter %}
         <p class="govuk-!-margin-bottom-0">
           {# Reset the Prisoner List page filters using an anchor link with blank searchTerm and statusFilter field values.
               The link also contains the current sort order to ensure the current sort field and order are maintained after
