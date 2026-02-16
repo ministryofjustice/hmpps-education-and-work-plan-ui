@@ -3,7 +3,7 @@
   {% set completedCourses = curiousInPrisonCourses.coursesByStatus['COMPLETED'] %}
 
   {% if completedCourses.length %}
-    <table class="govuk-table govuk-!-margin-bottom-8">
+    <table class="govuk-table govuk-!-margin-bottom-8" data-qa="in-prison-courses-table">
       <caption class="govuk-table__caption govuk-table__caption--m">In-prison courses and qualifications</caption>
       <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">Information from Curious. This only includes educational courses. Contact the local education team to find out more.</caption>
 
@@ -30,7 +30,7 @@
       </tbody>
     </table>
   {% else %}
-    <section class="govuk-!-margin-bottom-8">
+    <section class="govuk-!-margin-bottom-8" data-qa="no-in-prison-courses">
       <h2 class="govuk-heading-m">In-prison courses and qualifications</h2>
       <p>Information from Curious. This only includes educational courses. Contact the local education team to find out more.</p>
       <p>{{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded in-prison courses and qualifications.</p>

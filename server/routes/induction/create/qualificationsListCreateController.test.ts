@@ -9,6 +9,7 @@ import validFunctionalSkills from '../../../testsupport/functionalSkillsTestData
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
 import HopingToGetWorkValue from '../../../enums/hopingToGetWorkValue'
+import { verifiedQualifications as aVerifiedQualifications } from '../../../testsupport/verifiedQualificationsTestDataBuilder'
 import { Result } from '../../../utils/result/result'
 
 describe('qualificationsListCreateController', () => {
@@ -19,6 +20,7 @@ describe('qualificationsListCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const inPrisonCourses = validInPrisonCourseRecords()
+  const verifiedQualifications = Result.fulfilled(aVerifiedQualifications())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   const req = {
@@ -35,6 +37,7 @@ describe('qualificationsListCreateController', () => {
       prisonerSummary,
       prisonerFunctionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
+      verifiedQualifications,
       prisonNamesById,
     },
   } as unknown as Response
@@ -61,6 +64,7 @@ describe('qualificationsListCreateController', () => {
         qualifications: expectedQualifications,
         prisonerFunctionalSkills,
         inPrisonCourses,
+        verifiedQualifications,
         prisonNamesById,
       }
 
@@ -85,6 +89,7 @@ describe('qualificationsListCreateController', () => {
         qualifications: expectedQualifications,
         prisonerFunctionalSkills,
         inPrisonCourses,
+        verifiedQualifications,
         prisonNamesById,
       }
 

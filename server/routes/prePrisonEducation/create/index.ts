@@ -21,13 +21,15 @@ import {
   qualificationDetailsSchema,
 } from '../../induction/validationSchemas'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import retrieveVerifiedQualifications from '../../routerRequestHandlers/retrieveVerifiedQualifications'
 
 /**
  * Route definitions for creating a prisoner's qualifications before an Induction
  *
  */
 export default (router: Router, services: Services) => {
-  const { educationAndWorkPlanService, journeyDataService, curiousService, prisonService } = services
+  const { curiousService, educationAndWorkPlanService, journeyDataService, learnerRecordsService, prisonService } =
+    services
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
   const qualificationLevelCreateController = new QualificationLevelCreateController()
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
@@ -74,6 +76,7 @@ export default (router: Router, services: Services) => {
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
+    retrieveVerifiedQualifications(learnerRecordsService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [

@@ -15,6 +15,7 @@ context('Update educational qualifications within a prisoners Education before t
     cy.task('getPrisonerById')
     cy.task('stubLearnerAssessments')
     cy.task('stubLearnerQualifications')
+    cy.task('stubMatchLearnerEvents')
     cy.task('stubGetInduction404Error')
     cy.task('stubGetEducation')
     cy.task('stubUpdateEducation')
