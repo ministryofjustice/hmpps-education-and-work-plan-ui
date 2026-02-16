@@ -23,7 +23,7 @@
   {% endif %}
 
   {% if mostRecentAssessmentsOfType.length %}
-    <table class="govuk-table govuk-!-margin-bottom-8">
+    <table class="govuk-table govuk-!-margin-bottom-8" data-qa="functional-skills-table">
       <caption class="govuk-table__caption govuk-table__caption--m">Functional skills initial assessment scores</caption>
       <caption class="govuk-table__caption govuk-!-font-weight-regular govuk-body">
         Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to in-prison courses and qualifications.
@@ -64,7 +64,7 @@
       </tbody>
     </table>
   {% else %}
-    <section class="govuk-!-margin-bottom-8">
+    <section class="govuk-!-margin-bottom-8" data-qa="no-functional-skills">
       <h2 class="govuk-heading-m">Functional skills assessment levels</h2>
       <p>Functional skills assessment scores inform in-prison work and education allocations.</p>
       <p>{{ prisonerSummary.firstName + " " + prisonerSummary.lastName }} has no recorded functional skills assessment scores.</p>

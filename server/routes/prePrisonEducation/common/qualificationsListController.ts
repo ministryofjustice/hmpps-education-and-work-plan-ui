@@ -12,7 +12,13 @@ export default abstract class QualificationsListController {
     next: NextFunction,
   ): Promise<void> => {
     const { prisonNumber, journeyId } = req.params
-    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
+    const {
+      prisonerSummary,
+      prisonerFunctionalSkills,
+      prisonNamesById,
+      curiousInPrisonCourses,
+      verifiedQualifications,
+    } = res.locals
 
     clearRedirectPendingFlag(req)
 
@@ -28,6 +34,7 @@ export default abstract class QualificationsListController {
       prisonerFunctionalSkills,
       qualifications: educationDto.qualifications,
       inPrisonCourses: curiousInPrisonCourses,
+      verifiedQualifications,
     })
   }
 

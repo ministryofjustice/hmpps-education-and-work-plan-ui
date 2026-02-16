@@ -8,6 +8,7 @@ Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
   * qualifications - Array of AchievedQualificationDto representing the educational qualifications on the Induction
   * inPrisonCourses - All in-prison courses and qualifications from Curious
+  * verifiedQualifications - All verified qualifications from LRS
   * prisonerFunctionalSkills - prisoner functional skills - see _functionalSkillsAssessments.njk
   * prisonNamesById - key/value pairs of prisonIDs to prison names
 #}
@@ -35,6 +36,8 @@ Data supplied to this template:
       {% include './partials/_functionalSkillsAssessments.njk' %}
       {# List in-prison courses and qualifications from Curious #}
       {% include './partials/_inPrisonCoursesAndQualifications.njk' %}
+      {# List verified qualifications from LRS #}
+      {% include './partials/_verifiedQualifications.njk' %}
     </div>
   </div>
 

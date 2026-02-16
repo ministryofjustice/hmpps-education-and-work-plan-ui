@@ -17,8 +17,14 @@ export default abstract class WantToAddQualificationsController {
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses, invalidForm } =
-      res.locals
+    const {
+      prisonerSummary,
+      prisonerFunctionalSkills,
+      prisonNamesById,
+      curiousInPrisonCourses,
+      invalidForm,
+      verifiedQualifications,
+    } = res.locals
 
     const wantToAddQualificationsForm = invalidForm || createWantToAddQualificationsForm(inductionDto)
 
@@ -28,6 +34,7 @@ export default abstract class WantToAddQualificationsController {
       prisonNamesById,
       prisonerFunctionalSkills,
       inPrisonCourses: curiousInPrisonCourses,
+      verifiedQualifications,
     })
   }
 

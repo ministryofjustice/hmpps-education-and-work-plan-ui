@@ -11,6 +11,7 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 import EducationLevelValue from '../../../enums/educationLevelValue'
 import QualificationLevelValue from '../../../enums/qualificationLevelValue'
 import validInPrisonCourseRecords from '../../../testsupport/inPrisonCourseRecordsTestDataBuilder'
+import { verifiedQualifications as aVerifiedQualifications } from '../../../testsupport/verifiedQualificationsTestDataBuilder'
 import { Result } from '../../../utils/result/result'
 
 describe('wantToAddQualificationsCreateController', () => {
@@ -21,6 +22,7 @@ describe('wantToAddQualificationsCreateController', () => {
   const prisonerSummary = aValidPrisonerSummary()
   const prisonerFunctionalSkills = Result.fulfilled(validFunctionalSkills())
   const inPrisonCourses = Result.fulfilled(validInPrisonCourseRecords())
+  const verifiedQualifications = Result.fulfilled(aVerifiedQualifications())
   const prisonNamesById = Result.fulfilled({ MDI: 'Moorland (HMP & YOI)', WDI: 'Wakefield (HMP)' })
 
   // Returns a DTO for this step of the create journey
@@ -45,6 +47,7 @@ describe('wantToAddQualificationsCreateController', () => {
       prisonerSummary,
       prisonerFunctionalSkills,
       curiousInPrisonCourses: inPrisonCourses,
+      verifiedQualifications,
       prisonNamesById,
     },
   } as unknown as Response
@@ -73,6 +76,7 @@ describe('wantToAddQualificationsCreateController', () => {
         form: expectedWantToAddQualificationsForm,
         prisonerFunctionalSkills,
         inPrisonCourses,
+        verifiedQualifications,
         prisonNamesById,
       }
 
@@ -97,6 +101,7 @@ describe('wantToAddQualificationsCreateController', () => {
         form: expectedWantToAddQualificationsForm,
         prisonerFunctionalSkills,
         inPrisonCourses,
+        verifiedQualifications,
         prisonNamesById,
       }
 

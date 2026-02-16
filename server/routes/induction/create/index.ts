@@ -54,6 +54,7 @@ import { validate } from '../../routerRequestHandlers/validationMiddleware'
 import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/checkInductionDtoExistsInJourneyData'
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import retrieveVerifiedQualifications from '../../routerRequestHandlers/retrieveVerifiedQualifications'
 
 /**
  * Route definitions for creating an Induction
@@ -62,7 +63,14 @@ import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHand
  * /prisoners/<prison-number>/create-induction/<journeyId>/<page-or-section-id>
  */
 export default (router: Router, services: Services) => {
-  const { curiousService, educationAndWorkPlanService, inductionService, journeyDataService, prisonService } = services
+  const {
+    curiousService,
+    educationAndWorkPlanService,
+    inductionService,
+    journeyDataService,
+    learnerRecordsService,
+    prisonService,
+  } = services
 
   const hopingToWorkOnReleaseCreateController = new HopingToWorkOnReleaseCreateController()
   const wantToAddQualificationsCreateController = new WantToAddQualificationsCreateController()
@@ -110,6 +118,7 @@ export default (router: Router, services: Services) => {
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
+    retrieveVerifiedQualifications(learnerRecordsService),
     asyncMiddleware(wantToAddQualificationsCreateController.getWantToAddQualificationsView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/want-to-add-qualifications', [
@@ -123,6 +132,7 @@ export default (router: Router, services: Services) => {
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
+    retrieveVerifiedQualifications(learnerRecordsService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/qualifications', [

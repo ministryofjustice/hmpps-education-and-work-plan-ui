@@ -14,7 +14,13 @@ export default abstract class QualificationsListController {
     next: NextFunction,
   ): Promise<void> => {
     const { inductionDto } = req.journeyData
-    const { prisonerSummary, prisonerFunctionalSkills, prisonNamesById, curiousInPrisonCourses } = res.locals
+    const {
+      prisonerSummary,
+      prisonerFunctionalSkills,
+      prisonNamesById,
+      curiousInPrisonCourses,
+      verifiedQualifications,
+    } = res.locals
 
     const qualifications: Array<AchievedQualificationDto> = inductionDto.previousQualifications?.qualifications
 
@@ -24,6 +30,7 @@ export default abstract class QualificationsListController {
       prisonerFunctionalSkills,
       qualifications,
       inPrisonCourses: curiousInPrisonCourses,
+      verifiedQualifications,
     })
   }
 }

@@ -1,0 +1,85 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
+{% if verifiedQualifications.isFulfilled() %}
+  {% set verifiedQualifications = verifiedQualifications.value %}
+  {% set qualifications = verifiedQualifications.qualifications | filterArrayOnProperty('source', 'AO') | sort(attribute = 'awardedOn', reverse = true) %}
+
+  <h2 class="govuk-heading-m">Qualifications and courses from the Learning Record Service (LRS)</h2>
+  <p>LRS is run by the Department for Education. Contact the local education team to find out more.</p>
+
+  {% if verifiedQualifications.status === 'PRN_MATCHED_TO_LEARNER_RECORD' %}
+    {% if qualifications.length > 0 %}
+
+      {% set verifiedQualificationsDetailsContent %}
+        <section data-qa="verified-qualifications-table">
+          <section class="moj-pagination">
+            <ul class="moj-pagination__list"></ul>
+            <p class="moj-pagination__results govuk-!-margin-bottom-2 govuk-!-padding-0">Showing <b>{{ qualifications | length }}</b> results</p>
+          </section>
+
+          <table class="govuk-table" data-module="moj-sortable-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Subject</th>
+                <th scope="col" class="govuk-table__header" aria-sort="none">Awarding body</th>
+                <th scope="col" class="govuk-table__header">Qualification type</th>
+                <th scope="col" class="govuk-table__header app-u-width-10" aria-sort="none">Level</th>
+                <th scope="col" class="govuk-table__header app-u-width-10">Grade</th>
+                <th scope="col" class="govuk-table__header app-u-width-15" aria-sort="none">Awarded on</th>
+              </tr>
+            </thead>
+
+            <tbody class="govuk-table__body">
+            {% for qualification in qualifications %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ qualification.subject }}</td>
+                <td class="govuk-table__cell">{{ qualification.awardingBodyName }}</td>
+                <td class="govuk-table__cell">{{ qualification.qualificationType }}</td>
+                <td class="govuk-table__cell">{{ qualification.level }}</td>
+                <td class="govuk-table__cell">{{ qualification.grade }}</td>
+                <td class="govuk-table__cell" data-sort-value="{{ qualification.awardedOn | formatDate('yyyyMMdd') }}">
+                  {{ qualification.awardedOn | formatDate('d MMMM yyyy') }}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </section>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "View all awarding organisations (AO) qualifications and courses",
+        html: verifiedQualificationsDetailsContent,
+        attributes: {
+          "data-qa": "verified-qualifications-details"
+        },
+        classes: 'govuk-!-margin-bottom-8'
+      }) }}
+
+    {% else %}
+      <p class="govuk-body govuk-!-margin-bottom-8" data-qa="no-verified-qualifications">>
+        No results. Unique learner number (ULN) matched, but no awarding organisation (AO) data in their record. This service only shows AO data.
+      </p>
+    {% endif %}
+
+  {% elseif verifiedQualifications.status === 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' %}
+    <p class="govuk-body govuk-!-margin-bottom-8" data-qa="not-matched-in-lrs-message">
+      No results. A unique learner number (ULN) has not yet been matched.
+      {% if userHasPermissionTo('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE') %}
+        <a href="" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
+      {% endif %}
+    </p>
+
+  {% elseif verifiedQualifications.status === 'LEARNER_DECLINED_TO_SHARE_DATA' %}
+    <p class="govuk-body govuk-!-margin-bottom-8" data-qa="learner-declined-to-share-data-message">
+      No results. Unique learner number (ULN) matched, but learner declined to share their LRS data.
+    </p>
+  {% endif %}
+
+{% else %}
+  <section class="govuk-!-margin-bottom-8">
+    <h2 class="govuk-heading-m">Qualifications and courses from the Learning Record Service (LRS)</h2>
+    <h3 class="govuk-heading-s" data-qa="learner-records-unavailable-message">We cannot show these details from LRS right now</h3>
+    <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+  </section>
+{% endif %}

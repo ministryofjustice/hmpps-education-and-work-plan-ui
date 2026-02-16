@@ -89,6 +89,9 @@ Cypress.Commands.add(
       options.withQualifications === undefined ||
       options.withQualifications === true
 
+    cy.task('stubMatchLearnerEvents', options?.prisonNumber || 'G6115VJ')
+    cy.task('stubLearnerAssessments', options?.prisonNumber || 'G6115VJ')
+    cy.task('stubLearnerQualifications', options?.prisonNumber || 'G6115VJ')
     cy.task('stubGetEducation404Error', options?.prisonNumber || 'G6115VJ')
     /* Create an Induction by answering all the questions to get to the Check Your Answers page. */
     cy.visit(`/prisoners/${options?.prisonNumber || 'G6115VJ'}/create-induction/hoping-to-work-on-release`)
