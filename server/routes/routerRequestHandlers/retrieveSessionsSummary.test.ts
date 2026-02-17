@@ -1,6 +1,4 @@
 import { Request, Response } from 'express'
-import createError from 'http-errors'
-import type { SessionsSummary } from 'viewModels'
 import SessionService from '../../services/sessionService'
 import retrieveSessionsSummary from './retrieveSessionsSummary'
 import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuilder'
@@ -40,29 +38,23 @@ describe('retrieveSessionsSummary', () => {
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.sessionsSummary).toEqual(sessionsSummary)
+    expect(res.locals.sessionsSummary.isFulfilled()).toEqual(true)
+    expect(res.locals.sessionsSummary.value).toEqual(sessionsSummary)
     expect(sessionService.getSessionsSummary).toHaveBeenCalledWith(activeCaseLoadId, username)
-    expect(next).toHaveBeenCalledWith()
+    expect(next).toHaveBeenCalled()
   })
 
-  it('should call next with an error given retrieving sessions summary returns a problem retrieving data', async () => {
+  it('should store un-fulfilled promise on res.locals given service returns an error', async () => {
     // Given
-    const sessionsSummary = {
-      problemRetrievingData: true,
-    } as SessionsSummary
-    sessionService.getSessionsSummary.mockResolvedValue(sessionsSummary)
-
-    const expectedError = createError(
-      500,
-      `Error retrieving Sessions Summary for prison [${activeCaseLoadId}] from Education And Work Plan API`,
-    )
+    const error = new Error('An error occurred')
+    sessionService.getSessionsSummary.mockRejectedValue(error)
 
     // When
     await requestHandler(req, res, next)
 
     // Then
-    expect(res.locals.sessionsSummary).toBeUndefined()
+    expect(res.locals.sessionsSummary.isFulfilled()).toEqual(false)
     expect(sessionService.getSessionsSummary).toHaveBeenCalledWith(activeCaseLoadId, username)
-    expect(next).toHaveBeenCalledWith(expectedError)
+    expect(next).toHaveBeenCalled()
   })
 })

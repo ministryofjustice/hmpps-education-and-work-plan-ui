@@ -1,5 +1,3 @@
-import type { SessionsSummary } from 'viewModels'
-import type { SessionSummaryResponse } from 'educationAndWorkPlanApiClient'
 import toSessionsSummary from './sessionsSummaryMapper'
 import aValidSessionSummaryResponse from '../../testsupport/sessionSummaryResponseTestDataBuilder'
 import aValidSessionsSummary from '../../testsupport/sessionsSummaryTestDataBuilder'
@@ -20,23 +18,7 @@ describe('sessionsSummaryMapper', () => {
       overdueSessionCount: 3,
       dueSessionCount: 7,
       onHoldSessionCount: 11,
-      problemRetrievingData: false,
     })
-
-    // When
-    const actual = toSessionsSummary(sessionSummaryResponse)
-
-    // Then
-    expect(actual).toEqual(expected)
-  })
-
-  it('should not map to SessionsSummary given no SessionSummaryResponse', () => {
-    // Given
-    const sessionSummaryResponse: SessionSummaryResponse = undefined
-
-    const expected = {
-      problemRetrievingData: true,
-    } as SessionsSummary
 
     // When
     const actual = toSessionsSummary(sessionSummaryResponse)

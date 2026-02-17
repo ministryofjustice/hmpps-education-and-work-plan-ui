@@ -319,7 +319,6 @@ export default class EducationAndWorkPlanClient extends RestClient {
     return this.get<SessionSummaryResponse>(
       {
         path: `/session/${prisonId}/summary`,
-        errorHandler: restClientErrorHandler({ ignore404: true }),
       },
       asSystem(username),
     )

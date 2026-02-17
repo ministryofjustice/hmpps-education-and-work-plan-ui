@@ -1,4 +1,4 @@
-import type { Sessions, SessionsSummary } from 'viewModels'
+import type { Sessions } from 'viewModels'
 import { startOfDay } from 'date-fns'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import SessionService from './sessionService'
@@ -48,7 +48,6 @@ describe('SessionService', () => {
         overdueSessionCount: 3,
         dueSessionCount: 7,
         onHoldSessionCount: 11,
-        problemRetrievingData: false,
       })
 
       // When
@@ -59,23 +58,7 @@ describe('SessionService', () => {
       expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
     })
 
-    it('should not get sessions summary given API returns a null SessionsSummaryResponse', async () => {
-      // Given
-      educationAndWorkPlanClient.getSessionSummary.mockResolvedValue(null)
-
-      const expected = {
-        problemRetrievingData: true,
-      } as SessionsSummary
-
-      // When
-      const actual = await sessionService.getSessionsSummary(prisonId, username)
-
-      // Then
-      expect(actual).toEqual(expected)
-      expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
-    })
-
-    it('should not get sessions summary given API returns an error', async () => {
+    it('should rethrow given API returns an error', async () => {
       // Given
       const eductionAndWorkPlanApiError = {
         status: 500,
@@ -87,15 +70,11 @@ describe('SessionService', () => {
       }
       educationAndWorkPlanClient.getSessionSummary.mockRejectedValue(eductionAndWorkPlanApiError)
 
-      const expected = {
-        problemRetrievingData: true,
-      } as SessionsSummary
-
       // When
-      const actual = await sessionService.getSessionsSummary(prisonId, username)
+      const actual = await sessionService.getSessionsSummary(prisonId, username).catch(e => e)
 
       // Then
-      expect(actual).toEqual(expected)
+      expect(actual).toEqual(eductionAndWorkPlanApiError)
       expect(educationAndWorkPlanClient.getSessionSummary).toHaveBeenCalledWith(prisonId, username)
     })
   })

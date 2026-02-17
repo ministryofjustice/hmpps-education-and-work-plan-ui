@@ -1419,7 +1419,7 @@ describe('educationAndWorkPlanClient', () => {
 
     it('should not get Session Summary given API returns error response', async () => {
       // Given
-      const expectedResponseBody = {
+      const apiErrorResponseBody = {
         status: 500,
         userMessage: 'An unexpected error occurred',
         developerMessage: 'An unexpected error occurred',
@@ -1428,18 +1428,17 @@ describe('educationAndWorkPlanClient', () => {
         .get(`/session/${prisonId}/summary`)
         .matchHeader('authorization', `Bearer ${systemToken}`)
         .thrice()
-        .reply(500, expectedResponseBody)
+        .reply(500, apiErrorResponseBody)
+
+      const expectedError = new Error('Internal Server Error')
 
       // When
-      try {
-        await educationAndWorkPlanClient.getSessionSummary(prisonId, username)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.responseStatus).toEqual(500)
-        expect(e.data).toEqual(expectedResponseBody)
-        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
-      }
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, username).catch(e => e)
+
+      // Then
+      expect(actual).toEqual(expectedError)
+      expect(nock.isDone()).toBe(true)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
 
     it('should not get Session Summary given API returns 404 response', async () => {
@@ -1454,12 +1453,14 @@ describe('educationAndWorkPlanClient', () => {
         .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(404, apiErrorResponseBody)
 
+      const expectedError = new Error('Not Found')
+
       // When
-      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, username)
+      const actual = await educationAndWorkPlanClient.getSessionSummary(prisonId, username).catch(e => e)
 
       // Then
+      expect(actual).toEqual(expectedError)
       expect(nock.isDone()).toBe(true)
-      expect(actual).toBeNull()
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
     })
   })

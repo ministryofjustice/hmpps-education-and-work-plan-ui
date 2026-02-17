@@ -50,9 +50,22 @@ context('Overdue sessions list page', () => {
       .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling education and work plan API for the list of sessions', () => {
+  it('should display service unavailable message given problem calling education and work plan API for the list of sessions', () => {
     // Given
     cy.task('stubSearchSessionsByPrison500Error', { sessionStatusType: SessionStatusValue.OVERDUE })
+
+    // When
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .clickToGoToOverdueSessionsPage()
+
+    // Then
+    Page.verifyOnPage(OverdueSessionsPage) //
+      .apiErrorBannerIsDisplayed()
+  })
+
+  it('should display service unavailable message given problem calling education and work plan API for the session summaries', () => {
+    // Given
+    cy.task('stubGetSessionSummary500Error', { sessionStatusType: SessionStatusValue.OVERDUE })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //

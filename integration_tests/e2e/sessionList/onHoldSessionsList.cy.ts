@@ -50,9 +50,9 @@ context('On Hold sessions list page', () => {
       .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling education and work plan API for the list of sessions', () => {
+  it('should display service unavailable message given problem calling education and work plan API for the list of sessions', () => {
     // Given
-    cy.task('stubSearchSessionsByPrison', { sessionStatusType: SessionStatusValue.ON_HOLD })
+    cy.task('stubSearchSessionsByPrison500Error', { sessionStatusType: SessionStatusValue.ON_HOLD })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //
@@ -60,7 +60,20 @@ context('On Hold sessions list page', () => {
 
     // Then
     Page.verifyOnPage(OnHoldSessionsPage) //
-      .apiErrorBannerIsNotDisplayed()
+      .apiErrorBannerIsDisplayed()
+  })
+
+  it('should display service unavailable message given problem calling education and work plan API for the session summaries', () => {
+    // Given
+    cy.task('stubGetSessionSummary500Error', { sessionStatusType: SessionStatusValue.ON_HOLD })
+
+    // When
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .clickToGoToOnHoldSessionsPage()
+
+    // Then
+    Page.verifyOnPage(OnHoldSessionsPage) //
+      .apiErrorBannerIsDisplayed()
   })
 
   it('should not navigate directly to on-hold sessions page given user does not have manager role', () => {

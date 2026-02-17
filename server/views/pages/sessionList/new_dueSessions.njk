@@ -25,29 +25,37 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Due sessions</h1>
 
-      {%set nameHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
-      {%set locationHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
-      {%set releaseDateHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'release-date', headerText: 'Release date' }) }}{% endset %}
-      {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
-      {%set dueByHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'due-by', headerText: 'Due by' }) }}{% endset %}
+      {% if sessionsSummary.isFulfilled() %}
+        {% set sessionsSummary = sessionsSummary.value %}
 
-      {% set tabContent %}
-        {% include './_newSearchBox.njk' %}
+        {%set nameHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
+        {%set locationHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
+        {%set releaseDateHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'release-date', headerText: 'Release date' }) }}{% endset %}
+        {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
+        {%set dueByHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'due-by', headerText: 'Due by' }) }}{% endset %}
 
-        {{ searchResultsTable({
-          columnHeadings: [nameHeader, locationHeader, releaseDateHeader, sessionTypeHeader, dueByHeader],
-          sessionListSearchResults: sessionListSearchResults,
-          searchOptions: searchOptions
+        {% set tabContent %}
+          {% include './_newSearchBox.njk' %}
+
+          {{ searchResultsTable({
+            columnHeadings: [nameHeader, locationHeader, releaseDateHeader, sessionTypeHeader, dueByHeader],
+            sessionListSearchResults: sessionListSearchResults,
+            searchOptions: searchOptions
+          }) }}
+        {% endset %}
+
+        {{ nonJavascriptTabBar({
+          activeTab: 'DUE_SESSIONS',
+          overdueSessionCount: sessionsSummary.overdueSessionCount,
+          dueSessionCount: sessionsSummary.dueSessionCount,
+          onHoldSessionCount: sessionsSummary.onHoldSessionCount,
+          content: tabContent
         }) }}
-      {% endset %}
 
-      {{ nonJavascriptTabBar({
-        activeTab: 'DUE_SESSIONS',
-        overdueSessionCount: sessionsSummary.overdueSessionCount,
-        dueSessionCount: sessionsSummary.dueSessionCount,
-        onHoldSessionCount: sessionsSummary.onHoldSessionCount,
-        content: tabContent
-      }) }}
+      {% else %}
+        <h2 class="govuk-heading-m" data-qa="due-sessions-unavailable-message">We cannot show these details right now</h2>
+        <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
+      {% endif %}
 
     </div>
   </div>

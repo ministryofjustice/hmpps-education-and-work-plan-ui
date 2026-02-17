@@ -5,7 +5,6 @@ import type { PersonResponse } from 'educationAndWorkPlanApiClient'
 import Page from '../../pages/page'
 import SessionsSummaryPage from '../../pages/sessionSummary/SessionsSummaryPage'
 import PrisonerListPage from '../../pages/prisonerList/PrisonerListPage'
-import Error500Page from '../../pages/error500'
 
 context(`Display the Sessions Summary screen`, () => {
   beforeEach(() => {
@@ -39,7 +38,7 @@ context(`Display the Sessions Summary screen`, () => {
     Page.verifyOnPage(SessionsSummaryPage)
   })
 
-  it('should display error page given API returns 404 for session summary call', () => {
+  it('should display service unavailable message given API returns 404 for session summary call', () => {
     // Given
     cy.task('stubGetSessionSummary404Error')
 
@@ -47,10 +46,11 @@ context(`Display the Sessions Summary screen`, () => {
     cy.signIn()
 
     // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .apiErrorBannerIsDisplayed()
   })
 
-  it('should display error page given API returns 500 for session summary call', () => {
+  it('should display service unavailable message given API returns 500 for session summary call', () => {
     // Given
     cy.task('stubGetSessionSummary500Error')
 
@@ -58,7 +58,8 @@ context(`Display the Sessions Summary screen`, () => {
     cy.signIn()
 
     // Then
-    Page.verifyOnPage(Error500Page)
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .apiErrorBannerIsDisplayed()
   })
 
   describe('scenarios that arrive on the prisoner list page', () => {
