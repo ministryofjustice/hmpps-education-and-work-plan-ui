@@ -19,7 +19,6 @@ declare module 'viewModels' {
     overdueSessionCount: number
     dueSessionCount: number
     onHoldSessionCount: number
-    problemRetrievingData: boolean
   }
 
   /**

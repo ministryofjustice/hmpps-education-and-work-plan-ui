@@ -20,9 +20,7 @@ export default class SessionService {
       return toSessionsSummary(sessionSummaryResponse)
     } catch (error) {
       logger.error(`Error retrieving Sessions Summary for prison [${prisonId}] from Education And Work Plan API`, error)
-      return {
-        problemRetrievingData: true,
-      } as SessionsSummary
+      throw error
     }
   }
 

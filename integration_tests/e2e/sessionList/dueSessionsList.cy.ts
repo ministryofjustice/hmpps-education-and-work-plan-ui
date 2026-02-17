@@ -47,9 +47,22 @@ context('Due sessions list page', () => {
       .apiErrorBannerIsNotDisplayed()
   })
 
-  it('display error page given problem calling education and work plan API for the list of sessions', () => {
+  it('should display service unavailable message given problem calling education and work plan API for the list of sessions', () => {
     // Given
     cy.task('stubSearchSessionsByPrison500Error', { sessionStatusType: SessionStatusValue.DUE })
+
+    // When
+    Page.verifyOnPage(SessionsSummaryPage) //
+      .clickToGoToDueSessionsPage()
+
+    // Then
+    Page.verifyOnPage(DueSessionsPage) //
+      .apiErrorBannerIsDisplayed()
+  })
+
+  it('should display service unavailable message given problem calling education and work plan API for the session summaries', () => {
+    // Given
+    cy.task('stubGetSessionSummary500Error', { sessionStatusType: SessionStatusValue.DUE })
 
     // When
     Page.verifyOnPage(SessionsSummaryPage) //

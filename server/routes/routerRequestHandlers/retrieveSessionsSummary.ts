@@ -1,31 +1,25 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import createError from 'http-errors'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import SessionService from '../../services/sessionService'
+import { Result } from '../../utils/result/result'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the Sessions Summary for the user's active caseload from SessionService and store in res.locals
  */
 const retrieveSessionsSummary = (sessionService: SessionService): RequestHandler => {
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     // Retrieve the Sessions Summary for the user's active caseload and store in res.locals
     const {
       user: { activeCaseLoadId, username },
     } = res.locals
 
-    const sessionsSummary = await sessionService.getSessionsSummary(activeCaseLoadId, username)
-    if (!sessionsSummary.problemRetrievingData) {
-      res.locals.sessionsSummary = sessionsSummary
-      return next()
-    }
-
-    return next(
-      createError(
-        500,
-        `Error retrieving Sessions Summary for prison [${activeCaseLoadId}] from Education And Work Plan API`,
-      ),
+    const { apiErrorCallback } = res.locals
+    res.locals.sessionsSummary = await Result.wrap(
+      sessionService.getSessionsSummary(activeCaseLoadId, username),
+      apiErrorCallback,
     )
-  })
+
+    return next()
+  }
 }
 
 export default retrieveSessionsSummary
