@@ -62,7 +62,7 @@
         <p class="govuk-body" data-qa="not-matched-in-lrs-message">
           No results. A unique learner number (ULN) has not yet been matched.
           {% if userHasPermissionTo('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE') %}
-            <a href="" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
+            <a href="{{ matchLearnerRecordUi }}" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
           {% endif %}
         </p>
       {% elseif verifiedQualifications.status === 'LEARNER_DECLINED_TO_SHARE_DATA' %}

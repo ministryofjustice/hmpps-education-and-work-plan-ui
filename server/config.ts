@@ -195,6 +195,7 @@ export default {
   ),
   serviceUrls: {
     supportAdditionalNeedsUi: get('SUPPORT_ADDITIONAL_NEEDS_UI_URL', 'http://localhost:3001', requiredInProduction),
+    matchLearnerRecordUi: get('MATCH_LEARNER_RECORD_UI_URL', 'http://localhost:3001', requiredInProduction),
   },
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
