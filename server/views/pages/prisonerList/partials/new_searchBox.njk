@@ -24,9 +24,9 @@
             </label>
             <select class="govuk-select" id="statusFilter" name="statusFilter">
               <option value="" {{ 'selected' if searchOptions.statusFilter === ''}}>All statuses</option>
-              <option value="ACTIVE_PLAN" {{ 'selected' if searchOptions.statusFilter === 'ACTIVE_PLAN'}}>Plan created</option>
-              <option value="NEEDS_PLAN" {{ 'selected' if searchOptions.statusFilter === 'NEEDS_PLAN'}}>Needs plan</option>
-              <option value="EXEMPT" {{ 'selected' if searchOptions.statusFilter === 'EXEMPT'}}>Exempt</option>
+              <option value="ACTIVE_PLAN" {{ 'selected' if searchOptions.statusFilter === 'ACTIVE_PLAN'}}>{{ 'ACTIVE_PLAN' | formatSearchPlanStatus }}</option>
+              <option value="NEEDS_PLAN" {{ 'selected' if searchOptions.statusFilter === 'NEEDS_PLAN'}}>{{ 'NEEDS_PLAN' | formatSearchPlanStatus }}</option>
+              <option value="EXEMPT" {{ 'selected' if searchOptions.statusFilter === 'EXEMPT'}}>{{ 'EXEMPT' | formatSearchPlanStatus }}</option>
             </select>
           </div>
           <div class="govuk-form-group__button">
