@@ -62,7 +62,7 @@
           {% if userHasPermissionTo('REMOVE_REVIEW_EXEMPTION') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption/remove" data-qa="remove-exemption-button">
-                <img src="/assets/images/icon-remove-exemption.svg" alt="" role="presentation" class="action-icon" />
+                <img src="/assets/images/icon-document-cross.svg" alt="" role="presentation" class="action-icon" />
                 Remove exemption from reviews
               </a>
             </li>
@@ -73,7 +73,7 @@
           {% if userHasPermissionTo('RECORD_REVIEW') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review" data-qa="mark-review-complete-button">
-                <img src="/assets/images/icon-mark-review-complete.svg" alt="" role="presentation" class="action-icon" />
+                <img src="/assets/images/icon-document-magnifying-glass.svg" alt="" role="presentation" class="action-icon" />
                 Mark review as complete
               </a>
             </li>
@@ -81,7 +81,7 @@
           {% if userHasPermissionTo('EXEMPT_REVIEW') %}
             <li class="govuk-!-padding-top-2 govuk-!-padding-bottom-3">
               <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/review/exemption" data-qa="record-exemption-button">
-                <img src="/assets/images/icon-record-exemption.svg" alt="" role="presentation" class="action-icon" />
+                <img src="/assets/images/icon-document-pencil.svg" alt="" role="presentation" class="action-icon" />
                 Record exemption for this prisoner
               </a>
             </li>
