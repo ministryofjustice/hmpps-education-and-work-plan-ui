@@ -7,6 +7,7 @@ import formatPrisonerNameFilter, { NameFormat } from '../../../filters/formatPri
 import formatDateFilter from '../../../filters/formatDateFilter'
 import aValidPrisonerSearchSummary from '../../../testsupport/prisonerSearchSummaryTestDataBuilder'
 import SearchPlanStatus from '../../../enums/searchPlanStatus'
+import formatSearchPlanStatusFilter from '../../../filters/formatSearchPlanStatusFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/govuk/',
@@ -22,6 +23,7 @@ njkEnv //
   .addFilter('assetMap', assetMapFilter)
   .addFilter('formatLast_name_comma_First_name', formatPrisonerNameFilter(NameFormat.Last_name_comma_First_name))
   .addFilter('formatDate', formatDateFilter)
+  .addFilter('formatSearchPlanStatus', formatSearchPlanStatusFilter)
   .addGlobal('featureToggles', { newSearchApiEnabled: true })
 
 const userHasPermissionTo = jest.fn()
@@ -62,7 +64,7 @@ describe('prisoner list page', () => {
     expect($('[data-qa=zero-results-message]').length).toEqual(0)
   })
 
-  it('should render page given search service returns zero results', () => {
+  it('should render page given only search term was used and search service returns zero results', () => {
     // Given
     const params = {
       ...templateParams,
@@ -77,8 +79,43 @@ describe('prisoner list page', () => {
     // Then
     expect($('[data-qa=search-options-form]').length).toEqual(1)
     expect($('[data-qa=search-results-form]').length).toEqual(0)
-    expect($('[data-qa=zero-results-message]').length).toEqual(1)
     expect($('[data-qa=zero-results-message]').text().trim()).toEqual('0 results for "some unknown prisoner"')
+  })
+
+  it('should render page given both search term and status filter was used and search service returns zero results', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      prisonerListResults: Result.fulfilled(aValidPrisonerSearch({ prisoners: [] })),
+      searchOptions: { searchTerm: 'some unknown prisoner', statusFilter: 'EXEMPT' },
+    }
+
+    // When
+    const content = nunjucks.render('index.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=search-options-form]').length).toEqual(1)
+    expect($('[data-qa=search-results-form]').length).toEqual(0)
+    expect($('[data-qa=zero-results-message]').text().trim()).toEqual('0 results for "some unknown prisoner"')
+  })
+
+  it('should render page given only status filter was used and search service returns zero results', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      prisonerListResults: Result.fulfilled(aValidPrisonerSearch({ prisoners: [] })),
+      searchOptions: { statusFilter: 'EXEMPT' },
+    }
+
+    // When
+    const content = nunjucks.render('index.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=search-options-form]').length).toEqual(1)
+    expect($('[data-qa=search-results-form]').length).toEqual(0)
+    expect($('[data-qa=zero-results-message]').text().trim()).toEqual('0 results for "Exempt"')
   })
 
   it('should render page given search service returns an error', () => {

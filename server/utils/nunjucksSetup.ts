@@ -51,6 +51,7 @@ import {
 } from '../filters/formatEmployabilitySkillsFilter'
 import formatEmployabilitySkillRatingFilter from '../filters/formatEmployabilitySkillRatingFilter'
 import groupArrayByPropertyFilter from '../filters/groupArrayByPropertyFilter'
+import formatSearchPlanStatusFilter from '../filters/formatSearchPlanStatusFilter'
 
 export default function nunjucksSetup(app: express.Express, applicationInfo: ApplicationInfo): void {
   app.set('view engine', 'njk')
@@ -149,6 +150,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatEmployabilitySkill', formatEmployabilitySkillsFilter)
   njkEnv.addFilter('formatEmployabilitySkillRating', formatEmployabilitySkillRatingFilter)
   njkEnv.addFilter('formatEmployabilitySkillQuestionText', formatEmployabilitySkillQuestionTextFilter)
+  njkEnv.addFilter('formatSearchPlanStatus', formatSearchPlanStatusFilter)
 
   // Name format filters
   njkEnv.addFilter('formatFIRST_NAME_ONLY', formatPrisonerNameFilter(NameFormat.FIRST_NAME_ONLY))

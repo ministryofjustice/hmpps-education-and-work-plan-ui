@@ -70,11 +70,11 @@
               <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
               <td class="govuk-table__cell">
                 {% if prisoner.planStatus === 'NEEDS_PLAN' %}
-                  <strong class="govuk-tag govuk-tag--yellow">Needs plan</strong>
+                  <strong class="govuk-tag govuk-tag--yellow">{{ 'NEEDS_PLAN' | formatSearchPlanStatus }}</strong>
                 {% elseif prisoner.planStatus === 'ACTIVE_PLAN' %}
-                  <strong class="govuk-tag govuk-tag--green">Plan created</strong>
+                  <strong class="govuk-tag govuk-tag--green">{{ 'ACTIVE_PLAN' | formatSearchPlanStatus }}</strong>
                 {% elseif prisoner.planStatus === 'EXEMPT' %}
-                  <strong class="govuk-tag govuk-tag--grey">Exempt</strong>
+                  <strong class="govuk-tag govuk-tag--grey">{{ 'EXEMPT' | formatSearchPlanStatus }}</strong>
                 {% endif %}
               </td>
             </tr>
@@ -93,8 +93,8 @@
     </section>
 
   {% else %}
-    <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchOptions.searchTerm }}"</h2>
-    <p class="govuk-body govuk-!-font-size-19">Check your spelling and search again, or clear the search and browse for the prisoner.</p>
+    <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchOptions.statusFilter | formatSearchPlanStatus if (not searchOptions.searchTerm and searchOptions.statusFilter) else searchOptions.searchTerm }}"</h2>
+    <p class="govuk-body govuk-!-font-size-19">Check your spelling and filter and search again, or clear your search and browse for a prisoner.</p>
   {% endif %}
 
 {% else %}
