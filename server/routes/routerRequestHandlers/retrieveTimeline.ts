@@ -4,6 +4,7 @@ import { TimelineService } from '../../services'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import { asArray } from '../../utils/utils'
 import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 /**
  *  Middleware function that returns a Request handler function to retrieve the prisoner's Timeline and store in res.locals
@@ -11,9 +12,8 @@ import TimelineFilterTypeValue from '../../enums/timelineFilterTypeValue'
 const retrieveTimeline = (timelineService: TimelineService): RequestHandler => {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { prisonNumber } = req.params
-    const {
-      user: { activeCaseLoadId, username },
-    } = res.locals
+    const user = res.locals.user as PrisonUser
+    const { activeCaseLoadId, username } = user
     const sixMonthsAgo = subMonths(startOfToday(), 6)
 
     const filterOptions = asArray(

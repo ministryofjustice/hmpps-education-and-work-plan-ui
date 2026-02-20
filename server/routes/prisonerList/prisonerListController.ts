@@ -5,6 +5,7 @@ import PrisonerListView from './prisonerListView'
 import config from '../../config'
 import PagedPrisonerSearchSummary, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSearchSummary'
 import logger from '../../../logger'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 const DEFAULT_SORT_FIELD = SortBy.RECEPTION_DATE
 const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
@@ -22,7 +23,7 @@ export default class PrisonerListController {
    * Use getPrisonerListView instead.
    */
   getOldPrisonerListView: RequestHandler = async (req, res, next): Promise<void> => {
-    const prisonId = res.locals.user.activeCaseLoadId
+    const prisonId = (res.locals.user as PrisonUser).activeCaseLoadId
 
     try {
       const pagedPrisonerSearchSummary = await this.getPagedPrisonerSearchSummaryForAllPrisoners(prisonId, req.user)

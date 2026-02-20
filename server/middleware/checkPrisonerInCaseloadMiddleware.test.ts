@@ -2,6 +2,7 @@ import createError from 'http-errors'
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../testsupport/prisonerSummaryTestDataBuilder'
 import checkPrisonerInCaseload from './checkPrisonerInCaseloadMiddleware'
+import { PrisonUser } from '../interfaces/hmppsUser'
 
 describe('checkPrisonerInCaseloadMiddleware', () => {
   const prisonNumber = 'A1234BC'
@@ -37,8 +38,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     // Given
     const middleware = checkPrisonerInCaseload()
 
-    const user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI', 'BXI'] })
-    res.locals.user = user
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI', 'BXI'] })
 
     // When
     await middleware(req, res, next)
@@ -51,8 +51,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     // Given
     const middleware = checkPrisonerInCaseload()
 
-    const user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'] })
-    res.locals.user = user
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'] })
 
     const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner not in caseloads')
 
@@ -67,8 +66,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     // Given
     const middleware = checkPrisonerInCaseload({ allowGlobal: true })
 
-    const user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'], roles: ['ROLE_GLOBAL_SEARCH'] })
-    res.locals.user = user
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'], userRoles: ['ROLE_GLOBAL_SEARCH'] })
 
     // When
     await middleware(req, res, next)
@@ -81,12 +79,11 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     // Given
     const middleware = checkPrisonerInCaseload({ allowGlobal: false, allowGlobalPom: true })
 
-    const user = hmppsUser({
+    res.locals.user = hmppsUser({
       activeCaseLoadId: 'LEI',
       caseLoadIds: ['LEI'],
-      roles: ['ROLE_GLOBAL_SEARCH', 'ROLE_POM'],
+      userRoles: ['ROLE_GLOBAL_SEARCH', 'ROLE_POM'],
     })
-    res.locals.user = user
 
     // When
     await middleware(req, res, next)
@@ -99,8 +96,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
     // Given
     const middleware = checkPrisonerInCaseload({ activeCaseloadOnly: true })
 
-    const user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI', 'BXI'] })
-    res.locals.user = user
+    res.locals.user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI', 'BXI'] })
 
     const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner not in active caseload')
 
@@ -123,8 +119,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     it('should call next given prisoner is a restricted patient and the user is a POM user and the prisoners supporting prison id is one of the users caseloads', async () => {
       // Given
-      const user = hmppsUser({ activeCaseLoadId: 'BXI', caseLoadIds: ['LEI', 'BXI'], roles: ['ROLE_POM'] })
-      res.locals.user = user
+      res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', caseLoadIds: ['LEI', 'BXI'], userRoles: ['ROLE_POM'] })
 
       // When
       await middleware(req, res, next)
@@ -135,12 +130,11 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     it('should call next given prisoner is a restricted patient and the user is an Inactive Bookings user and the prisoners supporting prison id is one of the users caseloads', async () => {
       // Given
-      const user = hmppsUser({
+      res.locals.user = hmppsUser({
         activeCaseLoadId: 'BXI',
         caseLoadIds: ['LEI', 'BXI'],
-        roles: ['ROLE_INACTIVE_BOOKINGS'],
+        userRoles: ['ROLE_INACTIVE_BOOKINGS'],
       })
-      res.locals.user = user
 
       // When
       await middleware(req, res, next)
@@ -151,12 +145,11 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     it('should call next given prisoner is a restricted patient and the user is an Inactive Bookings user and the prisoners supporting prison id is not one of the users caseloads', async () => {
       // Given
-      const user = hmppsUser({
+      res.locals.user = hmppsUser({
         activeCaseLoadId: 'BXI',
         caseLoadIds: ['BXI'],
-        roles: ['ROLE_INACTIVE_BOOKINGS'],
+        userRoles: ['ROLE_INACTIVE_BOOKINGS'],
       })
-      res.locals.user = user
 
       // When
       await middleware(req, res, next)
@@ -167,8 +160,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     it('should return an error given prisoner is a restricted patient and user is not a POM user', async () => {
       // Given
-      const user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'], roles: ['ROLE_NOT_A_POM_USER'] })
-      res.locals.user = user
+      res.locals.user = hmppsUser({ activeCaseLoadId: 'LEI', caseLoadIds: ['LEI'], userRoles: ['ROLE_NOT_A_POM_USER'] })
 
       const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is restricted patient')
 
@@ -181,8 +173,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
     it('should return an error given prisoner is a restricted patient and user is a POM user but not for the prisoners supporting prison id', async () => {
       // Given
-      const user = hmppsUser({ activeCaseLoadId: 'BXI', caseLoadIds: ['BXI'], roles: ['ROLE_POM'] })
-      res.locals.user = user
+      res.locals.user = hmppsUser({ activeCaseLoadId: 'BXI', caseLoadIds: ['BXI'], userRoles: ['ROLE_POM'] })
 
       const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is restricted patient')
 
@@ -206,8 +197,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should call next given prisoner has prisonId OUT and user is an Inactive Bookings user and middleware is configured to allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_INACTIVE_BOOKINGS'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_INACTIVE_BOOKINGS'] })
 
           // When
           await middleware(req, res, next)
@@ -218,8 +208,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should return error given prisoner has prisonId OUT and user is not an Inactive Bookings user', async () => {
           // Given
-          const user = hmppsUser()
-          res.locals.user = user
+          res.locals.user = hmppsUser()
 
           const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is inactive [OUT]')
 
@@ -236,8 +225,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should return error given prisoner has prisonId OUT and user is Inactive Bookings user but middleware is configured to not allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_INACTIVE_BOOKINGS'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_INACTIVE_BOOKINGS'] })
 
           const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is inactive [OUT]')
 
@@ -261,8 +249,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should call next given prisoner has prisonId TRN and user is an Inactive Bookings user and middleware is configured to allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_INACTIVE_BOOKINGS'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_INACTIVE_BOOKINGS'] })
 
           // When
           await middleware(req, res, next)
@@ -273,8 +260,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should call next given prisoner has prisonId TRN and user is a Global Search user and middleware is configured to allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_GLOBAL_SEARCH'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_GLOBAL_SEARCH'] })
 
           // When
           await middleware(req, res, next)
@@ -285,8 +271,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should return error given prisoner has prisonId TRN and user is neither a Global Search or Inactive Bookings user and middleware is configured to allow inactive', async () => {
           // Given
-          const user = hmppsUser()
-          res.locals.user = user
+          res.locals.user = hmppsUser()
 
           const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is inactive [TRN]')
 
@@ -303,8 +288,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should return error given prisoner has prisonId OUT and user is Inactive Bookings user but middleware is configured to not allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_INACTIVE_BOOKINGS'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_INACTIVE_BOOKINGS'] })
 
           const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is inactive [TRN]')
 
@@ -317,8 +301,7 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 
         it('should return error given prisoner has prisonId OUT and user is Global Search user but middleware is configured to not allow inactive', async () => {
           // Given
-          const user = hmppsUser({ roles: ['ROLE_GLOBAL_SEARCH'] })
-          res.locals.user = user
+          res.locals.user = hmppsUser({ userRoles: ['ROLE_GLOBAL_SEARCH'] })
 
           const expectedError = createError(404, 'CheckPrisonerInCaseloadMiddleware: Prisoner is inactive [TRN]')
 
@@ -336,13 +319,13 @@ describe('checkPrisonerInCaseloadMiddleware', () => {
 function hmppsUser(options?: {
   activeCaseLoadId?: string
   caseLoadIds?: Array<string>
-  roles?: Array<string>
+  userRoles?: Array<string>
   authSource?: string
 }) {
   return {
     activeCaseLoadId: options?.activeCaseLoadId || 'BXI',
     caseLoadIds: options?.caseLoadIds || ['BXI'],
-    roles: options?.roles || ['SOME_ROLE'],
+    userRoles: options?.userRoles || ['SOME_ROLE'],
     authSource: options?.authSource || 'nomis',
-  }
+  } as PrisonUser
 }

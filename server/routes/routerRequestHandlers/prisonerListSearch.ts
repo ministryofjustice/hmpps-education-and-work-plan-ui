@@ -5,6 +5,7 @@ import config from '../../config'
 import { Result } from '../../utils/result/result'
 import SortBy from '../../enums/sortBy'
 import SortOrder from '../../enums/sortDirection'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 const DEFAULT_SORT_FIELD = SortBy.RECEPTION_DATE
 const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
@@ -21,7 +22,7 @@ const DEFAULT_SORT_DIRECTION = SortOrder.DESCENDING
  */
 const prisonerListSearch = (searchService: SearchService): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const prisonId = res.locals.user.activeCaseLoadId
+    const prisonId = (res.locals.user as PrisonUser).activeCaseLoadId
     const { username } = req.user
 
     const page = parseInt((req.query.page as string) || '1', 10)

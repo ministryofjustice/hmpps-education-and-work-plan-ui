@@ -6,6 +6,7 @@ import SortOrder from '../../enums/sortDirection'
 import SessionSortBy from '../../enums/sessionSortBy'
 import SessionStatusValue from '../../enums/sessionStatusValue'
 import SessionTypeValue from '../../enums/sessionTypeValue'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 const DEFAULT_SORT_FIELD = SessionSortBy.DUE_BY
 const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
@@ -22,7 +23,7 @@ const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
  */
 const sessionListSearch = (sessionService: SessionService, sessionStatusType: SessionStatusValue): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const prisonId = res.locals.user.activeCaseLoadId
+    const prisonId = (res.locals.user as PrisonUser).activeCaseLoadId
     const { username } = req.user
 
     const page = parseInt((req.query.page as string) || '1', 10)
