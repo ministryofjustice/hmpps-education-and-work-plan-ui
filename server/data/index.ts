@@ -3,12 +3,13 @@
  * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
  * In particular, applicationinsights automatically collects bunyan logs
  */
+import { TelemetryClient } from 'applicationinsights'
 import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
-import applicationInfoSupplier from '../applicationInfo'
+import applicationInfoSupplier, { ApplicationInfo } from '../applicationInfo'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
+const telemetryClient = buildAppInsightsClient(applicationInfo)
 
 // eslint-disable-next-line import/order
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
@@ -33,8 +34,6 @@ import InMemoryPrisonerSearchStore from './prisonerSearchStore/inMemoryPrisonerS
 import RedisPrisonerSearchStore from './prisonerSearchStore/redisPrisonerSearchStore'
 import logger from '../../logger'
 import LearnerRecordsApiClient from './learnerRecordsApiClient'
-
-type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => {
   const systemTokenStore = config.redis.enabled
@@ -70,6 +69,8 @@ export const dataAccess = () => {
 
   return {
     applicationInfo,
+    hmppsAuthClient,
+    telemetryClient,
     hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
     manageUsersApiClient: new ManageUsersApiClient(hmppsAuthClient),
     prisonerSearchStore: config.redis.enabled
@@ -94,8 +95,9 @@ export const dataAccess = () => {
 export type DataAccess = ReturnType<typeof dataAccess>
 
 export {
+  type ApplicationInfo,
   AuthenticationClient,
-  type RestClientBuilder,
+  type TelemetryClient,
   HmppsAuditClient,
   ManageUsersApiClient,
   type PrisonerSearchStore,

@@ -27,6 +27,7 @@ describe('retrievePrisonerSummary', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     res.locals.prisonerSummary = undefined
+    req.middleware = undefined
   })
 
   it('should retrieve prisoner and store on res.locals', async () => {
@@ -41,6 +42,7 @@ describe('retrievePrisonerSummary', () => {
     // Then
     expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toEqual(expectedPrisonerSummary)
+    expect(req.middleware.prisonerData).toEqual(expectedPrisonerSummary)
     expect(next).toHaveBeenCalled()
   })
 
@@ -55,6 +57,7 @@ describe('retrievePrisonerSummary', () => {
     // Then
     expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toBeUndefined()
+    expect(req.middleware?.prisonerData).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 
@@ -69,6 +72,7 @@ describe('retrievePrisonerSummary', () => {
     // Then
     expect(prisonerService.getPrisonerByPrisonNumber).toHaveBeenCalledWith(prisonNumber, username)
     expect(res.locals.prisonerSummary).toBeUndefined()
+    expect(req.middleware?.prisonerData).toBeUndefined()
     expect(next).toHaveBeenCalledWith(expectedError)
   })
 })

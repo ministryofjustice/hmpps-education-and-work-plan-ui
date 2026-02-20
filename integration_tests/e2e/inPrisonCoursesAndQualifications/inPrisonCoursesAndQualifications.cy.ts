@@ -1,6 +1,6 @@
 import InPrisonCoursesAndQualificationsPage from '../../pages/inPrisonCoursesAndQualifications/InPrisonCoursesAndQualificationsPage'
 import Page from '../../pages/page'
-import Error404Page from '../../pages/error404'
+import AuthSignInPage from '../../pages/authSignIn'
 
 context('In Prison Courses and Qualifications', () => {
   context('PLP user', () => {
@@ -190,12 +190,10 @@ context('In Prison Courses and Qualifications', () => {
       cy.task('getPrisonerById', prisonNumber)
 
       // When
-      cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`, {
-        failOnStatusCode: false,
-      })
+      cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
 
       // Then
-      Page.verifyOnPage(Error404Page)
+      Page.verifyOnPage(AuthSignInPage)
     })
 
     context('Restricted patients', () => {
@@ -214,12 +212,10 @@ context('In Prison Courses and Qualifications', () => {
         cy.task('getPrisonerById', prisonNumber)
 
         // When
-        cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`, {
-          failOnStatusCode: false,
-        })
+        cy.visit(`/prisoner/${prisonNumber}/work-and-skills/in-prison-courses-and-qualifications`)
 
         // Then
-        Page.verifyOnPage(Error404Page)
+        Page.verifyOnPage(AuthSignInPage)
       })
 
       it(`should display in-prison courses & qualifications page given prisoner is OUT and user's caseloads is for the prisoner's supporting prison`, () => {

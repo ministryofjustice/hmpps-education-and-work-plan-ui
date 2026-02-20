@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import { PrisonerBasePermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { v4 as uuidV4 } from 'uuid'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
@@ -8,7 +9,9 @@ import PrisonerService from '../services/prisonerService'
 import PrisonService from '../services/prisonService'
 import JourneyDataService from '../services/journeyDataService'
 import aValidPrisoner from '../testsupport/prisonerTestDataBuilder'
+import { mockPrisonerPermissionsGuard } from '../testutils/mockPermissions'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../services/auditService')
 jest.mock('../services/prisonerService')
 jest.mock('../services/prisonerListService')
@@ -23,6 +26,11 @@ const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService
 const journeyDataService = new JourneyDataService(null) as jest.Mocked<JourneyDataService>
 
 beforeEach(() => {
+  jest.resetAllMocks()
+
+  prisonService.getAllPrisonNamesById.mockResolvedValue({ BXI: 'Brixton (HMP)' })
+  mockPrisonerPermissionsGuard([PrisonerBasePermission.read])
+
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -32,10 +40,6 @@ beforeEach(() => {
       journeyDataService,
     },
   })
-
-  jest.resetAllMocks()
-
-  prisonService.getAllPrisonNamesById.mockResolvedValue({ BXI: 'Brixton (HMP)' })
 })
 
 describe('auditMiddleware', () => {

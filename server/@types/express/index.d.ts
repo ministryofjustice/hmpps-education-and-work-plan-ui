@@ -1,4 +1,4 @@
-import type { PageFlow } from 'viewModels'
+import type { PageFlow, PrisonerSummary } from 'viewModels'
 import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto, CreateEmployabilitySkillDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
@@ -57,9 +57,10 @@ export declare global {
       verified?: boolean
       id: string
       journeyData: JourneyData
-
+      middleware?: {
+        prisonerData?: PrisonerSummary
+      }
       logout(done: (err: unknown) => void): void
-
       flash(type: string, message: Array<Record<string, string>>): number
     }
 
