@@ -6,7 +6,6 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import InPrisonTrainingCreateController from './inPrisonTrainingCreateController'
 import InPrisonTrainingValue from '../../../enums/inPrisonTrainingValue'
-import { User } from '../../../data/manageUsersApiClient'
 
 describe('inPrisonTrainingCreateController', () => {
   const controller = new InPrisonTrainingCreateController()
@@ -14,10 +13,6 @@ describe('inPrisonTrainingCreateController', () => {
   const journeyId = uuidV4()
   const prisonNumber = 'A1234BC'
   const prisonerSummary = aValidPrisonerSummary()
-  const user: User = {
-    username: 'a-dps-user',
-    caseLoadIds: ['BXI'],
-  }
 
   const flash = jest.fn()
   const req = {
@@ -32,7 +27,7 @@ describe('inPrisonTrainingCreateController', () => {
     redirect: jest.fn(),
     redirectWithErrors: jest.fn(),
     render: jest.fn(),
-    locals: { prisonerSummary, user },
+    locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
 

@@ -12,7 +12,7 @@ export default function checkPrisonerInCaseload({
 } = {}): RequestHandler {
   return async (req, res, next) => {
     const { prisonerSummary } = res.locals
-    const userRoles: string[] = res.locals.user.roles || []
+    const userRoles: string[] = res.locals.user.userRoles || []
 
     // This function requires the prisoner summary - so ensure that's present before continuing
     if (!prisonerSummary) {

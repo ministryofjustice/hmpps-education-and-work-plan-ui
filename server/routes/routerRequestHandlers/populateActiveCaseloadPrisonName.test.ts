@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import PrisonService from '../../services/prisonService'
 import populateActiveCaseloadPrisonName from './populateActiveCaseloadPrisonName'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 jest.mock('../../services/prisonService')
 
@@ -17,29 +18,28 @@ describe('populateActiveCaseloadPrisonName', () => {
     BLI: 'Bristol (HMP)',
   }
 
-  let req: Request
-  let res: Response
+  const req = {} as unknown as Request
+  const res = {
+    render: jest.fn(),
+    locals: {
+      user: {
+        username,
+        activeCaseLoadId,
+      },
+      activeCaseloadPrisonName: undefined,
+    },
+  } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
-    req = {} as unknown as Request
-    res = {
-      render: jest.fn(),
-      locals: {
-        user: {
-          username,
-          activeCaseLoadId,
-        },
-        activeCaseloadPrisonName: undefined,
-      },
-    } as unknown as Response
+    res.locals.activeCaseloadPrisonName = undefined
     jest.resetAllMocks()
   })
 
   it('should store prison name on res.locals given prison name lookup is successful', async () => {
     // Given
     prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
-    res.locals.user.activeCaseLoadId = 'BXI'
+    res.locals.user = { username, activeCaseLoadId: 'BXI' } as PrisonUser
 
     const expected = 'Brixton (HMP)'
 
@@ -54,7 +54,7 @@ describe('populateActiveCaseloadPrisonName', () => {
   it('should store prisonId on res.locals given prison is not in returned map', async () => {
     // Given
     prisonService.getAllPrisonNamesById.mockResolvedValue(prisonNamesById)
-    res.locals.user.activeCaseLoadId = 'LEI'
+    res.locals.user = { username, activeCaseLoadId: 'LEI' } as PrisonUser
 
     const expected = 'LEI'
 
@@ -69,7 +69,7 @@ describe('populateActiveCaseloadPrisonName', () => {
   it('should store prisonId on res.locals given prison name lookup returns empty object', async () => {
     // Given
     prisonService.getAllPrisonNamesById.mockResolvedValue({})
-    res.locals.user.activeCaseLoadId = 'BXI'
+    res.locals.user = { username, activeCaseLoadId: 'BXI' } as PrisonUser
 
     const expected = 'BXI'
 

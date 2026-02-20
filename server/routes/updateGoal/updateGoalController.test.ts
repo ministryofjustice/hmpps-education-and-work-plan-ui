@@ -60,8 +60,6 @@ describe('updateGoalController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    res.locals = { prisonerSummary }
-
     errors = []
   })
 

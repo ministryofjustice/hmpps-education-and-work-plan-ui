@@ -5,6 +5,7 @@ import SessionStatusValue from '../../enums/sessionStatusValue'
 import PagedPrisonerSummaryPrisonerSession, { FilterBy, SortBy, SortOrder } from './pagedPrisonerSummaryPrisonerSession'
 import config from '../../config'
 import { SessionListQueryStringParams } from './sessionListQueryStringParams'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 const DEFAULT_SORT_FIELD = SortBy.DUE_BY
 const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
@@ -21,10 +22,9 @@ export default class SessionListController {
   }
 
   getOldDueSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const {
-      sessionsSummary,
-      user: { activeCaseLoadId, username },
-    } = res.locals
+    const user = res.locals.user as PrisonUser
+    const { activeCaseLoadId, username } = user
+    const { sessionsSummary } = res.locals
 
     const queryStringParams = extractQueryStringParams(req)
     req.session.sessionListSortOptions = `${queryStringParams.sortOptions.sortBy.toString()},${queryStringParams.sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Session List screen
@@ -51,10 +51,9 @@ export default class SessionListController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const {
-      sessionsSummary,
-      user: { activeCaseLoadId, username },
-    } = res.locals
+    const user = res.locals.user as PrisonUser
+    const { activeCaseLoadId, username } = user
+    const { sessionsSummary } = res.locals
 
     const queryStringParams = extractQueryStringParams(req)
     req.session.sessionListSortOptions = `${queryStringParams.sortOptions.sortBy.toString()},${queryStringParams.sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Session List screen
@@ -77,10 +76,9 @@ export default class SessionListController {
   }
 
   getOldOnHoldSessionsView: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const {
-      sessionsSummary,
-      user: { activeCaseLoadId, username },
-    } = res.locals
+    const user = res.locals.user as PrisonUser
+    const { activeCaseLoadId, username } = user
+    const { sessionsSummary } = res.locals
 
     const queryStringParams = extractQueryStringParams(req)
     req.session.sessionListSortOptions = `${queryStringParams.sortOptions.sortBy.toString()},${queryStringParams.sortOptions.sortOrder.toString()}` // save last sort options to session so that they are remembered when coming back to Session List screen

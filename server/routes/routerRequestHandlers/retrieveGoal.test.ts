@@ -23,13 +23,13 @@ describe('retrieveGoal', () => {
     params: { prisonNumber, goalReference },
   } as unknown as Request
   const res = {
-    locals: {},
+    locals: { apiErrorCallback },
   } as unknown as Response
   const next = jest.fn()
 
   beforeEach(() => {
+    res.locals.goal = undefined
     jest.resetAllMocks()
-    res.locals = { apiErrorCallback }
   })
 
   it('should retrieve Goal and store on res.locals', async () => {

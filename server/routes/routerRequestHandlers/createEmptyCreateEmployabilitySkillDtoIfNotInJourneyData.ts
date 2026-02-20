@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import type { CreateEmployabilitySkillDto } from 'dto'
-import { PrisonUser } from '@ministryofjustice/hmpps-connect-dps-components/dist/types/HmppsUser'
+import { PrisonUser } from '../../interfaces/hmppsUser'
 
 /**
  * Request handler function to check whether a Create Employability Skill DTO exists in the journeyData.
