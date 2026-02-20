@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode'
 import logger from '../../logger'
 import UserService from '../services/userService'
 import { convertToTitleCase } from '../utils/utils'
+import { PrisonCaseload } from '../data/manageUsersApiClient'
 
 export function populateCurrentUser(): RequestHandler {
   return async (req, res, next) => {
@@ -10,10 +11,14 @@ export function populateCurrentUser(): RequestHandler {
       const {
         name,
         user_id: userId,
+        user_name: username,
+        auth_source: authSource,
         authorities: roles = [],
       } = jwtDecode(res.locals.user.token) as {
         name?: string
         user_id?: string
+        user_name?: string
+        auth_source?: 'nomis' | 'delius' | 'external' | 'azuread'
         authorities?: string[]
       }
 
@@ -21,8 +26,10 @@ export function populateCurrentUser(): RequestHandler {
         ...res.locals.user,
         userId,
         name,
+        authSource: authSource as never,
+        username,
         displayName: convertToTitleCase(name),
-        roles,
+        userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
 
       if (res.locals.user.authSource === 'nomis') {
@@ -42,8 +49,9 @@ export function populateCurrentUserCaseloads(userService: UserService): RequestH
     try {
       if (res.locals.user && res.locals.user.authSource === 'nomis') {
         const userCaseLoadDetail = await userService.getUserCaseLoads(res.locals.user.token)
-
-        res.locals.user.caseLoadIds = userCaseLoadDetail.caseloads.map(caseload => caseload.id)
+        res.locals.user.caseLoads = userCaseLoadDetail.caseloads.map((caseload: PrisonCaseload) => ({
+          caseLoadId: caseload.id,
+        }))
 
         if (userCaseLoadDetail.activeCaseload) {
           res.locals.user.activeCaseLoadId = userCaseLoadDetail.activeCaseload.id

@@ -3,17 +3,6 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import logger from '../../logger'
 import config from '../config'
 
-export interface User {
-  username: string
-  name?: string
-  active?: boolean
-  authSource?: string
-  uuid?: string
-  userId?: string
-  activeCaseLoadId?: string
-  caseLoadIds: Array<string>
-}
-
 export interface UserCaseloadDetail {
   username: string
   active: boolean

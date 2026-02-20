@@ -12,6 +12,13 @@ const retrievePrisonerSummary = (prisonerService: PrisonerService): RequestHandl
     try {
       // Lookup the prisoner and store on res.locals
       res.locals.prisonerSummary = await prisonerService.getPrisonerByPrisonNumber(prisonNumber, req.user.username)
+      // Set the prisoner summary on req.middleware as well to prevent a 2nd lookup of the prisoner by hmpps-prisoner-permissions-lib
+      // TODO - consider moving to req.middleware.prisonData throughout (instead of res.locals.prisonerSummary) to be consistent with other DPS services
+      req.middleware = {
+        ...req.middleware,
+        prisonerData: res.locals.prisonerSummary,
+      }
+
       next()
     } catch (error) {
       next(

@@ -1,9 +1,9 @@
-import type { PageFlow } from 'viewModels'
+import type { PageFlow, PrisonerSummary } from 'viewModels'
 import type { ArchiveGoalForm, CreateGoalsForm, UpdateGoalForm } from 'forms'
 import type { EducationDto, ReviewPlanDto, ReviewExemptionDto, CreateEmployabilitySkillDto } from 'dto'
 import type { InductionDto, InductionExemptionDto } from 'inductionDto'
-import type { UserDetails } from '../../services/userService'
 import QualificationLevelValue from '../../enums/qualificationLevelValue'
+import { HmppsUser } from '../../interfaces/hmppsUser'
 
 export default {}
 
@@ -30,7 +30,7 @@ declare module 'express-session' {
 
 export declare global {
   namespace Express {
-    interface User extends Partial<UserDetails> {
+    interface User {
       username: string
       token: string
       authSource: string
@@ -57,10 +57,15 @@ export declare global {
       verified?: boolean
       id: string
       journeyData: JourneyData
-
+      middleware?: {
+        prisonerData?: PrisonerSummary
+      }
       logout(done: (err: unknown) => void): void
-
       flash(type: string, message: Array<Record<string, string>>): number
+    }
+
+    interface Locals {
+      user: HmppsUser
     }
   }
 }

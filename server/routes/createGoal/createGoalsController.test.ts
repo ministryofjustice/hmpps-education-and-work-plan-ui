@@ -60,7 +60,6 @@ describe('createGoalsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    res.locals = { prisonerSummary }
     req.journeyData = {}
     errors = []
   })

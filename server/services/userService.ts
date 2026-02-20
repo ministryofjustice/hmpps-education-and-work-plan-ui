@@ -1,11 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
-import ManageUsersApiClient, { User, UserCaseloadDetail } from '../data/manageUsersApiClient'
-
-export interface UserDetails extends User {
-  name?: string
-  displayName: string
-  roles: string[]
-}
+import ManageUsersApiClient, { UserCaseloadDetail } from '../data/manageUsersApiClient'
 
 export default class UserService {
   constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}

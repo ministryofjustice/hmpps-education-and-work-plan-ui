@@ -58,6 +58,7 @@ describe('overviewController', () => {
 
   beforeEach(() => {
     res.locals = {
+      ...res.locals,
       prisonerSummary,
       curiousInPrisonCourses,
       prisonerFunctionalSkills,

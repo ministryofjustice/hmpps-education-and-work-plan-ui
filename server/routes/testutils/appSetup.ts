@@ -13,6 +13,7 @@ import setUpWebSession from '../../middleware/setUpWebSession'
 import auditMiddleware from '../../middleware/auditMiddleware'
 import populateUserAuthorities from '../../middleware/populateUserAuthorities'
 import createUserToken from '../../testutils/createUserToken'
+import { HmppsUser } from '../../interfaces/hmppsUser'
 
 jest.mock('../../services/auditService')
 
@@ -33,7 +34,7 @@ const testUserWithManagerRole = {
   username: 'user1',
   displayName: 'First Last',
   activeCaseLoadId: 'BXI',
-  caseLoadIds: ['MDI', 'BXI'],
+  caseLoads: [{ caseLoadId: 'MDI' }, { caseLoadId: 'BXI' }],
   authSource: 'nomis',
   roles: ['ROLE_LWP_MANAGER'],
 }
@@ -51,7 +52,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
     req.user = userSupplier()
     req.flash = flashProvider
     res.locals = {
-      user: { ...req.user },
+      user: { ...(req.user as HmppsUser) },
     }
     next()
   })
