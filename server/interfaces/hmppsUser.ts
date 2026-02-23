@@ -25,7 +25,7 @@ export interface PrisonUser extends BaseUser {
   authSource: 'nomis'
   staffId: number
   activeCaseLoadId: string
-  caseLoadIds: string[]
+  caseLoads: Array<{ caseLoadId: string }>
 }
 
 /**

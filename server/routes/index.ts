@@ -1,4 +1,5 @@
-import { Router } from 'express'
+import { Request, Router } from 'express'
+import { PrisonerBasePermission, prisonerPermissionsGuard } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { type Services } from '../services'
 import createGoal from './createGoal'
 import updateGoal from './updateGoal'
@@ -19,7 +20,6 @@ import completeOrArchiveGoal from './completeOrArchive'
 import createPrePrisonEducation from './prePrisonEducation/create'
 import updatePrePrisonEducation from './prePrisonEducation/update'
 import reviewPlanRoutes from './reviewPlan'
-import checkPrisonerInCaseload from '../middleware/checkPrisonerInCaseloadMiddleware'
 import landingPageRoutes from './landingPage'
 import sessionSummaryRoutes from './sessionSummary'
 import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateActiveCaseloadPrisonName'
@@ -84,11 +84,9 @@ function prisonerSummarySetup(router: Router, services: Services) {
   router.param('prisonNumber', retrievePrisonerSummary(services.prisonerService))
   router.param(
     'prisonNumber',
-    checkPrisonerInCaseload({
-      allowGlobal: true,
-      allowGlobalPom: true,
-      allowInactive: true,
-      activeCaseloadOnly: false,
+    prisonerPermissionsGuard(services.prisonPermissionsService, {
+      requestDependentOn: [PrisonerBasePermission.read],
+      getPrisonerNumberFunction: (req: Request) => req.params.prisonNumber,
     }),
   )
 }

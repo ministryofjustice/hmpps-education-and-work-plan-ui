@@ -34,7 +34,7 @@ const testUserWithManagerRole = {
   username: 'user1',
   displayName: 'First Last',
   activeCaseLoadId: 'BXI',
-  caseLoadIds: ['MDI', 'BXI'],
+  caseLoads: [{ caseLoadId: 'MDI' }, { caseLoadId: 'BXI' }],
   authSource: 'nomis',
   roles: ['ROLE_LWP_MANAGER'],
 }

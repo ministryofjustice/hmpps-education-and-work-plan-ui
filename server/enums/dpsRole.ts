@@ -5,11 +5,6 @@ enum DpsRole {
 
   // LRS Matching Service roles
   ROLE_MATCH_LEARNER_RECORD_RW = 'ROLE_MATCH_LEARNER_RECORD_RW',
-
-  // Other DPS roles
-  ROLE_GLOBAL_SEARCH = 'ROLE_GLOBAL_SEARCH',
-  ROLE_INACTIVE_BOOKINGS = 'ROLE_INACTIVE_BOOKINGS',
-  ROLE_POM = 'ROLE_POM',
 }
 
 export default DpsRole

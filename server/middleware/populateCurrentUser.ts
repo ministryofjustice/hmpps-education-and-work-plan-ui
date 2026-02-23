@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode'
 import logger from '../../logger'
 import UserService from '../services/userService'
 import { convertToTitleCase } from '../utils/utils'
+import { PrisonCaseload } from '../data/manageUsersApiClient'
 
 export function populateCurrentUser(): RequestHandler {
   return async (req, res, next) => {
@@ -48,8 +49,9 @@ export function populateCurrentUserCaseloads(userService: UserService): RequestH
     try {
       if (res.locals.user && res.locals.user.authSource === 'nomis') {
         const userCaseLoadDetail = await userService.getUserCaseLoads(res.locals.user.token)
-
-        res.locals.user.caseLoadIds = userCaseLoadDetail.caseloads.map(caseload => caseload.id)
+        res.locals.user.caseLoads = userCaseLoadDetail.caseloads.map((caseload: PrisonCaseload) => ({
+          caseLoadId: caseload.id,
+        }))
 
         if (userCaseLoadDetail.activeCaseload) {
           res.locals.user.activeCaseLoadId = userCaseLoadDetail.activeCaseload.id

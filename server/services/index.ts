@@ -1,4 +1,5 @@
-import { dataAccess } from '../data'
+import { PermissionsService as PrisonPermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { ApplicationInfo, dataAccess } from '../data'
 import AuditService from './auditService'
 import UserService from './userService'
 import PrisonerService from './prisonerService'
@@ -15,6 +16,8 @@ import SupportAdditionalNeedsService from './supportAdditionalNeedsService'
 import LearnerRecordsService from './learnerRecordsService'
 import SearchService from './searchService'
 import EmployabilitySkillsService from './employabilitySkillsService'
+import config from '../config'
+import logger from '../../logger'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -22,6 +25,8 @@ import EmployabilitySkillsService from './employabilitySkillsService'
 export const services = () => {
   const {
     applicationInfo,
+    telemetryClient,
+    hmppsAuthClient,
     hmppsAuditClient,
     manageUsersApiClient,
     prisonerSearchStore,
@@ -35,6 +40,13 @@ export const services = () => {
     supportAdditionalNeedsApiClient,
     learnerRecordsApiClient,
   } = dataAccess()
+
+  const prisonPermissionsService = PrisonPermissionsService.create({
+    prisonerSearchConfig: config.apis.prisonerSearch,
+    authenticationClient: hmppsAuthClient,
+    logger,
+    telemetryClient,
+  })
 
   const auditService = new AuditService(hmppsAuditClient)
   const userService = new UserService(manageUsersApiClient)
@@ -71,12 +83,14 @@ export const services = () => {
     supportAdditionalNeedsService,
     learnerRecordsService,
     employabilitySkillsService,
+    prisonPermissionsService,
   }
 }
 
 export type Services = ReturnType<typeof services>
 
 export {
+  type ApplicationInfo,
   AuditService,
   UserService,
   PrisonerService,
@@ -89,8 +103,9 @@ export {
   TimelineService,
   PrisonService,
   SessionService,
-  SupportAdditionalNeedsService,
   JourneyDataService,
+  SupportAdditionalNeedsService,
   LearnerRecordsService,
   EmployabilitySkillsService,
+  PrisonPermissionsService,
 }
