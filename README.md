@@ -1,6 +1,7 @@
 # hmpps-education-and-work-plan-ui
 [![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=flat&logo=github&label=MoJ%20Compliant&query=%24.result&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-education-and-work-plan-ui)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-education-and-work-plan-ui "Link to report")
-[![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-education-and-work-plan-ui/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-education-and-work-plan-ui)
+[![pipeline](https://github.com/ministryofjustice/hmpps-education-and-work-plan-ui/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-education-and-work-plan-ui)
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 UI application, based on the HMPPS Typescript project template, that provides the browser based UI for "Learning and
 work progress".
