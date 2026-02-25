@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import type { ArchiveGoalForm } from 'forms'
 import createError from 'http-errors'
 import type { ArchiveGoalDto } from 'dto'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
@@ -7,7 +6,6 @@ import AuditService, { BaseAuditData } from '../../services/auditService'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
 import ArchiveGoalController from './archiveGoalController'
 import { aValidGoal } from '../../testsupport/actionPlanTestDataBuilder'
-import validateArchiveGoalForm from './archiveGoalFormValidator'
 import aValidArchiveGoalForm from '../../testsupport/archiveGoalFormTestDataBuilder'
 import ReasonToArchiveGoalValue from '../../enums/ReasonToArchiveGoalValue'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
@@ -16,11 +14,9 @@ import { Result } from '../../utils/result/result'
 
 jest.mock('../../services/educationAndWorkPlanService')
 jest.mock('../../services/auditService')
-jest.mock('./archiveGoalFormValidator')
 jest.mock('./mappers/archiveGoalFormToDtoMapper')
 
 describe('archiveGoalController', () => {
-  const mockedValidateArchiveGoalForm = validateArchiveGoalForm as jest.MockedFunction<typeof validateArchiveGoalForm>
   const mockedArchiveGoalFormToArchiveGoalDtoMapper = toArchiveGoalDto as jest.MockedFunction<typeof toArchiveGoalDto>
 
   const educationAndWorkPlanService = new EducationAndWorkPlanService(
@@ -57,15 +53,11 @@ describe('archiveGoalController', () => {
   } as unknown as Response
   const next = jest.fn()
 
-  let errors: Array<Record<string, string>>
-
   beforeEach(() => {
     jest.resetAllMocks()
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
     req.params.prisonNumber = prisonNumber
     req.params.goalReference = goalReference
-
-    errors = []
   })
 
   describe('getArchiveGoalView', () => {
@@ -105,52 +97,27 @@ describe('archiveGoalController', () => {
   })
 
   describe('submitArchiveGoalForm', () => {
-    it('should redirect to review archive goal page given action is submit-form and validation passes', async () => {
+    it('should redirect to review archive goal page', async () => {
       // Given
       req.params.prisonNumber = 'A1234GC'
 
       const archiveGoalForm = aValidArchiveGoalForm(goalReference)
       req.body = { ...archiveGoalForm }
 
-      mockedValidateArchiveGoalForm.mockReturnValue([])
-
       // When
       await controller.submitArchiveGoalForm(req, res, next)
 
       // Then
       expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/archive/review`)
-      expect(mockedValidateArchiveGoalForm).toHaveBeenCalledWith(archiveGoalForm)
       expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toStrictEqual(archiveGoalForm)
-      expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
-    })
-
-    it('should redirect to archive goal form given validation fails', async () => {
-      // Given
-      req.params.prisonNumber = 'A1234GC'
-      req.body = { reference: goalReference, title: 'Learn German' }
-
-      errors = [{ href: '#reason', text: 'bang!' }]
-      mockedValidateArchiveGoalForm.mockReturnValue(errors)
-
-      const expectedArchiveGoalForm: ArchiveGoalForm = { reference: goalReference, title: 'Learn German' }
-
-      // When
-      await controller.submitArchiveGoalForm(req, res, next)
-
-      // Then
-      expect(res.redirectWithErrors).toHaveBeenCalledWith(
-        `/plan/${prisonNumber}/goals/${goalReference}/archive`,
-        errors,
-      )
-      expect(getPrisonerContext(req.session, prisonNumber).archiveGoalForm).toEqual(expectedArchiveGoalForm)
       expect(educationAndWorkPlanService.archiveGoal).not.toHaveBeenCalled()
     })
   })
 
   describe('getReviewArchiveGoalView', () => {
-    it('should get the view with the form in the session', async () => {
+    it('should get the view given a form is on the prisoner context', async () => {
       // Given
-      const expectedForm: ArchiveGoalForm = {
+      const expectedForm = {
         reference: goalReference,
         title: 'Some goal',
         reason: ReasonToArchiveGoalValue.PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL,
