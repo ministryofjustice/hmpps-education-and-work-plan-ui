@@ -6,6 +6,8 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import ApplicationAction from '../../enums/applicationAction'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 import retrieveGoal from '../routerRequestHandlers/retrieveGoal'
+import archiveGoalSchema from './validationSchemas/archiveGoalSchema'
+import { validate } from '../routerRequestHandlers/validationMiddleware'
 
 /**
  * Route definitions for the pages relating to Archiving A Goal
@@ -22,6 +24,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(archiveGoalController.getArchiveGoalView),
   ])
   router.post('/plan/:prisonNumber/goals/:goalReference/archive', [
+    validate(archiveGoalSchema),
     asyncMiddleware(archiveGoalController.submitArchiveGoalForm),
   ])
 

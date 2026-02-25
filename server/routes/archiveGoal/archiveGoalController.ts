@@ -1,8 +1,5 @@
 import type { RequestHandler, Request } from 'express'
-import type { ArchiveGoalForm } from 'forms'
 import EducationAndWorkPlanService from '../../services/educationAndWorkPlanService'
-import validateArchiveGoalForm from './archiveGoalFormValidator'
-import ReviewArchiveGoalView from './reviewArchiveGoalView'
 import toArchiveGoalDto from './mappers/archiveGoalFormToDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
@@ -22,9 +19,9 @@ export default class ArchiveGoalController {
 
   getArchiveGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber } = req.params
-    const { prisonerSummary, goal } = res.locals
+    const { prisonerSummary, goal, invalidForm } = res.locals
 
-    const archiveGoalForm = getPrisonerContext(req.session, prisonNumber).archiveGoalForm || {}
+    const archiveGoalForm = invalidForm ?? (getPrisonerContext(req.session, prisonNumber).archiveGoalForm || {})
 
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = undefined
 
@@ -33,13 +30,8 @@ export default class ArchiveGoalController {
 
   submitArchiveGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const archiveGoalForm: ArchiveGoalForm = { ...req.body }
+    const archiveGoalForm = { ...req.body }
     getPrisonerContext(req.session, prisonNumber).archiveGoalForm = archiveGoalForm
-
-    const errors = validateArchiveGoalForm(archiveGoalForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/${goalReference}/archive`, errors)
-    }
 
     return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/archive/review`)
   }
@@ -54,8 +46,8 @@ export default class ArchiveGoalController {
     if (!archiveGoalForm) {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/archive`)
     }
-    const view = new ReviewArchiveGoalView(prisonerSummary, archiveGoalForm)
-    return res.render('pages/goal/archive/review', { ...view.renderArgs })
+
+    return res.render('pages/goal/archive/review', { prisonerSummary, form: archiveGoalForm })
   }
 
   submitReviewArchiveGoal: RequestHandler = async (req, res, next): Promise<void> => {
