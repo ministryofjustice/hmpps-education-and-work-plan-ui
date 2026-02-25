@@ -12,8 +12,8 @@ Data supplied to this template:
 
   <tr class="govuk-table__row">
     <th class="govuk-table__header">{{ params.skillType | formatEmployabilitySkill }}</th>
-    <td class="govuk-table__cell govuk-!-display-none">{{ currentRating | formatEmployabilitySkillRating | default('Not assessed') }}</td>
-    <td class="govuk-table__cell govuk-!-display-none">{{ previousRating | formatEmployabilitySkillRating | default('N/A') }}</td>
+    <td class="govuk-table__cell">{{ currentRating | formatEmployabilitySkillRating | default('Not assessed') }}</td>
+    <td class="govuk-table__cell">{{ previousRating | formatEmployabilitySkillRating | default('N/A') }}</td>
     <td class="govuk-table__cell">
       <ul class="govuk-list employability-skills-actions">
         {% if params.userHasPermissionTo('VIEW_EMPLOYABILITY_SKILL_RATINGS') %}
@@ -53,8 +53,8 @@ Data supplied to this template:
             <thead class="govuk-table__head">
               <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Skill</th>
-                <th scope="col" class="govuk-table__header govuk-!-display-none">Current level</th>
-                <th scope="col" class="govuk-table__header govuk-!-display-none">Previous level</th>
+                <th scope="col" class="govuk-table__header">Current level</th>
+                <th scope="col" class="govuk-table__header">Previous level</th>
                 <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
               </tr>
             </thead>
