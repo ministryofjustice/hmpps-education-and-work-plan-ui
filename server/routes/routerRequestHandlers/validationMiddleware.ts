@@ -89,10 +89,27 @@ export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler =
 
     req.flash(FLASH_KEY__INVALID_FORM_DATA, JSON.stringify(req.body))
 
-    const deduplicatedFieldErrors: Array<Error> = Object.entries(z.flattenError(result.error).fieldErrors)
-      .map(([key, value]) => [key, [...new Set(value as string)]])
+    const flattenedErrors = result.error.issues
+      .map(issue => ({
+        normalisedKey: `${issue.path
+          .map(key => key.valueOf())
+          .filter((key, idx, sourceArray) => !(idx + 1 === sourceArray.length && typeof key === 'number'))
+          .map(key => (typeof key === 'number' ? `[${key.toString()}]` : key))
+          .join('.')
+          .replaceAll('.[', '[')}`,
+        message: issue.message,
+      }))
+      .reduce(
+        (acc, issue) => {
+          acc[issue.normalisedKey] = acc[issue.normalisedKey] ?? { messages: [] }
+          acc[issue.normalisedKey].messages.push(issue.message)
+          return acc
+        },
+        {} as Record<string, { messages: Array<string> }>,
+      )
+    const deduplicatedFieldErrors: Array<Error> = Object.entries(flattenedErrors)
+      .map(([key, value]) => [key, [...new Set(value.messages)]])
       .map(([key, value]) => ({ href: `#${key}`, text: value[0] }))
-      .concat(z.flattenError(result.error).formErrors.map(error => ({ href: '#', text: error })))
 
     return res.redirectWithErrors(req.originalUrl, deduplicatedFieldErrors)
   }

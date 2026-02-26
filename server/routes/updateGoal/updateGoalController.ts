@@ -7,13 +7,16 @@ import EducationAndWorkPlanService from '../../services/educationAndWorkPlanServ
 import UpdateGoalView from './updateGoalView'
 import ReviewUpdateGoalView from './reviewUpdateGoalView'
 import { toUpdateGoalForm } from './mappers/goalToUpdateGoalFormMapper'
-import validateUpdateGoalForm from './updateGoalFormValidator'
 import { toUpdateGoalDto } from './mappers/updateGoalFormToUpdateGoalDtoMapper'
 import { AuditService } from '../../services'
 import { BaseAuditData } from '../../services/auditService'
 import { getPrisonerContext } from '../../data/session/prisonerContexts'
 import { Result } from '../../utils/result/result'
 import logger from '../../../logger'
+import {
+  clearRedirectPendingFlag,
+  setRedirectPendingFlag,
+} from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 
 export default class UpdateGoalController {
   constructor(
@@ -23,10 +26,12 @@ export default class UpdateGoalController {
 
   getUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
     const { prisonNumber, goalReference } = req.params
-    const { prisonerSummary, goals } = res.locals
+    const { prisonerSummary, goals, invalidForm } = res.locals
 
     let updateGoalForm: UpdateGoalForm
-    if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
+    if (invalidForm) {
+      updateGoalForm = invalidForm
+    } else if (getPrisonerContext(req.session, prisonNumber).updateGoalForm) {
       updateGoalForm = getPrisonerContext(req.session, prisonNumber).updateGoalForm
     } else {
       if (goals.problemRetrievingData) {
@@ -76,11 +81,6 @@ export default class UpdateGoalController {
       return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
     }
 
-    const errors = validateUpdateGoalForm(updateGoalForm)
-    if (errors.length > 0) {
-      return res.redirectWithErrors(`/plan/${prisonNumber}/goals/${goalReference}/update`, errors)
-    }
-
     // Redirect to the desired page based on the form action
     if (updateGoalForm.action === 'add-another-step') {
       // Initialize a new UpdateStepForm with the next step number
@@ -100,6 +100,8 @@ export default class UpdateGoalController {
     const { prisonerSummary } = res.locals
     const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
     const { prisonId } = prisonerSummary
+
+    clearRedirectPendingFlag(req)
 
     const updateGoalDto = toUpdateGoalDto(updateGoalForm, prisonId)
     const view = new ReviewUpdateGoalView(prisonerSummary, updateGoalDto)
@@ -127,6 +129,7 @@ export default class UpdateGoalController {
 
     getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
     this.auditService.logUpdateGoal(updateGoalAuditData(req)) // no need to wait for response
+    setRedirectPendingFlag(req)
     return res.redirect(`/plan/${prisonNumber}/view/overview`)
   }
 }
