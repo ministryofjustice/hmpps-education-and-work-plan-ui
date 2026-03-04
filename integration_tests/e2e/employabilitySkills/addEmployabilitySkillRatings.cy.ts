@@ -6,6 +6,7 @@ import EmployabilitySkillRatingValue from '../../../server/enums/employabilitySk
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import EmployabilitySkillSessionType from '../../../server/enums/employabilitySkillSessionType'
 
 context('Add employability skill rating', () => {
   const prisonNumber = 'G6115VJ'
@@ -59,22 +60,33 @@ context('Add employability skill rating', () => {
 
     Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
       .isForSkill(EmployabilitySkillsValue.ORGANISATION)
-      .hasErrorCount(2)
+      .hasErrorCount(3)
       .hasFieldInError('rating')
       .hasFieldInError('evidence')
-      // answer the rating question, answer evidence with more characters than allowed
+      .hasFieldInError('sessionType')
+      // answer the rating question, answer session type without answering the conditional question, and answer evidence with more characters than allowed
       .selectRating(EmployabilitySkillRatingValue.QUITE_CONFIDENT)
+      .selectSessionType(EmployabilitySkillSessionType.EDUCATION_REVIEW)
       .enterEvidence('a'.repeat(201))
       .submitPage()
 
     Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
       .isForSkill(EmployabilitySkillsValue.ORGANISATION)
-      .hasErrorCount(1)
+      .hasErrorCount(2)
       .hasFieldInError('evidence')
+      .hasFieldInError('educationCourseName')
       // answer the evidence field
       .enterEvidence(
         'Chris demonstrated their organisation skills in the Woodworking workshop by having a consistently tidy bench area',
       )
+      .submitPage()
+
+    Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
+      .isForSkill(EmployabilitySkillsValue.ORGANISATION)
+      .hasErrorCount(1)
+      .hasFieldInError('educationCourseName')
+      // answer the education course name field
+      .enterEducationCourseName('GCSE Woodwork')
       .submitPage()
 
     // Then
@@ -91,6 +103,7 @@ context('Add employability skill rating', () => {
               " && @.employabilitySkills[0].employabilitySkillType == 'ORGANISATION'" +
               " && @.employabilitySkills[0].employabilitySkillRating == 'QUITE_CONFIDENT'" +
               " && @.employabilitySkills[0].evidence == 'Chris demonstrated their organisation skills in the Woodworking workshop by having a consistently tidy bench area'" +
+              // TODO - include education course name value in the data sent to the API once the mapping to the API has been done
               ' && @.employabilitySkills[0].conversationDate == null' +
               ')]',
           ),
@@ -108,6 +121,7 @@ context('Add employability skill rating', () => {
     Page.verifyOnPage(AddEmployabilitySkillRatingsPage) //
       .isForSkill(EmployabilitySkillsValue.ORGANISATION)
       .selectRating(EmployabilitySkillRatingValue.VERY_CONFIDENT)
+      .selectSessionType(EmployabilitySkillSessionType.CIAG_REVIEW)
       .enterEvidence(
         'Chris demonstrated their organisation skills in the Woodworking workshop by having a consistently tidy bench area',
       )

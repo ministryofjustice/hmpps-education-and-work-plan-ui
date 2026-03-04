@@ -75,6 +75,80 @@
             classes: "govuk-!-margin-bottom-2"
           }) }}
 
+          {% set educationCourseNameHtml %}
+            {{ govukCharacterCount({
+              id: "educationCourseName",
+              name: "educationCourseName",
+              value: form.educationCourseName,
+              rows: 1,
+              maxlength: 100,
+              label: {
+                text: "Course name",
+                attributes: { "aria-live": "polite" }
+              },
+              charactersOverLimitText: {
+                one: 'Course name must be 100 characters or less',
+                other: 'Course name must be 100 characters or less'
+              },
+              attributes: { "aria-label" : "Give details of the course where the employability skill was evidenced" },
+              errorMessage: errors | findError('educationCourseName')
+            }) }}
+          {% endset -%}
+
+          {% set industriesWorkshopNameHtml %}
+            {{ govukCharacterCount({
+              id: "industriesWorkshopName",
+              name: "industriesWorkshopName",
+              value: form.industriesWorkshopName,
+              rows: 1,
+              maxlength: 100,
+              label: {
+                text: "Workshop name",
+                attributes: { "aria-live": "polite" }
+              },
+              charactersOverLimitText: {
+                one: 'Workshop name must be 100 characters or less',
+                other: 'Workshop name must be 100 characters or less'
+              },
+              attributes: { "aria-label" : "Give details of the workshop where the employability skill was evidenced" },
+              errorMessage: errors | findError('industriesWorkshopName')
+            }) }}
+          {% endset -%}
+
+          {{ govukRadios({
+            name: 'sessionType',
+            id: 'sessionType',
+            fieldset: {
+              legend: {
+                text: "Select the activity or session tyoe"
+              }
+            },
+            items: [
+              {
+                value: "CIAG_REVIEW",
+                text: "CIAG_REVIEW" | formatEmployabilitySkillSessionType,
+                checked: true if form.sessionType == 'CIAG_REVIEW'
+              },
+              {
+                value: "EDUCATION_REVIEW",
+                text: "EDUCATION_REVIEW" | formatEmployabilitySkillSessionType,
+                checked: true if form.sessionType == 'EDUCATION_REVIEW',
+                conditional: {
+                  html: educationCourseNameHtml
+                }
+              },
+              {
+                value: "INDUSTRIES_REVIEW",
+                text: "INDUSTRIES_REVIEW" | formatEmployabilitySkillSessionType,
+                checked: true if form.sessionType == 'INDUSTRIES_REVIEW',
+                conditional: {
+                  html: industriesWorkshopNameHtml
+                }
+              }
+            ],
+            errorMessage: errors | findError('sessionType')
+          }) }}
+
           {{ govukCharacterCount({
             id: "evidence",
             name: "evidence",
