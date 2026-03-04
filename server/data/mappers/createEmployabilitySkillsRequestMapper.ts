@@ -1,6 +1,5 @@
 import type { CreateEmployabilitySkillsRequest } from 'educationAndWorkPlanApiClient'
 import type { CreateEmployabilitySkillDto } from 'dto'
-import { format } from 'date-fns'
 
 const toCreateEmployabilitySkillsRequest = (
   employabilitySkillDtos: Array<CreateEmployabilitySkillDto>,
@@ -9,11 +8,9 @@ const toCreateEmployabilitySkillsRequest = (
     prisonId: employabilitySkillDto.prisonId,
     employabilitySkillType: employabilitySkillDto.employabilitySkillType,
     employabilitySkillRating: employabilitySkillDto.employabilitySkillRating,
-    activityName: employabilitySkillDto.activityName,
     evidence: employabilitySkillDto.evidence,
-    conversationDate: employabilitySkillDto.conversationDate
-      ? format(employabilitySkillDto.conversationDate, 'yyyy-MM-dd')
-      : null,
+    sessionType: null as string, // TODO - update the mapping of these 2 fields once the DTO has been updated with corresponding fields
+    sessionTypeDescription: null as string,
   })),
 })
 export default toCreateEmployabilitySkillsRequest

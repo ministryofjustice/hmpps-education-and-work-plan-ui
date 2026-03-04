@@ -104,7 +104,6 @@ context('Add employability skill rating', () => {
               " && @.employabilitySkills[0].employabilitySkillRating == 'QUITE_CONFIDENT'" +
               " && @.employabilitySkills[0].evidence == 'Chris demonstrated their organisation skills in the Woodworking workshop by having a consistently tidy bench area'" +
               // TODO - include education course name value in the data sent to the API once the mapping to the API has been done
-              ' && @.employabilitySkills[0].conversationDate == null' +
               ')]',
           ),
         ),

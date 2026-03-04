@@ -1,6 +1,5 @@
 import type { GetEmployabilitySkillResponses, GetEmployabilitySkillsResponse } from 'educationAndWorkPlanApiClient'
 import type { EmployabilitySkillResponseDto, EmployabilitySkillsList } from 'dto'
-import { startOfDay } from 'date-fns'
 import toReferenceAndAuditable from './referencedAndAuditableMapper'
 
 const toEmployabilitySkillsList = (
@@ -17,11 +16,10 @@ const toEmployabilitySkillResponseDto = (
   ...toReferenceAndAuditable(employabilitySkillsResponse),
   employabilitySkillType: employabilitySkillsResponse.employabilitySkillType,
   employabilitySkillRating: employabilitySkillsResponse.employabilitySkillRating,
-  activityName: employabilitySkillsResponse.activityName,
   evidence: employabilitySkillsResponse.evidence,
-  conversationDate: employabilitySkillsResponse.conversationDate
-    ? startOfDay(employabilitySkillsResponse.conversationDate)
-    : null,
+  activityName: undefined,
+  conversationDate: undefined,
+  // TODO - update the mapping to include sessionType and sessionTypeDescription once the DTO has been updated with these fields
 })
 
 export { toEmployabilitySkillsList, toEmployabilitySkillResponseDto }

@@ -283,7 +283,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['getGoals_1']
+    get: operations['getEmployabilitySkills']
     put?: never
     post: operations['createEmployabilitySkills']
     delete?: never
@@ -1111,6 +1111,11 @@ export interface components {
        * @example 2023-06-19
        */
       exemptionDate?: string
+      /**
+       * @description whether or not this schedule was created as a result of a transfer
+       * @example false
+       */
+      followingTransfer?: boolean
     }
     SessionResponses: {
       /**
@@ -1355,7 +1360,7 @@ export interface components {
       offenderId: string
       /**
        * @description Whether the Prisoner wishes to work or not.
-       * @example null
+       * @example false
        */
       desireToWork: boolean
       /**
@@ -1652,21 +1657,20 @@ export interface components {
        */
       employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
       /**
-       * @description The name of the activity where the skill was assessed.
-       * @example null
-       */
-      activityName: string
-      /**
        * @description Any evidence to support the skill rating.
        * @example null
        */
       evidence: string
       /**
-       * Format: date
-       * @description The date the conversation about skills took place (optional).
-       * @example 1999-12-01
+       * @example null
+       * @enum {string}
        */
-      conversationDate?: string
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      /**
+       * @description Free text about the session type eg Mathematics A level.
+       * @example null
+       */
+      sessionTypeDescription?: string
     }
     CreateEmployabilitySkillsRequest: {
       /**
@@ -1713,6 +1717,7 @@ export interface components {
         | 'PRISON_ADMISSION'
         | 'PRISON_RELEASE'
         | 'PRISON_TRANSFER'
+        | 'EMPLOYABILITY_SKILL_TYPE'
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
        * @example {GOAL_TITLE=Learn French}
@@ -1929,6 +1934,11 @@ export interface components {
        * @example 2023-06-19
        */
       deadlineDate?: string
+      /**
+       * @description whether or not this schedule was created as a result of a transfer
+       * @example false
+       */
+      followingTransfer?: boolean
     }
     SessionSearchResponses: {
       /**
@@ -2800,7 +2810,7 @@ export interface components {
       inductionSchedules: components['schemas']['InductionScheduleResponse'][]
     }
     EducationAssessmentRequired: {
-      /** @example null */
+      /** @example false */
       basicSkillsAssessmentRequired?: boolean
     }
     ActionPlanResponse: {
@@ -3051,7 +3061,7 @@ export interface components {
       createdAtPrison: string
       /**
        * @description This was the last review before the prisoner was due to be released.
-       * @example null
+       * @example false
        */
       preRelease: boolean
       /**
@@ -3177,21 +3187,20 @@ export interface components {
        */
       employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
       /**
-       * @description The name of the activity where the skill was assessed.
-       * @example null
-       */
-      activityName: string
-      /**
        * @description Any evidence to support the skill rating.
        * @example null
        */
       evidence: string
       /**
-       * Format: date
-       * @description The date the conversation about skills took place (optional).
-       * @example 1999-12-01
+       * @example null
+       * @enum {string}
        */
-      conversationDate?: string
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      /**
+       * @description Free text about the session type eg Mathematics A level.
+       * @example null
+       */
+      sessionTypeDescription?: string
     }
   }
   responses: never
@@ -3815,7 +3824,7 @@ export interface operations {
       }
     }
   }
-  getGoals_1: {
+  getEmployabilitySkills: {
     parameters: {
       query?: never
       header?: never
