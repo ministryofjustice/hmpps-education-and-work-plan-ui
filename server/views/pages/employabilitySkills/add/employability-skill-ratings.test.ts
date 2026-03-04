@@ -17,6 +17,7 @@ import EmployabilitySkillsValue from '../../../../enums/employabilitySkillsValue
 import EmployabilitySkillRatingValue from '../../../../enums/employabilitySkillRatingValue'
 import groupArrayByPropertyFilter from '../../../../filters/groupArrayByPropertyFilter'
 import findErrorFilter from '../../../../filters/findErrorFilter'
+import formatEmployabilitySkillSessionTypeFilter from '../../../../filters/formatEmployabilitySkillSessionTypeFilter'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -33,6 +34,7 @@ njkEnv //
   .addFilter('formatEmployabilitySkill', formatEmployabilitySkillsFilter)
   .addFilter('formatEmployabilitySkillQuestionText', formatEmployabilitySkillQuestionTextFilter)
   .addFilter('formatEmployabilitySkillRating', formatEmployabilitySkillRatingFilter)
+  .addFilter('formatEmployabilitySkillSessionType', formatEmployabilitySkillSessionTypeFilter)
 
 const template = './employability-skill-ratings.njk'
 

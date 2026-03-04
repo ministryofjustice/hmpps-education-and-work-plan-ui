@@ -10,6 +10,7 @@ import {
   clearRedirectPendingFlag,
   setRedirectPendingFlag,
 } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import EmployabilitySkillSessionType from '../../../enums/employabilitySkillSessionType'
 
 export default class AddEmployabilitySkillRatingsController {
   constructor(
@@ -73,18 +74,28 @@ export default class AddEmployabilitySkillRatingsController {
     return {
       rating: dto.employabilitySkillRating,
       evidence: dto.evidence,
+      sessionType: undefined as EmployabilitySkillSessionType, // TODO map from DTO
+      educationCourseName: undefined as string, // TODO map from DTO
+      industriesWorkshopName: undefined as string, // TODO map from DTO
     }
   }
 
   private updateDtoFromForm = (
     req: Request,
-    form: { rating: EmployabilitySkillRatingValue; evidence: string },
+    form: {
+      rating: EmployabilitySkillRatingValue
+      evidence: string
+      sessionType: EmployabilitySkillSessionType
+      educationCourseName?: string
+      industriesWorkshopName?: string
+    },
     skillType: string,
   ) => {
     const { createEmployabilitySkillDto } = req.journeyData
     createEmployabilitySkillDto.employabilitySkillType = skillType
     createEmployabilitySkillDto.employabilitySkillRating = form.rating
     createEmployabilitySkillDto.evidence = form.evidence
+    // TODO map session type and course/workshop name into the DTO
     req.journeyData.createEmployabilitySkillDto = createEmployabilitySkillDto
   }
 
