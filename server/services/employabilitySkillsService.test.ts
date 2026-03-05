@@ -16,6 +16,7 @@ import {
   aCreateEmployabilitySkillRequest,
   aCreateEmployabilitySkillsRequest,
 } from '../testsupport/createEmployabilitySkillsRequestTestDataBuilder'
+import EmployabilitySkillSessionType from '../enums/employabilitySkillSessionType'
 
 jest.mock('../data/educationAndWorkPlanClient')
 
@@ -119,6 +120,8 @@ describe('employabilitySkillsService', () => {
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
+          sessionType: EmployabilitySkillSessionType.CIAG_INDUCTION,
+          sessionTypeDescription: null,
         }),
       ]
 
@@ -129,7 +132,7 @@ describe('employabilitySkillsService', () => {
             employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
             employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
             evidence: 'Supervisor has reported this',
-            sessionType: null,
+            sessionType: EmployabilitySkillSessionType.CIAG_INDUCTION,
             sessionTypeDescription: null,
           }),
         ],

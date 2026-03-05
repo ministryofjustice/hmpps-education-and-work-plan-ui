@@ -1,4 +1,4 @@
-import { Request, Response, RequestHandler, NextFunction } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
 import type { CreateEmployabilitySkillDto } from 'dto'
 import { AuditService, EmployabilitySkillsService } from '../../../services'
 import { formatEmployabilitySkillsFilter } from '../../../filters/formatEmployabilitySkillsFilter'
@@ -74,9 +74,11 @@ export default class AddEmployabilitySkillRatingsController {
     return {
       rating: dto.employabilitySkillRating,
       evidence: dto.evidence,
-      sessionType: undefined as EmployabilitySkillSessionType, // TODO map from DTO
-      educationCourseName: undefined as string, // TODO map from DTO
-      industriesWorkshopName: undefined as string, // TODO map from DTO
+      sessionType: dto.sessionType,
+      educationCourseName:
+        dto.sessionType === EmployabilitySkillSessionType.EDUCATION_REVIEW ? dto.sessionTypeDescription : undefined,
+      industriesWorkshopName:
+        dto.sessionType === EmployabilitySkillSessionType.INDUSTRIES_REVIEW ? dto.sessionTypeDescription : undefined,
     }
   }
 
@@ -95,8 +97,23 @@ export default class AddEmployabilitySkillRatingsController {
     createEmployabilitySkillDto.employabilitySkillType = skillType
     createEmployabilitySkillDto.employabilitySkillRating = form.rating
     createEmployabilitySkillDto.evidence = form.evidence
-    // TODO map session type and course/workshop name into the DTO
+    createEmployabilitySkillDto.sessionType = form.sessionType
+    createEmployabilitySkillDto.sessionTypeDescription = this.getSessionTypeDescription(form)
     req.journeyData.createEmployabilitySkillDto = createEmployabilitySkillDto
+  }
+
+  private getSessionTypeDescription = (form: {
+    sessionType: EmployabilitySkillSessionType
+    educationCourseName?: string
+    industriesWorkshopName?: string
+  }): string => {
+    if (form.sessionType === EmployabilitySkillSessionType.EDUCATION_REVIEW) {
+      return form.educationCourseName
+    }
+    if (form.sessionType === EmployabilitySkillSessionType.INDUSTRIES_REVIEW) {
+      return form.industriesWorkshopName
+    }
+    return undefined
   }
 
   private addEmployabilitySkillRatingAuditData = (req: Request, skillType: string): BaseAuditData => {

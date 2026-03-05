@@ -10,6 +10,7 @@ import {
 } from '../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../enums/employabilitySkillRatingValue'
+import EmployabilitySkillSessionType from '../../enums/employabilitySkillSessionType'
 
 describe('employabilitySkillResponseDtoMapper', () => {
   it('should map GetEmployabilitySkillResponses to an EmployabilitySkillsList', () => {
@@ -21,6 +22,8 @@ describe('employabilitySkillResponseDtoMapper', () => {
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
+          sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
+          sessionTypeDescription: 'Maths',
           createdBy: 'asmith_gen',
           createdByDisplayName: 'Alex Smith',
           createdAt: '2023-06-19T09:39:44Z',
@@ -40,6 +43,8 @@ describe('employabilitySkillResponseDtoMapper', () => {
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
+          sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
+          sessionTypeDescription: 'Maths',
           createdAt: parseISO('2023-06-19T09:39:44Z'),
           createdAtPrison: 'MDI',
           createdBy: 'asmith_gen',
