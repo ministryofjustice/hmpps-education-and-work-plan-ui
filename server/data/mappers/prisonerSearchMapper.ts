@@ -85,7 +85,7 @@ const buildPageLinks = (
 const buildQueryString = (searchOptions: SearchOptions, page: number): string => {
   const queryStringParams = [
     searchOptions.searchTerm && `searchTerm=${decodeURIComponent(searchOptions.searchTerm)}`,
-    searchOptions.planStatus && `planStatus=${decodeURIComponent(searchOptions.planStatus)}`,
+    searchOptions.planStatus && `statusFilter=${decodeURIComponent(searchOptions.planStatus)}`,
     `sort=${searchOptions.sortBy},${searchOptions.sortOrder}`,
     `page=${page}`,
   ].filter(val => !!val)

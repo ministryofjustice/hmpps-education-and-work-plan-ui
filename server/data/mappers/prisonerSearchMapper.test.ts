@@ -43,17 +43,17 @@ describe('prisonerSearchMapper', () => {
           to: 2,
         },
         items: [
-          { text: '1', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=1', selected: false },
-          { text: '2', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=2', selected: true },
-          { text: '3', href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=3', selected: false },
+          { text: '1', href: '?searchTerm=Peigh&statusFilter=EXEMPT&sort=name,ascending&page=1', selected: false },
+          { text: '2', href: '?searchTerm=Peigh&statusFilter=EXEMPT&sort=name,ascending&page=2', selected: true },
+          { text: '3', href: '?searchTerm=Peigh&statusFilter=EXEMPT&sort=name,ascending&page=3', selected: false },
         ],
         previous: {
           text: 'Previous',
-          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=1',
+          href: '?searchTerm=Peigh&statusFilter=EXEMPT&sort=name,ascending&page=1',
         },
         next: {
           text: 'Next',
-          href: '?searchTerm=Peigh&planStatus=EXEMPT&sort=name,ascending&page=3',
+          href: '?searchTerm=Peigh&statusFilter=EXEMPT&sort=name,ascending&page=3',
         },
         prisoners: [
           aValidPrisonerSearchSummary({
