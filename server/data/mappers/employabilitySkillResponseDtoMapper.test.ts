@@ -1,4 +1,4 @@
-import { parseISO, startOfDay } from 'date-fns'
+import { parseISO } from 'date-fns'
 import { toEmployabilitySkillsList } from './employabilitySkillResponseDtoMapper'
 import {
   aGetEmployabilitySkillResponses,
@@ -20,9 +20,7 @@ describe('employabilitySkillResponseDtoMapper', () => {
         aGetEmployabilitySkillsResponse({
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-          activityName: 'E Wing Servery',
           evidence: 'Supervisor has reported this',
-          conversationDate: '2026-01-26',
           createdBy: 'asmith_gen',
           createdByDisplayName: 'Alex Smith',
           createdAt: '2023-06-19T09:39:44Z',
@@ -41,9 +39,7 @@ describe('employabilitySkillResponseDtoMapper', () => {
         anEmployabilitySkillResponseDto({
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-          activityName: 'E Wing Servery',
           evidence: 'Supervisor has reported this',
-          conversationDate: startOfDay('2026-01-26'),
           createdAt: parseISO('2023-06-19T09:39:44Z'),
           createdAtPrison: 'MDI',
           createdBy: 'asmith_gen',

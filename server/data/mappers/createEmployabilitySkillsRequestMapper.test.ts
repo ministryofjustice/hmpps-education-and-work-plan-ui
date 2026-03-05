@@ -1,4 +1,3 @@
-import { startOfDay } from 'date-fns'
 import type { CreateEmployabilitySkillDto } from 'dto'
 import toCreateEmployabilitySkillsRequest from './createEmployabilitySkillsRequestMapper'
 import {
@@ -17,17 +16,13 @@ describe('createEmployabilitySkillsRequestMapper', () => {
         prisonId: 'BXI',
         employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
         employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-        activityName: 'E Wing Servery',
         evidence: 'Supervisor has reported this',
-        conversationDate: startOfDay('2026-01-26'),
       }),
       aCreateEmployabilitySkillDto({
         prisonId: 'MDI',
         employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
         employabilitySkillRating: EmployabilitySkillRatingValue.LITTLE_CONFIDENCE,
-        activityName: 'B Wing Cleaning',
         evidence: 'Could not be relied upon to turn up on time',
-        conversationDate: null,
       }),
     ]
 
@@ -37,17 +32,17 @@ describe('createEmployabilitySkillsRequestMapper', () => {
           prisonId: 'BXI',
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-          activityName: 'E Wing Servery',
           evidence: 'Supervisor has reported this',
-          conversationDate: '2026-01-26',
+          sessionType: null,
+          sessionTypeDescription: null,
         }),
         aCreateEmployabilitySkillRequest({
           prisonId: 'MDI',
           employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
           employabilitySkillRating: EmployabilitySkillRatingValue.LITTLE_CONFIDENCE,
-          activityName: 'B Wing Cleaning',
           evidence: 'Could not be relied upon to turn up on time',
-          conversationDate: null,
+          sessionType: null,
+          sessionTypeDescription: null,
         }),
       ],
     })

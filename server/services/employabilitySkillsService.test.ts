@@ -1,4 +1,4 @@
-import { parseISO, startOfDay } from 'date-fns'
+import { parseISO } from 'date-fns'
 import EducationAndWorkPlanClient from '../data/educationAndWorkPlanClient'
 import EmployabilitySkillsService from './employabilitySkillsService'
 import {
@@ -38,9 +38,7 @@ describe('employabilitySkillsService', () => {
           aGetEmployabilitySkillsResponse({
             employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
             employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-            activityName: 'E Wing Servery',
             evidence: 'Supervisor has reported this',
-            conversationDate: '2026-01-26',
             createdBy: 'asmith_gen',
             createdByDisplayName: 'Alex Smith',
             createdAt: '2023-06-19T09:39:44Z',
@@ -60,9 +58,7 @@ describe('employabilitySkillsService', () => {
           anEmployabilitySkillResponseDto({
             employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
             employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-            activityName: 'E Wing Servery',
             evidence: 'Supervisor has reported this',
-            conversationDate: startOfDay('2026-01-26'),
             createdAt: parseISO('2023-06-19T09:39:44Z'),
             createdAtPrison: 'MDI',
             createdBy: 'asmith_gen',
@@ -122,9 +118,7 @@ describe('employabilitySkillsService', () => {
           prisonId: 'BXI',
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-          activityName: 'E Wing Servery',
           evidence: 'Supervisor has reported this',
-          conversationDate: startOfDay('2026-01-26'),
         }),
       ]
 
@@ -134,9 +128,9 @@ describe('employabilitySkillsService', () => {
             prisonId: 'BXI',
             employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
             employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
-            activityName: 'E Wing Servery',
             evidence: 'Supervisor has reported this',
-            conversationDate: '2026-01-26',
+            sessionType: null,
+            sessionTypeDescription: null,
           }),
         ],
       })
