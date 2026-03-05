@@ -13,6 +13,9 @@ import { formatEmployabilitySkillsFilter } from '../../../../filters/formatEmplo
 import formatEmployabilitySkillRatingFilter from '../../../../filters/formatEmployabilitySkillRatingFilter'
 import EmployabilitySkillsValue from '../../../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../../../enums/employabilitySkillRatingValue'
+import formatEmployabilitySkillSessionTypeFilter from '../../../../filters/formatEmployabilitySkillSessionTypeFilter'
+import formatDateFilter from '../../../../filters/formatDateFilter'
+import EmployabilitySkillSessionType from '../../../../enums/employabilitySkillSessionType'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -27,6 +30,8 @@ njkEnv //
   .addFilter('filterArrayOnProperty', filterArrayOnPropertyFilter)
   .addFilter('formatEmployabilitySkill', formatEmployabilitySkillsFilter)
   .addFilter('formatEmployabilitySkillRating', formatEmployabilitySkillRatingFilter)
+  .addFilter('formatEmployabilitySkillSessionType', formatEmployabilitySkillSessionTypeFilter)
+  .addFilter('formatDate', formatDateFilter)
 
 const template = './employability-skill-ratings.njk'
 
@@ -60,18 +65,27 @@ describe('View Employability Skill Ratings Page tests', () => {
               employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
               employabilitySkillRating: EmployabilitySkillRatingValue.VERY_CONFIDENT,
               updatedAt: startOfDay('2026-02-01'),
+              evidence: 'Turned up for our session when he said he would',
+              sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+              sessionTypeDescription: 'Metalwork workshop',
             }),
             anEmployabilitySkillResponseDto({ employabilitySkillType: EmployabilitySkillsValue.PROBLEM_SOLVING }),
             anEmployabilitySkillResponseDto({
               employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
               employabilitySkillRating: EmployabilitySkillRatingValue.NOT_CONFIDENT,
               updatedAt: startOfDay('2025-10-21'),
+              evidence: 'Did not attend his review, even though he said he would',
+              sessionType: EmployabilitySkillSessionType.CIAG_REVIEW,
+              sessionTypeDescription: null,
             }),
             anEmployabilitySkillResponseDto({ employabilitySkillType: EmployabilitySkillsValue.ORGANISATION }),
             anEmployabilitySkillResponseDto({
               employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
               employabilitySkillRating: EmployabilitySkillRatingValue.LITTLE_CONFIDENCE,
               updatedAt: startOfDay('2025-12-10'),
+              evidence: 'Sometimes can be relied on to do what he says he will',
+              sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
+              sessionTypeDescription: 'Maths',
             }),
           ],
         }),
@@ -87,9 +101,38 @@ describe('View Employability Skill Ratings Page tests', () => {
     const skillsRatingTable = $('[data-qa=RELIABILITY-employability-skill-ratings-table]')
     expect(skillsRatingTable.length).toEqual(1)
     expect(skillsRatingTable.find('tbody tr').length).toEqual(3) // expect 3 rows, one for each rating
+
     expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(0).text().trim()).toEqual('4 - very confident')
+    expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(1).text().trim()).toEqual(
+      'Industries: Metalwork workshop',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(2).text().trim()).toEqual('1 Feb 2026')
+    expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(3).text().trim()).toEqual(
+      'Turned up for our session when he said he would',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(4).text().trim()).toContain('Alex Smith')
+    expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(4).text().trim()).toContain('Moorland (HMP & YOI)')
+
     expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(0).text().trim()).toEqual('2 - a little confident')
+    expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(1).text().trim()).toEqual('Education: Maths')
+    expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(2).text().trim()).toEqual('10 Dec 2025')
+    expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(3).text().trim()).toEqual(
+      'Sometimes can be relied on to do what he says he will',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(4).text().trim()).toContain('Alex Smith')
+    expect(skillsRatingTable.find('tbody tr').eq(1).find('td').eq(4).text().trim()).toContain('Moorland (HMP & YOI)')
+
     expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(0).text().trim()).toEqual('1 - not confident')
+    expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(1).text().trim()).toEqual(
+      'Careers, information, advice and guidance (CIAG) review',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(2).text().trim()).toEqual('21 Oct 2025')
+    expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(3).text().trim()).toEqual(
+      'Did not attend his review, even though he said he would',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(4).text().trim()).toContain('Alex Smith')
+    expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(4).text().trim()).toContain('Moorland (HMP & YOI)')
+
     expect($('[data-qa=no-employability-skill-ratings-recorded]').length).toEqual(0)
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
   })
