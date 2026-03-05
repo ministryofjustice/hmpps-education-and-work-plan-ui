@@ -1,5 +1,4 @@
 import Page, { PageElement } from '../page'
-import SkillsPage from '../induction/SkillsPage'
 import PersonalInterestsPage from '../induction/PersonalInterestsPage'
 import WorkedBeforePage from '../induction/WorkedBeforePage'
 import AffectAbilityToWorkPage from '../induction/AffectAbilityToWorkPage'
@@ -52,16 +51,6 @@ export default class WorkAndInterestsPage extends Page {
 
   hasLinkToCreateInductionDisplayed(): WorkAndInterestsPage {
     this.createInductionLink().should('be.visible')
-    return this
-  }
-
-  clickSkillsChangeLink(): SkillsPage {
-    this.skillsChangeLink().click()
-    return Page.verifyOnPage(SkillsPage)
-  }
-
-  skillsChangeLinkHasText(expected: string): WorkAndInterestsPage {
-    this.skillsChangeLink().should('contain.text', expected)
     return this
   }
 
