@@ -38,6 +38,7 @@ export default class SearchService {
         sortBy,
         sortOrder,
         searchTerm: prisonerNameOrNumber,
+        planStatus,
       },
     )
   }
