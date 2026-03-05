@@ -9,8 +9,8 @@ const toCreateEmployabilitySkillsRequest = (
     employabilitySkillType: employabilitySkillDto.employabilitySkillType,
     employabilitySkillRating: employabilitySkillDto.employabilitySkillRating,
     evidence: employabilitySkillDto.evidence,
-    sessionType: null as string, // TODO - update the mapping of these 2 fields once the DTO has been updated with corresponding fields
-    sessionTypeDescription: null as string,
+    sessionType: employabilitySkillDto.sessionType,
+    sessionTypeDescription: employabilitySkillDto.sessionTypeDescription,
   })),
 })
 export default toCreateEmployabilitySkillsRequest

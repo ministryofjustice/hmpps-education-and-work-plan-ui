@@ -9,6 +9,7 @@ import EmployabilitySkillsValue from '../../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../../enums/employabilitySkillRatingValue'
 import { anEmployabilitySkillsList } from '../../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import { Result } from '../../../utils/result/result'
+import EmployabilitySkillSessionType from '../../../enums/employabilitySkillSessionType'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/employabilitySkillsService')
@@ -82,11 +83,15 @@ describe('addEmployabilitySkillRatingsController', () => {
       req.journeyData.createEmployabilitySkillDto = aCreateEmployabilitySkillDto({
         employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
         evidence: 'Supervisor has reported this',
+        sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+        sessionTypeDescription: 'Woodworking workshop',
       })
 
       const expectedForm = {
         rating: 'QUITE_CONFIDENT',
         evidence: 'Supervisor has reported this',
+        sessionType: 'INDUSTRIES_REVIEW',
+        industriesWorkshopName: 'Woodworking workshop',
       }
 
       const expectedViewTemplate = 'pages/employabilitySkills/add/employability-skill-ratings.njk'
@@ -134,6 +139,8 @@ describe('addEmployabilitySkillRatingsController', () => {
       req.body = {
         rating: 'QUITE_CONFIDENT',
         evidence: 'Supervisor has reported this',
+        sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
+        educationCourseName: 'GCSE Maths',
       }
 
       const expectedNextRoute = `/plan/${prisonNumber}/view/employability-skills`
@@ -143,6 +150,8 @@ describe('addEmployabilitySkillRatingsController', () => {
           employabilitySkillType: EmployabilitySkillsValue.PROBLEM_SOLVING,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
+          sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
+          sessionTypeDescription: 'GCSE Maths',
         },
       ]
 
@@ -177,6 +186,8 @@ describe('addEmployabilitySkillRatingsController', () => {
       req.body = {
         rating: 'QUITE_CONFIDENT',
         evidence: 'Supervisor has reported this',
+        sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+        industriesWorkshopName: 'Metalwork workshop',
       }
 
       const serviceError = new Error('Internal Server Error')
@@ -188,6 +199,8 @@ describe('addEmployabilitySkillRatingsController', () => {
           employabilitySkillType: EmployabilitySkillsValue.PROBLEM_SOLVING,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
+          sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+          sessionTypeDescription: 'Metalwork workshop',
         },
       ]
       const expectedNextRoute = 'add'

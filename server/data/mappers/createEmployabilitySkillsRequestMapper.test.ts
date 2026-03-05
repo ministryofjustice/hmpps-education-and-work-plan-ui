@@ -7,6 +7,7 @@ import {
 import aCreateEmployabilitySkillDto from '../../testsupport/ createEmployabilitySkillDtoTestDataBuilder'
 import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../enums/employabilitySkillRatingValue'
+import EmployabilitySkillSessionType from '../../enums/employabilitySkillSessionType'
 
 describe('createEmployabilitySkillsRequestMapper', () => {
   it('should map CreateEmployabilitySkillDtos to a CreateEmployabilitySkillsRequest', () => {
@@ -17,12 +18,16 @@ describe('createEmployabilitySkillsRequestMapper', () => {
         employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
         employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
         evidence: 'Supervisor has reported this',
+        sessionType: EmployabilitySkillSessionType.CIAG_INDUCTION,
+        sessionTypeDescription: null,
       }),
       aCreateEmployabilitySkillDto({
         prisonId: 'MDI',
         employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
         employabilitySkillRating: EmployabilitySkillRatingValue.LITTLE_CONFIDENCE,
         evidence: 'Could not be relied upon to turn up on time',
+        sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+        sessionTypeDescription: 'Woodwork workshop',
       }),
     ]
 
@@ -33,7 +38,7 @@ describe('createEmployabilitySkillsRequestMapper', () => {
           employabilitySkillType: EmployabilitySkillsValue.ORGANISATION,
           employabilitySkillRating: EmployabilitySkillRatingValue.QUITE_CONFIDENT,
           evidence: 'Supervisor has reported this',
-          sessionType: null,
+          sessionType: EmployabilitySkillSessionType.CIAG_INDUCTION,
           sessionTypeDescription: null,
         }),
         aCreateEmployabilitySkillRequest({
@@ -41,8 +46,8 @@ describe('createEmployabilitySkillsRequestMapper', () => {
           employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
           employabilitySkillRating: EmployabilitySkillRatingValue.LITTLE_CONFIDENCE,
           evidence: 'Could not be relied upon to turn up on time',
-          sessionType: null,
-          sessionTypeDescription: null,
+          sessionType: EmployabilitySkillSessionType.INDUSTRIES_REVIEW,
+          sessionTypeDescription: 'Woodwork workshop',
         }),
       ],
     })

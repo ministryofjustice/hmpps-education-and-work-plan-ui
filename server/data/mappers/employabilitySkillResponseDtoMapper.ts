@@ -17,9 +17,8 @@ const toEmployabilitySkillResponseDto = (
   employabilitySkillType: employabilitySkillsResponse.employabilitySkillType,
   employabilitySkillRating: employabilitySkillsResponse.employabilitySkillRating,
   evidence: employabilitySkillsResponse.evidence,
-  activityName: undefined,
-  conversationDate: undefined,
-  // TODO - update the mapping to include sessionType and sessionTypeDescription once the DTO has been updated with these fields
+  sessionType: employabilitySkillsResponse.sessionType,
+  sessionTypeDescription: employabilitySkillsResponse.sessionTypeDescription,
 })
 
 export { toEmployabilitySkillsList, toEmployabilitySkillResponseDto }

@@ -18,6 +18,7 @@ declare module 'dto' {
   import ChallengeType from '../../enums/challengeType'
   import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
   import EmployabilitySkillRatingValue from '../../enums/employabilitySkillRatingValue'
+  import EmployabilitySkillSessionType from '../../enums/employabilitySkillSessionType'
 
   /**
    * Interface defining common reference and audit related properties that DTO types can inherit through extension.
@@ -202,18 +203,18 @@ declare module 'dto' {
   export interface EmployabilitySkillResponseDto extends ReferencedAndAuditable {
     employabilitySkillType: EmployabilitySkillsValue
     employabilitySkillRating: EmployabilitySkillRatingValue
-    activityName: string
     evidence: string
-    conversationDate?: Date
+    sessionType?: EmployabilitySkillSessionType
+    sessionTypeDescription?: string
   }
 
   export interface CreateEmployabilitySkillDto {
     prisonId: string
     employabilitySkillType: EmployabilitySkillsValue
     employabilitySkillRating: EmployabilitySkillRatingValue
-    activityName: string
     evidence: string
-    conversationDate?: Date
+    sessionType?: EmployabilitySkillSessionType
+    sessionTypeDescription?: string
   }
 }
 
