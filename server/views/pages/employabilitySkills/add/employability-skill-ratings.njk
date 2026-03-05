@@ -86,10 +86,6 @@
                 text: "Course name",
                 attributes: { "aria-live": "polite" }
               },
-              charactersOverLimitText: {
-                one: 'Course name must be 100 characters or less',
-                other: 'Course name must be 100 characters or less'
-              },
               attributes: { "aria-label" : "Give details of the course where the employability skill was evidenced" },
               errorMessage: errors | findError('educationCourseName')
             }) }}
@@ -105,10 +101,6 @@
               label: {
                 text: "Workshop name",
                 attributes: { "aria-live": "polite" }
-              },
-              charactersOverLimitText: {
-                one: 'Workshop name must be 100 characters or less',
-                other: 'Workshop name must be 100 characters or less'
               },
               attributes: { "aria-label" : "Give details of the workshop where the employability skill was evidenced" },
               errorMessage: errors | findError('industriesWorkshopName')
