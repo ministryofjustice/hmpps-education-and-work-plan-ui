@@ -1,0 +1,42 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageId = "induction-employability-skills" %}
+{% set pageTitle = "What skills do they feel they have or would like to work on?" %}
+
+{#
+Data supplied to this template:
+  * prisonerSummary - object with firstName and lastName
+  * form - form object containing the following fields:
+  *
+  * errors? - validation errors
+#}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "#",
+    classes: "js-back-link"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form class="form" method="post" novalidate="">
+      <div class="govuk-form-group">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      </div>
+
+      {{ govukButton({
+        id: "submit-button",
+        text: "Continue",
+        type: "submit",
+        attributes: {"data-qa": "submit-button"},
+        preventDoubleClick: true
+      }) }}
+    </form>
+  </div>
+</div>
+
+{% endblock %}
