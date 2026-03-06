@@ -85,6 +85,8 @@ const pageViewEventMap: Record<string, Page> = {
     Page.INDUCTION_CREATE_PREVIOUS_WORK_EXPERIENCE_DETAILS,
   '/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-types': Page.INDUCTION_CREATE_WORK_INTEREST_TYPES,
   '/prisoners/:prisonNumber/create-induction/:journeyId/work-interest-roles': Page.INDUCTION_CREATE_WORK_INTEREST_ROLES,
+  '/prisoners/:prisonNumber/create-induction/:journeyId/employability-skills':
+    Page.INDUCTION_CREATE_EMPLOYABILITY_SKILLS,
   '/prisoners/:prisonNumber/create-induction/:journeyId/skills': Page.INDUCTION_CREATE_SKILLS,
   '/prisoners/:prisonNumber/create-induction/:journeyId/personal-interests': Page.INDUCTION_CREATE_PERSONAL_INTERESTS,
   '/prisoners/:prisonNumber/create-induction/:journeyId/affect-ability-to-work':

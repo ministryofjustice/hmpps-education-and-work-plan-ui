@@ -55,6 +55,7 @@ import checkInductionDtoExistsInJourneyData from '../../routerRequestHandlers/ch
 import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonNamesById'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 import retrieveVerifiedQualifications from '../../routerRequestHandlers/retrieveVerifiedQualifications'
+import EmployabilitySkillsCreateController from './employabilitySkillsCreateController'
 
 /**
  * Route definitions for creating an Induction
@@ -84,6 +85,7 @@ export default (router: Router, services: Services) => {
   const previousWorkExperienceDetailCreateController = new PreviousWorkExperienceDetailCreateController()
   const workInterestTypesCreateController = new WorkInterestTypesCreateController()
   const workInterestRolesCreateController = new WorkInterestRolesCreateController()
+  const employabilitySkillsCreateController = new EmployabilitySkillsCreateController()
   const skillsCreateController = new SkillsCreateController()
   const personalInterestsCreateController = new PersonalInterestsCreateController()
   const affectAbilityToWorkCreateController = new AffectAbilityToWorkCreateController()
@@ -228,6 +230,15 @@ export default (router: Router, services: Services) => {
     checkInductionDtoExistsInJourneyData,
     validate(workInterestRolesSchema),
     asyncMiddleware(workInterestRolesCreateController.submitWorkInterestRolesForm),
+  ])
+
+  router.get('/prisoners/:prisonNumber/create-induction/:journeyId/employability-skills', [
+    checkInductionDtoExistsInJourneyData,
+    asyncMiddleware(employabilitySkillsCreateController.getEmployabilitySkillsView),
+  ])
+  router.post('/prisoners/:prisonNumber/create-induction/:journeyId/employability-skills', [
+    checkInductionDtoExistsInJourneyData,
+    asyncMiddleware(employabilitySkillsCreateController.submitEmployabilitySkillsView),
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/skills', [
