@@ -7,7 +7,8 @@
 Data supplied to this template:
   * prisonerSummary - object with firstName and lastName
   * form - form object containing the following fields:
-  *
+  *   * employabilitySkills - array of EmployabilitySkillsValue
+  *   * rating - Record<EmployabilitySkillsValue, EmployabilitySkillRatingValue>
   * errors? - validation errors
 #}
 
@@ -20,130 +21,201 @@ Data supplied to this template:
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
 
-    <form class="form" method="post" novalidate="">
-      <div class="govuk-form-group">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  {% macro employabilitySkillRatingChoices(employabilitySkillType) %}
+    {% set fieldName = 'rating[' + employabilitySkillType + ']' %}
+    {{ govukRadios({
+      name: fieldName,
+      fieldset: {
+        legend: {
+          text: "Select a confidence level for the " + employabilitySkillType | formatEmployabilitySkill + " employability skill",
+          classes: "govuk-visually-hidden"
+        },
+        classes: "govuk-!-padding-top-4 govuk-!-padding-bottom-4"
+      },
+      hint: {
+        text: "Select confidence level"
+      },
+      items: [
+        {
+          value: "NOT_CONFIDENT",
+          text: "NOT_CONFIDENT" | formatEmployabilitySkillRating,
+          checked: true if form.rating === 'NOT_CONFIDENT'
+        },
+        {
+          value: "LITTLE_CONFIDENCE",
+          text: "LITTLE_CONFIDENCE" | formatEmployabilitySkillRating,
+          checked: true if form.rating === 'LITTLE_CONFIDENCE'
+        },
+        {
+          value: "QUITE_CONFIDENT",
+          text: "QUITE_CONFIDENT" | formatEmployabilitySkillRating,
+          checked: true if form.rating === 'QUITE_CONFIDENT'
+        },
+        {
+          value: "VERY_CONFIDENT",
+          text: "VERY_CONFIDENT" | formatEmployabilitySkillRating,
+          checked: true if form.rating === 'VERY_CONFIDENT'
+        }
+      ],
+      errorMessage: errors | findError(fieldName)
+    }) }}
+  {% endmacro %}
 
-        {{ govukCheckboxes({
-          name: "employabilitySkills",
-          fieldset: {
-            legend: {
-              text: "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have or would like to work on?",
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          hint: {
-            text: "Select all that apply."
-          },
-          items: [
-            {
-              value: "ADAPTABILITY",
-              checked: form.employabilitySkills.includes("ADAPTABILITY"),
-              text: "ADAPTABILITY" | formatEmployabilitySkill,
-              hint: {
-                text: "ADAPTABILITY" | formatEmployabilitySkillHintText
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post" novalidate="">
+        <div class="govuk-form-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+          {{ govukCheckboxes({
+            name: "employabilitySkills",
+            fieldset: {
+              legend: {
+                text: "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have or would like to work on?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
               }
             },
-            {
-              value: "COMMUNICATION",
-              checked: form.employabilitySkills.includes("COMMUNICATION"),
-              text: "COMMUNICATION" | formatEmployabilitySkill,
-              hint: {
-                text: "COMMUNICATION" | formatEmployabilitySkillHintText
+            hint: {
+              text: "Select all that apply."
+            },
+            items: [
+              {
+                value: "ADAPTABILITY",
+                checked: form.employabilitySkills.includes("ADAPTABILITY"),
+                text: "ADAPTABILITY" | formatEmployabilitySkill,
+                hint: {
+                  text: "ADAPTABILITY" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("ADAPTABILITY")
+                }
+              },
+              {
+                value: "COMMUNICATION",
+                checked: form.employabilitySkills.includes("COMMUNICATION"),
+                text: "COMMUNICATION" | formatEmployabilitySkill,
+                hint: {
+                  text: "COMMUNICATION" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("COMMUNICATION")
+                }
+              },
+              {
+                value: "CREATIVITY",
+                checked: form.employabilitySkills.includes("CREATIVITY"),
+                text: "CREATIVITY" | formatEmployabilitySkill,
+                hint: {
+                  text: "CREATIVITY" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("CREATIVITY")
+                }
+              },
+              {
+                value: "INITIATIVE",
+                checked: form.employabilitySkills.includes("INITIATIVE"),
+                text: "INITIATIVE" | formatEmployabilitySkill,
+                hint: {
+                  text: "INITIATIVE" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("INITIATIVE")
+                }
+              },
+              {
+                value: "ORGANISATION",
+                checked: form.employabilitySkills.includes("ORGANISATION"),
+                text: "ORGANISATION" | formatEmployabilitySkill,
+                hint: {
+                  text: "ORGANISATION" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("ORGANISATION")
+                }
+              },
+              {
+                value: "PLANNING",
+                checked: form.employabilitySkills.includes("PLANNING"),
+                text: "PLANNING" | formatEmployabilitySkill,
+                hint: {
+                  text: "PLANNING" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("PLANNING")
+                }
+              },
+              {
+                value: "PROBLEM_SOLVING",
+                checked: form.employabilitySkills.includes("PROBLEM_SOLVING"),
+                text: "PROBLEM_SOLVING" | formatEmployabilitySkill,
+                hint: {
+                  text: "PROBLEM_SOLVING" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("PROBLEM_SOLVING")
+                }
+              },
+              {
+                value: "RELIABILITY",
+                checked: form.employabilitySkills.includes("RELIABILITY"),
+                text: "RELIABILITY" | formatEmployabilitySkill,
+                hint: {
+                  text: "RELIABILITY" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("RELIABILITY")
+                }
+              },
+              {
+                value: "TEAMWORK",
+                checked: form.employabilitySkills.includes("TEAMWORK"),
+                text: "TEAMWORK" | formatEmployabilitySkill,
+                hint: {
+                  text: "TEAMWORK" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("TEAMWORK")
+                }
+              },
+              {
+                value: "TIMEKEEPING",
+                checked: form.employabilitySkills.includes("TIMEKEEPING"),
+                text: "TIMEKEEPING" | formatEmployabilitySkill,
+                hint: {
+                  text: "TIMEKEEPING" | formatEmployabilitySkillHintText
+                },
+                conditional: {
+                  html: employabilitySkillRatingChoices("TIMEKEEPING")
+                }
+              },
+              {
+                divider: "or"
+              },
+              {
+                value: "NONE",
+                checked: form.employabilitySkills.includes("NONE"),
+                text: "None",
+                behaviour: "exclusive"
               }
-            },
-            {
-              value: "CREATIVITY",
-              checked: form.employabilitySkills.includes("CREATIVITY"),
-              text: "CREATIVITY" | formatEmployabilitySkill,
-              hint: {
-                text: "CREATIVITY" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "INITIATIVE",
-              checked: form.employabilitySkills.includes("INITIATIVE"),
-              text: "INITIATIVE" | formatEmployabilitySkill,
-              hint: {
-                text: "INITIATIVE" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "ORGANISATION",
-              checked: form.employabilitySkills.includes("ORGANISATION"),
-              text: "ORGANISATION" | formatEmployabilitySkill,
-              hint: {
-                text: "ORGANISATION" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "PLANNING",
-              checked: form.employabilitySkills.includes("PLANNING"),
-              text: "PLANNING" | formatEmployabilitySkill,
-              hint: {
-                text: "PLANNING" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "PROBLEM_SOLVING",
-              checked: form.employabilitySkills.includes("PROBLEM_SOLVING"),
-              text: "PROBLEM_SOLVING" | formatEmployabilitySkill,
-              hint: {
-                text: "PROBLEM_SOLVING" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "RELIABILITY",
-              checked: form.employabilitySkills.includes("RELIABILITY"),
-              text: "RELIABILITY" | formatEmployabilitySkill,
-              hint: {
-                text: "RELIABILITY" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "TEAMWORK",
-              checked: form.employabilitySkills.includes("TEAMWORK"),
-              text: "TEAMWORK" | formatEmployabilitySkill,
-              hint: {
-                text: "TEAMWORK" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              value: "TIMEKEEPING",
-              checked: form.employabilitySkills.includes("TIMEKEEPING"),
-              text: "TIMEKEEPING" | formatEmployabilitySkill,
-              hint: {
-                text: "TIMEKEEPING" | formatEmployabilitySkillHintText
-              }
-            },
-            {
-              divider: "or"
-            },
-            {
-              value: "NONE",
-              checked: form.employabilitySkills.includes("NONE"),
-              text: "None",
-              behaviour: "exclusive"
-            }
-          ],
-          errorMessage: errors | findError('employabilitySkills')
+            ],
+            errorMessage: errors | findError('employabilitySkills')
+          }) }}
+
+        </div>
+
+        {{ govukButton({
+          id: "submit-button",
+          text: "Continue",
+          type: "submit",
+          attributes: {"data-qa": "submit-button"},
+          preventDoubleClick: true
         }) }}
-
-      </div>
-
-      {{ govukButton({
-        id: "submit-button",
-        text: "Continue",
-        type: "submit",
-        attributes: {"data-qa": "submit-button"},
-        preventDoubleClick: true
-      }) }}
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
 {% endblock %}
