@@ -6,12 +6,14 @@ export default class EmployabilitySkillsCreateController {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, invalidForm } = res.locals
 
-    return res.render('pages/induction/employability-skills/index', { prisonerSummary })
+    const employabilitySkillsForm = invalidForm || { employabilitySkills: [] }
+
+    return res.render('pages/induction/employability-skills/index', { prisonerSummary, form: employabilitySkillsForm })
   }
 
-  submitEmployabilitySkillsView: RequestHandler = async (
+  submitEmployabilitySkillsForm: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction,

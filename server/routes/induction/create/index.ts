@@ -238,7 +238,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/employability-skills', [
     checkInductionDtoExistsInJourneyData,
-    asyncMiddleware(employabilitySkillsCreateController.submitEmployabilitySkillsView),
+    asyncMiddleware(employabilitySkillsCreateController.submitEmployabilitySkillsForm),
   ])
 
   router.get('/prisoners/:prisonNumber/create-induction/:journeyId/skills', [

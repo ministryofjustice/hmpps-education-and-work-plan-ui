@@ -26,6 +26,113 @@ Data supplied to this template:
     <form class="form" method="post" novalidate="">
       <div class="govuk-form-group">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukCheckboxes({
+          name: "employabilitySkills",
+          fieldset: {
+            legend: {
+              text: "What skills does " + prisonerSummary.firstName + " " + prisonerSummary.lastName + " feel they have or would like to work on?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "Select all that apply."
+          },
+          items: [
+            {
+              value: "ADAPTABILITY",
+              checked: form.employabilitySkills.includes("ADAPTABILITY"),
+              text: "ADAPTABILITY" | formatEmployabilitySkill,
+              hint: {
+                text: "ADAPTABILITY" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "COMMUNICATION",
+              checked: form.employabilitySkills.includes("COMMUNICATION"),
+              text: "COMMUNICATION" | formatEmployabilitySkill,
+              hint: {
+                text: "COMMUNICATION" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "CREATIVITY",
+              checked: form.employabilitySkills.includes("CREATIVITY"),
+              text: "CREATIVITY" | formatEmployabilitySkill,
+              hint: {
+                text: "CREATIVITY" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "INITIATIVE",
+              checked: form.employabilitySkills.includes("INITIATIVE"),
+              text: "INITIATIVE" | formatEmployabilitySkill,
+              hint: {
+                text: "INITIATIVE" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "ORGANISATION",
+              checked: form.employabilitySkills.includes("ORGANISATION"),
+              text: "ORGANISATION" | formatEmployabilitySkill,
+              hint: {
+                text: "ORGANISATION" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "PLANNING",
+              checked: form.employabilitySkills.includes("PLANNING"),
+              text: "PLANNING" | formatEmployabilitySkill,
+              hint: {
+                text: "PLANNING" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "PROBLEM_SOLVING",
+              checked: form.employabilitySkills.includes("PROBLEM_SOLVING"),
+              text: "PROBLEM_SOLVING" | formatEmployabilitySkill,
+              hint: {
+                text: "PROBLEM_SOLVING" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "RELIABILITY",
+              checked: form.employabilitySkills.includes("RELIABILITY"),
+              text: "RELIABILITY" | formatEmployabilitySkill,
+              hint: {
+                text: "RELIABILITY" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "TEAMWORK",
+              checked: form.employabilitySkills.includes("TEAMWORK"),
+              text: "TEAMWORK" | formatEmployabilitySkill,
+              hint: {
+                text: "TEAMWORK" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              value: "TIMEKEEPING",
+              checked: form.employabilitySkills.includes("TIMEKEEPING"),
+              text: "TIMEKEEPING" | formatEmployabilitySkill,
+              hint: {
+                text: "TIMEKEEPING" | formatEmployabilitySkillHintText
+              }
+            },
+            {
+              divider: "or"
+            },
+            {
+              value: "NONE",
+              checked: form.employabilitySkills.includes("NONE"),
+              text: "None",
+              behaviour: "exclusive"
+            }
+          ],
+          errorMessage: errors | findError('employabilitySkills')
+        }) }}
+
       </div>
 
       {{ govukButton({
