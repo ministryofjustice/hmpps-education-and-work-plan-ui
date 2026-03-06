@@ -48,6 +48,7 @@ import formatReviewTypeScreenValueFilter from '../filters/formatReviewTypeFilter
 import {
   formatEmployabilitySkillsFilter,
   formatEmployabilitySkillQuestionTextFilter,
+  formatEmployabilitySkillHintTextFilter,
 } from '../filters/formatEmployabilitySkillsFilter'
 import formatEmployabilitySkillRatingFilter from '../filters/formatEmployabilitySkillRatingFilter'
 import groupArrayByPropertyFilter from '../filters/groupArrayByPropertyFilter'
@@ -151,6 +152,7 @@ export function registerNunjucks(app?: express.Express): Environment {
   njkEnv.addFilter('formatEmployabilitySkill', formatEmployabilitySkillsFilter)
   njkEnv.addFilter('formatEmployabilitySkillRating', formatEmployabilitySkillRatingFilter)
   njkEnv.addFilter('formatEmployabilitySkillQuestionText', formatEmployabilitySkillQuestionTextFilter)
+  njkEnv.addFilter('formatEmployabilitySkillHintText', formatEmployabilitySkillHintTextFilter)
   njkEnv.addFilter('formatSearchPlanStatus', formatSearchPlanStatusFilter)
   njkEnv.addFilter('formatEmployabilitySkillSessionType', formatEmployabilitySkillSessionTypeFilter)
 

@@ -30,10 +30,30 @@ const employabilitySkillsQuestionTextValues: Record<EmployabilitySkillsValue, st
     'How do they feel about their ability to arrive on time and manage time well to attend work, appointments and meet deadlines?',
 }
 
+const employabilitySkillsHintTextValues: Record<EmployabilitySkillsValue, string> = {
+  ADAPTABILITY: 'can understand, accept and adjust to things changing',
+  COMMUNICATION: 'listening well and being clear when speaking or writing',
+  CREATIVITY: 'using imagination or own ideas to create or do something',
+  INITIATIVE: 'doing things or finding things out without being asked',
+  ORGANISATION: 'can plan tasks and keep work tidy to get things done well and on time',
+  PLANNING: 'thinking ahead to decide what needs to be done and how',
+  PROBLEM_SOLVING: 'enjoys working things out and seeing how things work',
+  RELIABILITY: 'people trust you to do what you say you will, and to do it properly and on time',
+  TEAMWORK: 'likes working with others and happy to help out',
+  TIMEKEEPING: 'arrives on time, manages tim well to attend work, appointments and meet deadlines',
+}
+
 const formatEmployabilitySkillsFilter = (value: EmployabilitySkillsValue): string =>
   employabilitySkillsScreenValues[value]
 
 const formatEmployabilitySkillQuestionTextFilter = (value: EmployabilitySkillsValue): string =>
   employabilitySkillsQuestionTextValues[value]
 
-export { formatEmployabilitySkillsFilter, formatEmployabilitySkillQuestionTextFilter }
+const formatEmployabilitySkillHintTextFilter = (value: EmployabilitySkillsValue): string =>
+  employabilitySkillsHintTextValues[value]
+
+export {
+  formatEmployabilitySkillsFilter,
+  formatEmployabilitySkillQuestionTextFilter,
+  formatEmployabilitySkillHintTextFilter,
+}
