@@ -6,7 +6,9 @@ describe('inductionDtoMapper', () => {
   it('should map an InductionResponse to a InductionDto', () => {
     // Given
     const inductionResponse = aValidInductionResponse()
-    const expected = anInductionDtoForAnInductionThatAlreadyExists()
+    const expected = anInductionDtoForAnInductionThatAlreadyExists({
+      employabilitySkills: null,
+    })
 
     // When
     const actual = toInductionDto(inductionResponse)

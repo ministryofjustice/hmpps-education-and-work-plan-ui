@@ -1,9 +1,8 @@
-import type { InductionDto } from 'inductionDto'
+import type { EmployabilitySkillResponseDto } from 'dto'
+import type { InductionDto, PersonalSkillsAndInterestsDto } from 'inductionDto'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
 import WorkInterestTypeValue from '../enums/workInterestTypeValue'
-import SkillsValue from '../enums/skillsValue'
-import PersonalInterestsValue from '../enums/personalInterestsValue'
 import EducationLevelValue from '../enums/educationLevelValue'
 import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
@@ -11,20 +10,25 @@ import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
+import aPersonalSkillsAndInterestsDto from './personalSkillsAndInterestsDtoTestDataBuilder'
+import { DtoAuditFields, validDtoAuditFields } from './auditFieldsTestDataBuilder'
+import { anEmployabilitySkillResponseDto } from './employabilitySkillResponseDtoTestDataBuilder'
 
 const aValidInductionDto = (
-  options?: CoreBuilderOptions & {
+  options?: DtoAuditFields & {
+    prisonNumber?: string
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: Array<EmployabilitySkillResponseDto>
+    personalSkillsAndInterests?: PersonalSkillsAndInterestsDto
   },
 ): InductionDto => {
   const hasWorkedBefore = options?.hasWorkedBefore || HasWorkedBeforeValue.YES
   return {
     ...baseInductionDtoTemplate(options),
     workOnRelease: {
-      reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'bdebe39f-6f85-459b-81be-a26341c3fe3c', ...options }),
       hopingToWork: options?.hopingToGetWork || HopingToGetWorkValue.YES,
       affectAbilityToWork: [
         AbilityToWorkValue.CARING_RESPONSIBILITIES,
@@ -34,8 +38,7 @@ const aValidInductionDto = (
       affectAbilityToWorkOther: 'Variable mental health',
     },
     inPrisonInterests: {
-      reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'ae6a6a94-df32-4a90-b39d-ff1a100a6da0', ...options }),
       inPrisonWorkInterests: [
         { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },
         { workType: InPrisonWorkValue.OTHER, workTypeOther: 'Gardening and grounds keeping' },
@@ -47,8 +50,7 @@ const aValidInductionDto = (
       ],
     },
     previousWorkExperiences: {
-      reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'bb45462e-8225-490d-8c1c-ad6692223d4d', ...options }),
       hasWorkedBefore,
       hasWorkedBeforeNotRelevantReason:
         hasWorkedBefore === HasWorkedBeforeValue.NOT_RELEVANT ? 'Some reason' : undefined,
@@ -71,8 +73,7 @@ const aValidInductionDto = (
           : [],
     },
     futureWorkInterests: {
-      reference: 'cad34670-691d-4862-8014-dc08a6f620b9',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'cad34670-691d-4862-8014-dc08a6f620b9', ...options }),
       interests: [
         {
           workType: WorkInterestTypeValue.RETAIL,
@@ -91,23 +92,13 @@ const aValidInductionDto = (
         },
       ],
     },
-    personalSkillsAndInterests: {
-      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
-      ...auditFields(options),
-      skills: [
-        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-      ],
-      interests: [
-        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-      ],
-    },
+    employabilitySkills:
+      options?.employabilitySkills === null
+        ? undefined
+        : options?.employabilitySkills || [anEmployabilitySkillResponseDto()],
+    personalSkillsAndInterests: options?.personalSkillsAndInterests || aPersonalSkillsAndInterestsDto(),
     previousQualifications: {
-      reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c', ...options }),
       educationLevel: EducationLevelValue.SECONDARY_SCHOOL_TOOK_EXAMS,
       qualifications:
         !options ||
@@ -124,8 +115,7 @@ const aValidInductionDto = (
           : [],
     },
     previousTraining: {
-      reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616',
-      ...auditFields(options),
+      ...validDtoAuditFields({ reference: 'a8e1fe50-1e3b-4784-a27f-ee1c54fc7616', ...options }),
       trainingTypes: [
         AdditionalTrainingValue.FIRST_AID_CERTIFICATE,
         AdditionalTrainingValue.MANUAL_HANDLING,
@@ -137,10 +127,13 @@ const aValidInductionDto = (
 }
 
 const anInductionDtoForAnInductionThatAlreadyExists = (
-  options?: CoreBuilderOptions & {
+  options?: DtoAuditFields & {
+    prisonNumber?: string
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: Array<EmployabilitySkillResponseDto>
+    personalSkillsAndInterests?: PersonalSkillsAndInterestsDto
   },
 ): InductionDto => {
   const baseInduction = aValidInductionDto(options)
@@ -160,23 +153,10 @@ const anInductionDtoForAnInductionThatAlreadyExists = (
   }
 }
 
-type CoreBuilderOptions = {
-  prisonNumber?: string
-  createdBy?: string
-  createdByDisplayName?: string
-  createdAt?: Date
-  createdAtPrison?: string
-  updatedBy?: string
-  updatedByDisplayName?: string
-  updatedAt?: Date
-  updatedAtPrison?: string
-}
-
-const baseInductionDtoTemplate = (options?: CoreBuilderOptions): InductionDto => {
+const baseInductionDtoTemplate = (options?: DtoAuditFields & { prisonNumber?: string }): InductionDto => {
   return {
-    reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b',
+    ...validDtoAuditFields({ reference: '814ade0a-a3b2-46a3-862f-79211ba13f7b', ...options }),
     prisonNumber: options?.prisonNumber || 'A1234BC',
-    ...auditFields(options),
     workOnRelease: undefined,
     previousQualifications: undefined,
     previousTraining: undefined,
@@ -184,30 +164,6 @@ const baseInductionDtoTemplate = (options?: CoreBuilderOptions): InductionDto =>
     inPrisonInterests: undefined,
     personalSkillsAndInterests: undefined,
     futureWorkInterests: undefined,
-  }
-}
-
-const auditFields = (
-  options?: CoreBuilderOptions,
-): {
-  createdBy: string
-  createdByDisplayName: string
-  createdAt: Date
-  createdAtPrison: string
-  updatedBy: string
-  updatedByDisplayName: string
-  updatedAt: Date
-  updatedAtPrison: string
-} => {
-  return {
-    createdBy: options?.createdByDisplayName || 'asmith_gen',
-    createdByDisplayName: options?.createdByDisplayName || 'Alex Smith',
-    createdAt: options?.createdAt || new Date('2023-06-19T09:39:44Z'),
-    createdAtPrison: options?.createdAtPrison || 'MDI',
-    updatedBy: options?.updatedBy || 'asmith_gen',
-    updatedByDisplayName: options?.updatedByDisplayName || 'Alex Smith',
-    updatedAt: options?.updatedAt || new Date('2023-06-19T09:39:44Z'),
-    updatedAtPrison: options?.updatedAtPrison || 'MDI',
   }
 }
 

@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import type { CreateEmployabilitySkillDto, EmployabilitySkillResponseDto } from 'dto'
 import type {
   CreateOrUpdateFutureWorkInterestsDto,
   CreateOrUpdateInductionDto,
@@ -28,6 +29,7 @@ const toCreateOrUpdateInductionDto = (prisonId: string, inductionDto: InductionD
     previousTraining: toCreateOrUpdatePreviousTrainingDto(inductionDto.previousTraining),
     previousWorkExperiences: toCreateOrUpdatePreviousWorkExperiencesDto(inductionDto.previousWorkExperiences),
     inPrisonInterests: toCreateOrUpdateInPrisonInterestsDto(inductionDto.inPrisonInterests),
+    employabilitySkills: toEmployabilitySkillResponseDto(prisonId, inductionDto.employabilitySkills),
     personalSkillsAndInterests: toCreateOrUpdatePersonalSkillsAndInterestsDto(inductionDto.personalSkillsAndInterests),
     futureWorkInterests: toCreateOrUpdateFutureWorkInterestsDto(inductionDto.futureWorkInterests),
     conductedAt: inductionDto.inductionDate ? format(inductionDto.inductionDate, 'yyyy-MM-dd') : undefined,
@@ -99,12 +101,27 @@ const toCreateOrUpdateInPrisonInterestsDto = (
   }
 }
 
+const toEmployabilitySkillResponseDto = (
+  prisonId: string,
+  employabilitySkills: Array<EmployabilitySkillResponseDto>,
+): Array<CreateEmployabilitySkillDto> =>
+  employabilitySkills
+    ? employabilitySkills.map(employabilitySkill => ({
+        prisonId,
+        employabilitySkillType: employabilitySkill.employabilitySkillType,
+        employabilitySkillRating: employabilitySkill.employabilitySkillRating,
+        evidence: employabilitySkill.evidence,
+        sessionType: employabilitySkill.sessionType,
+        sessionTypeDescription: employabilitySkill.sessionTypeDescription,
+      }))
+    : undefined
+
 const toCreateOrUpdatePersonalSkillsAndInterestsDto = (
   personalSkillsAndInterests: PersonalSkillsAndInterestsDto,
 ): CreateOrUpdatePersonalSkillsAndInterestsDto => {
   return {
     reference: personalSkillsAndInterests?.reference,
-    skills: personalSkillsAndInterests?.skills || [],
+    skills: personalSkillsAndInterests?.skills,
     interests: personalSkillsAndInterests?.interests || [],
   }
 }
