@@ -11,6 +11,7 @@ const employabilitySkillsScreenValues: Record<EmployabilitySkillsValue, string> 
   RELIABILITY: 'Reliability',
   TEAMWORK: 'Teamwork',
   TIMEKEEPING: 'Timekeeping',
+  NONE: 'None',
 }
 
 const employabilitySkillsQuestionTextValues: Record<EmployabilitySkillsValue, string> = {
@@ -28,6 +29,7 @@ const employabilitySkillsQuestionTextValues: Record<EmployabilitySkillsValue, st
   TEAMWORK: 'How do they feel about their ability to work with others and help out?',
   TIMEKEEPING:
     'How do they feel about their ability to arrive on time and manage time well to attend work, appointments and meet deadlines?',
+  NONE: '',
 }
 
 const employabilitySkillsHintTextValues: Record<EmployabilitySkillsValue, string> = {
@@ -41,6 +43,7 @@ const employabilitySkillsHintTextValues: Record<EmployabilitySkillsValue, string
   RELIABILITY: 'people trust you to do what you say you will, and to do it properly and on time',
   TEAMWORK: 'likes working with others and happy to help out',
   TIMEKEEPING: 'arrives on time, manages tim well to attend work, appointments and meet deadlines',
+  NONE: '',
 }
 
 const formatEmployabilitySkillsFilter = (value: EmployabilitySkillsValue): string =>

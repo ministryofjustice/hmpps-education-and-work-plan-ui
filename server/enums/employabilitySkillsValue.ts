@@ -9,6 +9,7 @@ enum EmployabilitySkillsValue {
   ADAPTABILITY = 'ADAPTABILITY',
   RELIABILITY = 'RELIABILITY',
   CREATIVITY = 'CREATIVITY',
+  NONE = 'NONE',
 }
 
 export default EmployabilitySkillsValue
