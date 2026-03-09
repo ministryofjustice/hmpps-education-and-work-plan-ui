@@ -56,6 +56,7 @@ import retrievePrisonNamesById from '../../routerRequestHandlers/retrievePrisonN
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
 import retrieveVerifiedQualifications from '../../routerRequestHandlers/retrieveVerifiedQualifications'
 import EmployabilitySkillsCreateController from './employabilitySkillsCreateController'
+import employabilitySkillsSchema from '../validationSchemas/employabilitySkillsSchema'
 
 /**
  * Route definitions for creating an Induction
@@ -238,6 +239,7 @@ export default (router: Router, services: Services) => {
   ])
   router.post('/prisoners/:prisonNumber/create-induction/:journeyId/employability-skills', [
     checkInductionDtoExistsInJourneyData,
+    validate(employabilitySkillsSchema),
     asyncMiddleware(employabilitySkillsCreateController.submitEmployabilitySkillsForm),
   ])
 
