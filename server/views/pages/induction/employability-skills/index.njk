@@ -22,7 +22,7 @@ Data supplied to this template:
 
 {% block content %}
 
-  {% macro employabilitySkillRatingChoices(employabilitySkillType) %}
+  {% macro employabilitySkillRatingChoices(employabilitySkillType, currentRating) %}
     {% set fieldName = 'rating[' + employabilitySkillType + ']' %}
     {{ govukRadios({
       name: fieldName,
@@ -40,22 +40,22 @@ Data supplied to this template:
         {
           value: "NOT_CONFIDENT",
           text: "NOT_CONFIDENT" | formatEmployabilitySkillRating,
-          checked: true if form.rating === 'NOT_CONFIDENT'
+          checked: true if currentRating === 'NOT_CONFIDENT'
         },
         {
           value: "LITTLE_CONFIDENCE",
           text: "LITTLE_CONFIDENCE" | formatEmployabilitySkillRating,
-          checked: true if form.rating === 'LITTLE_CONFIDENCE'
+          checked: true if currentRating === 'LITTLE_CONFIDENCE'
         },
         {
           value: "QUITE_CONFIDENT",
           text: "QUITE_CONFIDENT" | formatEmployabilitySkillRating,
-          checked: true if form.rating === 'QUITE_CONFIDENT'
+          checked: true if currentRating === 'QUITE_CONFIDENT'
         },
         {
           value: "VERY_CONFIDENT",
           text: "VERY_CONFIDENT" | formatEmployabilitySkillRating,
-          checked: true if form.rating === 'VERY_CONFIDENT'
+          checked: true if currentRating === 'VERY_CONFIDENT'
         }
       ],
       errorMessage: errors | findError(fieldName)
@@ -90,7 +90,7 @@ Data supplied to this template:
                   text: "ADAPTABILITY" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("ADAPTABILITY")
+                  html: employabilitySkillRatingChoices("ADAPTABILITY", form.rating["ADAPTABILITY"])
                 }
               },
               {
@@ -101,7 +101,7 @@ Data supplied to this template:
                   text: "COMMUNICATION" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("COMMUNICATION")
+                  html: employabilitySkillRatingChoices("COMMUNICATION", form.rating["COMMUNICATION"])
                 }
               },
               {
@@ -112,7 +112,7 @@ Data supplied to this template:
                   text: "CREATIVITY" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("CREATIVITY")
+                  html: employabilitySkillRatingChoices("CREATIVITY", form.rating["CREATIVITY"])
                 }
               },
               {
@@ -123,7 +123,7 @@ Data supplied to this template:
                   text: "INITIATIVE" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("INITIATIVE")
+                  html: employabilitySkillRatingChoices("INITIATIVE", form.rating["INITIATIVE"])
                 }
               },
               {
@@ -134,7 +134,7 @@ Data supplied to this template:
                   text: "ORGANISATION" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("ORGANISATION")
+                  html: employabilitySkillRatingChoices("ORGANISATION", form.rating["ORGANISATION"])
                 }
               },
               {
@@ -145,7 +145,7 @@ Data supplied to this template:
                   text: "PLANNING" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("PLANNING")
+                  html: employabilitySkillRatingChoices("PLANNING", form.rating["PLANNING"])
                 }
               },
               {
@@ -156,7 +156,7 @@ Data supplied to this template:
                   text: "PROBLEM_SOLVING" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("PROBLEM_SOLVING")
+                  html: employabilitySkillRatingChoices("PROBLEM_SOLVING", form.rating["PROBLEM_SOLVING"])
                 }
               },
               {
@@ -167,7 +167,7 @@ Data supplied to this template:
                   text: "RELIABILITY" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("RELIABILITY")
+                  html: employabilitySkillRatingChoices("RELIABILITY", form.rating["RELIABILITY"])
                 }
               },
               {
@@ -178,7 +178,7 @@ Data supplied to this template:
                   text: "TEAMWORK" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("TEAMWORK")
+                  html: employabilitySkillRatingChoices("TEAMWORK", form.rating["TEAMWORK"])
                 }
               },
               {
@@ -189,7 +189,7 @@ Data supplied to this template:
                   text: "TIMEKEEPING" | formatEmployabilitySkillHintText
                 },
                 conditional: {
-                  html: employabilitySkillRatingChoices("TIMEKEEPING")
+                  html: employabilitySkillRatingChoices("TIMEKEEPING", form.rating["TIMEKEEPING"])
                 }
               },
               {

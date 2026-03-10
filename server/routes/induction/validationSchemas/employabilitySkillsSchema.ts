@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { createSchema } from '../../routerRequestHandlers/validationMiddleware'
 import EmployabilitySkillRatingValue from '../../../enums/employabilitySkillRatingValue'
 import EmployabilitySkillsValue from '../../../enums/employabilitySkillsValue'
+import { asArray } from '../../../utils/utils'
 
 const employabilitySkillsSchema = async () => {
   const employabilitySkillsMandatoryMessage = `Select a skill or 'none'`
@@ -9,10 +10,14 @@ const employabilitySkillsSchema = async () => {
 
   return createSchema({
     employabilitySkills: z //
-      .array(z.enum(EmployabilitySkillsValue, { message: employabilitySkillsMandatoryMessage }), {
-        message: employabilitySkillsMandatoryMessage,
-      })
-      .min(1, { message: employabilitySkillsMandatoryMessage }),
+      .preprocess(
+        val => asArray(val),
+        z //
+          .array(z.enum(EmployabilitySkillsValue, { message: employabilitySkillsMandatoryMessage }), {
+            message: employabilitySkillsMandatoryMessage,
+          })
+          .min(1, { message: employabilitySkillsMandatoryMessage }),
+      ),
     rating: z //
       .record(
         z.enum(EmployabilitySkillsValue),
