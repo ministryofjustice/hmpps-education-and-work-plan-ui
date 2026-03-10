@@ -219,7 +219,12 @@ declare module 'dto' {
 }
 
 declare module 'inductionDto' {
-  import type { AchievedQualificationDto, ReferencedAndAuditable } from 'dto'
+  import type {
+    AchievedQualificationDto,
+    CreateEmployabilitySkillDto,
+    EmployabilitySkillResponseDto,
+    ReferencedAndAuditable,
+  } from 'dto'
   import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
   import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
   import InductionExemptionReasonValue from '../../enums/inductionExemptionReasonValue'
@@ -231,6 +236,7 @@ declare module 'inductionDto' {
     previousTraining?: PreviousTrainingDto
     previousWorkExperiences?: PreviousWorkExperiencesDto
     inPrisonInterests?: InPrisonInterestsDto
+    employabilitySkills?: Array<EmployabilitySkillResponseDto>
     personalSkillsAndInterests?: PersonalSkillsAndInterestsDto
     futureWorkInterests?: FutureWorkInterestsDto
     completedBy?: SessionCompletedByValue
@@ -270,7 +276,7 @@ declare module 'inductionDto' {
   }
 
   export interface PersonalSkillsAndInterestsDto extends ReferencedAndAuditable {
-    skills: Array<PersonalSkillDto>
+    skills?: Array<PersonalSkillDto>
     interests: Array<PersonalInterestDto>
   }
 
@@ -287,6 +293,7 @@ declare module 'inductionDto' {
     previousTraining?: CreateOrUpdatePreviousTrainingDto
     previousWorkExperiences?: CreateOrUpdatePreviousWorkExperiencesDto
     inPrisonInterests?: CreateOrUpdateInPrisonInterestsDto
+    employabilitySkills?: Array<CreateEmployabilitySkillDto>
     personalSkillsAndInterests?: CreateOrUpdatePersonalSkillsAndInterestsDto
     futureWorkInterests?: CreateOrUpdateFutureWorkInterestsDto
     conductedAt?: string
@@ -329,7 +336,7 @@ declare module 'inductionDto' {
 
   export interface CreateOrUpdatePersonalSkillsAndInterestsDto {
     reference?: string
-    skills: PersonalSkillDto[]
+    skills?: PersonalSkillDto[]
     interests: PersonalInterestDto[]
   }
 

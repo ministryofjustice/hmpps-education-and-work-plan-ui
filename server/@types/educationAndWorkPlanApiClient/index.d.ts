@@ -38,6 +38,7 @@ declare module 'educationAndWorkPlanApiClient' {
   export type InPrisonTrainingInterest = components['schemas']['InPrisonTrainingInterest']
 
   export type CreateInductionRequest = components['schemas']['CreateInductionRequest']
+  export type CreatePersonalSkillsAndInterestsRequest = components['schemas']['CreatePersonalSkillsAndInterestsRequest']
   export type UpdateInductionRequest = components['schemas']['UpdateInductionRequest']
 
   export type GetCiagInductionSummariesRequest = components['schemas']['GetCiagInductionSummariesRequest']

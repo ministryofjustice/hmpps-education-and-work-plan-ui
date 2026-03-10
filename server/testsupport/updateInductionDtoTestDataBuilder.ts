@@ -1,24 +1,30 @@
-import type { CreateOrUpdateInductionDto } from 'inductionDto'
+import type { CreateOrUpdateInductionDto, PersonalSkillsAndInterestsDto } from 'inductionDto'
+import type { CreateEmployabilitySkillDto } from 'dto'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
 import WorkInterestTypeValue from '../enums/workInterestTypeValue'
-import SkillsValue from '../enums/skillsValue'
-import PersonalInterestsValue from '../enums/personalInterestsValue'
 import EducationLevelValue from '../enums/educationLevelValue'
 import QualificationLevelValue from '../enums/qualificationLevelValue'
 import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
+import aCreateEmployabilitySkillDto from './ createEmployabilitySkillDtoTestDataBuilder'
+import aPersonalSkillsAndInterestsDto from './personalSkillsAndInterestsDtoTestDataBuilder'
 
 const aValidUpdateInductionDto = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: Array<CreateEmployabilitySkillDto>
+    personalSkillsAndInterests?: PersonalSkillsAndInterestsDto
   },
 ): CreateOrUpdateInductionDto => {
+  const personalSkillsAndInterests =
+    options?.personalSkillsAndInterests ||
+    aPersonalSkillsAndInterestsDto({ reference: '517c470f-f9b5-4d49-9148-4458fe358439' })
   return {
     ...baseUpdateInductionDtoTemplate(options),
     workOnRelease: {
@@ -84,18 +90,14 @@ const aValidUpdateInductionDto = (
         },
       ],
     },
+    employabilitySkills:
+      options?.employabilitySkills === null
+        ? undefined
+        : options?.employabilitySkills || [aCreateEmployabilitySkillDto()],
     personalSkillsAndInterests: {
-      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
-      skills: [
-        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-      ],
-      interests: [
-        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-      ],
+      reference: personalSkillsAndInterests.reference,
+      skills: personalSkillsAndInterests.skills,
+      interests: personalSkillsAndInterests.interests,
     },
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',

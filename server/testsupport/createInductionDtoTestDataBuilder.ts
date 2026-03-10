@@ -1,4 +1,5 @@
-import type { CreateOrUpdateInductionDto } from 'inductionDto'
+import type { CreateEmployabilitySkillDto } from 'dto'
+import type { CreateOrUpdateInductionDto, CreateOrUpdatePersonalSkillsAndInterestsDto } from 'inductionDto'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
@@ -11,12 +12,20 @@ import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
+import {
+  aCreateOrUpdatePersonalSkillsAndInterestsDto,
+  aPersonalInterestDto,
+  aPersonalSkillDto,
+} from './createOrUpdatePersonalSkillsAndInterestsDtoTestDataBuilder'
+import aCreateEmployabilitySkillDto from './ createEmployabilitySkillDtoTestDataBuilder'
 
 const aValidCreateOrUpdateInductionDto = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: Array<CreateEmployabilitySkillDto>
+    personalSkillsAndInterests?: CreateOrUpdatePersonalSkillsAndInterestsDto
   },
 ): CreateOrUpdateInductionDto => {
   return {
@@ -69,18 +78,24 @@ const aValidCreateOrUpdateInductionDto = (
         },
       ],
     },
-    personalSkillsAndInterests: {
-      skills: [
-        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-      ],
-      interests: [
-        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-      ],
-    },
+    employabilitySkills:
+      options?.employabilitySkills === null
+        ? undefined
+        : options?.employabilitySkills || [aCreateEmployabilitySkillDto()],
+    personalSkillsAndInterests:
+      options?.personalSkillsAndInterests ||
+      aCreateOrUpdatePersonalSkillsAndInterestsDto({
+        skills: [
+          aPersonalSkillDto({ skillType: SkillsValue.TEAMWORK }),
+          aPersonalSkillDto({ skillType: SkillsValue.WILLINGNESS_TO_LEARN }),
+          aPersonalSkillDto({ skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' }),
+        ],
+        interests: [
+          aPersonalInterestDto({ interestType: PersonalInterestsValue.CREATIVE }),
+          aPersonalInterestDto({ interestType: PersonalInterestsValue.DIGITAL }),
+          aPersonalInterestDto({ interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' }),
+        ],
+      }),
     inPrisonInterests: {
       inPrisonWorkInterests: [
         { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },

@@ -740,15 +740,15 @@ export interface components {
     }
     UpdatePersonalSkillsAndInterestsRequest: {
       /**
-       * @description One or more skills that the Prisoner feels they have.
-       * @example null
-       */
-      skills: components['schemas']['PersonalSkill'][]
-      /**
        * @description One or more interests that the Prisoner feels they have.
        * @example null
        */
       interests: components['schemas']['PersonalInterest'][]
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: components['schemas']['PersonalSkill'][]
       /**
        * Format: uuid
        * @description A unique reference for a PersonalSkillsAndInterests resource (if it already exists).
@@ -1175,6 +1175,55 @@ export interface components {
        */
       qualifications: components['schemas']['CreateAchievedQualificationRequest'][]
     }
+    CreateEmployabilitySkillRequest: {
+      /**
+       * @description The Prison identifier.
+       * @example BXI
+       */
+      prisonId: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillType:
+        | 'TEAMWORK'
+        | 'TIMEKEEPING'
+        | 'COMMUNICATION'
+        | 'PLANNING'
+        | 'ORGANISATION'
+        | 'PROBLEM_SOLVING'
+        | 'INITIATIVE'
+        | 'ADAPTABILITY'
+        | 'RELIABILITY'
+        | 'CREATIVITY'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
+      /**
+       * @description Any evidence to support the skill rating.
+       * @example null
+       */
+      evidence: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      /**
+       * @description Free text about the session type eg Mathematics A level.
+       * @example null
+       */
+      sessionTypeDescription?: string
+    }
+    CreateEmployabilitySkillsRequest: {
+      /**
+       * @description A List of at least one employability skill.
+       * @example null
+       */
+      employabilitySkills: components['schemas']['CreateEmployabilitySkillRequest'][]
+    }
     CreateFutureWorkInterestsRequest: {
       /**
        * @description One or more future work interests that the Prisoner has.
@@ -1214,6 +1263,8 @@ export interface components {
       personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
       /** @example null */
       futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
+      /** @example null */
+      employabilitySkills?: components['schemas']['CreateEmployabilitySkillsRequest']
       /**
        * @description The notes taken when conducting the prisoner's Induction.
        * @example Peter is excited to be part of the programme.
@@ -1238,15 +1289,15 @@ export interface components {
     }
     CreatePersonalSkillsAndInterestsRequest: {
       /**
-       * @description One or more skills that the Prisoner feels they have.
-       * @example null
-       */
-      skills: components['schemas']['PersonalSkill'][]
-      /**
        * @description One or more interests that the Prisoner feels they have.
        * @example null
        */
       interests: components['schemas']['PersonalInterest'][]
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: components['schemas']['PersonalSkill'][]
     }
     CreatePreviousQualificationsRequest: {
       /**
@@ -1629,55 +1680,6 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['CreateGoalRequest'][]
-    }
-    CreateEmployabilitySkillRequest: {
-      /**
-       * @description The Prison identifier.
-       * @example BXI
-       */
-      prisonId: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      employabilitySkillType:
-        | 'TEAMWORK'
-        | 'TIMEKEEPING'
-        | 'COMMUNICATION'
-        | 'PLANNING'
-        | 'ORGANISATION'
-        | 'PROBLEM_SOLVING'
-        | 'INITIATIVE'
-        | 'ADAPTABILITY'
-        | 'RELIABILITY'
-        | 'CREATIVITY'
-      /**
-       * @example null
-       * @enum {string}
-       */
-      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
-      /**
-       * @description Any evidence to support the skill rating.
-       * @example null
-       */
-      evidence: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
-      /**
-       * @description Free text about the session type eg Mathematics A level.
-       * @example null
-       */
-      sessionTypeDescription?: string
-    }
-    CreateEmployabilitySkillsRequest: {
-      /**
-       * @description A List of at least one employability skill.
-       * @example null
-       */
-      employabilitySkills: components['schemas']['CreateEmployabilitySkillRequest'][]
     }
     TimelineEventResponse: {
       /**
@@ -2341,11 +2343,6 @@ export interface components {
        */
       reference: string
       /**
-       * @description One or more skills that the Prisoner feels they have.
-       * @example null
-       */
-      skills: components['schemas']['PersonalSkill'][]
-      /**
        * @description One or more interests that the Prisoner feels they have.
        * @example null
        */
@@ -2392,6 +2389,11 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
+      /**
+       * @description One or more skills that the Prisoner feels they have.
+       * @example null
+       */
+      skills?: components['schemas']['PersonalSkill'][]
     }
     PreviousQualificationsResponse: {
       /**

@@ -1,5 +1,9 @@
 import { format } from 'date-fns'
-import type { CreateInductionRequest } from 'educationAndWorkPlanApiClient'
+import type {
+  CreateEmployabilitySkillsRequest,
+  CreateInductionRequest,
+  CreatePersonalSkillsAndInterestsRequest,
+} from 'educationAndWorkPlanApiClient'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import TypeOfWorkExperienceValue from '../enums/typeOfWorkExperienceValue'
@@ -12,12 +16,20 @@ import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
+import { aCreateEmployabilitySkillsRequest } from './createEmployabilitySkillsRequestTestDataBuilder'
+import {
+  aCreatePersonalSkillsAndInterestsRequest,
+  aPersonalInterest,
+  aPersonalSkill,
+} from './createPersonalSkillsAndInterestsRequestTestDataBuilder'
 
 const aValidCreateInductionRequest = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: CreateEmployabilitySkillsRequest
+    personalSkillsAndInterests?: CreatePersonalSkillsAndInterestsRequest
     conductedAt?: Date
     conductedBy?: string
     conductedByRole?: string
@@ -74,18 +86,24 @@ const aValidCreateInductionRequest = (
         },
       ],
     },
-    personalSkillsAndInterests: {
-      skills: [
-        { skillType: SkillsValue.TEAMWORK, skillTypeOther: null },
-        { skillType: SkillsValue.WILLINGNESS_TO_LEARN, skillTypeOther: null },
-        { skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' },
-      ],
-      interests: [
-        { interestType: PersonalInterestsValue.CREATIVE, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.DIGITAL, interestTypeOther: null },
-        { interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' },
-      ],
-    },
+    employabilitySkills:
+      options?.employabilitySkills === null
+        ? undefined
+        : options?.employabilitySkills || aCreateEmployabilitySkillsRequest(),
+    personalSkillsAndInterests:
+      options?.personalSkillsAndInterests ||
+      aCreatePersonalSkillsAndInterestsRequest({
+        skills: [
+          aPersonalSkill({ skillType: SkillsValue.TEAMWORK }),
+          aPersonalSkill({ skillType: SkillsValue.WILLINGNESS_TO_LEARN }),
+          aPersonalSkill({ skillType: SkillsValue.OTHER, skillTypeOther: 'Tenacity' }),
+        ],
+        interests: [
+          aPersonalInterest({ interestType: PersonalInterestsValue.CREATIVE }),
+          aPersonalInterest({ interestType: PersonalInterestsValue.DIGITAL }),
+          aPersonalInterest({ interestType: PersonalInterestsValue.OTHER, interestTypeOther: 'Renewable energy' }),
+        ],
+      }),
     inPrisonInterests: {
       inPrisonWorkInterests: [
         { workType: InPrisonWorkValue.CLEANING_AND_HYGIENE, workTypeOther: null },
