@@ -8,7 +8,6 @@ import CheckYourAnswersPage from '../../pages/induction/CheckYourAnswersPage'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
-import SkillsValue from '../../../server/enums/skillsValue'
 import AdditionalTrainingValue from '../../../server/enums/additionalTrainingValue'
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
@@ -77,6 +76,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
+    /* TODO - replace this with code to change answers for Employability Skills
     // Change skills
     Page.verifyOnPage(CheckYourAnswersPage)
       .clickPersonalSkillsChangeLink()
@@ -84,6 +84,7 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .selectSkill(SkillsValue.TEAMWORK)
       .selectSkill(SkillsValue.RESILIENCE)
       .submitPage()
+    */
 
     // Change Other Training
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -207,8 +208,10 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
+      /* TODO - replace this with code to check answers for Employability Skills
       .hasPersonalSkill(SkillsValue.TEAMWORK)
       .hasPersonalSkill(SkillsValue.RESILIENCE)
+      */
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
       .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)

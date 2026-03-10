@@ -1,21 +1,45 @@
 <h2 class="govuk-heading-m">Skills and interests</h2>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-8">
-  <div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
-      Skills
-    </dt>
-    <dd class="govuk-summary-list__value" data-qa="skills">
-      {% for item in inductionDto.personalSkillsAndInterests.skills %}
-        <div data-qa="skills-{{ item.skillType }}">{{ item.skillType | formatSkill }}{{ ' - ' + item.skillTypeOther if item.skillType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.skills.length !== loop.index }}</div>
-      {% endfor %}
-    </dd>
-    <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" href="skills?submitToCheckAnswers=true" data-qa="skillsLink">
-        Change<span class="govuk-visually-hidden"> skills</span>
-      </a>
-    </dd>
-  </div>
+
+  {% if featureToggles.employabilitySkillsEnabled %}
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        Skills confidence level
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="employability-skills">
+        {% for employabilitySkill in inductionDto.employabilitySkills %}
+          <div data-qa="employability-skill-{{ employabilitySkill.employabilitySkillType }}">
+            {{ employabilitySkill.employabilitySkillType | formatEmployabilitySkill }}{{ (': ' + employabilitySkill.employabilitySkillRating | formatEmployabilitySkillRating) if employabilitySkill.employabilitySkillType !== 'NONE' }}
+          </div>
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="employability-skills?submitToCheckAnswers=true" data-qa="employabilitySkillsLink">
+          Change<span class="govuk-visually-hidden"> employability skills</span>
+        </a>
+      </dd>
+    </div>
+
+  {% else %}
+
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
+        Skills
+      </dt>
+      <dd class="govuk-summary-list__value" data-qa="skills">
+        {% for item in inductionDto.personalSkillsAndInterests.skills %}
+          <div data-qa="skills-{{ item.skillType }}">{{ item.skillType | formatSkill }}{{ ' - ' + item.skillTypeOther if item.skillType === 'OTHER' }}{{ ',' if inductionDto.personalSkillsAndInterests.skills.length !== loop.index }}</div>
+        {% endfor %}
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" href="skills?submitToCheckAnswers=true" data-qa="skillsLink">
+          Change<span class="govuk-visually-hidden"> skills</span>
+        </a>
+      </dd>
+    </div>
+  {% endif %}
+
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key govuk-!-width-one-quarter">
       Interests
