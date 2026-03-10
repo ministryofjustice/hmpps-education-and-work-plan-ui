@@ -21,6 +21,7 @@ describe('employabilitySkillsSchema', () => {
 
   it.each([
     { employabilitySkills: ['ORGANISATION'], rating: { ORGANISATION: 'QUITE_CONFIDENT' } },
+    { employabilitySkills: 'ORGANISATION', rating: { ORGANISATION: 'QUITE_CONFIDENT' } },
     {
       employabilitySkills: ['TEAMWORK', 'ORGANISATION'],
       rating: { ORGANISATION: 'QUITE_CONFIDENT', TEAMWORK: 'VERY_CONFIDENT' },
@@ -91,7 +92,6 @@ describe('employabilitySkillsSchema', () => {
   it.each([
     { employabilitySkills: 'not a valid value' },
     { employabilitySkills: ['an invalid value'] },
-    { employabilitySkills: 'ORGANISATION' },
     { employabilitySkills: ['ORGANISATION', 'some other invalid value'] },
   ])(
     'sad path - invalid employabilitySkills field value - employabilitySkills: $employabilitySkills',
