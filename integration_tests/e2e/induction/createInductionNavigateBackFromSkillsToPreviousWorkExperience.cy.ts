@@ -15,8 +15,6 @@ import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import PreviousWorkExperienceTypesPage from '../../pages/induction/PreviousWorkExperienceTypesPage'
 import TypeOfWorkExperienceValue from '../../../server/enums/typeOfWorkExperienceValue'
 import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWorkExperienceDetailPage'
-import SkillsPage from '../../pages/induction/SkillsPage'
-import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import InPrisonWorkPage from '../../pages/induction/InPrisonWorkPage'
@@ -31,6 +29,9 @@ import CreateGoalsPage from '../../pages/goal/CreateGoalsPage'
 import { postRequestedFor } from '../../mockApis/wiremock/requestPatternBuilder'
 import { urlEqualTo } from '../../mockApis/wiremock/matchers/url'
 import { matchingJsonPath } from '../../mockApis/wiremock/matchers/content'
+import EmployabilitySkillsPage from '../../pages/induction/EmployabilitySkillsPage'
+import EmployabilitySkillsValue from '../../../server/enums/employabilitySkillsValue'
+import EmployabilitySkillRatingValue from '../../../server/enums/employabilitySkillRatingValue'
 
 context('Create induction having navigated back from Skills to Previous Work Experience to correct some data', () => {
   const inductionConductedAt = sub(startOfToday(), { weeks: 1 })
@@ -109,8 +110,8 @@ context('Create induction having navigated back from Skills to Previous Work Exp
       .setJobDetails('Writing code')
       .submitPage()
 
-    // Personal Skills page is next; click Back twice to arrive on the PreviousWorkExperienceDetailPage for Beauty
-    Page.verifyOnPage(SkillsPage) //
+    // Employability Skills page is next; click Back twice to arrive on the PreviousWorkExperienceDetailPage for Beauty
+    Page.verifyOnPage(EmployabilitySkillsPage) //
       .clickBackLinkTo(PreviousWorkExperienceDetailPage)
       .clickBackLinkTo(PreviousWorkExperienceDetailPage)
 
@@ -130,9 +131,10 @@ context('Create induction having navigated back from Skills to Previous Work Exp
       .setJobDetails('Writing tests and code')
       .submitPage()
 
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
-      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+    // Employability Skills page is next
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .selectSkill(EmployabilitySkillsValue.COMMUNICATION)
+      .selectSkillRating(EmployabilitySkillsValue.COMMUNICATION, EmployabilitySkillRatingValue.NOT_CONFIDENT)
       .submitPage()
 
     // Personal Interests page is next
@@ -188,8 +190,10 @@ context('Create induction having navigated back from Skills to Previous Work Exp
               "@.previousWorkExperiences.experiences[2].role == 'Junior software developer' && " +
               "@.previousWorkExperiences.experiences[2].details == 'Writing tests and code' && " +
               '@.futureWorkInterests.interests.size() == 0 && ' +
-              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.employabilitySkills.size() == 1 && ' +
+              "@.employabilitySkills[0].employabilitySkillType == 'COMMUNICATION' && " +
+              "@.employabilitySkills[0].employabilitySkillRating == 'NOT_CONFIDENT' && " +
+              "@.employabilitySkills[0].sessionType == 'CIAG_INDUCTION' && " +
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +

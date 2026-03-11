@@ -5,6 +5,7 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkedBeforeCreateController from './workedBeforeCreateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import config from '../../../config'
 
 describe('workedBeforeCreateController', () => {
   const controller = new WorkedBeforeCreateController()
@@ -29,6 +30,8 @@ describe('workedBeforeCreateController', () => {
     locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
+
+  jest.replaceProperty(config.featureToggles, 'employabilitySkillsEnabled', true)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -114,7 +117,7 @@ describe('workedBeforeCreateController', () => {
       expect(updatedInduction.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers).toEqual(false)
     })
 
-    it('should update InductionDto and display Skills page given form is submitted with worked before NO and previous page was not Check Your Answers', async () => {
+    it('should update InductionDto and display Employability Skills page given form is submitted with worked before NO and previous page was not Check Your Answers', async () => {
       // Given
       req.query = {}
 
@@ -132,14 +135,14 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('skills')
+      expect(res.redirect).toHaveBeenCalledWith('employability-skills')
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NO')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toBeUndefined()
       expect(updatedInduction.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers).toEqual(false)
     })
 
-    it('should update InductionDto and display Skills page given form is submitted with worked before NOT_RELEVANT and previous page was not Check Your Answers', async () => {
+    it('should update InductionDto and display Employability Skills page given form is submitted with worked before NOT_RELEVANT and previous page was not Check Your Answers', async () => {
       // Given
       req.query = {}
 
@@ -158,7 +161,7 @@ describe('workedBeforeCreateController', () => {
       await controller.submitWorkedBeforeForm(req, res, next)
 
       // Then
-      expect(res.redirect).toHaveBeenCalledWith('skills')
+      expect(res.redirect).toHaveBeenCalledWith('employability-skills')
       const updatedInduction = req.journeyData.inductionDto
       expect(updatedInduction.previousWorkExperiences.hasWorkedBefore).toEqual('NOT_RELEVANT')
       expect(updatedInduction.previousWorkExperiences.hasWorkedBeforeNotRelevantReason).toEqual(

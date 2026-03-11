@@ -20,15 +20,16 @@ import PreviousWorkExperienceTypesPage from './PreviousWorkExperienceTypesPage'
 import PreviousWorkExperienceDetailPage from './PreviousWorkExperienceDetailPage'
 import FutureWorkInterestTypesPage from './FutureWorkInterestTypesPage'
 import FutureWorkInterestRolesPage from './FutureWorkInterestRolesPage'
-import SkillsPage from './SkillsPage'
 import PersonalInterestsPage from './PersonalInterestsPage'
 import AffectAbilityToWorkPage from './AffectAbilityToWorkPage'
-import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AbilityToWorkValue from '../../../server/enums/abilityToWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import InductionNotePage from './InductionNotePage'
 import WhoCompletedInductionPage from './WhoCompletedInductionPage'
+import EmployabilitySkillsPage from './EmployabilitySkillsPage'
+import EmployabilitySkillsValue from '../../../server/enums/employabilitySkillsValue'
+import EmployabilitySkillRatingValue from '../../../server/enums/employabilitySkillRatingValue'
 
 export default class CheckYourAnswersPage extends Page {
   constructor() {
@@ -208,14 +209,23 @@ export default class CheckYourAnswersPage extends Page {
     return Page.verifyOnPage(FutureWorkInterestRolesPage)
   }
 
-  hasPersonalSkill(expected: SkillsValue): CheckYourAnswersPage {
-    this.personalSkill(expected).should('be.visible')
+  hasEmployabilitySkill(type: EmployabilitySkillsValue, rating: EmployabilitySkillRatingValue): CheckYourAnswersPage {
+    this.employabilitySkill(type)
+      .should('be.visible')
+      .find(`[data-qa=employability-skill-rating-${rating}]`)
+      .should('have.length', 1)
+      .should('be.visible')
     return this
   }
 
-  clickPersonalSkillsChangeLink(): SkillsPage {
-    this.personalSkillsChangeLink().click()
-    return Page.verifyOnPage(SkillsPage)
+  hasNoEmployabilitySkills(): CheckYourAnswersPage {
+    this.employabilitySkill(EmployabilitySkillsValue.NONE).should('be.visible')
+    return this
+  }
+
+  clickEmployabilitySkillsChangeLink(): EmployabilitySkillsPage {
+    this.employabilitySkillsChangeLink().click()
+    return Page.verifyOnPage(EmployabilitySkillsPage)
   }
 
   hasPersonalInterest(expected: PersonalInterestsValue): CheckYourAnswersPage {
@@ -327,9 +337,10 @@ export default class CheckYourAnswersPage extends Page {
 
   private particularJobInterestsChangeLink = (): PageElement => cy.get('[data-qa=particularJobInterestsLink]')
 
-  private personalSkill = (expected: SkillsValue): PageElement => cy.get(`[data-qa=skills-${expected}]`)
+  private employabilitySkill = (type: EmployabilitySkillsValue): PageElement =>
+    cy.get(`[data-qa=employability-skill-${type}]`)
 
-  private personalSkillsChangeLink = (): PageElement => cy.get('[data-qa=skillsLink]')
+  private employabilitySkillsChangeLink = (): PageElement => cy.get('[data-qa=employabilitySkillsLink]')
 
   private personalInterest = (expected: PersonalInterestsValue): PageElement =>
     cy.get(`[data-qa=personalInterests-${expected}]`)

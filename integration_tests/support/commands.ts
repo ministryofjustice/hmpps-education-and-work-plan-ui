@@ -20,8 +20,7 @@ import PreviousWorkExperienceDetailPage from '../pages/induction/PreviousWorkExp
 import FutureWorkInterestTypesPage from '../pages/induction/FutureWorkInterestTypesPage'
 import WorkInterestTypeValue from '../../server/enums/workInterestTypeValue'
 import FutureWorkInterestRolesPage from '../pages/induction/FutureWorkInterestRolesPage'
-import SkillsPage from '../pages/induction/SkillsPage'
-import SkillsValue from '../../server/enums/skillsValue'
+import InductionEmployabilitySkillsPage from '../pages/induction/EmployabilitySkillsPage'
 import PersonalInterestsPage from '../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../pages/induction/AffectAbilityToWorkPage'
@@ -42,6 +41,8 @@ import ReviewPlanCheckYourAnswersPage from '../pages/reviewPlan/ReviewPlanCheckY
 import InductionNotePage from '../pages/induction/InductionNotePage'
 import WhoCompletedInductionPage from '../pages/induction/WhoCompletedInductionPage'
 import SessionsSummaryPage from '../pages/sessionSummary/SessionsSummaryPage'
+import EmployabilitySkillsValue from '../../server/enums/employabilitySkillsValue'
+import EmployabilitySkillRatingValue from '../../server/enums/employabilitySkillRatingValue'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: false }) => {
   cy.request('/')
@@ -157,9 +158,10 @@ Cypress.Commands.add(
         .setJobDetails('Basic ground works and building')
         .submitPage()
     }
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
-      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+    // Employability Skills page is next
+    Page.verifyOnPage(InductionEmployabilitySkillsPage) //
+      .selectSkill(EmployabilitySkillsValue.PROBLEM_SOLVING)
+      .selectSkillRating(EmployabilitySkillsValue.PROBLEM_SOLVING, EmployabilitySkillRatingValue.VERY_CONFIDENT)
       .submitPage()
     // Personal Interests page is next
     Page.verifyOnPage(PersonalInterestsPage) //

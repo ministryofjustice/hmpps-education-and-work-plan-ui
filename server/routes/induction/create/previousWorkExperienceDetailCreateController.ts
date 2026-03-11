@@ -4,6 +4,7 @@ import type { InductionDto } from 'inductionDto'
 import PreviousWorkExperienceDetailController from '../common/previousWorkExperienceDetailController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import { getNextPage, isLastPage } from '../../pageFlowQueue'
+import config from '../../../config'
 
 export default class PreviousWorkExperienceDetailCreateController extends PreviousWorkExperienceDetailController {
   submitPreviousWorkExperienceDetailForm: RequestHandler = async (
@@ -55,9 +56,17 @@ export default class PreviousWorkExperienceDetailCreateController extends Previo
     // We are at the end of the page flow queue. Tidy up by removing both the page flow queue
     req.session.pageFlowQueue = undefined
 
+    if (!config.featureToggles.employabilitySkillsEnabled) {
+      const nextPage = req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers
+        ? '../check-your-answers'
+        : '../skills'
+
+      return res.redirect(nextPage)
+    }
+
     const nextPage = req.journeyData.inductionDto.previousWorkExperiences.needToCompleteJourneyFromCheckYourAnswers
       ? '../check-your-answers'
-      : '../skills'
+      : '../employability-skills'
 
     return res.redirect(nextPage)
   }

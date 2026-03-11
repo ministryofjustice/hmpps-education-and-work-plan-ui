@@ -17,8 +17,6 @@ import PreviousWorkExperienceDetailPage from '../../pages/induction/PreviousWork
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 import WorkInterestTypeValue from '../../../server/enums/workInterestTypeValue'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
-import SkillsPage from '../../pages/induction/SkillsPage'
-import SkillsValue from '../../../server/enums/skillsValue'
 import PersonalInterestsPage from '../../pages/induction/PersonalInterestsPage'
 import PersonalInterestsValue from '../../../server/enums/personalInterestsValue'
 import AffectAbilityToWorkPage from '../../pages/induction/AffectAbilityToWorkPage'
@@ -38,6 +36,9 @@ import YesNoValue from '../../../server/enums/yesNoValue'
 import WhoCompletedInductionPage from '../../pages/induction/WhoCompletedInductionPage'
 import SessionCompletedByValue from '../../../server/enums/sessionCompletedByValue'
 import InductionNotePage from '../../pages/induction/InductionNotePage'
+import EmployabilitySkillsPage from '../../pages/induction/EmployabilitySkillsPage'
+import EmployabilitySkillsValue from '../../../server/enums/employabilitySkillsValue'
+import EmployabilitySkillRatingValue from '../../../server/enums/employabilitySkillRatingValue'
 
 context('Create an Induction', () => {
   beforeEach(() => {
@@ -206,13 +207,18 @@ context('Create an Induction', () => {
       .setJobDetails('Self employed DJ operating in bars and clubs')
       .submitPage()
 
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
+    // Employability Skills page is next
+    Page.verifyOnPage(EmployabilitySkillsPage) //
       .submitPage() // submit the page without answering the question to trigger a validation error
-    Page.verifyOnPage(SkillsPage) //
+    Page.verifyOnPage(EmployabilitySkillsPage) //
       .hasErrorCount(1)
-      .hasFieldInError('skills')
-      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+      .hasFieldInError('employabilitySkills')
+      .selectSkill(EmployabilitySkillsValue.PLANNING)
+      .submitPage()
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .hasErrorCount(1)
+      .hasFieldInError('rating[PLANNING]')
+      .selectSkillRating(EmployabilitySkillsValue.PLANNING, EmployabilitySkillRatingValue.QUITE_CONFIDENT)
       .submitPage()
 
     // Personal Interests page is next
@@ -307,8 +313,10 @@ context('Create an Induction', () => {
               "@.futureWorkInterests.interests[2].workType == 'OTHER' && " +
               "@.futureWorkInterests.interests[2].workTypeOther == 'Natural world' && " +
               "@.futureWorkInterests.interests[2].role == 'Botanist' && " +
-              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.employabilitySkills.size() == 1 && ' +
+              "@.employabilitySkills[0].employabilitySkillType == 'PLANNING' && " +
+              "@.employabilitySkills[0].employabilitySkillRating == 'QUITE_CONFIDENT' && " +
+              "@.employabilitySkills[0].sessionType == 'CIAG_INDUCTION' && " +
               '@.personalSkillsAndInterests.interests.size() == 2 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               "@.personalSkillsAndInterests.interests[1].interestType == 'DIGITAL' && " +
@@ -395,9 +403,10 @@ context('Create an Induction', () => {
       .setJobDetails('Basic ground works and building')
       .submitPage()
 
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
-      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+    // Employability Skills page is next
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .selectSkill(EmployabilitySkillsValue.COMMUNICATION)
+      .selectSkillRating(EmployabilitySkillsValue.COMMUNICATION, EmployabilitySkillRatingValue.LITTLE_CONFIDENCE)
       .submitPage()
 
     // Personal Interests page is next
@@ -449,8 +458,10 @@ context('Create an Induction', () => {
               '@.futureWorkInterests.interests.size() == 1 && ' +
               "@.futureWorkInterests.interests[0].workType == 'OUTDOOR' && " +
               "@.futureWorkInterests.interests[0].role == 'Farm hand' && " +
-              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.employabilitySkills.size() == 1 && ' +
+              "@.employabilitySkills[0].employabilitySkillType == 'COMMUNICATION' && " +
+              "@.employabilitySkills[0].employabilitySkillRating == 'LITTLE_CONFIDENCE' && " +
+              "@.employabilitySkills[0].sessionType == 'CIAG_INDUCTION' && " +
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'COMMUNITY' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +
@@ -535,9 +546,10 @@ context('Create an Induction', () => {
       .selectWorkedBefore(HasWorkedBeforeValue.NO)
       .submitPage()
 
-    // Personal Skills page is next
-    Page.verifyOnPage(SkillsPage) //
-      .selectSkill(SkillsValue.POSITIVE_ATTITUDE)
+    // Employability Skills page is next
+    Page.verifyOnPage(EmployabilitySkillsPage) //
+      .selectSkill(EmployabilitySkillsValue.COMMUNICATION)
+      .selectSkillRating(EmployabilitySkillsValue.COMMUNICATION, EmployabilitySkillRatingValue.LITTLE_CONFIDENCE)
       .submitPage()
 
     // Personal Interests page is next
@@ -592,8 +604,10 @@ context('Create an Induction', () => {
               "@.previousWorkExperiences.hasWorkedBefore == 'NO' && " +
               '@.previousWorkExperiences.experiences.size() == 0 && ' +
               '@.futureWorkInterests.interests.size() == 0 && ' +
-              '@.personalSkillsAndInterests.skills.size() == 1 && ' +
-              "@.personalSkillsAndInterests.skills[0].skillType == 'POSITIVE_ATTITUDE' && " +
+              '@.employabilitySkills.size() == 1 && ' +
+              "@.employabilitySkills[0].employabilitySkillType == 'COMMUNICATION' && " +
+              "@.employabilitySkills[0].employabilitySkillRating == 'LITTLE_CONFIDENCE' && " +
+              "@.employabilitySkills[0].sessionType == 'CIAG_INDUCTION' && " +
               '@.personalSkillsAndInterests.interests.size() == 1 && ' +
               "@.personalSkillsAndInterests.interests[0].interestType == 'DIGITAL' && " +
               '@.workOnRelease.affectAbilityToWork.size() == 1 && ' +

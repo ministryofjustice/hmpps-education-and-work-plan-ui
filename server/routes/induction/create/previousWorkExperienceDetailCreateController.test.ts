@@ -8,6 +8,7 @@ import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBui
 import PreviousWorkExperienceDetailCreateController from './previousWorkExperienceDetailCreateController'
 import TypeOfWorkExperienceValue from '../../../enums/typeOfWorkExperienceValue'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
+import config from '../../../config'
 
 describe('previousWorkExperienceDetailCreateController', () => {
   const controller = new PreviousWorkExperienceDetailCreateController()
@@ -32,6 +33,8 @@ describe('previousWorkExperienceDetailCreateController', () => {
     locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
+
+  jest.replaceProperty(config.featureToggles, 'employabilitySkillsEnabled', true)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -284,7 +287,7 @@ describe('previousWorkExperienceDetailCreateController', () => {
       }
       req.session.pageFlowQueue = pageFlowQueue
 
-      const expectedNextPage = '../skills'
+      const expectedNextPage = '../employability-skills'
       const expectedWorkExperiences = [
         {
           experienceType: TypeOfWorkExperienceValue.CONSTRUCTION,
