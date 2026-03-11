@@ -25,6 +25,8 @@ import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
 import FutureWorkInterestRolesPage from '../../pages/induction/FutureWorkInterestRolesPage'
 import FutureWorkInterestTypesPage from '../../pages/induction/FutureWorkInterestTypesPage'
 import SessionCompletedByValue from '../../../server/enums/sessionCompletedByValue'
+import EmployabilitySkillsValue from '../../../server/enums/employabilitySkillsValue'
+import EmployabilitySkillRatingValue from '../../../server/enums/employabilitySkillRatingValue'
 
 context(`Change links on the Check Your Answers page when creating an Induction`, () => {
   const prisonNumber = 'G6115VJ'
@@ -76,15 +78,15 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .selectPersonalInterest(PersonalInterestsValue.DIGITAL)
       .submitPage()
 
-    /* TODO - replace this with code to change answers for Employability Skills
-    // Change skills
+    // Change employability skills
     Page.verifyOnPage(CheckYourAnswersPage)
-      .clickPersonalSkillsChangeLink()
-      .deSelectSkill(SkillsValue.POSITIVE_ATTITUDE)
-      .selectSkill(SkillsValue.TEAMWORK)
-      .selectSkill(SkillsValue.RESILIENCE)
+      .clickEmployabilitySkillsChangeLink()
+      .deSelectSkill(EmployabilitySkillsValue.PROBLEM_SOLVING)
+      .selectSkill(EmployabilitySkillsValue.TIMEKEEPING)
+      .selectSkillRating(EmployabilitySkillsValue.TIMEKEEPING, EmployabilitySkillRatingValue.VERY_CONFIDENT)
+      .selectSkill(EmployabilitySkillsValue.ORGANISATION)
+      .selectSkillRating(EmployabilitySkillsValue.ORGANISATION, EmployabilitySkillRatingValue.LITTLE_CONFIDENCE)
       .submitPage()
-    */
 
     // Change Other Training
     Page.verifyOnPage(CheckYourAnswersPage)
@@ -208,10 +210,8 @@ context(`Change links on the Check Your Answers page when creating an Induction`
       .hasFactorsAffectingAbilityToWork([AbilityToWorkValue.LIMITED_BY_OFFENCE, AbilityToWorkValue.NO_RIGHT_TO_WORK])
       .hasPersonalInterest(PersonalInterestsValue.CRAFTS)
       .hasPersonalInterest(PersonalInterestsValue.DIGITAL)
-      /* TODO - replace this with code to check answers for Employability Skills
-      .hasPersonalSkill(SkillsValue.TEAMWORK)
-      .hasPersonalSkill(SkillsValue.RESILIENCE)
-      */
+      .hasEmployabilitySkill(EmployabilitySkillsValue.TIMEKEEPING, EmployabilitySkillRatingValue.VERY_CONFIDENT)
+      .hasEmployabilitySkill(EmployabilitySkillsValue.ORGANISATION, EmployabilitySkillRatingValue.LITTLE_CONFIDENCE)
       .hasAdditionalTraining([AdditionalTrainingValue.MANUAL_HANDLING, AdditionalTrainingValue.CSCS_CARD])
       .hasWorkInterest(WorkInterestTypeValue.OUTDOOR)
       .hasWorkInterest(WorkInterestTypeValue.MANUFACTURING)
