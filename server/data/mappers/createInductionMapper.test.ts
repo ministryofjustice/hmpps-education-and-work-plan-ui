@@ -11,7 +11,7 @@ import {
   aPersonalSkill,
 } from '../../testsupport/createPersonalSkillsAndInterestsRequestTestDataBuilder'
 import aCreateEmployabilitySkillDto from '../../testsupport/ createEmployabilitySkillDtoTestDataBuilder'
-import { aCreateEmployabilitySkillsRequest } from '../../testsupport/createEmployabilitySkillsRequestTestDataBuilder'
+import { aCreateEmployabilitySkillRequest } from '../../testsupport/createEmployabilitySkillsRequestTestDataBuilder'
 
 describe('createInductionMapper', () => {
   it('should map a CreateOrUpdateInductionDto to a CreateInductionRequest given a DTO with personal skills instead of employability skills', () => {
@@ -51,7 +51,7 @@ describe('createInductionMapper', () => {
       }),
     })
     const expected = aValidCreateInductionRequest({
-      employabilitySkills: aCreateEmployabilitySkillsRequest(),
+      employabilitySkills: [aCreateEmployabilitySkillRequest()],
       personalSkillsAndInterests: aCreatePersonalSkillsAndInterestsRequest({
         skills: null,
       }),

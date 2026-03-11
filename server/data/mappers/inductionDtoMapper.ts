@@ -1,5 +1,10 @@
-import type { AchievedQualificationResponse, InductionResponse } from 'educationAndWorkPlanApiClient'
+import type {
+  AchievedQualificationResponse,
+  GetEmployabilitySkillsResponse,
+  InductionResponse,
+} from 'educationAndWorkPlanApiClient'
 import type { InductionDto } from 'inductionDto'
+import { parseISO } from 'date-fns'
 import QualificationLevelValue from '../../enums/qualificationLevelValue'
 import HasWorkedBeforeValue from '../../enums/hasWorkedBeforeValue'
 
@@ -53,6 +58,13 @@ const toInductionDto = (inductionResponse: InductionResponse): InductionDto => {
           updatedAt: new Date(inductionResponse.inPrisonInterests.updatedAt),
         }
       : undefined,
+    employabilitySkills: (inductionResponse.employabilitySkills ?? []).map(
+      (employabilitySkill: GetEmployabilitySkillsResponse) => ({
+        ...employabilitySkill,
+        createdAt: parseISO(employabilitySkill.createdAt),
+        updatedAt: parseISO(employabilitySkill.updatedAt),
+      }),
+    ),
     personalSkillsAndInterests: inductionResponse.personalSkillsAndInterests
       ? {
           ...inductionResponse.personalSkillsAndInterests,
