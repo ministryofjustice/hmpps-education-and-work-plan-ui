@@ -120,7 +120,7 @@ Data supplied to this template:
               {% if curiousInPrisonCourses.isFulfilled() %}
                 {% set curiousInPrisonCourses = curiousInPrisonCourses.value %}
                 <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="curious-in-prison-courses-count">{{ curiousInPrisonCourses.coursesCompletedInLast12Months.length }}</span>
-                <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Recorded in Curious</span>
+                <span class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Recorded in Curious (last 12 months)</span>
               {% else %}
                 <span class="govuk-tag govuk-tag--blue" data-qa="curious-in-prison-courses-unavailable-message">Curious data unavailable</span>
               {% endif %}
