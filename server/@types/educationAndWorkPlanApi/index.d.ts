@@ -1217,13 +1217,6 @@ export interface components {
        */
       sessionTypeDescription?: string
     }
-    CreateEmployabilitySkillsRequest: {
-      /**
-       * @description A List of at least one employability skill.
-       * @example null
-       */
-      employabilitySkills: components['schemas']['CreateEmployabilitySkillRequest'][]
-    }
     CreateFutureWorkInterestsRequest: {
       /**
        * @description One or more future work interests that the Prisoner has.
@@ -1263,8 +1256,11 @@ export interface components {
       personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
       /** @example null */
       futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
-      /** @example null */
-      employabilitySkills?: components['schemas']['CreateEmployabilitySkillsRequest']
+      /**
+       * @description A list of employability skills. An empty list means the person has no employability skills.
+       * @example null
+       */
+      employabilitySkills?: components['schemas']['CreateEmployabilitySkillRequest'][]
       /**
        * @description The notes taken when conducting the prisoner's Induction.
        * @example Peter is excited to be part of the programme.
@@ -1680,6 +1676,13 @@ export interface components {
        * @example null
        */
       goals: components['schemas']['CreateGoalRequest'][]
+    }
+    CreateEmployabilitySkillsRequest: {
+      /**
+       * @description A List of at least one employability skill.
+       * @example null
+       */
+      employabilitySkills: components['schemas']['CreateEmployabilitySkillRequest'][]
     }
     TimelineEventResponse: {
       /**
@@ -2206,6 +2209,85 @@ export interface components {
        */
       updatedAtPrison: string
     }
+    GetEmployabilitySkillsResponse: {
+      /**
+       * @description The DPS username of the person who created this resource.
+       * @example asmith_gen
+       */
+      createdBy: string
+      /**
+       * @description The display name of the person who created this resource.
+       * @example Alex Smith
+       */
+      createdByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was created.
+       * @example 2023-06-19T09:39:44Z
+       */
+      createdAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
+       * @example BXI
+       */
+      createdAtPrison: string
+      /**
+       * @description The DPS username of the person who last updated this resource.
+       * @example asmith_gen
+       */
+      updatedBy: string
+      /**
+       * @description The display name of the person who last updated this resource.
+       * @example Alex Smith
+       */
+      updatedByDisplayName: string
+      /**
+       * Format: date-time
+       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
+       * @example 2023-06-19T09:39:44Z
+       */
+      updatedAt: string
+      /**
+       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
+       * @example BXI
+       */
+      updatedAtPrison: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillType:
+        | 'TEAMWORK'
+        | 'TIMEKEEPING'
+        | 'COMMUNICATION'
+        | 'PLANNING'
+        | 'ORGANISATION'
+        | 'PROBLEM_SOLVING'
+        | 'INITIATIVE'
+        | 'ADAPTABILITY'
+        | 'RELIABILITY'
+        | 'CREATIVITY'
+      /**
+       * @example null
+       * @enum {string}
+       */
+      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
+      /**
+       * @description Any evidence to support the skill rating.
+       * @example null
+       */
+      evidence: string
+      /**
+       * @example null
+       * @enum {string}
+       */
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      /**
+       * @description Free text about the session type eg Mathematics A level.
+       * @example null
+       */
+      sessionTypeDescription?: string
+    }
     InPrisonInterestsResponse: {
       /**
        * Format: uuid
@@ -2334,6 +2416,11 @@ export interface components {
       personalSkillsAndInterests?: components['schemas']['PersonalSkillsAndInterestsResponse']
       /** @example null */
       futureWorkInterests?: components['schemas']['FutureWorkInterestsResponse']
+      /**
+       * @description A List of employability skills.
+       * @example null
+       */
+      employabilitySkills?: components['schemas']['GetEmployabilitySkillsResponse'][]
     }
     PersonalSkillsAndInterestsResponse: {
       /**
@@ -3124,85 +3211,6 @@ export interface components {
        * @example null
        */
       employabilitySkills: components['schemas']['GetEmployabilitySkillsResponse'][]
-    }
-    GetEmployabilitySkillsResponse: {
-      /**
-       * @description The DPS username of the person who created this resource.
-       * @example asmith_gen
-       */
-      createdBy: string
-      /**
-       * @description The display name of the person who created this resource.
-       * @example Alex Smith
-       */
-      createdByDisplayName: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when this resource was created.
-       * @example 2023-06-19T09:39:44Z
-       */
-      createdAt: string
-      /**
-       * @description The identifier of the prison that the prisoner was resident at when this resource was created.
-       * @example BXI
-       */
-      createdAtPrison: string
-      /**
-       * @description The DPS username of the person who last updated this resource.
-       * @example asmith_gen
-       */
-      updatedBy: string
-      /**
-       * @description The display name of the person who last updated this resource.
-       * @example Alex Smith
-       */
-      updatedByDisplayName: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when this resource was last updated. This will be the same as the created date if it has not yet been updated.
-       * @example 2023-06-19T09:39:44Z
-       */
-      updatedAt: string
-      /**
-       * @description The identifier of the prison that the prisoner was resident at when this resource was updated.
-       * @example BXI
-       */
-      updatedAtPrison: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      employabilitySkillType:
-        | 'TEAMWORK'
-        | 'TIMEKEEPING'
-        | 'COMMUNICATION'
-        | 'PLANNING'
-        | 'ORGANISATION'
-        | 'PROBLEM_SOLVING'
-        | 'INITIATIVE'
-        | 'ADAPTABILITY'
-        | 'RELIABILITY'
-        | 'CREATIVITY'
-      /**
-       * @example null
-       * @enum {string}
-       */
-      employabilitySkillRating: 'NOT_CONFIDENT' | 'LITTLE_CONFIDENCE' | 'QUITE_CONFIDENT' | 'VERY_CONFIDENT'
-      /**
-       * @description Any evidence to support the skill rating.
-       * @example null
-       */
-      evidence: string
-      /**
-       * @example null
-       * @enum {string}
-       */
-      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
-      /**
-       * @description Free text about the session type eg Mathematics A level.
-       * @example null
-       */
-      sessionTypeDescription?: string
     }
   }
   responses: never

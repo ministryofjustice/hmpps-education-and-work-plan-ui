@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import type {
-  CreateEmployabilitySkillsRequest,
+  CreateEmployabilitySkillRequest,
   CreateInductionRequest,
   CreatePersonalSkillsAndInterestsRequest,
 } from 'educationAndWorkPlanApiClient'
@@ -16,7 +16,7 @@ import AdditionalTrainingValue from '../enums/additionalTrainingValue'
 import InPrisonWorkValue from '../enums/inPrisonWorkValue'
 import InPrisonTrainingValue from '../enums/inPrisonTrainingValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
-import { aCreateEmployabilitySkillsRequest } from './createEmployabilitySkillsRequestTestDataBuilder'
+import { aCreateEmployabilitySkillRequest } from './createEmployabilitySkillsRequestTestDataBuilder'
 import {
   aCreatePersonalSkillsAndInterestsRequest,
   aPersonalInterest,
@@ -28,7 +28,7 @@ const aValidCreateInductionRequest = (
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
-    employabilitySkills?: CreateEmployabilitySkillsRequest
+    employabilitySkills?: Array<CreateEmployabilitySkillRequest>
     personalSkillsAndInterests?: CreatePersonalSkillsAndInterestsRequest
     conductedAt?: Date
     conductedBy?: string
@@ -89,7 +89,7 @@ const aValidCreateInductionRequest = (
     employabilitySkills:
       options?.employabilitySkills === null
         ? undefined
-        : options?.employabilitySkills || aCreateEmployabilitySkillsRequest(),
+        : options?.employabilitySkills || [aCreateEmployabilitySkillRequest()],
     personalSkillsAndInterests:
       options?.personalSkillsAndInterests ||
       aCreatePersonalSkillsAndInterestsRequest({

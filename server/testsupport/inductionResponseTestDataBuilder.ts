@@ -1,13 +1,21 @@
-import type { InductionResponse } from 'educationAndWorkPlanApiClient'
+import type {
+  GetEmployabilitySkillsResponse,
+  InductionResponse,
+  PersonalSkillsAndInterestsResponse,
+} from 'educationAndWorkPlanApiClient'
 import AbilityToWorkValue from '../enums/abilityToWorkValue'
 import HasWorkedBeforeValue from '../enums/hasWorkedBeforeValue'
 import HopingToGetWorkValue from '../enums/hopingToGetWorkValue'
+import aPersonalSkillsAndInterestsResponse from './personalSkillsAndInterestsResponseTestDataBuilder'
+import { aGetEmployabilitySkillsResponse } from './getEmployabilitySkillResponsesTestDataBuilder'
 
 const aValidInductionResponse = (
   options?: CoreBuilderOptions & {
     hopingToGetWork?: HopingToGetWorkValue
     hasWorkedBefore?: HasWorkedBeforeValue
     hasQualifications?: boolean
+    employabilitySkills?: Array<GetEmployabilitySkillsResponse>
+    personalSkillsAndInterests?: PersonalSkillsAndInterestsResponse
   },
 ): InductionResponse => {
   return {
@@ -79,20 +87,11 @@ const aValidInductionResponse = (
         },
       ],
     },
-    personalSkillsAndInterests: {
-      reference: '517c470f-f9b5-4d49-9148-4458fe358439',
-      ...auditFields(options),
-      skills: [
-        { skillType: 'TEAMWORK', skillTypeOther: null },
-        { skillType: 'WILLINGNESS_TO_LEARN', skillTypeOther: null },
-        { skillType: 'OTHER', skillTypeOther: 'Tenacity' },
-      ],
-      interests: [
-        { interestType: 'CREATIVE', interestTypeOther: null },
-        { interestType: 'DIGITAL', interestTypeOther: null },
-        { interestType: 'OTHER', interestTypeOther: 'Renewable energy' },
-      ],
-    },
+    employabilitySkills:
+      options?.employabilitySkills === null
+        ? null
+        : options?.employabilitySkills || [aGetEmployabilitySkillsResponse()],
+    personalSkillsAndInterests: options?.personalSkillsAndInterests || aPersonalSkillsAndInterestsResponse(),
     previousQualifications: {
       reference: 'dea24acc-fde5-4ead-a9eb-e1757de2542c',
       ...auditFields(options),
