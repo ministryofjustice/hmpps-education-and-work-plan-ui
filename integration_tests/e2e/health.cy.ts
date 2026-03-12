@@ -37,6 +37,7 @@ context('Healthcheck', () => {
       cy.task('stubPrisonerSearchApiPing')
       cy.task('stubPrisonRegisterApiPing', 500)
       cy.task('stubTokenVerificationPing', 500)
+      cy.task('stubSupportAdditionalNeedsApiPing')
     })
 
     it('Reports correctly when token verification down', () => {
@@ -46,9 +47,9 @@ context('Healthcheck', () => {
         expect(response.body.components.educationAndWorkPlan.status).to.equal('UP')
         expect(response.body.components.prisonerSearch.status).to.equal('UP')
         expect(response.body.components.prisonRegister.status).to.equal('DOWN')
-        expect(response.body.components.prisonRegister.details).to.contain({ status: 500, retries: 2 })
+        expect(response.body.components.prisonRegister.details).to.contain({ status: 500, attempts: 3 })
         expect(response.body.components.tokenVerification.status).to.equal('DOWN')
-        expect(response.body.components.tokenVerification.details).to.contain({ status: 500, retries: 2 })
+        expect(response.body.components.tokenVerification.details).to.contain({ status: 500, attempts: 3 })
       })
     })
 

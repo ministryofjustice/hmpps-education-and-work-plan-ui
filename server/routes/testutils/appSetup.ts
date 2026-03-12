@@ -19,6 +19,7 @@ jest.mock('../../services/auditService')
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
+  productId: 'test product id',
   buildNumber: '1',
   gitRef: 'long ref',
   gitShortHash: 'short ref',

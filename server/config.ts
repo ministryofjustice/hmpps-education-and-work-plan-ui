@@ -75,6 +75,7 @@ export default {
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 5000)),
@@ -93,6 +94,7 @@ export default {
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -113,6 +115,7 @@ export default {
     },
     manageUsersApi: {
       url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 5000)),
@@ -122,6 +125,7 @@ export default {
     },
     educationAndWorkPlan: {
       url: get('EDUCATION_AND_WORK_PLAN_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('EDUCATION_AND_WORK_PLAN_API_TIMEOUT_DEADLINE', 5000)),
@@ -131,6 +135,7 @@ export default {
     },
     supportAdditionalNeedsApi: {
       url: get('SUPPORT_ADDITIONAL_NEEDS_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('SUPPORT_ADDITIONAL_NEEDS_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('SUPPORT_ADDITIONAL_NEEDS_API_TIMEOUT_DEADLINE', 5000)),
@@ -140,6 +145,7 @@ export default {
     },
     prisonerSearch: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 5000)),
@@ -150,6 +156,7 @@ export default {
     },
     prisonRegister: {
       url: get('PRISON_REGISTER_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISON_REGISTER_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('PRISON_REGISTER_API_TIMEOUT_DEADLINE', 5000)),
@@ -159,6 +166,7 @@ export default {
     },
     curious: {
       url: get('CURIOUS_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: null,
       timeout: {
         response: Number(get('CURIOUS_API_TIMEOUT_RESPONSE', 3000)),
         deadline: Number(get('CURIOUS_API_TIMEOUT_DEADLINE', 3000)),
@@ -168,6 +176,7 @@ export default {
     },
     learnerRecordsApi: {
       url: get('LEARNER_RECORDS_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: null,
       timeout: {
         response: Number(get('LEARNER_RECORDS_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('LEARNER_RECORDS_API_TIMEOUT_DEADLINE', 5000)),
