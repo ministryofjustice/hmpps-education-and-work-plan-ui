@@ -87,6 +87,14 @@ describe('View Employability Skill Ratings Page tests', () => {
               sessionType: EmployabilitySkillSessionType.EDUCATION_REVIEW,
               sessionTypeDescription: 'Maths',
             }),
+            anEmployabilitySkillResponseDto({
+              employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
+              employabilitySkillRating: EmployabilitySkillRatingValue.NOT_CONFIDENT,
+              updatedAt: startOfDay('2025-08-25'),
+              evidence: 'Session Type does not require evidence',
+              sessionType: EmployabilitySkillSessionType.CIAG_INDUCTION,
+              sessionTypeDescription: undefined,
+            }),
           ],
         }),
       ),
@@ -100,7 +108,7 @@ describe('View Employability Skill Ratings Page tests', () => {
     // Then
     const skillsRatingTable = $('[data-qa=RELIABILITY-employability-skill-ratings-table]')
     expect(skillsRatingTable.length).toEqual(1)
-    expect(skillsRatingTable.find('tbody tr').length).toEqual(3) // expect 3 rows, one for each rating
+    expect(skillsRatingTable.find('tbody tr').length).toEqual(4) // expect 4 rows, one for each rating
 
     expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(0).text().trim()).toEqual('4 - very confident')
     expect(skillsRatingTable.find('tbody tr').eq(0).find('td').eq(1).text().trim()).toEqual(
@@ -132,6 +140,15 @@ describe('View Employability Skill Ratings Page tests', () => {
     )
     expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(4).text().trim()).toContain('Alex Smith')
     expect(skillsRatingTable.find('tbody tr').eq(2).find('td').eq(4).text().trim()).toContain('Moorland (HMP & YOI)')
+
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(0).text().trim()).toEqual('1 - not confident')
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(1).text().trim()).toEqual(
+      'Careers, information, advice and guidance (CIAG) induction',
+    )
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(2).text().trim()).toEqual('25 Aug 2025')
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(3).text().trim()).toEqual('Not required at induction')
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(4).text().trim()).toContain('Alex Smith')
+    expect(skillsRatingTable.find('tbody tr').eq(3).find('td').eq(4).text().trim()).toContain('Moorland (HMP & YOI)')
 
     expect($('[data-qa=no-employability-skill-ratings-recorded]').length).toEqual(0)
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
