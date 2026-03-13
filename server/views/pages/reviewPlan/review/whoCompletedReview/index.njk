@@ -16,9 +16,10 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% set warningText = 'Update the plan, including goals and employability skills before marking the review as complete' if featureToggles.employabilitySkillsEnabled else 'Update the learning and work plan before marking the review as complete' %}
       {% set warningTextHtml %}
         {{ govukWarningText({
-          text: "Update the learning and work plan before marking the review as complete",
+          text: warningText,
           iconFallbackText: "Warning",
           attributes: {"data-qa": "warning-text"}
         }) }}
