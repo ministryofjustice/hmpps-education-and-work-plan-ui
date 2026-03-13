@@ -14,10 +14,7 @@ const toVerifiedQualifications = (prisonNumber: string, apiResponse: LearnerEven
 
 const toMatchStatus = (
   apiResponse: LearnerEventsResponse,
-): 'PRN_MATCHED_TO_LEARNER_RECORD' | 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' | 'LEARNER_DECLINED_TO_SHARE_DATA' => {
-  if (apiResponse?.responseType === 'Learner opted to not share data') {
-    return 'LEARNER_DECLINED_TO_SHARE_DATA'
-  }
+): 'PRN_MATCHED_TO_LEARNER_RECORD' | 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' => {
   if (apiResponse?.responseType === 'Exact Match') {
     return 'PRN_MATCHED_TO_LEARNER_RECORD'
   }

@@ -68,7 +68,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(0)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
     expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
@@ -94,7 +94,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(1)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
     expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
@@ -120,33 +120,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(1)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
-    expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
-    expect(userHasPermissionTo).not.toHaveBeenCalled()
-  })
 
-  it('should render the content given the Learner Record service returned match but learner has declined to share data', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      verifiedQualifications: Result.fulfilled(
-        verifiedQualifications({
-          status: 'LEARNER_DECLINED_TO_SHARE_DATA',
-          qualifications: [],
-        }),
-      ),
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(0)
-    expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
-    expect($('[data-qa=link-to-lrs]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(1)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
     expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
@@ -174,7 +148,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(0)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(1)
     expect($('[data-qa=link-to-lrs]').length).toEqual(1)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
     expect(userHasPermissionTo).toHaveBeenCalledWith('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE')
   })
@@ -202,7 +176,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(0)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(1)
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
     expect(userHasPermissionTo).toHaveBeenCalledWith('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE')
   })
@@ -223,7 +197,7 @@ describe('LRS Qualifications Page tests', () => {
     expect($('[data-qa=learner-matched-but-has-no-qualifications-message]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(1)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
     expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
