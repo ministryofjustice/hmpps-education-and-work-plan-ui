@@ -10,9 +10,10 @@
       <dd class="govuk-summary-list__value" data-qa="employability-skills">
         {% for employabilitySkill in inductionDto.employabilitySkills %}
           <div data-qa="employability-skill-{{ employabilitySkill.employabilitySkillType }}">
-            {{ employabilitySkill.employabilitySkillType | formatEmployabilitySkill }}
-            {% if employabilitySkill.employabilitySkillType !== 'NONE' %}
-              <span data-qa="employability-skill-rating-{{ employabilitySkill.employabilitySkillRating }}">: {{ employabilitySkill.employabilitySkillRating | formatEmployabilitySkillRating }}</span>
+            {% if employabilitySkill.employabilitySkillType === 'NONE' %}
+              {{ employabilitySkill.employabilitySkillType | formatEmployabilitySkill }}
+            {% else %}
+              {{ employabilitySkill.employabilitySkillType | formatEmployabilitySkill }}<span data-qa="employability-skill-rating-{{ employabilitySkill.employabilitySkillRating }}">: {{ employabilitySkill.employabilitySkillRating | formatEmployabilitySkillRating }}</span>
             {% endif %}
           </div>
         {% endfor %}
