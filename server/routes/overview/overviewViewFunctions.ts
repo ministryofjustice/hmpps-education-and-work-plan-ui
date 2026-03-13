@@ -112,4 +112,4 @@ const workOutReviewStatus = (
   return 'NOT_DUE'
 }
 
-export { toInductionScheduleView, toActionPlanReviewScheduleView }
+export { toInductionScheduleView, toActionPlanReviewScheduleView, workOutInductionStatus }

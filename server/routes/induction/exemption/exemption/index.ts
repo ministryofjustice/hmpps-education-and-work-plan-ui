@@ -54,7 +54,7 @@ export default (services: Services) => {
 
   router.get('/recorded', [
     checkInductionExemptionDtoExistsInJourneyData,
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     asyncMiddleware(exemptionRecordedController.getExemptionRecordedView),
   ])
   router.post('/recorded', [

@@ -14,6 +14,7 @@ import {
 import EmployabilitySkillsValue from '../../../../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../../../../enums/employabilitySkillRatingValue'
 import groupArrayByPropertyFilter from '../../../../../filters/groupArrayByPropertyFilter'
+import { aValidInductionDto } from '../../../../../testsupport/inductionDtoTestDataBuilder'
 
 const njkEnv = nunjucks.configure([
   'node_modules/govuk-frontend/dist/',
@@ -33,11 +34,16 @@ const template = './employabilitySkillsTabContents.njk'
 
 const prisonerSummary = aValidPrisonerSummary()
 const employabilitySkills = Result.fulfilled(anEmployabilitySkillsList())
+const induction = Result.fulfilled(aValidInductionDto())
+const inductionStatus = Result.fulfilled('DUE')
+
 const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary,
   userHasPermissionTo,
   employabilitySkills,
+  induction,
+  inductionStatus,
 }
 
 describe('employabilitySkillsTabContents', () => {
@@ -46,7 +52,7 @@ describe('employabilitySkillsTabContents', () => {
     userHasPermissionTo.mockReturnValue(true)
   })
 
-  it('should render the page', () => {
+  it('should render the page given the prisoner has employability skills', () => {
     // Given
     const params = {
       ...templateParams,
@@ -131,5 +137,119 @@ describe('employabilitySkillsTabContents', () => {
     // Then
     expect($('[data-qa=employability-skills-ratings-table]').length).toEqual(0)
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(1)
+  })
+
+  it('should render the page given the Induction promise is not resolved', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: Result.rejected(new Error('Failed to get Induction')),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=employability-skills-ratings-table]').length).toEqual(0)
+    expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(1)
+  })
+
+  it('should not render link to create induction given prisoner has no induction and user does not have permission to create inductions', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(false)
+    const params = {
+      ...templateParams,
+      induction: Result.fulfilled(null),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('#employability-skills-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should render link to create induction given prisoner has no induction and user does have permission to create inductions', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const params = {
+      ...templateParams,
+      induction: Result.fulfilled(null),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('#employability-skills-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+
+    expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but induction status is on hold', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const params = {
+      ...templateParams,
+      induction: Result.fulfilled(null),
+      inductionStatus: Result.fulfilled('ON_HOLD'),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
+    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
+    expect($('#skills-and-interests-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but there was a problem retrieving the inductions status', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const params = {
+      ...templateParams,
+      induction: Result.fulfilled(null),
+      inductionStatus: Result.rejected('some error'),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
+    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
+    expect($('#skills-and-interests-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 })
