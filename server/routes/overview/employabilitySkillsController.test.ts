@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuilder'
-import { anEmployabilitySkillsList } from '../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import { Result } from '../../utils/result/result'
 import EmployabilitySkillsController from './employabilitySkillsController'
 import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
@@ -11,7 +10,6 @@ describe('employabilitySkillsController', () => {
 
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
-  const employabilitySkills = anEmployabilitySkillsList()
   const induction = aValidInductionDto()
   const inductionSchedule = aValidInductionSchedule()
 
@@ -26,7 +24,6 @@ describe('employabilitySkillsController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    res.locals.employabilitySkills = Result.fulfilled(employabilitySkills)
     res.locals.induction = Result.fulfilled(induction)
     res.locals.inductionSchedule = Result.fulfilled(inductionSchedule)
   })
@@ -41,10 +38,6 @@ describe('employabilitySkillsController', () => {
       const expectedView = expect.objectContaining({
         tab: 'employability-skills',
         prisonerSummary,
-        employabilitySkills: expect.objectContaining({
-          status: 'fulfilled',
-          value: employabilitySkills,
-        }),
         induction: expect.objectContaining({
           status: 'fulfilled',
           value: induction,
@@ -70,10 +63,6 @@ describe('employabilitySkillsController', () => {
       const expectedView = expect.objectContaining({
         tab: 'employability-skills',
         prisonerSummary,
-        employabilitySkills: expect.objectContaining({
-          status: 'fulfilled',
-          value: employabilitySkills,
-        }),
         induction: expect.objectContaining({
           status: 'rejected',
           reason: 'Error getting induction',
@@ -99,10 +88,6 @@ describe('employabilitySkillsController', () => {
       const expectedView = expect.objectContaining({
         tab: 'employability-skills',
         prisonerSummary,
-        employabilitySkills: expect.objectContaining({
-          status: 'fulfilled',
-          value: employabilitySkills,
-        }),
         induction: expect.objectContaining({
           status: 'rejected',
           reason: 'Error getting induction',
