@@ -3,6 +3,7 @@ import aValidPrisonerSummary from '../../testsupport/prisonerSummaryTestDataBuil
 import { anEmployabilitySkillsList } from '../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import { Result } from '../../utils/result/result'
 import EmployabilitySkillsController from './employabilitySkillsController'
+import { aValidInductionDto } from '../../testsupport/inductionDtoTestDataBuilder'
 
 describe('employabilitySkillsController', () => {
   const controller = new EmployabilitySkillsController()
@@ -10,13 +11,14 @@ describe('employabilitySkillsController', () => {
   const prisonNumber = 'A1234GC'
   const prisonerSummary = aValidPrisonerSummary({ prisonNumber })
   const employabilitySkills = Result.fulfilled(anEmployabilitySkillsList())
+  const induction = Result.fulfilled(aValidInductionDto())
 
   const req = {
     params: { prisonNumber },
   } as unknown as Request
   const res = {
     render: jest.fn(),
-    locals: { prisonerSummary, employabilitySkills },
+    locals: { prisonerSummary, employabilitySkills, induction },
   } as unknown as Response
   const next = jest.fn()
 
@@ -31,6 +33,7 @@ describe('employabilitySkillsController', () => {
         tab: 'employability-skills',
         prisonerSummary,
         employabilitySkills,
+        induction,
       }
 
       // When

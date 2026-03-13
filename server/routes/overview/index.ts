@@ -60,7 +60,7 @@ export default (router: Router, services: Services) => {
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     retrieveInductionSchedule(inductionService),
     retrieveActionPlanReviews(reviewService),
-    retrieveInduction(inductionService),
+    retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     retrievePrisonNamesById(prisonService),
@@ -89,7 +89,7 @@ export default (router: Router, services: Services) => {
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     retrieveInductionSchedule(inductionService),
-    retrieveInduction(inductionService),
+    retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveEducation(educationAndWorkPlanService),
     config.featureToggles.lrsIntegrationEnabled
       ? retrieveVerifiedQualifications(learnerRecordsService)
@@ -100,7 +100,7 @@ export default (router: Router, services: Services) => {
   router.get('/plan/:prisonNumber/view/work-and-interests', [
     retrievePrisonNamesById(prisonService),
     retrieveInductionSchedule(inductionService),
-    retrieveInduction(inductionService),
+    retrieveInduction(inductionService, { usingOldStyle: true }),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
@@ -111,7 +111,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/goals', [
     retrieveInductionSchedule(inductionService),
-    retrieveInduction(inductionService),
+    retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveActionPlanReviews(reviewService),
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     asyncMiddleware(viewGoalsController.viewGoals),
@@ -121,6 +121,7 @@ export default (router: Router, services: Services) => {
     router.get('/plan/:prisonNumber/view/employability-skills', [
       checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
       retrieveEmployabilitySkills(employabilitySkillsService),
+      retrieveInduction(inductionService),
       asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
     ])
   }
