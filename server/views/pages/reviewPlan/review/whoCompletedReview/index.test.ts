@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import findErrorFilter from '../../../../../filters/findErrorFilter'
 import assetMapFilter from '../../../../../filters/assetMapFilter'
+import config from '../../../../../config'
 
 describe('WhoCompletedReviewPage', () => {
   const njkEnv = nunjucks.configure([
@@ -18,6 +19,7 @@ describe('WhoCompletedReviewPage', () => {
   njkEnv //
     .addFilter('findError', findErrorFilter)
     .addFilter('assetMap', assetMapFilter)
+    .addGlobal('featureToggles', { ...config.featureToggles, employabilitySkillsEnabled: true })
 
   const prisonerSummary = aValidPrisonerSummary()
 
@@ -39,5 +41,8 @@ describe('WhoCompletedReviewPage', () => {
     expect($(radioLabels[0]).text().trim()).toBe('I did the review myself')
     expect($(radioLabels[1]).text().trim()).toBe('Somebody else did the review')
     expect($('[data-qa="add-review-date"]').text().trim()).toBe('Add the review date')
+    expect($('[data-qa="warning-text"]').text()).toContain(
+      'Update the plan, including goals and employability skills before marking the review as complete',
+    )
   })
 })
