@@ -58,7 +58,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/overview', [
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveActionPlanReviews(reviewService),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveCuriousFunctionalSkills(curiousService),
@@ -88,7 +88,7 @@ export default (router: Router, services: Services) => {
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveEducation(educationAndWorkPlanService),
     config.featureToggles.lrsIntegrationEnabled
@@ -99,7 +99,7 @@ export default (router: Router, services: Services) => {
 
   router.get('/plan/:prisonNumber/view/work-and-interests', [
     retrievePrisonNamesById(prisonService),
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
@@ -110,7 +110,7 @@ export default (router: Router, services: Services) => {
   ])
 
   router.get('/plan/:prisonNumber/view/goals', [
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveActionPlanReviews(reviewService),
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
@@ -122,6 +122,7 @@ export default (router: Router, services: Services) => {
       checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
       retrieveEmployabilitySkills(employabilitySkillsService),
       retrieveInduction(inductionService),
+      retrieveInductionSchedule(inductionService),
       asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
     ])
   }

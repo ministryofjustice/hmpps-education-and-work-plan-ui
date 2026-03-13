@@ -95,7 +95,7 @@ describe('retrieveInduction', () => {
   describe('retrieve induction', () => {
     const requestHandler = retrieveInduction(inductionService)
 
-    it('should retrieve Strengths and store on res.locals', async () => {
+    it('should retrieve Induction and store on res.locals', async () => {
       // Given
       const inductionDto = aValidInductionDto()
       inductionService.getInduction.mockResolvedValue(inductionDto)

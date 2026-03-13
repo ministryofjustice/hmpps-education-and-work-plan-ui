@@ -27,13 +27,13 @@ export default (services: Services) => {
 
   router.get('/remove', [
     checkInductionIsExempt(inductionService), // Induction Schedule must already be exempt in order to remove the exemption
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     asyncMiddleware(confirmExemptionRemovalController.getConfirmExemptionRemovalView),
   ])
   router.post('/remove', [asyncMiddleware(confirmExemptionRemovalController.submitConfirmExemptionRemoval)])
 
   router.get('/removed', [
-    retrieveInductionSchedule(inductionService),
+    retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     asyncMiddleware(exemptionRemovedController.getExemptionRemovedView),
   ])
   router.post('/removed', [asyncMiddleware(exemptionRemovedController.submitExemptionRemoved)])

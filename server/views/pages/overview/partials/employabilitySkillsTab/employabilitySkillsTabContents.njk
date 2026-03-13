@@ -35,112 +35,140 @@ Data supplied to this template:
   </tr>
 {% endmacro %}
 
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds app-u-print-full-width">
+{% if induction.isFulfilled() and employabilitySkills.isFulfilled() %}
 
-    <div class="govuk-summary-card" id="employability-skills-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title">Employability skills ratings</h2>
-      </div>
-      <div class="govuk-summary-card__content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds app-u-print-full-width">
 
-        {% if employabilitySkills.isFulfilled() %}
-          {% set employabilitySkillsGroupedBySkillType = employabilitySkills.value.employabilitySkills | groupArrayByProperty('employabilitySkillType') %}
+      {% if induction.value != null %}
 
-          <table class="govuk-table" id="employability-skills-ratings-table" data-qa="employability-skills-ratings-table">
-            <caption class="govuk-visually-hidden">Employability skills ratings</caption>
+        {# Induction has been recorded for the prisoner. Display the Employability Skills from it #}
+        <div class="govuk-summary-card" id="employability-skills-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">Employability skills ratings</h2>
+          </div>
+          <div class="govuk-summary-card__content">
 
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Skill</th>
-                <th scope="col" class="govuk-table__header">Current level</th>
-                <th scope="col" class="govuk-table__header">Previous level</th>
-                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
-              </tr>
-            </thead>
+            {% set employabilitySkillsGroupedBySkillType = employabilitySkills.value.employabilitySkills | groupArrayByProperty('employabilitySkillType') %}
 
-            <tbody class="govuk-table__body">
+            <table class="govuk-table" id="employability-skills-ratings-table" data-qa="employability-skills-ratings-table">
+              <caption class="govuk-visually-hidden">Employability skills ratings</caption>
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'ADAPTABILITY'
-              }) }}
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Skill</th>
+                  <th scope="col" class="govuk-table__header">Current level</th>
+                  <th scope="col" class="govuk-table__header">Previous level</th>
+                  <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'COMMUNICATION'
-              }) }}
+              <tbody class="govuk-table__body">
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'CREATIVITY'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'ADAPTABILITY'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'INITIATIVE'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'COMMUNICATION'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'ORGANISATION'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'CREATIVITY'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'PLANNING'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'INITIATIVE'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'PROBLEM_SOLVING'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'ORGANISATION'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'RELIABILITY'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'PLANNING'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'TEAMWORK'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'PROBLEM_SOLVING'
+                }) }}
 
-              {{ employabilitySkillRow({
-                prisonerSummary: prisonerSummary,
-                userHasPermissionTo: userHasPermissionTo,
-                employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
-                skillType: 'TIMEKEEPING'
-              }) }}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'RELIABILITY'
+                }) }}
 
-            </tbody>
-          </table>
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'TEAMWORK'
+                }) }}
 
-        {% else %}
-          <h3 class="govuk-heading-s" data-qa="employability-skills-unavailable-message">We cannot show these details right now</h3>
-          <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
-        {% endif %}
+                {{ employabilitySkillRow({
+                  prisonerSummary: prisonerSummary,
+                  userHasPermissionTo: userHasPermissionTo,
+                  employabilitySkillsGroupedBySkillType: employabilitySkillsGroupedBySkillType,
+                  skillType: 'TIMEKEEPING'
+                }) }}
 
-      </div>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+      {% else %}
+        {# Prisoner has not yet had their Induction done #}
+        <p class="govuk-body" data-qa="induction-not-created-yet">
+          {% if userHasPermissionTo('RECORD_INDUCTION') %}
+            To add employability skills information you need to
+            {% if inductionStatus.isFulfilled() and inductionStatus.value != 'ON_HOLD' %}
+              <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                create a learning and work plan
+              </a>
+            {% else %}
+              create a learning and work plan
+            {% endif %}
+            with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+          {% else %}
+            No employability skills information entered.
+          {% endif %}
+        </p>
+      {% endif %}
     </div>
-
   </div>
-</div>
+
+{% else %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-s" data-qa="employability-skills-unavailable-message">We cannot show these details right now</h2>
+      <p class="govuk-body">
+        Reload the page or try again later. Other parts of this service may still be available.
+      </p>
+    </div>
+  </div>
+{% endif %}
