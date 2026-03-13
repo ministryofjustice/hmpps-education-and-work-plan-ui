@@ -24,7 +24,7 @@ context('Prisoner Overview page - Employability Skills tab', () => {
 
   it('should display Employability Skills tab', () => {
     // Given
-    cy.task('stubGetEmployabilitySkills')
+    cy.task('stubGetInduction')
 
     cy.visit(`/plan/${prisonNumber}/view/overview`)
     const overviewPage = Page.verifyOnPage(OverviewPage)
@@ -37,9 +37,9 @@ context('Prisoner Overview page - Employability Skills tab', () => {
       .apiErrorBannerIsNotDisplayed()
   })
 
-  it('should display employability skills unavailable message given employability skills API is unavailable', () => {
+  it('should display employability skills unavailable message given Induction API is unavailable', () => {
     // Given
-    cy.task('stubGetEmployabilitySkills500Error')
+    cy.task('stubGetInduction500Error')
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/employability-skills`)

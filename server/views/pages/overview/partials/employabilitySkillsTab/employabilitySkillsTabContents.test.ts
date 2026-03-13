@@ -7,10 +7,7 @@ import { formatEmployabilitySkillsFilter } from '../../../../../filters/formatEm
 import formatEmployabilitySkillRatingFilter from '../../../../../filters/formatEmployabilitySkillRatingFilter'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import { Result } from '../../../../../utils/result/result'
-import {
-  anEmployabilitySkillResponseDto,
-  anEmployabilitySkillsList,
-} from '../../../../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
+import { anEmployabilitySkillResponseDto } from '../../../../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import EmployabilitySkillsValue from '../../../../../enums/employabilitySkillsValue'
 import EmployabilitySkillRatingValue from '../../../../../enums/employabilitySkillRatingValue'
 import groupArrayByPropertyFilter from '../../../../../filters/groupArrayByPropertyFilter'
@@ -33,7 +30,6 @@ njkEnv //
 const template = './employabilitySkillsTabContents.njk'
 
 const prisonerSummary = aValidPrisonerSummary()
-const employabilitySkills = Result.fulfilled(anEmployabilitySkillsList())
 const induction = Result.fulfilled(aValidInductionDto())
 const inductionStatus = Result.fulfilled('DUE')
 
@@ -41,7 +37,6 @@ const userHasPermissionTo = jest.fn()
 const templateParams = {
   prisonerSummary,
   userHasPermissionTo,
-  employabilitySkills,
   induction,
   inductionStatus,
 }
@@ -56,8 +51,8 @@ describe('employabilitySkillsTabContents', () => {
     // Given
     const params = {
       ...templateParams,
-      employabilitySkills: Result.fulfilled(
-        anEmployabilitySkillsList({
+      induction: Result.fulfilled(
+        aValidInductionDto({
           employabilitySkills: [
             anEmployabilitySkillResponseDto({
               employabilitySkillType: EmployabilitySkillsValue.RELIABILITY,
@@ -121,22 +116,6 @@ describe('employabilitySkillsTabContents', () => {
     expect(skillsRatingTable.find('tbody tr').eq(9).find('td').eq(1).text().trim()).toEqual('N/A')
 
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
-  })
-
-  it('should render the page given the Employability Skills service API promise is not resolved', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      employabilitySkills: Result.rejected(new Error('Failed to get Employability Skills')),
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=employability-skills-ratings-table]').length).toEqual(0)
-    expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(1)
   })
 
   it('should render the page given the Induction promise is not resolved', () => {

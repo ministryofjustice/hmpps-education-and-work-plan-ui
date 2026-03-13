@@ -28,7 +28,6 @@ import config from '../../config'
 import { checkUserHasPermissionTo } from '../../middleware/roleBasedAccessControl'
 import ApplicationAction from '../../enums/applicationAction'
 import EmployabilitySkillsController from './employabilitySkillsController'
-import retrieveEmployabilitySkills from '../routerRequestHandlers/retrieveEmployabilitySkills'
 
 /**
  * Route definitions for the pages relating to the main Overview page
@@ -37,7 +36,6 @@ export default (router: Router, services: Services) => {
   const {
     curiousService,
     educationAndWorkPlanService,
-    employabilitySkillsService,
     inductionService,
     learnerRecordsService,
     prisonService,
@@ -120,7 +118,6 @@ export default (router: Router, services: Services) => {
   if (config.featureToggles.employabilitySkillsEnabled) {
     router.get('/plan/:prisonNumber/view/employability-skills', [
       checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
-      retrieveEmployabilitySkills(employabilitySkillsService),
       retrieveInduction(inductionService),
       retrieveInductionSchedule(inductionService),
       asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
