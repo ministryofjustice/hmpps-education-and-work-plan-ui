@@ -3,7 +3,7 @@ import { startOfDay } from 'date-fns'
 
 const verifiedQualifications = (options?: {
   prisonNumber?: string
-  status?: 'PRN_MATCHED_TO_LEARNER_RECORD' | 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' | 'LEARNER_DECLINED_TO_SHARE_DATA'
+  status?: 'PRN_MATCHED_TO_LEARNER_RECORD' | 'PRN_NOT_MATCHED_TO_LEARNER_RECORD'
   qualifications?: Array<VerifiedQualification>
 }): VerifiedQualifications => ({
   prisonNumber: options?.prisonNumber || 'A1234BC',

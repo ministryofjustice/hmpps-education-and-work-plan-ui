@@ -62,7 +62,7 @@ describe('_verifiedQualifications', () => {
     expect(verifiedQualificationsTable.find('tbody tr').eq(1).find('td').eq(0).text().trim()).toEqual('English')
     expect(verifiedQualificationsTable.find('.moj-pagination').text().trim()).toEqual('Showing 2 results')
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
   })
@@ -86,7 +86,7 @@ describe('_verifiedQualifications', () => {
     // Then
     expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(1)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
   })
@@ -110,30 +110,7 @@ describe('_verifiedQualifications', () => {
     // Then
     expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(1)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
-    expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
-    expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
-  })
 
-  it('should render given prisoner is matched in LRS but has declined to share their data', () => {
-    // Given
-    const params = {
-      ...templateParams,
-      verifiedQualifications: Result.fulfilled(
-        aVerifiedQualifications({
-          status: 'LEARNER_DECLINED_TO_SHARE_DATA',
-        }),
-      ),
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
-    expect($('[data-qa=no-verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(1)
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
   })
@@ -157,7 +134,7 @@ describe('_verifiedQualifications', () => {
     // Then
     expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(1)
     expect($('[data-qa=link-to-lrs]').length).toEqual(1)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
@@ -183,7 +160,7 @@ describe('_verifiedQualifications', () => {
     // Then
     expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(1)
     expect($('[data-qa=link-to-lrs]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(0)
@@ -204,7 +181,7 @@ describe('_verifiedQualifications', () => {
     // Then
     expect($('[data-qa=verified-qualifications-table]').length).toEqual(0)
     expect($('[data-qa=no-verified-qualifications]').length).toEqual(0)
-    expect($('[data-qa=learner-declined-to-share-data-message]').length).toEqual(0)
+
     expect($('[data-qa=not-matched-in-lrs-message]').length).toEqual(0)
     expect($('[data-qa=learner-records-unavailable-message]').length).toEqual(1)
   })

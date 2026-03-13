@@ -27,8 +27,5 @@ export default class LrsQualificationsPage extends Page {
 
   private learnerNotMatchedMessage = (): PageElement => cy.get('[data-qa=not-matched-in-lrs-message]')
 
-  private learnerDeclinedToShareDataMessage = (): PageElement =>
-    cy.get('[data-qa=learner-declined-to-share-data-message]')
-
   private learnerRecordsUnavailableMessage = (): PageElement => cy.get('[data-qa=learner-records-unavailable-message]')
 }

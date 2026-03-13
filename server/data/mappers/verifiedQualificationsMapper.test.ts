@@ -73,8 +73,14 @@ describe('verifiedQualificationsMapper', () => {
       'Possible Match',
       'Linked Learner Match',
       'Learner could not be verified',
+      'Learner opted to not share data',
     ] as Array<
-      'No Match' | 'Too Many Matches' | 'Possible Match' | 'Linked Learner Match' | 'Learner could not be verified'
+      | 'No Match'
+      | 'Too Many Matches'
+      | 'Possible Match'
+      | 'Linked Learner Match'
+      | 'Learner could not be verified'
+      | 'Learner opted to not share data'
     >)('should map to Verified Qualifications given LearnerEventsResponse responseType is %s', responseType => {
       // Given
       const learnerEventsResponse: LearnerEventsResponse = aLearnerEventsResponse({
@@ -85,26 +91,6 @@ describe('verifiedQualificationsMapper', () => {
       const expected = verifiedQualifications({
         prisonNumber,
         status: 'PRN_NOT_MATCHED_TO_LEARNER_RECORD',
-        qualifications: [],
-      })
-
-      // When
-      const actual = toVerifiedQualifications(prisonNumber, learnerEventsResponse)
-
-      // Then
-      expect(actual).toEqual(expected)
-    })
-
-    it('should map to Verified Qualifications given LearnerEventsResponse where learner has declined to share data', () => {
-      // Given
-      const learnerEventsResponse: LearnerEventsResponse = aLearnerEventsResponse({
-        responseType: 'Learner opted to not share data',
-        learnerRecords: [aLearningEvent({ subject: 'Maths' }), aLearningEvent({ subject: 'English' })],
-      })
-
-      const expected = verifiedQualifications({
-        prisonNumber,
-        status: 'LEARNER_DECLINED_TO_SHARE_DATA',
         qualifications: [],
       })
 

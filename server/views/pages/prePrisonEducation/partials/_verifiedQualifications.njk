@@ -64,15 +64,10 @@
 
   {% elseif verifiedQualifications.status === 'PRN_NOT_MATCHED_TO_LEARNER_RECORD' %}
     <p class="govuk-body govuk-!-margin-bottom-8" data-qa="not-matched-in-lrs-message">
-      No results. A unique learner number (ULN) has not yet been matched.
+      No results. Unique learner number (ULN) has not yet been matched or learner declined to share their LRS data.
       {% if userHasPermissionTo('USE_DPS_LEARNER_RECORD_MATCHING_SERVICE') %}
-        <a href="{{ matchLearnerRecordUi }}" target="_blank" class="govuk-link" data-qa="link-to-lrs">Match learner in LRS (Opens in a new tab)</a>
+        <a href="{{ matchLearnerRecordUi }}" target="_blank" class="govuk-link" data-qa="link-to-lrs">Check a record or match a learner in LRS (opens in a new tab).</a>
       {% endif %}
-    </p>
-
-  {% elseif verifiedQualifications.status === 'LEARNER_DECLINED_TO_SHARE_DATA' %}
-    <p class="govuk-body govuk-!-margin-bottom-8" data-qa="learner-declined-to-share-data-message">
-      No results. Unique learner number (ULN) matched, but learner declined to share their LRS data.
     </p>
   {% endif %}
 
