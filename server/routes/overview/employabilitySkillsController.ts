@@ -6,12 +6,11 @@ import { workOutInductionStatus } from './overviewViewFunctions'
 
 export default class EmployabilitySkillsController {
   getEmployabilitySkillsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonerSummary, employabilitySkills, induction, inductionSchedule } = res.locals
+    const { prisonerSummary, induction, inductionSchedule } = res.locals
 
     res.render('pages/overview/index', {
       tab: 'employability-skills',
       prisonerSummary,
-      employabilitySkills,
       induction,
       inductionStatus: inductionStatus(induction, inductionSchedule),
     })

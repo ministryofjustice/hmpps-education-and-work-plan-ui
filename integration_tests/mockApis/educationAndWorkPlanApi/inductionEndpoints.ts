@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import type { GetEmployabilitySkillsResponse } from 'educationAndWorkPlanApiClient'
 import { stubFor } from '../wiremock'
 import HopingToGetWorkValue from '../../../server/enums/hopingToGetWorkValue'
 import HasWorkedBeforeValue from '../../../server/enums/hasWorkedBeforeValue'
@@ -8,6 +9,7 @@ const stubGetInduction = (options?: {
   hopingToGetWork?: HopingToGetWorkValue
   hasWorkedBefore?: HasWorkedBeforeValue
   hasQualifications?: boolean
+  employabilitySkills?: Array<GetEmployabilitySkillsResponse>
 }): SuperAgentRequest =>
   stubFor({
     request: {
@@ -160,6 +162,53 @@ const stubGetInduction = (options?: {
             },
           ],
         },
+        employabilitySkills: options?.employabilitySkills || [
+          {
+            employabilitySkillType: 'ORGANISATION',
+            employabilitySkillRating: 'QUITE_CONFIDENT',
+            evidence: 'Supervisor has reported this',
+            sessionType: 'INDUSTRIES_REVIEW',
+            sessionTypeDescription: 'Woodworking workshop',
+            createdAt: '2026-01-26T09:39:44.000Z',
+            createdAtPrison: 'MDI',
+            createdBy: 'asmith_gen',
+            createdByDisplayName: 'Alex Smith',
+            updatedAt: '2026-01-26T09:39:44.000Z',
+            updatedAtPrison: 'MDI',
+            updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
+          },
+          {
+            employabilitySkillType: 'ORGANISATION',
+            employabilitySkillRating: 'NOT_CONFIDENT',
+            evidence: 'Prisoners own self assessment',
+            sessionType: 'EDUCATION_REVIEW',
+            sessionTypeDescription: 'Maths 101',
+            createdAt: '2025-12-01T09:39:44.000Z',
+            createdAtPrison: 'MDI',
+            createdBy: 'asmith_gen',
+            createdByDisplayName: 'Alex Smith',
+            updatedAt: '2025-12-01T09:39:44.000Z',
+            updatedAtPrison: 'MDI',
+            updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
+          },
+          {
+            employabilitySkillType: 'PROBLEM_SOLVING',
+            employabilitySkillRating: 'VERY_CONFIDENT',
+            evidence: 'Prisoner clearly able to solve complex problems',
+            sessionType: 'CIAG_REVIEW',
+            sessionTypeDescription: null,
+            createdAt: '2025-02-02T09:39:44.000Z',
+            createdAtPrison: 'MDI',
+            createdBy: 'asmith_gen',
+            createdByDisplayName: 'Alex Smith',
+            updatedAt: '2025-02-02T09:39:44.000Z',
+            updatedAtPrison: 'MDI',
+            updatedBy: 'asmith_gen',
+            updatedByDisplayName: 'Alex Smith',
+          },
+        ],
         personalSkillsAndInterests: {
           reference: '517c470f-f9b5-4d49-9148-4458fe358439',
           createdBy: 'A_USER_GEN',
