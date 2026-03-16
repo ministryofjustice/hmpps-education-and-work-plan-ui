@@ -23,7 +23,7 @@
 
         {% if employabilitySkills.length %}
 
-          <table class="govuk-table" data-qa="{{ skillType }}-employability-skill-ratings-table">
+          <table class="govuk-table" id="employability-skill-ratings-table" data-qa="{{ skillType }}-employability-skill-ratings-table">
             <caption class="govuk-visually-hidden">{{ skillType | formatEmployabilitySkill }} employability skills ratings</caption>
 
             <thead class="govuk-table__head">
@@ -32,7 +32,7 @@
                 <th scope="col" class="govuk-table__header">Activity or session</th>
                 <th scope="col" class="govuk-table__header">Date</th>
                 <th scope="col" class="govuk-table__header">Evidence</th>
-                <th scope="col" class="govuk-table__header">Added by</th>
+                <th scope="col" class="govuk-table__header audit-column-header">Added by</th>
               </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -43,9 +43,13 @@
                   <td class="govuk-table__cell">{{ employabilitySkill.updatedAt | formatDate('d MMM yyyy') }}</td>
                   <td class="govuk-table__cell app-u-multiline-text">{{ employabilitySkill.evidence if employabilitySkill.sessionType != 'CIAG_INDUCTION' else 'Not required at induction' }}</td>
                   <td class="govuk-table__cell">
-                    {% set prisonName = prisonNamesById[employabilitySkill.createdAtPrison] | default(employabilitySkill.createdAtPrison) %}
-                    {{ employabilitySkill.createdByDisplayName }},<br/>
-                    {{ prisonName }}
+                    <span class="govuk-!-display-block govuk-!-display-none-print">
+                      {{ employabilitySkill.createdByDisplayName }},
+                    </span>
+                    <span class="govuk-!-display-block">
+                      {% set prisonName = prisonNamesById[employabilitySkill.createdAtPrison] | default(employabilitySkill.createdAtPrison) %}
+                      {{ prisonName }}
+                    </span>
                   </td>
                 </tr>
               {% endfor %}
