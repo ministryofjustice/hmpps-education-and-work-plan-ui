@@ -42,7 +42,7 @@ const employabilitySkillsHintTextValues: Record<EmployabilitySkillsValue, string
   PROBLEM_SOLVING: 'enjoys working things out and seeing how things work',
   RELIABILITY: 'people trust you to do what you say you will, and to do it properly and on time',
   TEAMWORK: 'likes working with others and happy to help out',
-  TIMEKEEPING: 'arrives on time, manages tim well to attend work, appointments and meet deadlines',
+  TIMEKEEPING: 'arrives on time, manages time well to attend work, appointments and meet deadlines',
   NONE: '',
 }
 
