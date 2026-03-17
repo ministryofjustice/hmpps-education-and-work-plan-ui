@@ -22,13 +22,13 @@ export default class CreateGoalsController {
   ) {}
 
   getCreateGoalsView: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonerSummary } = res.locals
+    const { prisonerSummary, suggestedGoal } = res.locals
     const { createGoalsForm } = req.journeyData
 
     clearRedirectPendingFlag(req)
 
     const view = new CreateGoalsView(prisonerSummary, createGoalsForm, GoalTargetCompletionDateOption)
-    return res.render('pages/createGoals/index', { ...view.renderArgs })
+    return res.render('pages/createGoals/index', { ...view.renderArgs, suggestedGoal })
   }
 
   submitAction: RequestHandler = async (req, res): Promise<void> => {

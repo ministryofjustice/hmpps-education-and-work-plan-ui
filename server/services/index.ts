@@ -18,6 +18,7 @@ import SearchService from './searchService'
 import EmployabilitySkillsService from './employabilitySkillsService'
 import config from '../config'
 import logger from '../../logger'
+import AiGoalService from './AiGoalService'
 
 /**
  * Function that instantiates and exposes all services required by the application.
@@ -64,6 +65,7 @@ export const services = () => {
   const supportAdditionalNeedsService = new SupportAdditionalNeedsService(supportAdditionalNeedsApiClient)
   const learnerRecordsService = new LearnerRecordsService(learnerRecordsApiClient)
   const employabilitySkillsService = new EmployabilitySkillsService(educationAndWorkPlanClient)
+  const aiGoalService = new AiGoalService(educationAndWorkPlanClient)
 
   return {
     applicationInfo,
@@ -84,6 +86,7 @@ export const services = () => {
     learnerRecordsService,
     employabilitySkillsService,
     prisonPermissionsService,
+    aiGoalService,
   }
 }
 
@@ -108,4 +111,5 @@ export {
   LearnerRecordsService,
   EmployabilitySkillsService,
   PrisonPermissionsService,
+  AiGoalService,
 }

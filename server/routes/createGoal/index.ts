@@ -10,12 +10,13 @@ import logger from '../../../logger'
 import setupJourneyData from '../routerRequestHandlers/setupJourneyData'
 import createEmptyCreateGoalsFormIfNotInJourneyData from '../routerRequestHandlers/createEmptyCreateGoalsFormIfNotInJourneyData'
 import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandlers/checkRedirectAtEndOfJourneyIsNotPending'
+import generateSuggestedGoal from '../routerRequestHandlers/generateSuggestedGoal'
 
 /**
  * Route definitions for the pages relating to Creating A Goal
  */
 export default (router: Router, services: Services) => {
-  const { auditService, educationAndWorkPlanService, journeyDataService } = services
+  const { aiGoalService, auditService, educationAndWorkPlanService, journeyDataService } = services
   const createGoalsController = new CreateGoalsController(educationAndWorkPlanService, auditService)
 
   router.use('/plan/:prisonNumber/goals/create', [
@@ -27,7 +28,10 @@ export default (router: Router, services: Services) => {
     createEmptyCreateGoalsFormIfNotInJourneyData,
   ])
 
-  router.get('/plan/:prisonNumber/goals/:journeyId/create', [asyncMiddleware(createGoalsController.getCreateGoalsView)])
+  router.get('/plan/:prisonNumber/goals/:journeyId/create', [
+    generateSuggestedGoal(aiGoalService),
+    asyncMiddleware(createGoalsController.getCreateGoalsView),
+  ])
   router.post('/plan/:prisonNumber/goals/:journeyId/create', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Create Goals',

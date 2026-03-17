@@ -417,4 +417,25 @@ export default class EducationAndWorkPlanClient extends RestClient {
       asSystem(username),
     )
   }
+
+  async generateSuggestedGoal(prisonNumber: string, username: string): Promise<GeneratedGoalSuggestion> {
+    return this.post<GeneratedGoalSuggestion>(
+      {
+        path: `/ai-goal/${prisonNumber}`,
+      },
+      asSystem(username),
+    )
+  }
+}
+
+export type GeneratedGoalSuggestion = {
+  title: string
+  description: string
+  completionDate: string
+  steps: Array<string>
+  specific: string
+  measurable: string
+  achievable: string
+  relevant: string
+  timeBound: string
 }
