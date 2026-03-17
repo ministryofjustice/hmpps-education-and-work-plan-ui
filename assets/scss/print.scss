@@ -55,15 +55,15 @@
   // Change the column heading on the Employability Skills Rating page table
   // In a browser the audit-column-header renders as "Added by" and the row values contain the person and prison
   // For print we hide the person name (via classes on the element in the nunjucks template) and only display the prison
-  // This CSS changes heading to "Prison", but only for print.
-  // By not doing it in the nunjucks template markup we do not affect the semenatics or accessibility (screen readers) of
+  // This CSS changes heading to "Added at", but only for print.
+  // By not doing it in the nunjucks template markup we do not affect the semantics or accessibility (screen readers) of
   // this column.
   #employability-skill-ratings-table {
     .audit-column-header {
       visibility: hidden;
     }
     .audit-column-header::before {
-      content: "Prison";
+      content: "Added at";
       visibility: visible;
     }
   }
