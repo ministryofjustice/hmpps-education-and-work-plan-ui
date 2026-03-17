@@ -1,0 +1,15 @@
+#whats-new-banner {
+
+  .whats-new-container {
+    background-color: govuk-colour("purple");
+    @include govuk-responsive-padding(3, 'all');
+  }
+
+  .whats-new-content {
+    color: govuk-colour('white');
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+  }
+}

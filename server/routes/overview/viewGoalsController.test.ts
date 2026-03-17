@@ -90,6 +90,6 @@ describe('ViewGoalsController', () => {
     await controller.viewGoals(req, res, next)
 
     // Then
-    expect(res.render).toHaveBeenCalledWith('pages/overview/partials/goalsTab/goalsTabContents', expectedView)
+    expect(res.render).toHaveBeenCalledWith('pages/overview/index', expectedView)
   })
 })

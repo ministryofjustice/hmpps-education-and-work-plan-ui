@@ -8,7 +8,7 @@ import CompleteOrArchiveGoalPage from '../goal/CompleteOrArchiveGoalPage'
  */
 export default class GoalsPage extends Page {
   constructor() {
-    super('view-goals')
+    super('overview')
     this.activeTabIs('Goals')
   }
 

@@ -12,6 +12,6 @@ export default class ViewGoalsController {
       actionPlanReviews,
       inductionSchedule,
     )
-    res.render('pages/overview/partials/goalsTab/goalsTabContents', view.renderArgs)
+    res.render('pages/overview/index', view.renderArgs)
   }
 }

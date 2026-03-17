@@ -62,6 +62,9 @@ export default function createApp(services: Services): express.Application {
   app.get('/accessibility-statement', async (req, res, next) => {
     res.render('pages/accessibilityStatement/index')
   })
+  app.get('/whats-new', async (req, res, next) => {
+    res.render('pages/whatsNew/index')
+  })
 
   app.use(auditMiddleware(services))
 
