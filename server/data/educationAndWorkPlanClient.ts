@@ -21,8 +21,6 @@ import type {
   InductionResponse,
   InductionScheduleResponse,
   PersonSearchResult,
-  PrisonerIdsRequest,
-  SessionResponses,
   SessionSearchResponses,
   SessionSummaryResponse,
   TimelineResponse,
@@ -319,20 +317,6 @@ export default class EducationAndWorkPlanClient extends RestClient {
     return this.get<SessionSummaryResponse>(
       {
         path: `/session/${prisonId}/summary`,
-      },
-      asSystem(username),
-    )
-  }
-
-  async getSessions(prisonNumbers: string[], username: string, status: SessionStatusValue): Promise<SessionResponses> {
-    const requestBody: PrisonerIdsRequest = { prisonNumbers }
-    return this.post<SessionResponses>(
-      {
-        path: '/session/summary',
-        data: requestBody,
-        query: {
-          status,
-        },
       },
       asSystem(username),
     )

@@ -33,7 +33,6 @@ import aValidCreateActionPlanRequest from '../testsupport/createActionPlanReques
 import aValidUpdateReviewScheduleStatusRequest from '../testsupport/updateReviewScheduleStatusRequestTestDataBuilder'
 import aValidUpdateInductionScheduleStatusRequest from '../testsupport/updateInductionScheduleStatusRequestTestDataBuilder'
 import aValidSessionSummaryResponse from '../testsupport/sessionSummaryResponseTestDataBuilder'
-import { aValidSessionResponse, aValidSessionResponses } from '../testsupport/sessionResponseTestDataBuilder'
 import SessionStatusValue from '../enums/sessionStatusValue'
 import TimelineApiFilterOptions from './timelineApiFilterOptions'
 import SearchSortDirection from '../enums/searchSortDirection'
@@ -1462,81 +1461,6 @@ describe('educationAndWorkPlanClient', () => {
       expect(actual).toEqual(expectedError)
       expect(nock.isDone()).toBe(true)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
-    })
-  })
-
-  describe('getSessions', () => {
-    it.each([SessionStatusValue.DUE, SessionStatusValue.OVERDUE, SessionStatusValue.ON_HOLD])(
-      'should get Sessions given session status filtering',
-      async status => {
-        // Given
-        const prisonNumbers = ['A1234BC', 'B5544GD']
-
-        const expectedSessionResponses = aValidSessionResponses({
-          sessions: [
-            aValidSessionResponse({ prisonNumber: 'A1234BC' }),
-            aValidSessionResponse({ prisonNumber: 'B5544GD' }),
-          ],
-        })
-        educationAndWorkPlanApi
-          .post(`/session/summary?status=${status}`, requestBody => isEqual(requestBody, { prisonNumbers }))
-          .matchHeader('authorization', `Bearer ${systemToken}`)
-          .reply(200, expectedSessionResponses)
-
-        // When
-        const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, username, status)
-
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(actual).toEqual(expectedSessionResponses)
-        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
-      },
-    )
-
-    it('should get zero Sessions given none of the specified prisoners have Sessions', async () => {
-      // Given
-      const prisonNumbers = ['A1234BC', 'B5544GD']
-
-      const expectedSessionResponses = aValidSessionResponses({
-        sessions: [],
-      })
-      educationAndWorkPlanApi
-        .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
-        .matchHeader('authorization', `Bearer ${systemToken}`)
-        .reply(200, expectedSessionResponses)
-
-      // When
-      const actual = await educationAndWorkPlanClient.getSessions(prisonNumbers, username, SessionStatusValue.DUE)
-
-      // Then
-      expect(nock.isDone()).toBe(true)
-      expect(actual).toEqual(expectedSessionResponses)
-      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
-    })
-
-    it('should not get Sessions given API returns an error response', async () => {
-      // Given
-      const prisonNumbers = ['A1234BC', 'B5544GD']
-
-      const expectedResponseBody = {
-        status: 500,
-        userMessage: 'An unexpected error occurred',
-        developerMessage: 'An unexpected error occurred',
-      }
-      educationAndWorkPlanApi
-        .post('/session/summary?status=DUE', requestBody => isEqual(requestBody, { prisonNumbers }))
-        .matchHeader('authorization', `Bearer ${systemToken}`)
-        .reply(500, expectedResponseBody)
-
-      try {
-        await educationAndWorkPlanClient.getSessions(prisonNumbers, username, SessionStatusValue.DUE)
-      } catch (e) {
-        // Then
-        expect(nock.isDone()).toBe(true)
-        expect(e.responseStatus).toEqual(500)
-        expect(e.data).toEqual(expectedResponseBody)
-        expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(username)
-      }
     })
   })
 

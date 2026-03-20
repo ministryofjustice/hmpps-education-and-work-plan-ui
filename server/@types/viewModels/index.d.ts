@@ -54,8 +54,6 @@ declare module 'viewModels' {
     sessions: Array<PrisonerSession>
   }
 
-  export interface PrisonerSummaryPrisonerSession extends PrisonerSummary, PrisonerSession {}
-
   export interface PrisonerSummary {
     prisonNumber: string
     prisonId: string
