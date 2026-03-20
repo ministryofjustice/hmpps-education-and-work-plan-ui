@@ -19,27 +19,15 @@
       </span>
     {% elseif reviewStatus == 'DUE' %}
       <span class="govuk-tag govuk-tag--yellow govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-due">
-        {% if featureToggles.newSessionApiEnabled %}
-          {{ reviewType | formatReviewTypeScreenValue }} due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
-        {% else %}
-          Review due by {{ params.actionPlanReview.reviewDueDate | formatDate('d MMM yyyy') }}
-        {% endif %}
+        {{ reviewType | formatReviewTypeScreenValue }} due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
       </span>
     {% elseif reviewStatus == 'OVERDUE' %}
       <span class="govuk-tag govuk-tag--red govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-overdue">
-        {% if featureToggles.newSessionApiEnabled %}
-          {{ reviewType | formatReviewTypeScreenValue }} was due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
-        {% else %}
-          Review was due by {{ params.actionPlanReview.reviewDueDate | formatDate('d MMM yyyy') }}
-        {% endif %}
+        {{ reviewType | formatReviewTypeScreenValue }} was due by {{ reviewDueDate | formatDate('d MMM yyyy') }}
       </span>
     {% elseif reviewStatus == 'ON_HOLD' %}
       <span class="govuk-tag govuk-tag--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="review-on-hold">
-        {% if featureToggles.newSessionApiEnabled %}
-          {{ reviewType | formatReviewTypeScreenValue }} on hold
-        {% else %}
-          Review on hold
-        {% endif %}
+        {{ reviewType | formatReviewTypeScreenValue }} on hold
       </span>
       <p class="govuk-body" data-qa="reason-on-hold">
         Reason: {{ exemptionReason | formatReviewExemptionReason }}
