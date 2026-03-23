@@ -42,7 +42,7 @@ describe('WhoCompletedReviewPage', () => {
     expect($(radioLabels[1]).text().trim()).toBe('Somebody else did the review')
     expect($('[data-qa="add-review-date"]').text().trim()).toBe('Add the review date')
     expect($('[data-qa="warning-text"]').text()).toContain(
-      'Update the plan, including goals and employability skills before marking the review as complete',
+      'Update the plan, including goals and employability skills, before marking the review as complete',
     )
   })
 })
