@@ -2,8 +2,8 @@
   {# Wrap the search / filter controls in a form that contains hidden fields for the current sort order.
      This ensures that when then Prisoner List page is filtered the current sort field and order are maintained.
   #}
-  <form class="form" method="get">
-    <input type="hidden" name="sort" value="{{ sortBy }},{{ sortOrder }}" />
+  <form class="form" method="get" data-qa="search-options-form">
+    <input type="hidden" name="sort" value="{{ searchOptions.sortBy }},{{ searchOptions.sortOrder }}" />
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Filter by</legend>
         <div class="govuk-form-group govuk-form-group--inline govuk-!-margin-bottom-3">
@@ -15,7 +15,7 @@
                 id="searchTerm"
                 name="searchTerm"
                 type="search"
-                value="{{ searchTerm }}"
+                value="{{ searchOptions.searchTerm }}"
                 maxlength="200">
           </div>
           <div class="govuk-form-group govuk-form-group__item">
@@ -23,9 +23,10 @@
               Status
             </label>
             <select class="govuk-select" id="statusFilter" name="statusFilter">
-              <option value="" {{ 'selected' if statusFilter === ''}}>All statuses</option>
-              <option value="PLAN_CREATED" {{ 'selected' if statusFilter === 'PLAN_CREATED'}}>Plan created</option>
-              <option value="NEEDS_PLAN" {{ 'selected' if statusFilter === 'NEEDS_PLAN'}}>Needs plan</option>
+              <option value="" {{ 'selected' if searchOptions.statusFilter === ''}}>All statuses</option>
+              <option value="ACTIVE_PLAN" {{ 'selected' if searchOptions.statusFilter === 'ACTIVE_PLAN'}}>{{ 'ACTIVE_PLAN' | formatSearchPlanStatus }}</option>
+              <option value="NEEDS_PLAN" {{ 'selected' if searchOptions.statusFilter === 'NEEDS_PLAN'}}>{{ 'NEEDS_PLAN' | formatSearchPlanStatus }}</option>
+              <option value="EXEMPT" {{ 'selected' if searchOptions.statusFilter === 'EXEMPT'}}>{{ 'EXEMPT' | formatSearchPlanStatus }}</option>
             </select>
           </div>
           <div class="govuk-form-group__button">
@@ -34,7 +35,7 @@
             </button>
           </div>
         </div>
-      {% if searchTerm or statusFilter %}
+      {% if searchOptions.searchTerm or searchOptions.statusFilter %}
         <p class="govuk-!-margin-bottom-0">
           {# Reset the Prisoner List page filters using an anchor link with blank searchTerm and statusFilter field values.
               The link also contains the current sort order to ensure the current sort field and order are maintained after
@@ -43,7 +44,7 @@
               with the Contributor role because their default landing page ("/") is this prisoner-list page. Users with
               the Manager role have a different landing page ("/"), so using "/search" will work for all user types.
           #}
-          <a class="govuk-link govuk-link--no-visited-state" href="/search?searchTerm=&statusFilter=&sort={{ sortBy }},{{ sortOrder }}" data-qa="clear-filters">
+          <a class="govuk-link govuk-link--no-visited-state" href="/search?searchTerm=&statusFilter=&page=&sort={{ searchOptions.sortBy }},{{ searchOptions.sortOrder }}" data-qa="clear-filters">
             Clear<span class="govuk-visually-hidden"> filter options</span>
           </a>
         </p>

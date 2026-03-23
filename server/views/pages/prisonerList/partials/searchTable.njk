@@ -1,23 +1,26 @@
 {% from "../../../components/sortable-table-header/macro.njk" import sortableTableHeader %}
 
-{# TODO: Logic for the problemRetrievingData #}
-{% if not ciagPrisonerList.problemRetrievingData %}
+{% if prisonerListResults.isFulfilled() %}
+  {% set prisonerListResults = prisonerListResults.value %}
+  {% set prisoners = prisonerListResults.prisoners %}
+  {% set pagination = prisonerListResults.pagination %}
 
-  {% if currentPageOfRecords | length %}
+  {% if prisoners | length %}
 
-    {# Wrap the Prisoner List table in a form that contains hidden fields for the current search term, status filter and page.
+    {# Wrap the Prisoner List table in a form that contains hidden fields for the current search term, and status filter.
      This ensures that when then Prisoner List page is sorted via the buttons in the table header the current
-     search term, status filter and page are maintained.
+     search term and status filter are maintained.
     #}
-    <form class="form" method="get">
-      <input type="hidden" name="searchTerm" value="{{ searchTerm }}" />
-      <input type="hidden" name="statusFilter" value="{{ statusFilter }}" />
-      <input type="hidden" name="page" value="{{ page }}" />
+    <form class="form" method="get" data-qa="search-results-form">
+      <input type="hidden" name="searchTerm" value="{{ searchOptions.searchTerm }}" />
+      <input type="hidden" name="statusFilter" value="{{ searchOptions.statusFilter }}" />
 
       <table class="govuk-table" data-qa="prisoner-list-results-table">
         <caption><span class="govuk-visually-hidden">column headers with buttons are sortable.</span></caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row" data-qa="sortable-table-headers">
+            {%  set sortBy = searchOptions.sortBy %}
+            {%  set sortOrder = searchOptions.sortOrder %}
             {{ sortableTableHeader({
               sortBy: sortBy,
               sortOrder: sortOrder,
@@ -46,19 +49,19 @@
               sortBy: sortBy,
               sortOrder: sortOrder,
               fieldName: 'status',
-              headerText: 'Status'
+              headerText: 'Plan status'
             }) }}
           </tr>
         </thead>
 
         <tbody class="govuk-table__body">
-          {% for prisoner in currentPageOfRecords %}
+          {% for prisoner in prisoners %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <a href="/plan/{{ prisoner.prisonNumber }}/view/overview" data-id="prisoner-list-prisoner-{{ prisoner.prisonNumber }}" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">
-                  {{ prisoner.lastName }}, {{ prisoner.firstName }}
+                  {{ prisoner | formatLast_name_comma_First_name }}
                 </a>
-                <span class="app-print-only">{{ prisoner.lastName }}, {{ prisoner.firstName }}</span>
+                <span class="app-print-only">{{ prisoner | formatLast_name_comma_First_name }}</span>
                 <br>
                 <span class='govuk-hint govuk-!-margin-bottom-0'>{{ prisoner.prisonNumber }}</span>
               </td>
@@ -66,10 +69,12 @@
               <td class="govuk-table__cell">{{ prisoner.releaseDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
               <td class="govuk-table__cell">{{ prisoner.receptionDate | formatDate('D MMMM YYYY') or 'N/A' }}</td>
               <td class="govuk-table__cell">
-                {% if prisoner.hasCiagInduction === true and prisoner.hasActionPlan === true %}
-                  <strong class="govuk-tag govuk-tag--green">Plan created</strong>
-                {% else %}
-                  <strong class="govuk-tag govuk-tag--yellow">Needs plan</strong>
+                {% if prisoner.planStatus === 'NEEDS_PLAN' %}
+                  <strong class="govuk-tag govuk-tag--yellow">{{ 'NEEDS_PLAN' | formatSearchPlanStatus }}</strong>
+                {% elseif prisoner.planStatus === 'ACTIVE_PLAN' %}
+                  <strong class="govuk-tag govuk-tag--green">{{ 'ACTIVE_PLAN' | formatSearchPlanStatus }}</strong>
+                {% elseif prisoner.planStatus === 'EXEMPT' %}
+                  <strong class="govuk-tag govuk-tag--grey">{{ 'EXEMPT' | formatSearchPlanStatus }}</strong>
                 {% endif %}
               </td>
             </tr>
@@ -80,19 +85,19 @@
 
     <section data-qa="prisoner-list-pagination">
       {{ mojPagination({
-        items: items,
-        results: results,
-        previous: previousPage if previousPage.href,
-        next: nextPage if nextPage.href
+        items: pagination.items,
+        results: pagination.results,
+        previous: pagination.previous if pagination.previous.href,
+        next: pagination.next if pagination.next.href
       }) }}
     </section>
 
   {% else %}
-    <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchTerm }}"</h2>
-    <p class="govuk-body govuk-!-font-size-19">Check your spelling and search again, or clear the search and browse for the prisoner.</p>
+    <h2 class="govuk-heading-m" data-qa="zero-results-message">0 results for "{{ searchOptions.statusFilter | formatSearchPlanStatus if (not searchOptions.searchTerm and searchOptions.statusFilter) else searchOptions.searchTerm }}"</h2>
+    <p class="govuk-body govuk-!-font-size-19">Check your spelling and filter and search again, or clear your search and browse for a prisoner.</p>
   {% endif %}
 
 {% else %}
-  <h2 class="govuk-heading-m" data-qa="ciag-unavailable-message">We cannot show these details right now</h2>
+  <h2 class="govuk-heading-m" data-qa="search-unavailable-message">We cannot show these details right now</h2>
   <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
 {% endif %}

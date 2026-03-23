@@ -3,7 +3,6 @@ import { Services } from '../../services'
 import PrisonerListController from './prisonerListController'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import prisonerListSearch from '../routerRequestHandlers/prisonerListSearch'
-import config from '../../config'
 
 /**
  * Route definition for the prisoner list page
@@ -22,15 +21,13 @@ import config from '../../config'
  * perhaps this could be refactored one day.
  */
 const prisonerListRoutes = (router: Router, services: Services) => {
-  const { prisonerListService, searchService } = services
-  const prisonerListController = new PrisonerListController(prisonerListService)
+  const { searchService } = services
+  const prisonerListController = new PrisonerListController()
 
-  router.get(
-    '/search',
-    config.featureToggles.newSearchApiEnabled
-      ? [prisonerListSearch(searchService), asyncMiddleware(prisonerListController.getPrisonerListView)]
-      : [asyncMiddleware(prisonerListController.getOldPrisonerListView)],
-  )
+  router.get('/search', [
+    prisonerListSearch(searchService),
+    asyncMiddleware(prisonerListController.getPrisonerListView),
+  ])
 }
 
 export default prisonerListRoutes

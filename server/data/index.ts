@@ -21,7 +21,6 @@ import PrisonerSearchClient from './prisonerSearchClient'
 import EducationAndWorkPlanClient from './educationAndWorkPlanClient'
 import SupportAdditionalNeedsApiClient from './supportAdditionalNeedsApiClient'
 import CuriousClient from './curiousClient'
-import CiagInductionClient from './ciagInductionClient'
 import PrisonRegisterStore from './prisonRegisterStore/prisonRegisterStore'
 import InMemoryPrisonRegisterStore from './prisonRegisterStore/inMemoryPrisonRegisterStore'
 import RedisPrisonRegisterStore from './prisonRegisterStore/redisPrisonRegisterStore'
@@ -79,7 +78,6 @@ export const dataAccess = () => {
     prisonerSearchClient: new PrisonerSearchClient(hmppsAuthClient),
     educationAndWorkPlanClient: new EducationAndWorkPlanClient(hmppsAuthClient),
     curiousClient: new CuriousClient(curiousApiAuthClient),
-    ciagInductionClient: new CiagInductionClient(hmppsAuthClient),
     prisonRegisterStore: config.redis.enabled
       ? new RedisPrisonRegisterStore(createRedisClient())
       : new InMemoryPrisonRegisterStore(),
@@ -104,7 +102,6 @@ export {
   PrisonerSearchClient,
   EducationAndWorkPlanClient,
   CuriousClient,
-  CiagInductionClient,
   type PrisonRegisterStore,
   PrisonRegisterClient,
   type JourneyDataStore,
