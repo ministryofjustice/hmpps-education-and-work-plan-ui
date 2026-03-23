@@ -209,7 +209,6 @@ export default {
   featureToggles: {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     lrsIntegrationEnabled: toBoolean(get('LRS_INTEGRATION_ENABLED', false, requiredInProduction)),
-    newSearchApiEnabled: toBoolean(get('NEW_SEARCH_API_ENABLED', false, requiredInProduction)),
     employabilitySkillsEnabled: toBoolean(get('EMPLOYABILITY_SKILLS_ENABLED', false, requiredInProduction)),
   },
 }

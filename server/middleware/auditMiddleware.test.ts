@@ -4,7 +4,7 @@ import { PrisonerBasePermission } from '@ministryofjustice/hmpps-prison-permissi
 import { v4 as uuidV4 } from 'uuid'
 import { appWithAllRoutes } from '../routes/testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
-import PrisonerListService from '../services/prisonerListService'
+import SearchService from '../services/searchService'
 import PrisonerService from '../services/prisonerService'
 import PrisonService from '../services/prisonService'
 import JourneyDataService from '../services/journeyDataService'
@@ -13,15 +13,15 @@ import { mockPrisonerPermissionsGuard } from '../testutils/mockPermissions'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../services/auditService')
+jest.mock('../services/searchService')
 jest.mock('../services/prisonerService')
-jest.mock('../services/prisonerListService')
 jest.mock('../services/prisonService')
 jest.mock('../services/journeyDataService')
 
 let app: Express
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const searchService = new SearchService(null) as jest.Mocked<SearchService>
 const prisonerService = new PrisonerService(null, null) as jest.Mocked<PrisonerService>
-const prisonerListService = new PrisonerListService(null, null, null) as jest.Mocked<PrisonerListService>
 const prisonService = new PrisonService(null, null) as jest.Mocked<PrisonService>
 const journeyDataService = new JourneyDataService(null) as jest.Mocked<JourneyDataService>
 
@@ -34,8 +34,8 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      searchService,
       prisonerService,
-      prisonerListService,
       prisonService,
       journeyDataService,
     },
@@ -45,7 +45,7 @@ beforeEach(() => {
 describe('auditMiddleware', () => {
   it('should raise page view audit events', async () => {
     // Given
-    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockResolvedValue([])
+    searchService.searchPrisonersInPrison.mockResolvedValue(null)
 
     // When
     const response = await request(app).get('/search')
@@ -70,15 +70,15 @@ describe('auditMiddleware', () => {
     })
   })
 
-  it('should raise just the page view audit attempt event if request not successful', async () => {
+  it('should raise page view audit events even when search service returns an error', async () => {
     // Given
-    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
+    searchService.searchPrisonersInPrison.mockRejectedValue(new Error('Search service unavailable'))
 
     // When
     const response = await request(app).get('/search')
 
     // Then
-    expect(response.statusCode).toBe(500)
+    expect(response.statusCode).toBe(200)
     expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(Page.PRISONER_LIST, {
       who: 'user1',
       correlationId: expect.any(String),
@@ -87,26 +87,7 @@ describe('auditMiddleware', () => {
         query: {},
       },
     })
-    expect(auditService.logPageView).not.toHaveBeenCalledWith(Page.PRISONER_LIST, {
-      who: 'user1',
-      correlationId: expect.any(String),
-      details: {
-        params: {},
-        query: {},
-      },
-    })
-  })
-
-  it('should raise a page view audit event for the error page when a request is not successful', async () => {
-    // Given
-    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
-
-    // When
-    const response = await request(app).get('/search')
-
-    // Then
-    expect(response.statusCode).toBe(500)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ERROR, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_LIST, {
       who: 'user1',
       correlationId: expect.any(String),
       details: {
@@ -117,9 +98,6 @@ describe('auditMiddleware', () => {
   })
 
   it('should raise a page view audit event for the not found page when a route is not found', async () => {
-    // Given
-    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockRejectedValue(null)
-
     // When
     const response = await request(app).get('/unknown')
 
@@ -137,7 +115,7 @@ describe('auditMiddleware', () => {
 
   it('should raise page view audit events with query parameters', async () => {
     // Given
-    prisonerListService.getPrisonerSearchSummariesForPrisonId.mockResolvedValue([])
+    searchService.searchPrisonersInPrison.mockResolvedValue(null)
 
     // When
     const response = await request(app).get('/search').query({ searchTerm: 'search term', statusFilter: 'NEEDS_PLAN' })

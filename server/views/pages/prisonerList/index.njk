@@ -24,13 +24,8 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Manage learning and work progress</h1>
 
-      {% if featureToggles.newSearchApiEnabled %}
-        {% include './partials/new_searchBox.njk' %}
-        {% include './partials/new_searchTable.njk' %}
-      {% else %}
-        {% include './partials/searchBox.njk' %}
-        {% include './partials/searchTable.njk' %}
-      {% endif %}
+      {% include './partials/new_searchBox.njk' %}
+      {% include './partials/new_searchTable.njk' %}
     </div>
   </div>
 

@@ -3,7 +3,6 @@ import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type {
   ActionPlanResponse,
   ActionPlanReviewsResponse,
-  ActionPlanSummaryListResponse,
   ArchiveGoalRequest,
   CompleteGoalRequest,
   CreateActionPlanRequest,
@@ -14,7 +13,6 @@ import type {
   CreateGoalsRequest,
   CreateInductionRequest,
   EducationResponse,
-  GetActionPlanSummariesRequest,
   GetEmployabilitySkillResponses,
   GetGoalsResponse,
   GoalResponse,
@@ -144,17 +142,6 @@ export default class EducationAndWorkPlanClient extends RestClient {
       {
         path: `/action-plans/${prisonNumber}/goals/${completeGoalRequest.goalReference}/complete`,
         data: completeGoalRequest,
-      },
-      asSystem(username),
-    )
-  }
-
-  async getActionPlans(prisonNumbers: string[], username: string): Promise<ActionPlanSummaryListResponse> {
-    const requestBody: GetActionPlanSummariesRequest = { prisonNumbers }
-    return this.post<ActionPlanSummaryListResponse>(
-      {
-        path: '/action-plans',
-        data: requestBody,
       },
       asSystem(username),
     )

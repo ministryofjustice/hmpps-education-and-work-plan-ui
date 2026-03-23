@@ -24,7 +24,6 @@ njkEnv //
   .addFilter('formatLast_name_comma_First_name', formatPrisonerNameFilter(NameFormat.Last_name_comma_First_name))
   .addFilter('formatDate', formatDateFilter)
   .addFilter('formatSearchPlanStatus', formatSearchPlanStatusFilter)
-  .addGlobal('featureToggles', { newSearchApiEnabled: true })
 
 const userHasPermissionTo = jest.fn()
 const templateParams = {
