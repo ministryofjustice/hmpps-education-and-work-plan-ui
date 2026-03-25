@@ -19,6 +19,7 @@ import type {
   WorkOnReleaseDto,
 } from 'inductionDto'
 import SessionCompletedByValue from '../../enums/sessionCompletedByValue'
+import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
 
 const toCreateOrUpdateInductionDto = (prisonId: string, inductionDto: InductionDto): CreateOrUpdateInductionDto => {
   return {
@@ -106,14 +107,16 @@ const toEmployabilitySkillResponseDto = (
   employabilitySkills: Array<EmployabilitySkillResponseDto>,
 ): Array<CreateEmployabilitySkillDto> =>
   employabilitySkills
-    ? employabilitySkills.map(employabilitySkill => ({
-        prisonId,
-        employabilitySkillType: employabilitySkill.employabilitySkillType,
-        employabilitySkillRating: employabilitySkill.employabilitySkillRating,
-        evidence: employabilitySkill.evidence,
-        sessionType: employabilitySkill.sessionType,
-        sessionTypeDescription: employabilitySkill.sessionTypeDescription,
-      }))
+    ? employabilitySkills
+        .filter(employabilitySkill => employabilitySkill.employabilitySkillType !== EmployabilitySkillsValue.NONE)
+        .map(employabilitySkill => ({
+          prisonId,
+          employabilitySkillType: employabilitySkill.employabilitySkillType,
+          employabilitySkillRating: employabilitySkill.employabilitySkillRating,
+          evidence: employabilitySkill.evidence,
+          sessionType: employabilitySkill.sessionType,
+          sessionTypeDescription: employabilitySkill.sessionTypeDescription,
+        }))
     : undefined
 
 const toCreateOrUpdatePersonalSkillsAndInterestsDto = (

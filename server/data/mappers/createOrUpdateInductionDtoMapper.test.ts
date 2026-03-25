@@ -7,6 +7,7 @@ import SkillsValue from '../../enums/skillsValue'
 import { aPersonalSkill } from '../../testsupport/createPersonalSkillsAndInterestsRequestTestDataBuilder'
 import { anEmployabilitySkillResponseDto } from '../../testsupport/employabilitySkillResponseDtoTestDataBuilder'
 import aCreateEmployabilitySkillDto from '../../testsupport/ createEmployabilitySkillDtoTestDataBuilder'
+import EmployabilitySkillsValue from '../../enums/employabilitySkillsValue'
 
 describe('createOrUpdateInductionDtoMapper', () => {
   it('should map an InductionDto to a CreateOrUpdateInductionDto given a DTO with personal skills instead of employability skills', () => {
@@ -49,6 +50,29 @@ describe('createOrUpdateInductionDtoMapper', () => {
     })
     const expected = aValidUpdateInductionDto({
       employabilitySkills: [aCreateEmployabilitySkillDto({ prisonId })],
+      personalSkillsAndInterests: aPersonalSkillsAndInterestsDto({
+        skills: null,
+      }),
+    })
+
+    // When
+    const actual = toCreateOrUpdateInductionDto(prisonId, inductionDto)
+
+    // Then
+    expect(actual).toEqual(expected)
+  })
+
+  it('should map an InductionDto to a CreateOrUpdateInductionDto given a DTO with employability skills NONE', () => {
+    // Given
+    const prisonId = 'MDI'
+    const inductionDto = aValidInductionDto({
+      employabilitySkills: [anEmployabilitySkillResponseDto({ employabilitySkillType: EmployabilitySkillsValue.NONE })],
+      personalSkillsAndInterests: aPersonalSkillsAndInterestsDto({
+        skills: null,
+      }),
+    })
+    const expected = aValidUpdateInductionDto({
+      employabilitySkills: [],
       personalSkillsAndInterests: aPersonalSkillsAndInterestsDto({
         skills: null,
       }),
