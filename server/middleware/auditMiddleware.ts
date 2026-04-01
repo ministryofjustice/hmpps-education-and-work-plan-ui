@@ -47,6 +47,7 @@ const pageViewEventMap: Record<string, Page> = {
 
   // Update goals
   '/plan/:prisonNumber/goals/:goalReference/update': Page.UPDATE_GOALS,
+  '/plan/:prisonNumber/goals/:goalReference/update/action': null, // route with the action path element does not raise an audit event because it redirects to the main update route
   '/plan/:prisonNumber/goals/:goalReference/update/review': Page.UPDATE_GOALS_REVIEW,
 
   // Archive goals

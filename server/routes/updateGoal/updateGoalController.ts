@@ -44,9 +44,8 @@ export default class UpdateGoalController {
       }
 
       updateGoalForm = toUpdateGoalForm(goalToUpdate)
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
     }
-
-    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
 
     const goalCreatedDate = startOfDay(parseISO(updateGoalForm.createdAt))
     const goalTargetCompletionDate = startOfDay(
@@ -60,15 +59,17 @@ export default class UpdateGoalController {
     return res.render('pages/goal/update/index', { ...view.renderArgs })
   }
 
-  submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
-    const { prisonNumber, goalReference } = req.params
-    const updateGoalForm: UpdateGoalForm = { ...req.body }
-    getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+  submitUpdateGoalAction: RequestHandler = async (req, res, next) => {
+    const { prisonNumber } = req.params
+    const { updateGoalForm } = getPrisonerContext(req.session, prisonNumber)
+
+    // Actions are submitted as query string params. In theory its an array so there could be more, but we only expect 1, so only extract and process the first
+    const action = Object.keys(req.query).at(0) || ''
 
     // Remove the desired step on the action delete step
-    if (updateGoalForm.action && updateGoalForm.action.startsWith('delete-step-')) {
+    if (action.startsWith('delete-step-')) {
       // Get the step index in between the 2 characters [ ] from the action value
-      const stepIndex = parseInt(updateGoalForm.action.match(/\[(.*?)\]/)[1], 10)
+      const stepIndex = parseInt(action.match(/\[(.*?)]/)[1], 10)
       // Remove the desired step from the array
       updateGoalForm.steps.splice(stepIndex, 1)
       // Re-sequence the step array so that all the step's stepNumber fields are sequential starting from 1
@@ -77,22 +78,34 @@ export default class UpdateGoalController {
         // eslint-disable-next-line no-param-reassign
         step.stepNumber = index + 1
       })
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+
       // Redirect back to the Update Goal page with named anchor taking the user to the edit and remove steps section
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#edit-and-remove-steps`)
+      return res.redirect(`../update#edit-and-remove-steps`)
     }
 
     // Redirect to the desired page based on the form action
-    if (updateGoalForm.action === 'add-another-step') {
+    if (action === 'add-another-step') {
       // Initialize a new UpdateStepForm with the next step number
       const currentHighestStepNumber = Math.max(...updateGoalForm.steps.map(step => step.stepNumber))
       const nextStepNumber = currentHighestStepNumber + 1
       const newStep: UpdateStepForm = { stepNumber: nextStepNumber, status: 'NOT_STARTED' }
       updateGoalForm.steps.push(newStep)
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+
       // Redirect back to the Update Goal page with named anchor taking the user straight to the new step
-      return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[${nextStepNumber - 1}][title]`)
+      return res.redirect(`../update#steps[${nextStepNumber - 1}].title`)
     }
 
-    return res.redirect(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
+    return res.redirect('../update')
+  }
+
+  submitUpdateGoalForm: RequestHandler = async (req, res, next): Promise<void> => {
+    const { prisonNumber } = req.params
+    const updateGoalForm: UpdateGoalForm = { ...req.body }
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+
+    return res.redirect('update/review')
   }
 
   getReviewUpdateGoalView: RequestHandler = async (req, res, next): Promise<void> => {
