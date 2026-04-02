@@ -100,7 +100,7 @@
               }) %}
                 {{ govukRadios({
                   name: 'steps[' + (loop.index-1) + '][status]',
-                  id: 'steps[' + (loop.index-1) + '][status]',
+                  id: 'steps[' + (loop.index-1) + '].status',
                   attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field' },
                   classes: "govuk-radios--inline govuk-radios--small",
                   formGroup: {
@@ -126,12 +126,12 @@
                       attributes: { 'data-qa': 'step-' + (loop.index-1) + '-status-field-COMPLETE' }
                     }
                   ],
-                  errorMessage: errors | findError('steps[' + (loop.index-1) + '][status]')
+                  errorMessage: errors | findError('steps[' + (loop.index-1) + '].status')
                 }) }}
 
               {{ govukCharacterCount({
                 name: 'steps[' + (loop.index-1) + '][title]',
-                id: 'steps[' + (loop.index-1) + '][title]',
+                id: 'steps[' + (loop.index-1) + '].title',
                 attributes: { 'data-qa': 'step-' + (loop.index-1) + '-title-field' },
                 value: step.title,
                 maxlength: 512,
@@ -140,7 +140,7 @@
                   classes: "govuk-fieldset__legend--s",
                   isPageHeading: false
                 },
-                errorMessage: errors | findError('steps[' + (loop.index-1) + '][title]')
+                errorMessage: errors | findError('steps[' + (loop.index-1) + '].title')
               }) }}
 
               {% if loop.length > 1 %}
@@ -149,8 +149,7 @@
                   attributes: {
                     'data-qa': 'step-' + (loop.index-1) + '-remove-button'
                   },
-                  name: "action",
-                  value: 'delete-step-[' + (loop.index-1) + ']',
+                  href: 'update/action?delete-step-[' + (loop.index-1) + ']',
                   text: "Remove",
                   classes: "govuk-button--secondary moj-add-another__remove-button",
                   preventDoubleClick: true
@@ -168,8 +167,7 @@
                 attributes: {
                   'data-qa': 'goal-update-add-another-step-button'
                 },
-                name: "action",
-                value: "add-another-step",
+                href: "update/action?add-another-step",
                 text: "Add another step",
                 classes: "govuk-button--secondary govuk-!-margin-bottom-4",
                 preventDoubleClick: true
@@ -182,8 +180,7 @@
                 attributes: {
                   'data-qa': 'goal-update-submit-button'
                 },
-                name: "action",
-                value: "submit-form",
+                type: "submit",
                 text: "Continue",
                 preventDoubleClick: true
               }) }}

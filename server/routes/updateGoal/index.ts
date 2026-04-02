@@ -30,6 +30,12 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(updateGoalController.submitUpdateGoalForm),
   ])
 
+  router.get('/plan/:prisonNumber/goals/:goalReference/update/action', [
+    checkUserHasPermissionTo(ApplicationAction.UPDATE_GOALS),
+    checkUpdateGoalFormExistsInSession,
+    asyncMiddleware(updateGoalController.submitUpdateGoalAction),
+  ])
+
   router.use('/plan/:prisonNumber/goals/:goalReference/update/review', [
     checkUserHasPermissionTo(ApplicationAction.UPDATE_GOALS),
     checkUpdateGoalFormExistsInSession,

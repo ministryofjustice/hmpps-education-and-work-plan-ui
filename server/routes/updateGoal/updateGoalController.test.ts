@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import createError from 'http-errors'
 import { formatISO } from 'date-fns'
 import { UTCDate } from '@date-fns/utc'
@@ -55,6 +55,7 @@ describe('updateGoalController', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    getPrisonerContext(req.session, prisonNumber).updateGoalForm = undefined
   })
 
   describe('getUpdateGoalView', () => {
@@ -95,15 +96,11 @@ describe('updateGoalController', () => {
       }
 
       // When
-      await controller.getUpdateGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getUpdateGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/index', expectedView)
-      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toBeUndefined()
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(updateGoalForm)
     })
 
     it('should not get update goal view given problem retrieving prisoner goals', async () => {
@@ -115,11 +112,7 @@ describe('updateGoalController', () => {
       const expectedError = createError(500, `Error retrieving plan for prisoner ${prisonNumber}`)
 
       // When
-      await controller.getUpdateGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getUpdateGoalView(req, res, next)
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
@@ -138,11 +131,7 @@ describe('updateGoalController', () => {
       const expectedError = createError(404, `Active goal ${goalReference} does not exist in the prisoner's plan`)
 
       // When
-      await controller.getUpdateGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getUpdateGoalView(req, res, next)
 
       // Then
       expect(next).toHaveBeenCalledWith(expectedError)
@@ -150,48 +139,70 @@ describe('updateGoalController', () => {
     })
   })
 
-  describe('submitUpdateGoalForm', () => {
-    it('should redirect to review updated goal page given action is submit-form', async () => {
-      // Given
-      req.params.prisonNumber = 'A1234GC'
-
-      const updateGoalForm = aValidUpdateGoalForm(goalReference)
-      updateGoalForm.action = 'submit-form'
-      req.body = { ...updateGoalForm }
-
-      // When
-      await controller.submitUpdateGoalForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
-
-      // Then
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update/review`)
-    })
-
+  describe('submitUpdateGoalAction', () => {
     it('should redirect to update goal with new blank step given action is add-another-step', async () => {
       // Given
-      req.params.prisonNumber = 'A1234GC'
+      req.query = { 'add-another-step': '' }
 
       const updateGoalForm = aValidUpdateGoalForm(goalReference)
-      updateGoalForm.action = 'add-another-step'
-      req.body = { ...updateGoalForm }
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
 
       const expectedUpdateGoalForm = { ...updateGoalForm }
       expectedUpdateGoalForm.steps = [...updateGoalForm.steps, { status: 'NOT_STARTED', stepNumber: 3 }]
 
       // When
-      await controller.submitUpdateGoalForm(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitUpdateGoalAction(req, res, next)
 
       // Then
-      expect(educationAndWorkPlanService.updateGoal).not.toHaveBeenCalled()
-      expect(res.redirect).toHaveBeenCalledWith(`/plan/${prisonNumber}/goals/${goalReference}/update#steps[2][title]`)
+      expect(res.redirect).toHaveBeenCalledWith('../update#steps[2].title')
       expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(expectedUpdateGoalForm)
+    })
+
+    it('should redirect to update goal with removed step given action is delete-step', async () => {
+      // Given
+      req.query = { 'delete-step-[1]': '' }
+
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+
+      const expectedUpdateGoalForm = { ...updateGoalForm }
+      expectedUpdateGoalForm.steps = [updateGoalForm.steps[0]]
+
+      // When
+      await controller.submitUpdateGoalAction(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('../update#edit-and-remove-steps')
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(expectedUpdateGoalForm)
+    })
+
+    it('should redirect to update goal given action is blank', async () => {
+      // Given
+      req.query = {}
+
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      getPrisonerContext(req.session, prisonNumber).updateGoalForm = updateGoalForm
+
+      // When
+      await controller.submitUpdateGoalAction(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('../update')
+      expect(getPrisonerContext(req.session, prisonNumber).updateGoalForm).toEqual(updateGoalForm)
+    })
+  })
+
+  describe('submitUpdateGoalForm', () => {
+    it('should redirect to review updated goal page', async () => {
+      // Given
+      const updateGoalForm = aValidUpdateGoalForm(goalReference)
+      req.body = { ...updateGoalForm }
+
+      // When
+      await controller.submitUpdateGoalForm(req, res, next)
+
+      // Then
+      expect(res.redirect).toHaveBeenCalledWith('update/review')
     })
   })
 
@@ -210,11 +221,7 @@ describe('updateGoalController', () => {
       }
 
       // When
-      await controller.getReviewUpdateGoalView(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.getReviewUpdateGoalView(req, res, next)
 
       // Then
       expect(res.render).toHaveBeenCalledWith('pages/goal/update/review', expectedView)
@@ -240,11 +247,7 @@ describe('updateGoalController', () => {
       }
 
       // When
-      await controller.submitReviewUpdateGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitReviewUpdateGoal(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith('A1234GC', expectedUpdateGoalDto, username)
@@ -265,11 +268,7 @@ describe('updateGoalController', () => {
       educationAndWorkPlanService.updateGoal.mockRejectedValue(createError(500, 'Service unavailable'))
 
       // When
-      await controller.submitReviewUpdateGoal(
-        req as undefined as Request,
-        res as undefined as Response,
-        next as undefined as NextFunction,
-      )
+      await controller.submitReviewUpdateGoal(req, res, next)
 
       // Then
       expect(educationAndWorkPlanService.updateGoal).toHaveBeenCalledWith('A1234GC', expectedUpdateGoalDto, username)
