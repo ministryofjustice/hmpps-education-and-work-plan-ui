@@ -41,17 +41,17 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      <p class="govuk-hint">
-        LRS is run by the Department for Education. Contact the local education team to find out more.<br/>
-        This is information from awarding organisations recognised by Ofqual, such as AQA, Pearson, OCR and City and Guilds.
-      </p>
-
       {% if verifiedQualifications.isFulfilled() %}
         {% set verifiedQualifications = verifiedQualifications.value %}
 
         {% if verifiedQualifications.status === 'PRN_MATCHED_TO_LEARNER_RECORD' %}
           {% set qualifications = verifiedQualifications.qualifications | filterArrayOnProperty('source', 'AO') | sort(attribute = 'awardedOn', reverse = true) %}
           {% if qualifications.length > 0 %}
+
+            <p class="govuk-hint">
+              LRS is run by the Department for Education. Contact the local education team to find out more.<br/>
+              This is information from awarding organisations recognised by Ofqual, such as AQA, Pearson, OCR and City and Guilds.
+            </p>
 
             <table class="govuk-table" data-module="moj-sortable-table" data-qa="verified-qualifications">
               <thead class="govuk-table__head">
@@ -87,6 +87,10 @@
             </section>
 
           {% else %}
+            <p class="govuk-hint">
+              LRS is run by the Department for Education. Contact the local education team to find out more.
+            </p>
+
             <p class="govuk-body" data-qa="learner-matched-but-has-no-qualifications-message">
               No results. Unique learner number (ULN) matched, but learner has no qualifications from an awarding organisation.
             </p>
