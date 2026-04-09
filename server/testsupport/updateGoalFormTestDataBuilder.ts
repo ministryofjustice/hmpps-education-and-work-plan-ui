@@ -24,6 +24,7 @@ const aValidUpdateGoalForm = (reference = '95b18362-fe56-4234-9ad2-11ef98b974a3'
         status: StepStatusValue.NOT_STARTED,
       },
     ],
+    action: 'submit-form',
     originalTargetCompletionDate: '29/2/2024',
     status: GoalStatusValue.ACTIVE,
   }
@@ -47,6 +48,7 @@ const aValidUpdateGoalFormWithIndividualTargetDateFields = (
         status: StepStatusValue.ACTIVE,
       },
     ],
+    action: 'submit-form',
     originalTargetCompletionDate: '29/2/2024',
     status: GoalStatusValue.ACTIVE,
   }
@@ -70,6 +72,7 @@ const aValidUpdateGoalFormDuringDaylightSavingTime = (
         status: StepStatusValue.ACTIVE,
       },
     ],
+    action: 'submit-form',
     originalTargetCompletionDate: '29/6/2024',
     status: GoalStatusValue.ACTIVE,
   }
