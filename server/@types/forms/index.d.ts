@@ -13,6 +13,7 @@ declare module 'forms' {
     manuallyEnteredTargetCompletionDate?: string
     note?: string
     steps: Array<UpdateStepForm>
+    action?: 'add-another-step' | 'submit-form' | 'delete-step-[0]'
     originalTargetCompletionDate: string
     status: GoalStatusValue
   }

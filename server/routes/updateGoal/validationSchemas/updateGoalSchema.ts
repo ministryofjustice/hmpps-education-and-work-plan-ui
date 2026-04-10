@@ -54,6 +54,7 @@ const updateGoalSchema = async () => {
                 .max(MAX_STEP_TITLE_LENGTH, stepTitleMaxLengthMessage),
               stepNumber: z.coerce.number(),
               reference: z.any(),
+              action: z.any(),
             }),
           )
           .min(1),
@@ -62,6 +63,7 @@ const updateGoalSchema = async () => {
     createdAt: z.any(),
     originalTargetCompletionDate: z.any(),
     status: z.any(),
+    action: z.any(),
   }).check(ctx => {
     const { targetCompletionDate, manuallyEnteredTargetCompletionDate } = ctx.value
     const today = startOfToday()
