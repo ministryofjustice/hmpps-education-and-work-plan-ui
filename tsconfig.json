@@ -13,8 +13,10 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "isolatedModules": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"],
-    "isolatedModules": true
+    "types": ["node", "jest"],
+    "rootDir": "."
   },
   "exclude": [
     "node_modules",
