@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "strict": false,
     "target": "es5",
     "noEmit": true,
     "lib": ["es5", "dom", "es2015.promise"],
