@@ -1,9 +1,9 @@
 import superagent, { Response, SuperAgentRequest } from 'superagent'
-import logger from '../../../logger'
 import WiremockMatchedRequest from './wiremockMatchedRequest'
 import WiremockRequestMatcher from './wiremockRequestMatcher'
 import { RequestPatternBuilder } from './requestPatternBuilder'
 
+const logger = console
 const wiremockAdminUrl = 'http://localhost:9091/__admin'
 
 /**
