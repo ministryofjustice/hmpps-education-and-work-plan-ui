@@ -9,7 +9,7 @@
   </p>
 
   <div class="moj-timeline__description">
-    <p class="govuk-body" data-qa="review-conducted-by">
+    <p class="govuk-body govuk-!-display-none-print" data-qa="review-conducted-by">
       {%- set reviewConductedBy -%}
         {%- if not event.contextualInfo['COMPLETED_REVIEW_CONDUCTED_IN_PERSON_BY'] -%}
           {{ event.contextualInfo['COMPLETED_REVIEW_ENTERED_ONLINE_BY'] }}

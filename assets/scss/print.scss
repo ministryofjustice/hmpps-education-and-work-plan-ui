@@ -13,6 +13,14 @@
     display: inline;
   }
 
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+  a[href]:after {
+    content: none !important;
+  }
+
   .govuk-hint,
   .govuk-tag,
   .govuk-caption-l,

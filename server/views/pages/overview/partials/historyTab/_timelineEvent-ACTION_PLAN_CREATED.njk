@@ -11,7 +11,7 @@
   {% if event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_DATE'] %}
     {# Timeline event was created as part of the new Induction journey; where who conducted the Induction, the date, and any notes are asked #}
     <div class="moj-timeline__description">
-      <p class="govuk-body" data-qa="induction-conducted-by">
+      <p class="govuk-body govuk-!-display-none-print" data-qa="induction-conducted-by">
         {%- set inductionConductedBy -%}
           {%- if not event.contextualInfo['COMPLETED_INDUCTION_CONDUCTED_IN_PERSON_BY'] -%}
             {{ event.contextualInfo['COMPLETED_INDUCTION_ENTERED_ONLINE_BY'] }}

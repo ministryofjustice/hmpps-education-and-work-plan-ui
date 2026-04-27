@@ -49,11 +49,14 @@ Data supplied to this template:
         {% endif %}
 
         <p class="govuk-hint" data-qa="functional-skills-hint">
-          Information from Curious. These scores are from a person's induction assessment. For recent functional skills qualifications, go to
-          <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training">
-            qualifications and courses from Curious
-          </a>
-          on the education and training page.
+          Information from Curious. These scores are from a person's induction assessment.
+          <span class="govuk-!-display-none-print">
+            For recent functional skills qualifications, go to
+            <a class="govuk-link" href="/plan/{{ prisonerSummary.prisonNumber }}/view/education-and-training">
+              qualifications and courses from Curious
+            </a>
+            on the education and training page.
+          </span>
         </p>
 
         {% if mostRecentAssessmentsOfType.length %}
