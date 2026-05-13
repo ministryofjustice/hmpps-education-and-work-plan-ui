@@ -168,6 +168,9 @@
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {
       "esbuild": "$esbuild"
+    },
+    "mocha": {
+      "serialize-javascript": "^7.0.5"
     }
   }
 }
