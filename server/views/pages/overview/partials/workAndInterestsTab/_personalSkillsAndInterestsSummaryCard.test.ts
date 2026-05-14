@@ -43,7 +43,7 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     userHasPermissionTo.mockReturnValue(true)
   })
 
-  it('should display Skills and Interests given induction with personal skills and interests', () => {
+  it('should display Interests given induction with personal skills and interests', () => {
     // Given
     const inductionDto = aValidInductionDto()
     const params = {
@@ -59,14 +59,6 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     const $ = cheerio.load(content)
 
     // Then
-    const skills = $('[data-qa=skills]')
-      .find('li')
-      .toArray()
-      .map(el => $(el).text().trim())
-    expect(skills).toEqual(['Teamwork', 'Willingness to learn', 'Other - Tenacity'])
-    expect($('[data-qa=skills-not-recorded]').length).toEqual(0)
-    expect($('[data-qa=skills-change-link]').text().trim()).toEqual('Change skills')
-
     const personalInterests = $('[data-qa=personal-interests]')
       .find('li')
       .toArray()
@@ -80,7 +72,7 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 
-  it('should display Add link for Skills and Interests given personal skills and interests are undefined', () => {
+  it('should display Add link for Interests given personal skills and interests are undefined', () => {
     // Given
     const inductionDto = aValidInductionDto()
     inductionDto.personalSkillsAndInterests = undefined
@@ -97,10 +89,6 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa=skills]').length).toEqual(0)
-    expect($('[data-qa=skills-not-recorded]').length).toEqual(1)
-    expect($('[data-qa=skills-change-link]').text().trim()).toEqual('Add skills')
-
     expect($('[data-qa=personal-interests]').length).toEqual(0)
     expect($('[data-qa=personal-interests-not-recorded]').length).toEqual(1)
     expect($('[data-qa=personal-interests-change-link]').text().trim()).toEqual('Add personal interests')
@@ -127,29 +115,6 @@ describe('_personalSkillsAndInterestsSummaryCard', () => {
     // Then
     expect($('[data-qa=skills-change-link]').length).toEqual(0)
     expect($('[data-qa=personal-interests-change-link]').length).toEqual(0)
-    expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
-  })
-
-  it('should display Add link for Skills given empty array of personal skills', () => {
-    // Given
-    const inductionDto = aValidInductionDto()
-    inductionDto.personalSkillsAndInterests.skills = []
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: false,
-        inductionDto,
-      },
-    }
-
-    // When
-    const content = nunjucks.render('_personalSkillsAndInterestsSummaryCard.njk', params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=skills]').length).toEqual(0)
-    expect($('[data-qa=skills-not-recorded]')).not.toBeNull()
-    expect($('[data-qa=skills-change-link]').text().trim()).toEqual('Add skills')
     expect(userHasPermissionTo).toHaveBeenCalledWith('UPDATE_INDUCTION')
   })
 

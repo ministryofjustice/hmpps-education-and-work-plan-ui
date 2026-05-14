@@ -3,7 +3,6 @@ import type { WorkedBeforeForm } from 'inductionForms'
 import type { InductionDto } from 'inductionDto'
 import WorkedBeforeController from '../common/workedBeforeController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
-import config from '../../../config'
 
 export default class WorkedBeforeCreateController extends WorkedBeforeController {
   submitWorkedBeforeForm: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -27,7 +26,7 @@ export default class WorkedBeforeCreateController extends WorkedBeforeController
       }
 
       // Prisoner has not worked before; skip straight to Employability Skills
-      return res.redirect(config.featureToggles.employabilitySkillsEnabled ? 'employability-skills' : 'skills')
+      return res.redirect('employability-skills')
     }
 
     if (!prisonerHasWorkedBefore) {

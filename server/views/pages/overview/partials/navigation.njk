@@ -56,7 +56,7 @@
             Work and interests
           </a>
         </li>
-        {% if featureToggles.employabilitySkillsEnabled and userHasPermissionTo('VIEW_EMPLOYABILITY_SKILLS') %}
+        {% if userHasPermissionTo('VIEW_EMPLOYABILITY_SKILLS') %}
           <li class="moj-sub-navigation__item">
             <a class="moj-sub-navigation__link"
               data-qa="tab-employability-skills"
