@@ -1,43 +1,11 @@
 {# Skills and interests summary card #}
-{% set inductionHasSkillsRecorded = induction.inductionDto.personalSkillsAndInterests.skills | length > 0 %}
 {% set inductionHasInterestsRecorded = induction.inductionDto.personalSkillsAndInterests.interests | length > 0 %}
 <div class="govuk-summary-card" id="skills-and-interests-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">{{ 'Personal interests' if featureToggles.employabilitySkillsEnabled else 'Skills and interests' }}</h2>
+    <h2 class="govuk-summary-card__title">Personal interests</h2>
   </div>
   <div class="govuk-summary-card__content">
     <dl class="govuk-summary-list">
-
-      {% if not featureToggles.employabilitySkillsEnabled %}
-        {# List any skills the Prisoner has #}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Skills
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {% if inductionHasSkillsRecorded %}
-              <ul class="govuk-list" data-qa="skills">
-                {% for skill in induction.inductionDto.personalSkillsAndInterests.skills | objectsSortedAlphabeticallyWithOtherLastBy('skillType') %}
-                  {% if skill.skillType === 'OTHER' %}
-                    <li>Other - {{ skill.skillTypeOther }}</li>
-                  {% else %}
-                    <li>{{ skill.skillType | formatSkill }}</li>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            {% else %}
-              <p class='govuk-body' data-qa='skills-not-recorded'>Not recorded.</p>
-            {% endif %}
-          </dd>
-          {% if userHasPermissionTo('UPDATE_INDUCTION') %}
-            <dd class="govuk-summary-list__actions govuk-!-display-none-print">
-              <a class="govuk-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/induction/skills" data-qa="skills-change-link">
-                {{ 'Change' if inductionHasSkillsRecorded else 'Add' }}<span class="govuk-visually-hidden"> skills</span>
-              </a>
-            </dd>
-          {% endif %}
-        </div>
-      {% endif %}
 
       {# List any personal interests the Prisoner has #}
       <div class="govuk-summary-list__row">
@@ -69,7 +37,7 @@
       </div>
     </dl>
 
-    {% if inductionHasSkillsRecorded or inductionHasInterestsRecorded %}
+    {% if inductionHasInterestsRecorded %}
       <p class="govuk-hint govuk-body govuk-!-font-size-16" data-qa="last-updated">
         {% set prisonName = prisonNamesById[induction.inductionDto.personalSkillsAndInterests.updatedAtPrison] | default(induction.inductionDto.personalSkillsAndInterests.updatedAtPrison) %}
         Last updated {{ induction.inductionDto.personalSkillsAndInterests.updatedAt | formatDate('d MMMM yyyy') }}<span class="govuk-!-display-none-print"> by {{ induction.inductionDto.personalSkillsAndInterests.updatedByDisplayName }}, {{ prisonName }}</span>

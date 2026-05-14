@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio'
 import aValidPrisonerSummary from '../../../../../testsupport/prisonerSummaryTestDataBuilder'
 import findErrorFilter from '../../../../../filters/findErrorFilter'
 import assetMapFilter from '../../../../../filters/assetMapFilter'
-import config from '../../../../../config'
 
 describe('WhoCompletedReviewPage', () => {
   const njkEnv = nunjucks.configure([
@@ -19,7 +18,6 @@ describe('WhoCompletedReviewPage', () => {
   njkEnv //
     .addFilter('findError', findErrorFilter)
     .addFilter('assetMap', assetMapFilter)
-    .addGlobal('featureToggles', { ...config.featureToggles, employabilitySkillsEnabled: true })
 
   const prisonerSummary = aValidPrisonerSummary()
 

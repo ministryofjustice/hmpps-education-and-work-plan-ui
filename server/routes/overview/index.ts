@@ -115,12 +115,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(viewGoalsController.viewGoals),
   ])
 
-  if (config.featureToggles.employabilitySkillsEnabled) {
-    router.get('/plan/:prisonNumber/view/employability-skills', [
-      checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
-      retrieveInduction(inductionService),
-      retrieveInductionSchedule(inductionService),
-      asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
-    ])
-  }
+  router.get('/plan/:prisonNumber/view/employability-skills', [
+    checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
+    retrieveInduction(inductionService),
+    retrieveInductionSchedule(inductionService),
+    asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
+  ])
 }

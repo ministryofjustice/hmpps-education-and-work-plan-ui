@@ -5,7 +5,6 @@ import aValidPrisonerSummary from '../../../testsupport/prisonerSummaryTestDataB
 import { aValidInductionDto } from '../../../testsupport/inductionDtoTestDataBuilder'
 import WorkedBeforeCreateController from './workedBeforeCreateController'
 import HasWorkedBeforeValue from '../../../enums/hasWorkedBeforeValue'
-import config from '../../../config'
 
 describe('workedBeforeCreateController', () => {
   const controller = new WorkedBeforeCreateController()
@@ -30,8 +29,6 @@ describe('workedBeforeCreateController', () => {
     locals: { prisonerSummary },
   } as unknown as Response
   const next = jest.fn()
-
-  jest.replaceProperty(config.featureToggles, 'employabilitySkillsEnabled', true)
 
   beforeEach(() => {
     jest.resetAllMocks()

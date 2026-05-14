@@ -29,8 +29,6 @@ njkEnv //
   .addFilter('formatPersonalInterest', formatPersonalInterestFilter)
   .addGlobal('featureToggles', config.featureToggles)
 
-jest.replaceProperty(config.featureToggles, 'employabilitySkillsEnabled', true)
-
 const prisonerSummary = aValidPrisonerSummary()
 const template = '_skillsAndInterests.njk'
 const templateParams = {
