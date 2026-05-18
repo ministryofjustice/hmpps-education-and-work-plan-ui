@@ -54,7 +54,7 @@ const updateGoalSchema = async () => {
                 .max(MAX_STEP_TITLE_LENGTH, stepTitleMaxLengthMessage),
               stepNumber: z.coerce.number(),
               reference: z.any(),
-              action: z.any(),
+              action: z.any().optional(),
             }),
           )
           .min(1),
