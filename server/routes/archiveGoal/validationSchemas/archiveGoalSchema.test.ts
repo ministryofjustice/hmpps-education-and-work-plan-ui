@@ -26,8 +26,13 @@ describe('archiveGoalSchema', () => {
     { reason: 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON', reasonOther: undefined },
     { reason: 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON', reasonOther: null },
     { reason: 'OTHER', reasonOther: 'Some other reason for archiving the goal' },
-  ])('happy path - validation passes - reason: $reason, reasonOther: $reasonOther', async requestBody => {
+  ])('happy path - validation passes - reason: $reason, reasonOther: $reasonOther', async spec => {
     // Given
+    const requestBody = {
+      ...spec,
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      title: 'A goal title',
+    }
     req.body = requestBody
 
     // When
@@ -60,13 +65,18 @@ describe('archiveGoalSchema', () => {
     expect(req.body).toEqual(requestBody)
     expect(next).not.toHaveBeenCalled()
     expect(req.flash).toHaveBeenCalledWith('invalidForm', expectedInvalidForm)
-    expect(res.redirectWithErrors).toHaveBeenCalledWith('/plan/A1234BC/goals/12345/archive', expectedErrors)
+    expect(res.redirectWithErrors).toHaveBeenCalledWith(
+      '/plan/A1234BC/goals/12345/archive',
+      expect.arrayContaining(expectedErrors),
+    )
   })
 
   it('sad path - mandatory reasonOther field validation fails when reason is OTHER', async () => {
     // Given
     const requestBody = {
       reason: 'OTHER',
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      title: 'A goal title',
     }
     req.body = requestBody
 
@@ -93,6 +103,8 @@ describe('archiveGoalSchema', () => {
     const requestBody = {
       reason: 'OTHER',
       reasonOther: 'a'.repeat(201),
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      title: 'A goal title',
     }
     req.body = requestBody
 

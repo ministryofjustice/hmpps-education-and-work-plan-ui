@@ -39,10 +39,30 @@ describe('updateGoalSchema', () => {
       title: 'A goal title',
       note: 'Goal notes',
       steps: [
-        { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-        { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-        { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+        {
+          title: 'Step 1',
+          status: 'NOT_STARTED',
+          stepNumber: 1,
+          reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+        },
+        {
+          title: 'Step 2',
+          status: 'ACTIVE',
+          stepNumber: 2,
+          reference: 'f7b4f5c5-9f54-49e5-8709-05b7cf2dbb7c',
+        },
+        {
+          title: 'Step 3',
+          status: 'COMPLETE',
+          stepNumber: 3,
+          reference: 'db6a2c5d-8e68-46ad-a7e2-d9ecfb793149',
+        },
       ],
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
@@ -65,10 +85,18 @@ describe('updateGoalSchema', () => {
         targetCompletionDate: format(today, 'd/M/yyyy'),
         note: 'Goal notes',
         steps: [
-          { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-          { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-          { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+          {
+            title: 'Step 1',
+            status: 'NOT_STARTED',
+            stepNumber: 1,
+            reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+          },
         ],
+        reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+        createdAt: '2025-10-22T08:17:13Z',
+        originalTargetCompletionDate: '22/1/2026',
+        status: 'ACTIVE',
+        action: 'submit-form',
       }
       req.body = requestBody
 
@@ -98,10 +126,18 @@ describe('updateGoalSchema', () => {
       targetCompletionDate: format(today, 'd/M/yyyy'),
       note: 'Goal notes',
       steps: [
-        { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-        { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-        { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+        {
+          title: 'Step 1',
+          status: 'NOT_STARTED',
+          stepNumber: 1,
+          reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+        },
       ],
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
@@ -144,10 +180,18 @@ describe('updateGoalSchema', () => {
         title: 'Goal title',
         note: 'Goal notes',
         steps: [
-          { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-          { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-          { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+          {
+            title: 'Step 1',
+            status: 'NOT_STARTED',
+            stepNumber: 1,
+            reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+          },
         ],
+        reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+        createdAt: '2025-10-22T08:17:13Z',
+        originalTargetCompletionDate: '22/1/2026',
+        status: 'ACTIVE',
+        action: 'submit-form',
       }
       req.body = requestBody
 
@@ -189,10 +233,18 @@ describe('updateGoalSchema', () => {
         title: 'Goal title',
         note: 'Goal notes',
         steps: [
-          { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-          { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-          { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+          {
+            title: 'Step 1',
+            status: 'NOT_STARTED',
+            stepNumber: 1,
+            reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+          },
         ],
+        reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+        createdAt: '2025-10-22T08:17:13Z',
+        originalTargetCompletionDate: '22/1/2026',
+        status: 'ACTIVE',
+        action: 'submit-form',
       }
       req.body = requestBody
 
@@ -223,10 +275,18 @@ describe('updateGoalSchema', () => {
       title: 'Goal title',
       note: 'Goal notes',
       steps: [
-        { title: 'Step 1', status: 'NOT_STARTED', stepNumber: 1 },
-        { title: 'Step 2', status: 'ACTIVE', stepNumber: 2 },
-        { title: 'Step 3', status: 'COMPLETE', stepNumber: 3 },
+        {
+          title: 'Step 1',
+          status: 'NOT_STARTED',
+          stepNumber: 1,
+          reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+        },
       ],
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
@@ -260,6 +320,11 @@ describe('updateGoalSchema', () => {
       title: 'Goal title',
       note: 'Goal notes',
       steps: spec.steps,
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
@@ -291,7 +356,19 @@ describe('updateGoalSchema', () => {
       title: 'Goal title',
       targetCompletionDate: format(tomorrow, 'd/M/yyyy'),
       note: 'Goal notes',
-      steps: [{ title: spec.title, status: 'NOT_STARTED', stepNumber: 1 }],
+      steps: [
+        {
+          title: spec.title,
+          status: 'NOT_STARTED',
+          stepNumber: 1,
+          reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+        },
+      ],
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
@@ -320,11 +397,36 @@ describe('updateGoalSchema', () => {
       targetCompletionDate: format(tomorrow, 'd/M/yyyy'),
       note: 'Goal notes',
       steps: [
-        { title: 'A valid step title', status: 'NOT_STARTED', stepNumber: 1 },
-        { title: '', status: 'NOT_STARTED', stepNumber: 2 }, // expect this step to be in error due to missing title
-        { title: 'a'.repeat(513), status: 'ACTIVE', stepNumber: 3 }, // expect this step to be in error due to title exceeding max length
-        { title: 'A completed step', status: 'COMPLETE', stepNumber: 4 },
+        {
+          title: 'A valid step title',
+          status: 'NOT_STARTED',
+          stepNumber: 1,
+          reference: 'a2d30c9f-8b1e-46d8-8a19-42620e7d38e0',
+        },
+        {
+          title: '',
+          status: 'NOT_STARTED',
+          stepNumber: 2,
+          reference: 'f7b4f5c5-9f54-49e5-8709-05b7cf2dbb7c',
+        }, // expect this step to be in error due to missing title
+        {
+          title: 'a'.repeat(513),
+          status: 'ACTIVE',
+          stepNumber: 3,
+          reference: 'db6a2c5d-8e68-46ad-a7e2-d9ecfb793149',
+        }, // expect this step to be in error due to title exceeding max length
+        {
+          title: 'A completed step',
+          status: 'COMPLETE',
+          stepNumber: 4,
+          reference: 'b0dd655c-2df9-46e7-adb5-fde5b4cdf853',
+        },
       ],
+      reference: '0856e8cc-a7e8-49df-941e-8dc9c51f8c77',
+      createdAt: '2025-10-22T08:17:13Z',
+      originalTargetCompletionDate: '22/1/2026',
+      status: 'ACTIVE',
+      action: 'submit-form',
     }
     req.body = requestBody
 
