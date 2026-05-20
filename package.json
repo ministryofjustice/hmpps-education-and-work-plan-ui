@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1045.0",
+    "@aws-sdk/client-sqs": "^3.1048.0",
     "@date-fns/utc": "^2.1.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^3.4.1",
@@ -117,7 +117,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
