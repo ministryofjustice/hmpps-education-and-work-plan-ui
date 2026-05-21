@@ -85,7 +85,7 @@
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^2.0.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^5.5.0",
-    "@ministryofjustice/hmpps-monitoring": "^1.1.0",
+    "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-prison-permissions-lib": "2.6.0",
     "@ministryofjustice/hmpps-rest-client": "^1.2.1",
     "agentkeepalive": "^4.6.0",
