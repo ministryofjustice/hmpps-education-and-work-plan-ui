@@ -227,6 +227,36 @@ describe('_newEducationAndTrainingSummaryCard', () => {
       expect($('[data-qa=qualifications-courses-and-assessments-unavailable-message]').length).toEqual(0)
     })
 
+    it('should render counts given LRS qualifications, in prison courses, and LWP educational qualifications are all resolved as null (as a result of 404 from the APIs)', () => {
+      // Given
+      const params = {
+        ...templateParams,
+        // A fulfilled promise with a value of null is not an error. It represents the case where the API call was successful but there was no data found for the prisoner, resulting in a 404 from the API.
+        // The view should treat this the same as the prisoner having a record but with no courses/education within it, and render counts of 0.
+        verifiedQualifications: Result.fulfilled(null),
+        curiousInPrisonCourses: Result.fulfilled(null),
+        education: Result.fulfilled(null),
+      }
+
+      // When
+      const content = njkEnv.render(template, params)
+      const $ = cheerio.load(content)
+
+      // Then
+      expect($('section[data-qa=qualifications-courses-and-assessments]').length).toEqual(1)
+      expect($('[data-qa=qualifications-courses-and-assessments-counts]').length).toEqual(1)
+
+      expect($('[data-qa=lrs-verified-qualifications-count]').text().trim()).toEqual('0')
+      expect($('[data-qa=curious-in-prison-courses-count]').text().trim()).toEqual('0')
+      expect($('[data-qa=lwp-qualifications-count]').text().trim()).toEqual('0')
+
+      expect($('[data-qa=lrs-verified-qualifications-unavailable-message]').length).toEqual(0)
+      expect($('[data-qa=curious-in-prison-courses-unavailable-message]').length).toEqual(0)
+      expect($('[data-qa=lwp-qualifications-unavailable-message]').length).toEqual(0)
+
+      expect($('[data-qa=qualifications-courses-and-assessments-unavailable-message]').length).toEqual(0)
+    })
+
     it('should render counts and LRS unavailable message given LRS API promise fails but prisoner has in prison courses and LWP educational qualifications', () => {
       // Given
       const params = {
