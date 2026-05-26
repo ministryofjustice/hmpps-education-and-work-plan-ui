@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1048.0",
+    "@aws-sdk/client-sqs": "^3.1051.0",
     "@date-fns/utc": "^2.1.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.1",
     "@microsoft/applicationinsights-web": "^3.4.1",
@@ -97,7 +97,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^9.0.0",
     "csrf-sync": "^4.2.1",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.2.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "govuk-frontend": "^6.1.0",
@@ -117,7 +117,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
@@ -132,10 +132,10 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
-    "@types/superagent": "^8.1.9",
+    "@types/superagent": "^8.1.10",
     "@types/supertest": "^7.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.59.3",
-    "@typescript-eslint/parser": "^8.59.3",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "^1.2.0",
@@ -162,7 +162,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-jinja-template": "^2.2.0",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.9",
+    "ts-jest": "^29.4.10",
     "typescript": "^6.0.3"
   },
   "overrides": {
