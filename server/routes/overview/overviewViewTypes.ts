@@ -46,6 +46,7 @@ type InductionScheduleView = {
   problemRetrievingData: boolean
   inductionDueDate?: Date
   inductionStatus:
+    | 'PENDING_SCREENING_AND_ASSESSMENTS'
     | 'NO_SCHEDULED_INDUCTION'
     | 'INDUCTION_NOT_DUE'
     | 'GOALS_NOT_DUE'

@@ -6,9 +6,10 @@
     display: none; // Hide the action card content section by default
   }
   .govuk-summary-card__content:has(.govuk-list li),
-  .govuk-summary-card__content:has(.govuk-tag[data-qa="no-reviews-due"])
+  .govuk-summary-card__content:has(.govuk-tag[data-qa="no-reviews-due"]),
+  .govuk-summary-card__content:has(.govuk-tag[data-qa="pending-screenings-and-assessments"])
   {
-    // Show the action card content section only if the list has at least one item within it, or it has the No Reviews Due tag (which has no list items associated with it)
+    // Show the action card content section only if the list has at least one item within it, or it has the No Reviews Due or Screener Pending tag (neither of which have any list items associated with them)
     display: block;
   }
 

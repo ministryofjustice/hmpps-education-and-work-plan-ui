@@ -212,7 +212,7 @@ describe('overviewViewFunctions', () => {
 
       const expected: InductionScheduleView = {
         problemRetrievingData: false,
-        inductionStatus: 'NO_SCHEDULED_INDUCTION',
+        inductionStatus: 'PENDING_SCREENING_AND_ASSESSMENTS',
         exemptionReason: undefined,
         inductionDueDate: undefined,
       }

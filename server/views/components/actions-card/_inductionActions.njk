@@ -35,6 +35,10 @@
       <p class="govuk-body" data-qa="reason-on-hold">
         Reason: {{ params.inductionSchedule.exemptionReason | formatInductionExemptionReason }}
       </p>
+    {% elseif params.inductionSchedule.inductionStatus == 'PENDING_SCREENING_AND_ASSESSMENTS' %}
+      <span class="govuk-tag govuk-tag--blue govuk-!-margin-top-2 govuk-!-margin-bottom-2" data-qa="pending-screenings-and-assessments">
+        Screener pending
+      </span>
     {% endif %}
 
     <ul class="govuk-list govuk-!-margin-0" data-qa="induction-action-items">

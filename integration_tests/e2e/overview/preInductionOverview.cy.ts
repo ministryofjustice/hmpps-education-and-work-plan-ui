@@ -1,5 +1,6 @@
 import Page from '../../pages/page'
 import OverviewPage from '../../pages/overview/OverviewPage'
+import InductionScheduleStatusValue from '../../../server/enums/inductionScheduleStatusValue'
 
 context('Prisoner Overview page - Pre Induction', () => {
   beforeEach(() => {
@@ -16,6 +17,9 @@ context('Prisoner Overview page - Pre Induction', () => {
     // Given
     cy.signIn()
     cy.task('stubGetInduction404Error')
+    cy.task('stubGetInductionSchedule', {
+      scheduleStatus: InductionScheduleStatusValue.PENDING_INITIAL_SCREENING_AND_ASSESSMENTS_FROM_CURIOUS,
+    })
 
     // When
     cy.visit(`/plan/${prisonNumber}/view/overview`)

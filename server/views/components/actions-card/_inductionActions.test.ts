@@ -38,6 +38,35 @@ describe('_inductionActions', () => {
     userHasPermissionTo.mockReturnValue(true)
   })
 
+  it('should render induction actions given screeners and assessments are pending', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'PENDING_SCREENING_AND_ASSESSMENTS',
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_inductionActions.njk', { params })
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').text().trim()).toEqual('Screener pending')
+    expect($('[data-qa=induction-not-due]').length).toEqual(0)
+    expect($('[data-qa=goals-not-due]').length).toEqual(0)
+    expect($('[data-qa=induction-due]').length).toEqual(0)
+    expect($('[data-qa=goals-due]').length).toEqual(0)
+    expect($('[data-qa=induction-overdue]').length).toEqual(0)
+    expect($('[data-qa=goals-overdue]').length).toEqual(0)
+    expect($('[data-qa=induction-on-hold]').length).toEqual(0)
+    expect($('[data-qa=reason-on-hold]').length).toEqual(0)
+
+    expect($('[data-qa=induction-action-items] li').length).toEqual(0)
+  })
+
   it('should render induction actions given induction not due', () => {
     // Given
     const params = {
@@ -55,6 +84,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').text().trim()).toEqual('Induction due by 15 Feb 2025')
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').length).toEqual(0)
@@ -86,6 +116,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').text().trim()).toEqual('Add goals by 15 Feb 2025')
     expect($('[data-qa=induction-due]').length).toEqual(0)
@@ -117,6 +148,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').text().trim()).toEqual('Induction due by 15 Feb 2025')
@@ -148,6 +180,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').length).toEqual(0)
@@ -179,6 +212,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').length).toEqual(0)
@@ -210,6 +244,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').length).toEqual(0)
@@ -242,6 +277,7 @@ describe('_inductionActions', () => {
 
     // Then
     expect($('[data-qa=induction-actions]').length).toEqual(1)
+    expect($('[data-qa=pending-screenings-and-assessments]').length).toEqual(0)
     expect($('[data-qa=induction-not-due]').length).toEqual(0)
     expect($('[data-qa=goals-not-due]').length).toEqual(0)
     expect($('[data-qa=induction-due]').length).toEqual(0)
