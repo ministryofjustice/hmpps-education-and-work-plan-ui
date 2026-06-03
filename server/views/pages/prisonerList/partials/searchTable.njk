@@ -74,6 +74,8 @@
                   <strong class="govuk-tag govuk-tag--green">{{ 'ACTIVE_PLAN' | formatSearchPlanStatus }}</strong>
                 {% elseif prisoner.planStatus === 'EXEMPT' %}
                   <strong class="govuk-tag govuk-tag--grey">{{ 'EXEMPT' | formatSearchPlanStatus }}</strong>
+                {% elseif prisoner.planStatus === 'PENDING_SCREENING_AND_ASSESSMENTS' %}
+                  <strong class="govuk-tag govuk-tag--blue">{{ 'PENDING_SCREENING_AND_ASSESSMENTS' | formatSearchPlanStatus }}</strong>
                 {% endif %}
               </td>
             </tr>

@@ -180,54 +180,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/session/summary': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['getSessionSummaries']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/ciag/induction/list': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['getInductionSummaries']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/action-plans': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['getActionPlanSummaries']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/action-plans/{prisonNumber}': {
     parameters: {
       query?: never
@@ -320,6 +272,22 @@ export interface paths {
      * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
      */
     get: operations['getSarContentByReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/subject-access-request/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getServiceTemplate']
     put?: never
     post?: never
     delete?: never
@@ -482,7 +450,7 @@ export interface components {
        * @description The unique reference for this Achieved Qualification if this request object is being used to update the qualification
        * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdateEducationRequest: {
       /**
@@ -540,12 +508,12 @@ export interface components {
        * @description A specific type of work interest that does not fit the given 'workType' values. Mandatory when 'workType' is 'OTHER'.
        * @example null
        */
-      workTypeOther?: string
+      workTypeOther?: string | null
       /**
        * @description The role within a Prisoner's area of work interest.
        * @example null
        */
-      role?: string
+      role?: string | null
     }
     InPrisonTrainingInterest: {
       /**
@@ -570,7 +538,7 @@ export interface components {
        * @description A specific type of in-prison training that does not fit the given 'trainingType' values. Mandatory when 'trainingType' is 'OTHER'.
        * @example null
        */
-      trainingTypeOther?: string
+      trainingTypeOther?: string | null
     }
     InPrisonWorkInterest: {
       /**
@@ -593,7 +561,7 @@ export interface components {
        * @description A specific type of in-prison work that does not fit the given 'workType' values. Mandatory when 'workType' is 'OTHER'.
        * @example null
        */
-      workTypeOther?: string
+      workTypeOther?: string | null
     }
     PersonalInterest: {
       /**
@@ -620,7 +588,7 @@ export interface components {
        * @description A specific type of personal interest that does not fit the given 'interestType' values. Mandatory when 'interestType' is 'OTHER'.
        * @example null
        */
-      interestTypeOther?: string
+      interestTypeOther?: string | null
     }
     PersonalSkill: {
       /**
@@ -641,7 +609,7 @@ export interface components {
        * @description A specific type of personal skill that does not fit the given 'skillType' values. Mandatory when 'skillType' is 'OTHER'.
        * @example null
        */
-      skillTypeOther?: string
+      skillTypeOther?: string | null
     }
     PreviousWorkExperience: {
       /**
@@ -668,17 +636,17 @@ export interface components {
        * @description A type of work experience, which is not listed in 'experienceType' Enum. Mandatory when 'experienceType' is 'OTHER'.
        * @example null
        */
-      experienceTypeOther?: string
+      experienceTypeOther?: string | null
       /**
        * @description The role the Prisoner had.
        * @example null
        */
-      role?: string
+      role?: string | null
       /**
        * @description Any additional details of the work experience.
        * @example null
        */
-      details?: string
+      details?: string | null
     }
     UpdateFutureWorkInterestsRequest: {
       /**
@@ -691,7 +659,7 @@ export interface components {
        * @description A unique reference for a FutureWorkInterests resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdateInPrisonInterestsRequest: {
       /**
@@ -709,7 +677,7 @@ export interface components {
        * @description A unique reference for a InPrisonInterests resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdateInductionRequest: {
       /**
@@ -723,20 +691,13 @@ export interface components {
        * @example BXI
        */
       prisonId: string
-      /** @example null */
-      workOnRelease?: components['schemas']['UpdateWorkOnReleaseRequest']
-      /** @example null */
-      previousQualifications?: components['schemas']['UpdatePreviousQualificationsRequest']
-      /** @example null */
-      previousTraining?: components['schemas']['UpdatePreviousTrainingRequest']
-      /** @example null */
-      previousWorkExperiences?: components['schemas']['UpdatePreviousWorkExperiencesRequest']
-      /** @example null */
-      inPrisonInterests?: components['schemas']['UpdateInPrisonInterestsRequest']
-      /** @example null */
-      personalSkillsAndInterests?: components['schemas']['UpdatePersonalSkillsAndInterestsRequest']
-      /** @example null */
-      futureWorkInterests?: components['schemas']['UpdateFutureWorkInterestsRequest']
+      workOnRelease?: components['schemas']['UpdateWorkOnReleaseRequest'] | null
+      previousQualifications?: components['schemas']['UpdatePreviousQualificationsRequest'] | null
+      previousTraining?: components['schemas']['UpdatePreviousTrainingRequest'] | null
+      previousWorkExperiences?: components['schemas']['UpdatePreviousWorkExperiencesRequest'] | null
+      inPrisonInterests?: components['schemas']['UpdateInPrisonInterestsRequest'] | null
+      personalSkillsAndInterests?: components['schemas']['UpdatePersonalSkillsAndInterestsRequest'] | null
+      futureWorkInterests?: components['schemas']['UpdateFutureWorkInterestsRequest'] | null
     }
     UpdatePersonalSkillsAndInterestsRequest: {
       /**
@@ -748,18 +709,18 @@ export interface components {
        * @description One or more skills that the Prisoner feels they have.
        * @example null
        */
-      skills?: components['schemas']['PersonalSkill'][]
+      skills?: components['schemas']['PersonalSkill'][] | null
       /**
        * Format: uuid
        * @description A unique reference for a PersonalSkillsAndInterests resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdatePreviousQualificationsRequest: {
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
       educationLevel?:
         | 'PRIMARY_SCHOOL'
@@ -770,17 +731,18 @@ export interface components {
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
+        | null
       /**
        * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
        * @example null
        */
-      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
+      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][] | null
       /**
        * Format: uuid
        * @description A unique reference for a PreviousQualifications resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdatePreviousTrainingRequest: {
       /**
@@ -804,13 +766,13 @@ export interface components {
        * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
        * @example null
        */
-      trainingTypeOther?: string
+      trainingTypeOther?: string | null
       /**
        * Format: uuid
        * @description A unique reference for a PreviousTraining resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdatePreviousWorkExperiencesRequest: {
       /**
@@ -822,18 +784,18 @@ export interface components {
        * @description The reason why the whether the prisoner has worked before is not relevant. Mandatory when 'hasWorkedBefore' is 'NOT_RELEVANT'
        * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
        */
-      hasWorkedBeforeNotRelevantReason?: string
+      hasWorkedBeforeNotRelevantReason?: string | null
       /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
        */
-      experiences?: components['schemas']['PreviousWorkExperience'][]
+      experiences?: components['schemas']['PreviousWorkExperience'][] | null
       /**
        * Format: uuid
        * @description A unique reference for a PreviousWorkExperiences resource (if it already exists).
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reference?: string
+      reference?: string | null
     }
     UpdateWorkOnReleaseRequest: {
       /**
@@ -851,24 +813,26 @@ export interface components {
        * @description Factors affecting the Prisoner's ability to work.
        * @example null
        */
-      affectAbilityToWork?: (
-        | 'LIMITED_BY_OFFENCE'
-        | 'CARING_RESPONSIBILITIES'
-        | 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH'
-        | 'UNABLE_TO_WORK_DUE_TO_HEALTH'
-        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
-        | 'REFUSED_SUPPORT_WITH_NO_REASON'
-        | 'RETIRED'
-        | 'NO_RIGHT_TO_WORK'
-        | 'NOT_SURE'
-        | 'OTHER'
-        | 'NONE'
-      )[]
+      affectAbilityToWork?:
+        | (
+            | 'LIMITED_BY_OFFENCE'
+            | 'CARING_RESPONSIBILITIES'
+            | 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH'
+            | 'UNABLE_TO_WORK_DUE_TO_HEALTH'
+            | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+            | 'REFUSED_SUPPORT_WITH_NO_REASON'
+            | 'RETIRED'
+            | 'NO_RIGHT_TO_WORK'
+            | 'NOT_SURE'
+            | 'OTHER'
+            | 'NONE'
+          )[]
+        | null
       /**
        * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
        * @example null
        */
-      affectAbilityToWorkOther?: string
+      affectAbilityToWorkOther?: string | null
     }
     UpdateInductionScheduleStatusRequest: {
       /**
@@ -906,7 +870,7 @@ export interface components {
        * @description An optional reason as to why the Induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
        * @example null
        */
-      exemptionReason?: string
+      exemptionReason?: string | null
     }
     UpdateReviewScheduleStatusRequest: {
       /**
@@ -942,7 +906,7 @@ export interface components {
        * @description An optional reason as to why the Review Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
        * @example null
        */
-      exemptionReason?: string
+      exemptionReason?: string | null
     }
     UpdateGoalRequest: {
       /**
@@ -976,7 +940,7 @@ export interface components {
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
        */
-      notes?: string
+      notes?: string | null
     }
     UpdateStepRequest: {
       /**
@@ -1000,7 +964,7 @@ export interface components {
        * @description Optional reference number for the Step. The Step's unique reference. This is used as an identifier to update the required Step. It is not possible or supported to update the `stepReference` for an existing step. If the Step reference is not supplied this will be treated as a new Step and will be added to the Goal.
        * @example d38a6c41-13d1-1d05-13c2-24619966119b
        */
-      stepReference?: string
+      stepReference?: string | null
     }
     UnarchiveGoalRequest: {
       /**
@@ -1031,7 +995,7 @@ export interface components {
        * @description An optional note to accompany the completion
        * @example null
        */
-      note?: string
+      note?: string | null
     }
     ArchiveGoalRequest: {
       /**
@@ -1058,71 +1022,12 @@ export interface components {
        * @description Describes the reason for archiving if 'OTHER' is selected, it is mandatory in this scenario.
        * @example null
        */
-      reasonOther?: string
+      reasonOther?: string | null
       /**
        * @description An optional note to accompany the archive
        * @example null
        */
-      note?: string
-    }
-    PrisonerIdsRequest: {
-      /**
-       * @description A List of prison numbers.
-       * @example null
-       */
-      prisonNumbers: string[]
-    }
-    SessionResponse: {
-      /**
-       * @example null
-       * @enum {string}
-       */
-      sessionType: 'REVIEW' | 'INDUCTION'
-      /**
-       * @description The ID of the prisoner
-       * @example A1234BC
-       */
-      prisonNumber: string
-      /**
-       * @description The schedule calculation rule
-       * @example A1234BC
-       */
-      scheduleCalculationRule: string
-      /**
-       * Format: date
-       * @description The deadline for the induction to be completed
-       * @example 2023-06-19
-       */
-      deadlineDate: string
-      /**
-       * Format: uuid
-       * @description The unique reference of this session
-       * @example c88a6c48-97e2-4c04-93b5-98619966447b
-       */
-      reference: string
-      /**
-       * @description if applicable this will be the reason for the exemption
-       * @example could not attend due to illness
-       */
-      exemptionReason?: string
-      /**
-       * Format: date
-       * @description if applicable this will be the date of the exemption
-       * @example 2023-06-19
-       */
-      exemptionDate?: string
-      /**
-       * @description whether or not this schedule was created as a result of a transfer
-       * @example false
-       */
-      followingTransfer?: boolean
-    }
-    SessionResponses: {
-      /**
-       * @description A List containing zero or more SessionResponse.
-       * @example null
-       */
-      sessions: components['schemas']['SessionResponse'][]
+      note?: string | null
     }
     CreateAchievedQualificationRequest: {
       /**
@@ -1208,14 +1113,14 @@ export interface components {
       evidence: string
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
-      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW' | null
       /**
        * @description Free text about the session type eg Mathematics A level.
        * @example null
        */
-      sessionTypeDescription?: string
+      sessionTypeDescription?: string | null
     }
     CreateFutureWorkInterestsRequest: {
       /**
@@ -1244,44 +1149,38 @@ export interface components {
       prisonId: string
       /** @example null */
       workOnRelease: components['schemas']['CreateWorkOnReleaseRequest']
-      /** @example null */
-      previousQualifications?: components['schemas']['CreatePreviousQualificationsRequest']
-      /** @example null */
-      previousTraining?: components['schemas']['CreatePreviousTrainingRequest']
-      /** @example null */
-      previousWorkExperiences?: components['schemas']['CreatePreviousWorkExperiencesRequest']
-      /** @example null */
-      inPrisonInterests?: components['schemas']['CreateInPrisonInterestsRequest']
-      /** @example null */
-      personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest']
-      /** @example null */
-      futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest']
+      previousQualifications?: components['schemas']['CreatePreviousQualificationsRequest'] | null
+      previousTraining?: components['schemas']['CreatePreviousTrainingRequest'] | null
+      previousWorkExperiences?: components['schemas']['CreatePreviousWorkExperiencesRequest'] | null
+      inPrisonInterests?: components['schemas']['CreateInPrisonInterestsRequest'] | null
+      personalSkillsAndInterests?: components['schemas']['CreatePersonalSkillsAndInterestsRequest'] | null
+      futureWorkInterests?: components['schemas']['CreateFutureWorkInterestsRequest'] | null
       /**
        * @description A list of employability skills. An empty list means the person has no employability skills.
        * @example null
        */
-      employabilitySkills?: components['schemas']['CreateEmployabilitySkillRequest'][]
+      employabilitySkills?: components['schemas']['CreateEmployabilitySkillRequest'][] | null
       /**
        * @description The notes taken when conducting the prisoner's Induction.
        * @example Peter is excited to be part of the programme.
        */
-      note?: string
+      note?: string | null
       /**
        * Format: date
        * @description An ISO-8601 date representing the date that this Induction was conducted on.
        * @example 2023-12-19
        */
-      conductedAt?: string
+      conductedAt?: string | null
       /**
        * @description The name of the person who actually conducted the Induction session with the Prisoner.   Only populated if the person who conducted the Induction was not the person who keyed it into the system.
        * @example Albert Mozzarella
        */
-      conductedBy?: string
+      conductedBy?: string | null
       /**
        * @description The role of the person who actually conducted the Induction session with the Prisoner.  Only populated if the person who conducted the Induction was not the person who keyed it into the system.
        * @example Peer mentor
        */
-      conductedByRole?: string
+      conductedByRole?: string | null
     }
     CreatePersonalSkillsAndInterestsRequest: {
       /**
@@ -1293,12 +1192,12 @@ export interface components {
        * @description One or more skills that the Prisoner feels they have.
        * @example null
        */
-      skills?: components['schemas']['PersonalSkill'][]
+      skills?: components['schemas']['PersonalSkill'][] | null
     }
     CreatePreviousQualificationsRequest: {
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
       educationLevel?:
         | 'PRIMARY_SCHOOL'
@@ -1309,11 +1208,12 @@ export interface components {
         | 'POSTGRADUATE_DEGREE_AT_UNIVERSITY'
         | 'NO_FORMAL_EDUCATION'
         | 'NOT_SURE'
+        | null
       /**
        * @description A list of the Prisoner's previous qualifications.   These can either be new qualfications without a reference field, or for any qualifications with a reference field they will be treated as updates.
        * @example null
        */
-      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][]
+      qualifications?: components['schemas']['CreateOrUpdateAchievedQualificationRequest'][] | null
     }
     CreatePreviousTrainingRequest: {
       /**
@@ -1337,7 +1237,7 @@ export interface components {
        * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
        * @example null
        */
-      trainingTypeOther?: string
+      trainingTypeOther?: string | null
     }
     CreatePreviousWorkExperiencesRequest: {
       /**
@@ -1349,12 +1249,12 @@ export interface components {
        * @description The reason why the whether the prisoner has worked before is not relevant. Mandatory when 'hasWorkedBefore' is 'NOT_RELEVANT'
        * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
        */
-      hasWorkedBeforeNotRelevantReason?: string
+      hasWorkedBeforeNotRelevantReason?: string | null
       /**
        * @description A list of the Prisoner's previous work experiences.
        * @example null
        */
-      experiences?: components['schemas']['PreviousWorkExperience'][]
+      experiences?: components['schemas']['PreviousWorkExperience'][] | null
     }
     CreateWorkOnReleaseRequest: {
       /**
@@ -1366,104 +1266,26 @@ export interface components {
        * @description Factors affecting the Prisoner's ability to work.
        * @example null
        */
-      affectAbilityToWork?: (
-        | 'LIMITED_BY_OFFENCE'
-        | 'CARING_RESPONSIBILITIES'
-        | 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH'
-        | 'UNABLE_TO_WORK_DUE_TO_HEALTH'
-        | 'LACKS_CONFIDENCE_OR_MOTIVATION'
-        | 'REFUSED_SUPPORT_WITH_NO_REASON'
-        | 'RETIRED'
-        | 'NO_RIGHT_TO_WORK'
-        | 'NOT_SURE'
-        | 'OTHER'
-        | 'NONE'
-      )[]
+      affectAbilityToWork?:
+        | (
+            | 'LIMITED_BY_OFFENCE'
+            | 'CARING_RESPONSIBILITIES'
+            | 'NEEDS_WORK_ADJUSTMENTS_DUE_TO_HEALTH'
+            | 'UNABLE_TO_WORK_DUE_TO_HEALTH'
+            | 'LACKS_CONFIDENCE_OR_MOTIVATION'
+            | 'REFUSED_SUPPORT_WITH_NO_REASON'
+            | 'RETIRED'
+            | 'NO_RIGHT_TO_WORK'
+            | 'NOT_SURE'
+            | 'OTHER'
+            | 'NONE'
+          )[]
+        | null
       /**
        * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
        * @example null
        */
-      affectAbilityToWorkOther?: string
-    }
-    GetCiagInductionSummariesRequest: {
-      /**
-       * @description A List of prison numbers whose CIAG Inductions should be retrieved.
-       * @example null
-       */
-      offenderIds: string[]
-    }
-    CiagInductionSummaryListResponse: {
-      /**
-       * @description A List of prisoners' CIAG Induction summaries. Can be empty but not null.
-       * @example null
-       */
-      ciagProfileList: components['schemas']['CiagInductionSummaryResponse'][]
-    }
-    CiagInductionSummaryResponse: {
-      /**
-       * @description The ID of the Prisoner. AKA the prison number.
-       * @example A1234BC
-       */
-      offenderId: string
-      /**
-       * @description Whether the Prisoner wishes to work or not.
-       * @example false
-       */
-      desireToWork: boolean
-      /**
-       * @example null
-       * @enum {string}
-       */
-      hopingToGetWork: 'YES' | 'NO' | 'NOT_SURE'
-      /**
-       * @description The DPS username of the person who created the Induction.
-       * @example asmith_gen
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when the Induction was created.
-       * @example 2023-06-19T09:39:44Z
-       */
-      createdDateTime: string
-      /**
-       * @description The DPS username of the person who last updated the Induction.
-       * @example asmith_gen
-       */
-      modifiedBy: string
-      /**
-       * Format: date-time
-       * @description An ISO-8601 timestamp representing when the Goal was last updated. This will be the same as the created date if it has not yet been updated.
-       * @example 2023-06-19T09:39:44Z
-       */
-      modifiedDateTime: string
-    }
-    GetActionPlanSummariesRequest: {
-      /**
-       * @description A List of prison numbers whose Action Plans should be retrieved.
-       * @example null
-       */
-      prisonNumbers: string[]
-    }
-    ActionPlanSummaryListResponse: {
-      /**
-       * @description A List of prisoners' Action Plan summaries. Can be empty but not null.
-       * @example null
-       */
-      actionPlanSummaries: components['schemas']['ActionPlanSummaryResponse'][]
-    }
-    ActionPlanSummaryResponse: {
-      /**
-       * Format: uuid
-       * @description The Action Plan's unique reference
-       * @example 814ade0a-a3b2-46a3-862f-79211ba13f7b
-       */
-      reference: string
-      /**
-       * @description The ID of the prisoner
-       * @example A1234BC
-       */
-      prisonNumber: string
+      affectAbilityToWorkOther?: string | null
     }
     CreateActionPlanRequest: {
       /**
@@ -1498,7 +1320,7 @@ export interface components {
        * @description Some additional notes related to the Goal.
        * @example Pay close attention to Peter's behaviour.
        */
-      notes?: string
+      notes?: string | null
     }
     CreateStepRequest: {
       /**
@@ -1534,12 +1356,12 @@ export interface components {
        * @description The name of the person who actually conducted the Review session with the Prisoner.   Only populated if the person who conducted the Review was not the person who keyed it into the system.
        * @example Albert Mozzarella
        */
-      conductedBy?: string
+      conductedBy?: string | null
       /**
        * @description The role of the person who actually conducted the Review session with the Prisoner.  Only populated if the person who conducted the Review was not the person who keyed it into the system.
        * @example Peer mentor
        */
-      conductedByRole?: string
+      conductedByRole?: string | null
     }
     CreateActionPlanReviewResponse: {
       /**
@@ -1655,20 +1477,20 @@ export interface components {
         | 'RELEASE_DATE_IN_PAST'
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
-      reviewType?: 'REVIEW' | 'PRE_RELEASE_REVIEW' | 'TRANSFER_REVIEW'
+      reviewType?: 'REVIEW' | 'PRE_RELEASE_REVIEW' | 'TRANSFER_REVIEW' | null
       /**
        * @description An optional reason as to why the Review Schedule is exempted.  Only present when the `status` field is one of the `EXEMPTION_` statuses and the user entered an exemption  reason when marking the Review as Exempted.
        * @example null
        */
-      exemptionReason?: string
+      exemptionReason?: string | null
       /**
        * Format: int32
        * @description the version number of this schedule (the highest number is the most recent version of this review schedule)
        * @example null
        */
-      version?: number
+      version?: number | null
     }
     CreateGoalsRequest: {
       /**
@@ -1722,7 +1544,8 @@ export interface components {
         | 'PRISON_ADMISSION'
         | 'PRISON_RELEASE'
         | 'PRISON_TRANSFER'
-        | 'EMPLOYABILITY_SKILL_TYPE'
+        | 'EMPLOYABILITY_SKILL_CREATED'
+        | 'EDUCATION_ASSESSMENT_EVENT_CREATED'
       /**
        * @description An object containing properties of contextual information that's relevant to the event in question. For example a property called `GOAL_TITLE` with value being the title of a Goal that was completed. The object may contain any number of properties. The API spec does not define the property names, but there is a defined set as part of the domain: - GOAL_TITLE - STEP_TITLE - PRISON_TRANSFERRED_FROM
        * @example {GOAL_TITLE=Learn French}
@@ -1756,7 +1579,7 @@ export interface components {
        * @description The display name of the person who caused this event, if applicable.
        * @example Alex Smith
        */
-      actionedByDisplayName?: string
+      actionedByDisplayName?: string | null
     }
     TimelineResponse: {
       /**
@@ -1792,23 +1615,31 @@ export interface components {
        * Format: int32
        * @description The size of the attachment file in bytes
        */
-      filesize: number
+      filesize?: number | null
       /** @description The filename of attachment file */
       filename: string
+      /** @description The additional headers to use when calling the url for fetching this attachment */
+      headers?: components['schemas']['AttachmentHeader'][] | null
+    }
+    AttachmentHeader: {
+      /** @description The name of the header */
+      name: string
+      /** @description The value of the header */
+      value: string
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: unknown
       /** @description The details of any attachments for the subject access request response */
-      attachments?: components['schemas']['Attachment'][]
+      attachments?: components['schemas']['Attachment'][] | null
     }
     ErrorResponse: {
       /** Format: int32 */
       status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
+      errorCode?: string | null
+      userMessage?: string | null
+      developerMessage?: string | null
+      moreInfo?: string | null
     }
     SessionSummaryResponse: {
       /**
@@ -1816,37 +1647,37 @@ export interface components {
        * @description Number of overdue reviews
        * @example 0
        */
-      overdueReviews?: number
+      overdueReviews?: number | null
       /**
        * Format: int32
        * @description Number of overdue inductions
        * @example 0
        */
-      overdueInductions?: number
+      overdueInductions?: number | null
       /**
        * Format: int32
        * @description Number of due reviews
        * @example 1
        */
-      dueReviews?: number
+      dueReviews?: number | null
       /**
        * Format: int32
        * @description Number of due inductions
        * @example 0
        */
-      dueInductions?: number
+      dueInductions?: number | null
       /**
        * Format: int32
        * @description Number of exempt reviews
        * @example 0
        */
-      exemptReviews?: number
+      exemptReviews?: number | null
       /**
        * Format: int32
        * @description Number of exempt inductions
        * @example 0
        */
-      exemptInductions?: number
+      exemptInductions?: number | null
     }
     PaginationMetaData: {
       /**
@@ -1921,29 +1752,29 @@ export interface components {
        * @description The prisoner's release date as returned by prisoner-search-api.
        * @example 2035-11-01
        */
-      releaseDate?: string
+      releaseDate?: string | null
       /**
        * @description if applicable this will be the reason for the exemption
        * @example could not attend due to illness
        */
-      exemptionReason?: string
+      exemptionReason?: string | null
       /**
        * Format: date
        * @description if applicable this will be the date of the exemption
        * @example 2023-06-19
        */
-      exemptionDate?: string
+      exemptionDate?: string | null
       /**
        * Format: date
        * @description The deadline for the induction to be completed
        * @example 2023-06-19
        */
-      deadlineDate?: string
+      deadlineDate?: string | null
       /**
        * @description whether or not this schedule was created as a result of a transfer
        * @example false
        */
-      followingTransfer?: boolean
+      followingTransfer?: boolean | null
     }
     SessionSearchResponses: {
       /**
@@ -1951,8 +1782,7 @@ export interface components {
        * @example null
        */
       sessions: components['schemas']['SessionSearchResponse'][]
-      /** @example null */
-      pagination?: components['schemas']['PaginationMetaData']
+      pagination?: components['schemas']['PaginationMetaData'] | null
     }
     PersonResponse: {
       /**
@@ -1981,24 +1811,24 @@ export interface components {
        * @example null
        * @enum {string}
        */
-      planStatus: 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
+      planStatus: 'PENDING_SCREENING_AND_ASSESSMENTS' | 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
       /**
        * @description The prisoner's cell location within prison
        * @example B-3-047
        */
-      cellLocation?: string
+      cellLocation?: string | null
       /**
        * Format: date
        * @description The date the person entered prison returned by prisoner-search-api.
        * @example 2035-11-01
        */
-      enteredPrisonOn?: string
+      enteredPrisonOn?: string | null
       /**
        * Format: date
        * @description The prisoner's release date as returned by prisoner-search-api.
        * @example 2035-11-01
        */
-      releaseDate?: string
+      releaseDate?: string | null
     }
     PersonSearchResult: {
       /** @example null */
@@ -2279,14 +2109,14 @@ export interface components {
       evidence: string
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
-      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW'
+      sessionType?: 'CIAG_INDUCTION' | 'CIAG_REVIEW' | 'EDUCATION_REVIEW' | 'INDUSTRIES_REVIEW' | null
       /**
        * @description Free text about the session type eg Mathematics A level.
        * @example null
        */
-      sessionTypeDescription?: string
+      sessionTypeDescription?: string | null
     }
     InPrisonInterestsResponse: {
       /**
@@ -2404,23 +2234,17 @@ export interface components {
        * @example BXI
        */
       updatedAtPrison: string
-      /** @example null */
-      previousQualifications?: components['schemas']['PreviousQualificationsResponse']
-      /** @example null */
-      previousTraining?: components['schemas']['PreviousTrainingResponse']
-      /** @example null */
-      previousWorkExperiences?: components['schemas']['PreviousWorkExperiencesResponse']
-      /** @example null */
-      inPrisonInterests?: components['schemas']['InPrisonInterestsResponse']
-      /** @example null */
-      personalSkillsAndInterests?: components['schemas']['PersonalSkillsAndInterestsResponse']
-      /** @example null */
-      futureWorkInterests?: components['schemas']['FutureWorkInterestsResponse']
+      previousQualifications?: components['schemas']['PreviousQualificationsResponse'] | null
+      previousTraining?: components['schemas']['PreviousTrainingResponse'] | null
+      previousWorkExperiences?: components['schemas']['PreviousWorkExperiencesResponse'] | null
+      inPrisonInterests?: components['schemas']['InPrisonInterestsResponse'] | null
+      personalSkillsAndInterests?: components['schemas']['PersonalSkillsAndInterestsResponse'] | null
+      futureWorkInterests?: components['schemas']['FutureWorkInterestsResponse'] | null
       /**
        * @description A List of employability skills.
        * @example null
        */
-      employabilitySkills?: components['schemas']['GetEmployabilitySkillsResponse'][]
+      employabilitySkills?: components['schemas']['GetEmployabilitySkillsResponse'][] | null
     }
     PersonalSkillsAndInterestsResponse: {
       /**
@@ -2480,7 +2304,7 @@ export interface components {
        * @description One or more skills that the Prisoner feels they have.
        * @example null
        */
-      skills?: components['schemas']['PersonalSkill'][]
+      skills?: components['schemas']['PersonalSkill'][] | null
     }
     PreviousQualificationsResponse: {
       /**
@@ -2620,7 +2444,7 @@ export interface components {
        * @description A specific type of training that does not fit the given 'trainingTypes'. Mandatory when 'trainingTypes' includes 'OTHER'.
        * @example null
        */
-      trainingTypeOther?: string
+      trainingTypeOther?: string | null
     }
     PreviousWorkExperiencesResponse: {
       /**
@@ -2685,7 +2509,7 @@ export interface components {
        * @description The reason why the whether the prisoner has worked before is not relevant. Only populated when 'hasWorkedBefore' is 'NOT_RELEVANT'.
        * @example Chris has declined to talk about his previous work experience as he is not looking for work on release because he is of retirement age.
        */
-      hasWorkedBeforeNotRelevantReason?: string
+      hasWorkedBeforeNotRelevantReason?: string | null
     }
     WorkOnReleaseResponse: {
       /**
@@ -2762,7 +2586,7 @@ export interface components {
        * @description A specific factor affecting the Prisoner's ability to work. This is mandatory when 'affectAbilityToWork' includes 'OTHER'.
        * @example null
        */
-      affectAbilityToWorkOther?: string
+      affectAbilityToWorkOther?: string | null
     }
     InductionScheduleResponse: {
       /**
@@ -2862,34 +2686,34 @@ export interface components {
        * @description The name of the person who completed the review.
        * @example John smith
        */
-      inductionPerformedBy?: string
+      inductionPerformedBy?: string | null
       /**
        * @description The role of the person who completed the review.
        * @example Peer Mentor
        */
-      inductionPerformedByRole?: string
+      inductionPerformedByRole?: string | null
       /**
        * Format: date
        * @description the date when this resource was updated.
        * @example 2023-06-19
        */
-      inductionPerformedAt?: string
+      inductionPerformedAt?: string | null
       /**
        * @description The prison that the induction was performed at.
        * @example BCI
        */
-      inductionPerformedAtPrison?: string
+      inductionPerformedAtPrison?: string | null
       /**
        * @description An optional reason as to why the induction Schedule is exempted.  Only relevant and processed when the `status` field is one of the `EXEMPTION_` statuses.   This field is not mandatory, even when the `status` field is one of the `EXEMPTION_` statuses.
        * @example null
        */
-      exemptionReason?: string
+      exemptionReason?: string | null
       /**
        * Format: int32
        * @description the version number of this schedule (the highest number is the most recent version of this induction schedule)
        * @example null
        */
-      version?: number
+      version?: number | null
     }
     InductionSchedulesResponse: {
       /**
@@ -2900,7 +2724,7 @@ export interface components {
     }
     EducationAssessmentRequired: {
       /** @example false */
-      basicSkillsAssessmentRequired?: boolean
+      basicSkillsAssessmentRequired?: boolean | null
     }
     ActionPlanResponse: {
       /**
@@ -3000,21 +2824,22 @@ export interface components {
        * @description Some additional notes related to the Goal. This is deprecated - use the`goalNotes` list instead
        * @example Pay close attention to Peter's behaviour.
        */
-      notes?: string
+      notes?: string | null
       /**
        * @example null
-       * @enum {string}
+       * @enum {string|null}
        */
       archiveReason?:
         | 'PRISONER_NO_LONGER_WANTS_TO_WORK_TOWARDS_GOAL'
         | 'PRISONER_NO_LONGER_WANTS_TO_WORK_WITH_CIAG'
         | 'SUITABLE_ACTIVITIES_NOT_AVAILABLE_IN_THIS_PRISON'
         | 'OTHER'
+        | null
       /**
        * @description Describes the reason for archiving if 'OTHER' is selected, it is mandatory in this scenario.
        * @example null
        */
-      archiveReasonOther?: string
+      archiveReasonOther?: string | null
     }
     NoteResponse: {
       /**
@@ -3158,38 +2983,38 @@ export interface components {
        * @description The unique reference of the review schedule that corresponds to this Review
        * @example c88a6c48-97e2-4c04-93b5-98619966447b
        */
-      reviewScheduleReference?: string
+      reviewScheduleReference?: string | null
       /**
        * @description The DPS username of the person who updated the Review in the system.
        * @example asmith_gen
        */
-      updatedBy?: string
+      updatedBy?: string | null
       /**
        * @description The display name of the person who updated the Review in the system.
        * @example Alex Smith
        */
-      updatedByDisplayName?: string
+      updatedByDisplayName?: string | null
       /**
        * Format: date-time
        * @description An ISO-8601 timestamp representing when the Review was updated in the system.
        * @example 2023-06-19T09:39:44Z
        */
-      updatedAt?: string
+      updatedAt?: string | null
       /**
        * @description The identifier of the prison that the prisoner was resident at when the Review was updated in the system.
        * @example BXI
        */
-      updatedAtPrison?: string
+      updatedAtPrison?: string | null
       /**
        * @description The name of the person who actually conducted the Review session with the Prisoner.   Only populated if the person who conducted the Review was not the person who keyed it into the system.
        * @example Albert Mozzarella
        */
-      conductedBy?: string
+      conductedBy?: string | null
       /**
        * @description The role of the person who actually conducted the Review session with the Prisoner.  Only populated if the person who conducted the Review was not the person who keyed it into the system.
        * @example Peer mentor
        */
-      conductedByRole?: string
+      conductedByRole?: string | null
     }
     ActionPlanReviewSchedulesResponse: {
       /**
@@ -3618,80 +3443,6 @@ export interface operations {
       }
     }
   }
-  getSessionSummaries: {
-    parameters: {
-      query: {
-        status: 'ON_HOLD' | 'DUE' | 'OVERDUE'
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PrisonerIdsRequest']
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['SessionResponses']
-        }
-      }
-    }
-  }
-  getInductionSummaries: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GetCiagInductionSummariesRequest']
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['CiagInductionSummaryListResponse']
-        }
-      }
-    }
-  }
-  getActionPlanSummaries: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['GetActionPlanSummariesRequest']
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ActionPlanSummaryListResponse']
-        }
-      }
-    }
-  }
   getActionPlan: {
     parameters: {
       query?: never
@@ -3983,6 +3734,53 @@ export interface operations {
       }
     }
   }
+  getServiceTemplate: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Request successfully processed - return template file content */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'plain/text': string
+        }
+      }
+      /** @description The client does not have authorisation to make this request */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unexpected error occurred */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getSessionSummary: {
     parameters: {
       query?: never
@@ -4047,7 +3845,7 @@ export interface operations {
     parameters: {
       query?: {
         prisonerNameOrNumber?: string
-        planStatus?: 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
+        planStatus?: 'PENDING_SCREENING_AND_ASSESSMENTS' | 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
         sortBy?:
           | 'PRISONER_NAME'
           | 'PRISON_NUMBER'

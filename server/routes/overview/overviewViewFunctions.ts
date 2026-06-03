@@ -39,6 +39,7 @@ const workOutInductionStatus = (
   inductionSchedule?: InductionSchedule,
   induction?: InductionDto,
 ):
+  | 'PENDING_SCREENING_AND_ASSESSMENTS'
   | 'NO_SCHEDULED_INDUCTION'
   | 'INDUCTION_NOT_DUE'
   | 'GOALS_NOT_DUE'
@@ -62,7 +63,10 @@ const workOutInductionStatus = (
   const inductionDueDate = inductionSchedule?.deadlineDate
   const prisonerHasInduction = induction != null
 
-  if (inductionScheduleDoesNotExist || pendingCuriousScreeningAndAssessments) {
+  if (pendingCuriousScreeningAndAssessments) {
+    return 'PENDING_SCREENING_AND_ASSESSMENTS'
+  }
+  if (inductionScheduleDoesNotExist) {
     return 'NO_SCHEDULED_INDUCTION'
   }
   if (inductionComplete) {
