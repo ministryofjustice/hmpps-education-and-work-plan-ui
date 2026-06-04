@@ -72,6 +72,10 @@ describe('workAndInterestsTabContents', () => {
     // Given
     const params = {
       ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: aValidInductionDto(),
+      },
     }
 
     // When
@@ -120,7 +124,7 @@ describe('workAndInterestsTabContents', () => {
     expect(userHasPermissionTo).not.toHaveBeenCalled()
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does not have permission to create inductions', () => {
+  it('should not render link to create induction given induction is due and user does not have permission to create inductions', () => {
     // Given
     userHasPermissionTo.mockReturnValue(false)
     const params = {
@@ -129,65 +133,9 @@ describe('workAndInterestsTabContents', () => {
         problemRetrievingData: false,
         inductionDto: undefined as InductionDto,
       },
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
-    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
-    expect($('#skills-and-interests-summary-card').length).toEqual(0)
-
-    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
-
-    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
-
-    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
-  })
-
-  it('should render link to create induction given prisoner has no induction and user does have permission to create inductions', () => {
-    // Given
-    userHasPermissionTo.mockReturnValue(true)
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: false,
-        inductionDto: undefined as InductionDto,
-      },
-    }
-
-    // When
-    const content = njkEnv.render(template, params)
-    const $ = cheerio.load(content)
-
-    // Then
-    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
-    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
-    expect($('#skills-and-interests-summary-card').length).toEqual(0)
-
-    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
-    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
-
-    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
-
-    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
-  })
-
-  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but inductions schedule is on hold', () => {
-    // Given
-    userHasPermissionTo.mockReturnValue(true)
-    const params = {
-      ...templateParams,
-      induction: {
-        problemRetrievingData: false,
-        inductionDto: undefined as InductionDto,
-      },
       inductionSchedule: {
         problemRetrievingData: false,
-        inductionStatus: 'ON_HOLD',
+        inductionStatus: 'INDUCTION_DUE',
         inductionDueDate: startOfDay('2025-02-15'),
       },
     }
@@ -202,7 +150,80 @@ describe('workAndInterestsTabContents', () => {
     expect($('#skills-and-interests-summary-card').length).toEqual(0)
 
     expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(0)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-work-and-skills-entered-message]').length).toEqual(1)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should render link to create induction given induction is due and user does have permission to create inductions', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'INDUCTION_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
+    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
+    expect($('#skills-and-interests-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+    expect($('[data-qa=no-work-and-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
+
+    expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should not render link to create induction given induction is on hold and user does have permission to create inductions but inductions schedule is on hold', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'ON_HOLD',
+      },
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=work-and-interests-question-set]').length).toEqual(0)
+    expect($('#in-prison-work-interests-summary-card').length).toEqual(0)
+    expect($('#skills-and-interests-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-work-and-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
 
@@ -238,5 +259,35 @@ describe('workAndInterestsTabContents', () => {
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should render the induction pending S&As message given induction is pending S&As', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'PENDING_SCREENING_AND_ASSESSMENTS',
+      },
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('#employability-skills-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(0)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-work-and-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(1)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
   })
 })
