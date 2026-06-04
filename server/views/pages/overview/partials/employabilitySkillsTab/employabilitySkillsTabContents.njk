@@ -142,20 +142,36 @@ Data supplied to this template:
         </div>
 
       {% else %}
+        {% set inductionStatus = inductionStatus.value if inductionStatus.isFulfilled() else '' %}
+
         {# Prisoner has not yet had their Induction done #}
         <p class="govuk-body" data-qa="induction-not-created-yet">
-          {% if userHasPermissionTo('RECORD_INDUCTION') %}
-            To add employability skills information you need to
-            {% if inductionStatus.isFulfilled() and inductionStatus.value != 'ON_HOLD' %}
-              <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+          {% if inductionStatus == 'PENDING_SCREENING_AND_ASSESSMENTS' %}
+            {# Screening and assessments have not yet been completed #}
+            <span data-qa="pending-screening-and-assessments-message">
+              No employability skills information recorded yet. Induction cannot take place until initial screening and assessment is complete.
+            </span>
+
+          {% elseif userHasPermissionTo('RECORD_INDUCTION') %}
+            {# Screening and assessments have been completed and user has permission to record the Induction #}
+            <span data-qa="create-induction-message">
+              To add employability skills information you need to
+              {% if inductionStatus == 'ON_HOLD' or inductionStatus == '' %}
+                {# Even though the user has permission to record the Induction, the Induction is on hold/exempt, so do not render the link to create the Induction #}
                 create a learning and work plan
-              </a>
-            {% else %}
-              create a learning and work plan
-            {% endif %}
-            with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+              {% else %}
+                <a href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release" class="govuk-link" data-qa="link-to-create-induction">
+                  create a learning and work plan
+                </a>
+              {% endif %}
+              with {{ prisonerSummary.firstName }} {{ prisonerSummary.lastName }}.
+            </span>
+
           {% else %}
-            No employability skills information entered.
+            {# Screening and assessments have been completed but user does not have permission to record the Induction #}
+            <span data-qa="no-skills-entered-message">
+              No employability skills information entered.
+            </span>
           {% endif %}
         </p>
       {% endif %}

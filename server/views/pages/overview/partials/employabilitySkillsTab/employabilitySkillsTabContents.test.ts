@@ -134,12 +134,13 @@ describe('employabilitySkillsTabContents', () => {
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(1)
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does not have permission to create inductions', () => {
+  it('should not render link to create induction given induction is due and user does not have permission to create inductions', () => {
     // Given
     userHasPermissionTo.mockReturnValue(false)
     const params = {
       ...templateParams,
       induction: Result.fulfilled(null),
+      inductionStatus: Result.fulfilled('DUE'),
     }
 
     // When
@@ -150,19 +151,23 @@ describe('employabilitySkillsTabContents', () => {
     expect($('#employability-skills-summary-card').length).toEqual(0)
 
     expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(0)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-skills-entered-message]').length).toEqual(1)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should render link to create induction given prisoner has no induction and user does have permission to create inductions', () => {
+  it('should render link to create induction given induction is due and user does have permission to create inductions', () => {
     // Given
     userHasPermissionTo.mockReturnValue(true)
     const params = {
       ...templateParams,
       induction: Result.fulfilled(null),
+      inductionStatus: Result.fulfilled('DUE'),
     }
 
     // When
@@ -173,14 +178,17 @@ describe('employabilitySkillsTabContents', () => {
     expect($('#employability-skills-summary-card').length).toEqual(0)
 
     expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(1)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+    expect($('[data-qa=no-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
     expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render link to create induction given prisoner has no induction and user does have permission to create inductions but induction status is on hold', () => {
+  it('should not render link to create induction given induction is on hold and user does have permission to create inductions', () => {
     // Given
     userHasPermissionTo.mockReturnValue(true)
     const params = {
@@ -200,6 +208,8 @@ describe('employabilitySkillsTabContents', () => {
 
     expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
     expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
 
@@ -230,5 +240,29 @@ describe('employabilitySkillsTabContents', () => {
     expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
+  })
+
+  it('should render the induction pending S&As message given induction is pending S&As', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: Result.fulfilled(null),
+      inductionStatus: Result.fulfilled('PENDING_SCREENING_AND_ASSESSMENTS'),
+    }
+
+    // When
+    const content = njkEnv.render(template, params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('#employability-skills-summary-card').length).toEqual(0)
+
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(0)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(1)
+
+    expect($('[data-qa=employability-skills-unavailable-message]').length).toEqual(0)
   })
 })
