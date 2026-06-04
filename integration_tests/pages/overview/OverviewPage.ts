@@ -33,12 +33,33 @@ export default class OverviewPage extends Page {
   }
 
   isPreInduction(): OverviewPage {
-    this.preInductionOverviewPanel().should('be.visible')
+    this.eitherPreInductionBanner().should('be.visible')
+    return this
+  }
+
+  inductionIsPendingScreeningAndAssessments(): OverviewPage {
+    this.inductionPendingScreeningAndAssessmentsBanner().should('be.visible')
+    return this
+  }
+
+  inductionCanBeCreated(): OverviewPage {
+    this.createInductionBanner().should('be.visible')
     return this
   }
 
   isPostInduction(): OverviewPage {
-    this.preInductionOverviewPanel().should('not.exist')
+    this.createInductionBanner().should('not.exist')
+    this.inductionPendingScreeningAndAssessmentsBanner().should('not.exist')
+    return this
+  }
+
+  inductionIsNotPendingScreeningAndAssessments(): OverviewPage {
+    this.inductionPendingScreeningAndAssessmentsBanner().should('not.exist')
+    return this
+  }
+
+  inductionCannotBeCreated(): OverviewPage {
+    this.createInductionBanner().should('not.exist')
     return this
   }
 
@@ -306,10 +327,16 @@ export default class OverviewPage extends Page {
   private viewAllEducationAndTrainingButton = (): PageElement =>
     cy.get('[data-qa=view-education-and-training-tab-button]')
 
-  private preInductionOverviewPanel = (): PageElement => cy.get('[data-qa=pre-induction-overview]')
+  private eitherPreInductionBanner = (): PageElement =>
+    cy.get('[data-qa=induction-pending-screening-and-assessments-banner], [data-qa=create-induction-banner]')
+
+  private inductionPendingScreeningAndAssessmentsBanner = (): PageElement =>
+    cy.get('[data-qa=induction-pending-screening-and-assessments-banner]')
+
+  private createInductionBanner = (): PageElement => cy.get('[data-qa=create-induction-banner]')
 
   private makeProgressPlanLink = (): PageElement =>
-    cy.get('[data-qa=pre-induction-overview] a.govuk-notification-banner__link')
+    cy.get('[data-qa=create-induction-banner] a.govuk-notification-banner__link')
 
   private printThisPageLink = (): PageElement => cy.get('#print-link')
 

@@ -19,26 +19,46 @@ Data supplied to this template:
 {% from "../../../../components/actions-card/macro.njk" import actionsCard %}
 
 <div class="govuk-grid-row">
-  {% set createInductionBanner %}
-    <p class="govuk-notification-banner__heading" data-qa="notification-banner-heading">
-        Create goals and add education, work, skills, and interests to
-        <a class="govuk-notification-banner__link" data-qa="notification-banner-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release">make a learning and work plan now</a>.
-    </p>
-  {% endset %}
-
   {% block content %}
     <div class="govuk-grid-column-two-thirds app-u-print-full-width">
       {% set prisonNamesById = prisonNamesById.value if prisonNamesById.isFulfilled() else {} %}
 
-      {% if not induction.problemRetrievingData and not induction.isPostInduction
-            and not inductionSchedule.problemRetrievingData and inductionSchedule.inductionStatus != 'ON_HOLD'
-            and userHasPermissionTo('RECORD_INDUCTION')
-      %}
-        <section class="govuk-!-display-none-print" data-qa="pre-induction-overview">
-          {{ govukNotificationBanner({
-            html: createInductionBanner
-          }) }}
-        </section>
+      {#
+      // if the prisoner has no induction, they are considered pre-induction
+      // and the induction schedule is not on hold
+      // and the user has permission to record inductions
+        #}
+      {% if not induction.problemRetrievingData and not induction.isPostInduction %} {# if the prisoner has no induction, they are considered pre-induction #}
+
+        {% if not inductionSchedule.problemRetrievingData %}
+          {% if inductionSchedule.inductionStatus == 'PENDING_SCREENING_AND_ASSESSMENTS' %}
+            {% set bannerContent %}
+              <p class="govuk-notification-banner__heading" data-qa="notification-banner-heading">
+                Induction cannot take place until initial screening and assessment is complete.
+              </p>
+            {% endset %}
+
+            <section class="govuk-!-display-none-print" data-qa="induction-pending-screening-and-assessments-banner">
+              {{ govukNotificationBanner({
+                html: bannerContent
+              }) }}
+            </section>
+
+          {% elseif inductionSchedule.inductionStatus != 'ON_HOLD' and userHasPermissionTo('RECORD_INDUCTION') %}
+            {% set bannerContent %}
+              <p class="govuk-notification-banner__heading" data-qa="notification-banner-heading">
+                Create goals and add education, work, skills, and interests to
+                <a class="govuk-notification-banner__link" data-qa="notification-banner-link" href="/prisoners/{{ prisonerSummary.prisonNumber }}/create-induction/hoping-to-work-on-release">make a learning and work plan now</a>.
+              </p>
+            {% endset %}
+
+            <section class="govuk-!-display-none-print" data-qa="create-induction-banner">
+              {{ govukNotificationBanner({
+                html: bannerContent
+              }) }}
+            </section>
+          {% endif %}
+        {% endif %}
       {% endif %}
 
       {% include './_goalsSummaryCard.njk' %}
