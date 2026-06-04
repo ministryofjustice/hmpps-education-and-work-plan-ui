@@ -85,11 +85,19 @@ describe('overviewTabContents', () => {
     userHasPermissionTo.mockReturnValue(true)
   })
 
-  it('should render the complete induction banner when the prisoner has not had an induction and the induction schedule is not on hold and the user has permission to create inductions', () => {
+  it('should render the induction pending S&As banner when the prisoner induction has not been scheduled because the S&As are pending', () => {
     // Given
     userHasPermissionTo.mockReturnValue(true)
     const pageViewModel = {
       ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'PENDING_SCREENING_AND_ASSESSMENTS',
+      },
     }
 
     // When
@@ -97,19 +105,54 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(1)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(1)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+  })
+
+  it('should render the create induction banner when the prisoner has not had an induction and the induction schedule is neither pending S&As or on hold and the user has permission to create inductions', () => {
+    // Given
+    userHasPermissionTo.mockReturnValue(true)
+    const pageViewModel = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'INDUCTION_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
+    }
+
+    // When
+    const content = njkEnv.render(template, pageViewModel)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(1)
     expect($('.govuk-notification-banner__link').attr('href')).toEqual(
       `/prisoners/${prisonerSummary.prisonNumber}/create-induction/hoping-to-work-on-release`,
     )
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render the complete induction banner when the the user does not have permission to create inductions', () => {
+  it('should not render the create induction banner when the prisoner has not had an induction and the induction schedule is neither pending S&As or on hold and the user does not have permission to create inductions', () => {
     // Given
     userHasPermissionTo.mockReturnValue(false)
     const pageViewModel = {
       ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'INDUCTION_DUE',
+        inductionDueDate: startOfDay('2025-02-15'),
+      },
     }
 
     // When
@@ -117,12 +160,13 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
 
     expect(userHasPermissionTo).toHaveBeenCalledWith('RECORD_INDUCTION')
   })
 
-  it('should not render the complete induction banner when the prisoner has had an induction', () => {
+  it('should not render either induction banner when the prisoner has had an induction', () => {
     // Given
     const pageViewModel = {
       ...templateParams,
@@ -137,10 +181,11 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
   })
 
-  it('should not render the complete induction banner given there was a problem retrieving the induction', () => {
+  it('should not render either induction banner given there was a problem retrieving the induction', () => {
     // Given
     const pageViewModel = {
       ...templateParams,
@@ -155,10 +200,11 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
   })
 
-  it('should not render the complete induction banner given there was a problem retrieving the induction schedule', () => {
+  it('should not render either induction banner given there was a problem retrieving the induction schedule', () => {
     // Given
     const pageViewModel = {
       ...templateParams,
@@ -172,13 +218,18 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
   })
 
-  it('should not render the complete induction banner given the induction schedule is exempt (on hold)', () => {
+  it('should not render either induction banner given the induction schedule is exempt (on hold)', () => {
     // Given
     const pageViewModel = {
       ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        isPostInduction: false,
+      },
       inductionSchedule: {
         problemRetrievingData: false,
         inductionStatus: 'ON_HOLD',
@@ -191,6 +242,7 @@ describe('overviewTabContents', () => {
     const $ = cheerio.load(content)
 
     // Then
-    expect($('[data-qa="pre-induction-overview"]').length).toEqual(0)
+    expect($('[data-qa="create-induction-banner"]').length).toEqual(0)
+    expect($('[data-qa="induction-pending-screening-and-assessments-banner"]').length).toEqual(0)
   })
 })
