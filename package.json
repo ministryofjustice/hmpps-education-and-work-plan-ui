@@ -140,7 +140,7 @@
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "^1.2.0",
     "chokidar": "^3.6.0",
-    "concurrently": "^9.2.1",
+    "concurrently": "^10.0.0",
     "cypress": "^15.16.0",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
