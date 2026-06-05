@@ -240,14 +240,20 @@ describe('_educationAndQualificationsHistory', () => {
   })
 
   describe('Prisoner does not have an education record', () => {
-    it('should show prompts to create education and create induction given prisoner has no education data', () => {
+    it('should show prompts to create education and create induction given induction is due and user does have permission to create inductions', () => {
       // Given
+      userHasPermissionTo.mockReturnValue(true)
       // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
       const params = {
         ...templateParams,
         induction: {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: false,
+          inductionStatus: 'INDUCTION_DUE',
+          inductionDueDate: startOfDay('2025-02-15'),
         },
         education: Result.fulfilled(null),
       }
@@ -258,8 +264,12 @@ describe('_educationAndQualificationsHistory', () => {
 
       // Then
       expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
+
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=create-induction-message]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(1)
+      expect($('[data-qa=no-education-and-training-entered-message]').length).toEqual(0)
+      expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
       expect($('[data-qa=educational-qualifications-table]').length).toEqual(0)
       expect($('[data-qa=educational-qualifications-change-link]').length).toEqual(0)
@@ -274,7 +284,7 @@ describe('_educationAndQualificationsHistory', () => {
       expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'RECORD_INDUCTION')
     })
 
-    it('should not show prompts to create education and create induction given prisoner has no education data and user does not have permission to create inductions', () => {
+    it('should not show prompts to create education and create induction given given induction is due and user does not have permission to create inductions', () => {
       // Given
       userHasPermissionTo.mockReturnValue(false)
       // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
@@ -283,6 +293,11 @@ describe('_educationAndQualificationsHistory', () => {
         induction: {
           problemRetrievingData: false,
           inductionDto: undefined as InductionDto,
+        },
+        inductionSchedule: {
+          problemRetrievingData: false,
+          inductionStatus: 'INDUCTION_DUE',
+          inductionDueDate: startOfDay('2025-02-15'),
         },
         education: Result.fulfilled(null),
       }
@@ -293,15 +308,20 @@ describe('_educationAndQualificationsHistory', () => {
 
       // Then
       expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(0)
+
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=create-induction-message]').length).toEqual(0)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+      expect($('[data-qa=no-education-and-training-entered-message]').length).toEqual(1)
+      expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
 
       expect(userHasPermissionTo).toHaveBeenNthCalledWith(1, 'RECORD_EDUCATION')
       expect(userHasPermissionTo).toHaveBeenNthCalledWith(2, 'RECORD_INDUCTION')
     })
 
-    it('should show prompts to create education but not create induction given prisoner has no education data and induction schedule is on hold', () => {
+    it('should show prompts to create education but not create induction given prisoner has no education data and induction is on hold and user does have permission to create inductions', () => {
       // Given
+      userHasPermissionTo.mockReturnValue(true)
       // a prisoner with no EductionDto will also have no InductionDto. It is not possible to have an Induction but with no Education
       const params = {
         ...templateParams,
@@ -313,7 +333,6 @@ describe('_educationAndQualificationsHistory', () => {
         inductionSchedule: {
           problemRetrievingData: false,
           inductionStatus: 'ON_HOLD',
-          inductionDueDate: startOfDay('2025-02-15'),
         },
       }
 
@@ -324,7 +343,10 @@ describe('_educationAndQualificationsHistory', () => {
       // Then
       expect($('[data-qa=link-to-add-educational-qualifications]').length).toEqual(1)
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+      expect($('[data-qa=create-induction-message]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+      expect($('[data-qa=no-education-and-training-entered-message]').length).toEqual(0)
+      expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(0)
     })
 
     it('should show prompts to create education but not create induction given prisoner has no education data and problem retrieving induction schedule', () => {
@@ -351,6 +373,35 @@ describe('_educationAndQualificationsHistory', () => {
       expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
       expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
     })
+  })
+
+  it('should render the induction pending S&As message given induction is pending S&As', () => {
+    // Given
+    const params = {
+      ...templateParams,
+      induction: {
+        problemRetrievingData: false,
+        inductionDto: undefined as InductionDto,
+      },
+      education: Result.fulfilled(null),
+      inductionSchedule: {
+        problemRetrievingData: false,
+        inductionStatus: 'PENDING_SCREENING_AND_ASSESSMENTS',
+      },
+    }
+
+    // When
+    const content = nunjucks.render('_trainingAndEducationInterestsInPrison.njk', params)
+    const $ = cheerio.load(content)
+
+    // Then
+    expect($('[data-qa=induction-not-created-yet]').length).toEqual(1)
+    expect($('[data-qa=create-induction-message]').length).toEqual(0)
+    expect($('[data-qa=link-to-create-induction]').length).toEqual(0)
+    expect($('[data-qa=no-work-and-skills-entered-message]').length).toEqual(0)
+    expect($('[data-qa=pending-screening-and-assessments-message]').length).toEqual(1)
+
+    expect($('[data-qa=induction-unavailable-message]').length).toEqual(0)
   })
 
   it('should show unavailable message given problem retrieving induction data', () => {
