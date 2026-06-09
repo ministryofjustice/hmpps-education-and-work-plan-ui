@@ -72,7 +72,7 @@ where the InductionDto contains any in-prison training interests the prisoner ha
           {% if inductionStatus == 'PENDING_SCREENING_AND_ASSESSMENTS' %}
             {# Screening and assessments have not yet been completed #}
             <span data-qa="pending-screening-and-assessments-message">
-              No education and training information recorded yet. Induction cannot take place until initial screening and assessment is complete.
+              No education and training information recorded yet. Induction cannot take place until initial screening and assessment is complete and the results have been entered on to Curious.
             </span>
 
           {% elseif userHasPermissionTo('RECORD_INDUCTION') %}
