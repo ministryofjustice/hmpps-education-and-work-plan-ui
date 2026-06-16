@@ -23,47 +23,12 @@ Induction, and 1 or more Goals.
 
 # Development and maintenance
 
-## Ensuring slack notifications are raised correctly
-
-To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
-
-## Imported Types
-Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, prison-register,
-curious-api, hmpps-support-for-additional-needs-api, and hmpps-learner-records-api.
-You will need to install the node module `openapi-typescript` globally with the following command:
-
-`npm install -g openapi-typescript`
-
-To update the types from the Open API docs run the following commands:
-
-`npx openapi-typescript https://learningandworkprogress-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/educationAndWorkPlanApi/index.d.ts`
-
-`npx openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
-
-`npx openapi-typescript https://prison-register-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/prisonRegisterApi/index.d.ts`
-
-`npx openapi-typescript https://testservices.sequation.net/sequation-virtual-campus2-api/v3/api-docs -o server/@types/curiousApi/index.d.ts`
-
-`npx openapi-typescript https://support-for-additional-needs-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/supportAdditionalNeedsApi/index.d.ts`
-
-`npx openapi-typescript https://learner-records-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/learnerRecordsApi/index.d.ts`
-
-Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
-
-The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts`,
-`server/@types/prisonRegisterApi/index.d.ts`, `server/@types/curiousApi/index.d.ts`, `server/@types/supportAdditionalNeedsApi/index.d.ts`
-and `server/@types/learnerRecordsApi/index.d.ts` which may also need tweaking for use.
-
-Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
-
-## Running the app
+## Running the app locally
 The easiest way to run the app is to use docker compose to create the service and all dependencies.
 
 `docker-compose pull`
 
 `docker-compose up`
-
-Note that this will require running up the API first. See the [API Readme](https://github.com/ministryofjustice/hmpps-education-and-work-plan-api#running-the-app).
 
 See `http://localhost:3000/health` to check the app is running.
 
@@ -74,56 +39,21 @@ The app requires:
 
 ### Running the app for development
 
-To start the main services excluding the example typescript template app:
+To start the main services excluding the UI app:
 
 `docker-compose up --scale=app=0`
 
-Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
+Install dependencies using `npm install`, ensuring you are using `node v24.x` and `npm v11.x`
 
 Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
 
-Create a `.env` which should override environment variables required to run locally:
-```properties
-HMPPS_AUTH_URL=http://localhost:9090/auth
-MANAGE_USERS_API_URL=http://localhost:9091/manage-users-api
-TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
-TOKEN_VERIFICATION_ENABLED=false
-EDUCATION_AND_WORK_PLAN_API_URL=http://localhost:8080
-PRISONER_SEARCH_API_URL=http://localhost:8080
-LEARNER_RECORDS_API_URL=http://localhost:8080
-REDIS_ENABLED=true
-NODE_ENV=development
-SESSION_SECRET=anything
-PORT=3000
-API_CLIENT_ID=<YOUR_CLIENT_ID>
-API_CLIENT_SECRET="<YOUR_CLIENT_SECRET>"
-SYSTEM_CLIENT_ID=<YOUR_CLIENT_ID>
-SYSTEM_CLIENT_SECRET="<YOUR_CLIENT_SECRET>"
-
-```
+Create a `.env` which should override environment variables required to run locally - copy `.env.local` and populate secrets from kubernetes.
 
 And then, to build the assets and start the app with nodemon:
 
 `npm run start:dev`
 
-### Client Roles
-To run the app a system client is required (`SYSTEM_CLIENT_ID` and `SYSTEM_CLIENT_SECRET` env vars). The system client requires the following roles:
-
-* `ROLE_EDUCATION_AND_WORK_PLAN__ACTIONPLANS__RW` - to be able to call the Education and Work Plan API, action-plans endpoint
-* `ROLE_EDUCATION_AND_WORK_PLAN__TIMELINE__RO` - to be able to call the Education and Work Plan API, timeline endpoint
-* `ROLE_EDUCATION_AND_WORK_PLAN__EDUCATION__RW` - to be able to call the Education and Work Plan API, education endpoint
-* `ROLE_EDUCATION_AND_WORK_PLAN__GOALS__RW` - to be able to call the Education and Work Plan API, goals endpoint
-* `ROLE_EDUCATION_AND_WORK_PLAN__CONVERSATIONS__RW` - to be able to call the Education and Work Plan API, conversations endpoint
-* `ROLE_EDUCATION_AND_WORK_PLAN__INDUCTIONS__RW` - to be able to call the Education and Work Plan API, inductions endpoint
-* `ROLE_PRISONER_SEARCH` - to be able to call the Prisoner Search API
-* `ROLE_CURIOUS_API` - to be able to call the Curious API
-
-### User Roles
-Once the UI is running users will need to authenticate with `hmpps-auth` using a valid DPS user. The DPS roles that the user
-has determines the functionality they will be able to access:
-
-* `ROLE_LWP_CONTRIBUTOR` - Prisoner List landing page. Can view all data. Can update Inductions; but cannot create Inductions, create or update Goals, or record or exempt Reviews.
-* `ROLE_LWP_MANAGER` - Session Summary landing page. Can view all data, and can perform all functions (create and update Inductions, create and update Goals, record and exempt Reviews)
+To run against a local copy of hmpps-education-and-work-plan-api, make sure the API is running locally, and update the `API_URL` environment variable in `.env` to point to localhost:8081.
 
 ### Run linter
 
@@ -151,15 +81,68 @@ Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
+## Ensuring slack notifications are raised correctly
+
+To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
+
+## Imported Types
+Some types are imported from the Open API docs for hmpps-education-and-work-plan-api, prisoner-search-api, prison-register,
+curious-api, hmpps-support-for-additional-needs-api, and hmpps-learner-records-api.
+
+### Updating the types
+NOTE: Do not re-import the specs lightly! Reformatting the generated code with prettier is no small task, especially with large specs such as Prisoner Search.
+
+You will need to install the node module `openapi-typescript` globally with the following command:
+
+`npm install -g openapi-typescript`
+
+To update the types from the Open API docs run the following commands:
+
+`npx openapi-typescript https://learningandworkprogress-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/educationAndWorkPlanApi/index.d.ts`
+
+`npx openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs -o server/@types/prisonerSearchApi/index.d.ts`
+
+`npx openapi-typescript https://prison-register-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/prisonRegisterApi/index.d.ts`
+
+`npx openapi-typescript https://testservices.sequation.net/sequation-virtual-campus2-api/v3/api-docs -o server/@types/curiousApi/index.d.ts`
+
+`npx openapi-typescript https://support-for-additional-needs-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/supportAdditionalNeedsApi/index.d.ts`
+
+`npx openapi-typescript https://learner-records-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/learnerRecordsApi/index.d.ts`
+
+Note that you will need to run prettier over the generated files and possibly handle other errors before compiling.
+
+The types are inherited for use in `server/@types/educationAndWorkPlanApi/index.d.ts`, `server/@types/prisonerSearchApi/index.d.ts`,
+`server/@types/prisonRegisterApi/index.d.ts`, `server/@types/curiousApi/index.d.ts`, `server/@types/supportAdditionalNeedsApi/index.d.ts`
+and `server/@types/learnerRecordsApi/index.d.ts` which may also need tweaking for use.
+
 ## Change log
 
 A changelog for the service is available [here](./CHANGELOG.md)
-
 
 ## Dependency Checks
 
 The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
 If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
+
+## Client Roles
+To run the app a system client is required (`SYSTEM_CLIENT_ID` and `SYSTEM_CLIENT_SECRET` env vars). The system client requires the following roles:
+
+* `ROLE_EDUCATION_AND_WORK_PLAN__ACTIONPLANS__RW` - to be able to call the Education and Work Plan API, action-plans endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__TIMELINE__RO` - to be able to call the Education and Work Plan API, timeline endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__EDUCATION__RW` - to be able to call the Education and Work Plan API, education endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__GOALS__RW` - to be able to call the Education and Work Plan API, goals endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__CONVERSATIONS__RW` - to be able to call the Education and Work Plan API, conversations endpoint
+* `ROLE_EDUCATION_AND_WORK_PLAN__INDUCTIONS__RW` - to be able to call the Education and Work Plan API, inductions endpoint
+* `ROLE_PRISONER_SEARCH` - to be able to call the Prisoner Search API
+* `ROLE_CURIOUS_API` - to be able to call the Curious API
+
+## User Roles
+Once the UI is running users will need to authenticate with `hmpps-auth` using a valid DPS user. The DPS roles that the user
+has determines the functionality they will be able to access:
+
+* `ROLE_LWP_CONTRIBUTOR` - Prisoner List landing page. Can view all data. Can update Inductions; but cannot create Inductions, create or update Goals, or record or exempt Reviews.
+* `ROLE_LWP_MANAGER` - Session Summary landing page. Can view all data, and can perform all functions (create and update Inductions, create and update Goals, record and exempt Reviews)
 
 ## OAuth Clients
 This UI uses the standard HMPPS Digital configuration which makes use of two oauth clients. The oauth clients are setup
