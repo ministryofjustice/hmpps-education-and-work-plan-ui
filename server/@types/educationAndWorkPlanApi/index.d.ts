@@ -431,15 +431,7 @@ export interface components {
        * @enum {string}
        */
       level:
-        | 'ENTRY_LEVEL'
-        | 'LEVEL_1'
-        | 'LEVEL_2'
-        | 'LEVEL_3'
-        | 'LEVEL_4'
-        | 'LEVEL_5'
-        | 'LEVEL_6'
-        | 'LEVEL_7'
-        | 'LEVEL_8'
+        'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'
       /**
        * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
        * @example Distinction
@@ -1040,15 +1032,7 @@ export interface components {
        * @enum {string}
        */
       level:
-        | 'ENTRY_LEVEL'
-        | 'LEVEL_1'
-        | 'LEVEL_2'
-        | 'LEVEL_3'
-        | 'LEVEL_4'
-        | 'LEVEL_5'
-        | 'LEVEL_6'
-        | 'LEVEL_7'
-        | 'LEVEL_8'
+        'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'
       /**
        * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
        * @example Distinction
@@ -1869,15 +1853,7 @@ export interface components {
        * @enum {string}
        */
       level:
-        | 'ENTRY_LEVEL'
-        | 'LEVEL_1'
-        | 'LEVEL_2'
-        | 'LEVEL_3'
-        | 'LEVEL_4'
-        | 'LEVEL_5'
-        | 'LEVEL_6'
-        | 'LEVEL_7'
-        | 'LEVEL_8'
+        'ENTRY_LEVEL' | 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3' | 'LEVEL_4' | 'LEVEL_5' | 'LEVEL_6' | 'LEVEL_7' | 'LEVEL_8'
       /**
        * @description The grade which was achieved (if known/relevant).   Note: This is a free format value and there is no type or enum. Therefore values can be "A", "B", "C" etc, but also "1", "2", "3", "Pass", "Distinction", "Merit", "First class honours" etc. It is up to the consumer to interpret this data as necessary.
        * @example Distinction
@@ -2653,9 +2629,7 @@ export interface components {
        * @enum {string}
        */
       scheduleCalculationRule:
-        | 'NEW_PRISON_ADMISSION'
-        | 'EXISTING_PRISONER'
-        | 'NEW_PRISON_ADMISSION_EXTENDED_DEADLINE_PERIOD'
+        'NEW_PRISON_ADMISSION' | 'EXISTING_PRISONER' | 'NEW_PRISON_ADMISSION_EXTENDED_DEADLINE_PERIOD'
       /**
        * @example null
        * @enum {string}
@@ -3847,12 +3821,7 @@ export interface operations {
         prisonerNameOrNumber?: string
         planStatus?: 'PENDING_SCREENING_AND_ASSESSMENTS' | 'ACTIVE_PLAN' | 'NEEDS_PLAN' | 'EXEMPT'
         sortBy?:
-          | 'PRISONER_NAME'
-          | 'PRISON_NUMBER'
-          | 'CELL_LOCATION'
-          | 'RELEASE_DATE'
-          | 'ENTERED_PRISON_DATE'
-          | 'PLAN_STATUS'
+          'PRISONER_NAME' | 'PRISON_NUMBER' | 'CELL_LOCATION' | 'RELEASE_DATE' | 'ENTERED_PRISON_DATE' | 'PLAN_STATUS'
         sortDirection?: 'ASC' | 'DESC'
         page?: number
         pageSize?: number
