@@ -101,13 +101,7 @@ const anAlnLearnerAssessmentsDTO = (options?: {
   assessmentOutcome?: 'Yes' | 'No'
   hasPrisonerConsent?: 'Yes' | 'No'
   stakeholderReferral?:
-    | 'Healthcare'
-    | 'Psychology'
-    | 'Education Specialist'
-    | 'NSM'
-    | 'Substance Misuse Team'
-    | 'Safer Custody'
-    | 'Other'
+    'Healthcare' | 'Psychology' | 'Education Specialist' | 'NSM' | 'Substance Misuse Team' | 'Safer Custody' | 'Other'
 }): LearnerAssessmentsAlnDTO => ({
   establishmentId: options?.prisonId || 'MDI',
   establishmentName: options?.prisonName || 'MOORLAND (HMP & YOI)',
@@ -141,9 +135,7 @@ const anEsolLearnerAssessmentsDTO = (options?: {
   prisonName?: string
   assessmentDate?: string
   assessmentNextStep?:
-    | 'English Language Support Level 1'
-    | 'English Language Support Level 2'
-    | 'English Language Support Level 3'
+    'English Language Support Level 1' | 'English Language Support Level 2' | 'English Language Support Level 3'
   assessmentOutcome?: 'ESOL Pathway' | 'Function Skills Pathway'
   stakeholderReferral?: 'Healthcare' | 'Psychology' | 'Education Specialist' | 'NSM' | 'Substance Misuse Team' | 'Other'
   hasPrisonerConsent?: 'Yes' | 'No'
@@ -166,13 +158,7 @@ const anEnglishFunctionalSkillsLearnerAssessmentsDTO = (options?: {
     | 'Progress to course at lower level due to individual circumstances'
     | 'Progress to higher level based on evidence of prior attainment'
   workingTowardsLevel?:
-    | 'Pre-Entry'
-    | 'Entry Level 1'
-    | 'Entry Level 2'
-    | 'Entry Level 3'
-    | 'Level 1'
-    | 'Level 2'
-    | 'Level 3'
+    'Pre-Entry' | 'Entry Level 1' | 'Entry Level 2' | 'Entry Level 3' | 'Level 1' | 'Level 2' | 'Level 3'
   levelBanding?:
     | '0.0'
     | '0.1'
@@ -236,13 +222,7 @@ const aMathsFunctionalSkillsLearnerAssessmentsDTO = (options?: {
     | 'Progress to course at lower level due to individual circumstances'
     | 'Progress to higher level based on evidence of prior attainment'
   workingTowardsLevel?:
-    | 'Pre-Entry'
-    | 'Entry Level 1'
-    | 'Entry Level 2'
-    | 'Entry Level 3'
-    | 'Level 1'
-    | 'Level 2'
-    | 'Level 3'
+    'Pre-Entry' | 'Entry Level 1' | 'Entry Level 2' | 'Entry Level 3' | 'Level 1' | 'Level 2' | 'Level 3'
   levelBanding?:
     | '0.0'
     | '0.1'
