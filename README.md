@@ -84,10 +84,6 @@ And then either:
 * run tests in headless mode with `npm run int-test`
 * or run tests with the Cypress UI `npm run int-test-ui`
 
-## Ensuring Slack notifications are raised correctly
-
-To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
-
 ## Imported types
 
 Some types are imported from the OpenAPI docs for hmpps-education-and-work-plan-api, prisoner-search-api, prison-register, curious-api, hmpps-support-for-additional-needs-api, and hmpps-learner-records-api.
