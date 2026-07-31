@@ -344,6 +344,39 @@ describe('overviewViewFunctions', () => {
       },
     )
 
+    it.each([
+      ActionPlanReviewStatusValue.EXEMPT_PRISONER_TRANSFER,
+      ActionPlanReviewStatusValue.EXEMPT_PRISONER_RELEASE,
+      ActionPlanReviewStatusValue.EXEMPT_PRISONER_DEATH,
+      ActionPlanReviewStatusValue.EXEMPT_PRISONER_MERGE,
+    ])(
+      'should build ActionPlanReviewScheduleView showing no reviews due given a system exemption that means the review is no longer due - %s',
+      (scheduleStatus: ActionPlanReviewStatusValue) => {
+        // Given
+        const actionPlanReviews = aValidActionPlanReviews({
+          latestReviewSchedule: aValidScheduledActionPlanReview({
+            status: scheduleStatus,
+            reviewDateTo: yesterday,
+            reviewType: SessionTypeValue.REVIEW,
+          }),
+        })
+
+        const expected: ActionPlanReviewScheduleView = {
+          problemRetrievingData: false,
+          reviewStatus: 'NO_SCHEDULED_REVIEW',
+          exemptionReason: undefined,
+          reviewDueDate: yesterday,
+          reviewType: SessionTypeValue.REVIEW,
+        }
+
+        // When
+        const actual = toActionPlanReviewScheduleView(actionPlanReviews)
+
+        // Then
+        expect(actual).toEqual(expected)
+      },
+    )
+
     it('should build ActionPlanReviewScheduleView given review schedule is overdue', () => {
       // Given
       const actionPlanReviews = aValidActionPlanReviews({
