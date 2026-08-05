@@ -104,6 +104,7 @@
     "helmet": "^8.2.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
+    "mocha": "11.7.6",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
@@ -168,6 +169,11 @@
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {
       "esbuild": "$esbuild"
-    }
+    },
+    "mocha": {
+      "serialize-javascript": "^7.0.3",
+      "diff": "^8.0.3"
+    },
+    "@opentelemetry/core": "^2.8.0"
   }
 }
