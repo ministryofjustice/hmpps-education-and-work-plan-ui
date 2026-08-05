@@ -92,6 +92,14 @@ const workOutReviewStatus = (
   const reviewScheduleDoesNotExist = actionPlanReviews?.latestReviewSchedule == null
   const latestReviewScheduleStatus = actionPlanReviews?.latestReviewSchedule?.status
   const hasHadLastReview = latestReviewScheduleStatus === ActionPlanReviewStatusValue.COMPLETED
+  // System exemptions that mean the review is no longer due (rather than a user-applied hold that could resume).
+  // For example the 17 day rule exempts an active Review Schedule on transfer/re-admission - the prisoner should
+  // then show as having no reviews due, not as being on hold.
+  const reviewNoLongerDue =
+    latestReviewScheduleStatus === ActionPlanReviewStatusValue.EXEMPT_PRISONER_TRANSFER ||
+    latestReviewScheduleStatus === ActionPlanReviewStatusValue.EXEMPT_PRISONER_RELEASE ||
+    latestReviewScheduleStatus === ActionPlanReviewStatusValue.EXEMPT_PRISONER_DEATH ||
+    latestReviewScheduleStatus === ActionPlanReviewStatusValue.EXEMPT_PRISONER_MERGE
   const reviewOnHold =
     latestReviewScheduleStatus !== ActionPlanReviewStatusValue.SCHEDULED &&
     latestReviewScheduleStatus !== ActionPlanReviewStatusValue.COMPLETED
@@ -103,6 +111,9 @@ const workOutReviewStatus = (
   }
   if (hasHadLastReview) {
     return 'HAS_HAD_LAST_REVIEW'
+  }
+  if (reviewNoLongerDue) {
+    return 'NO_SCHEDULED_REVIEW'
   }
   if (reviewOnHold) {
     return 'ON_HOLD'
