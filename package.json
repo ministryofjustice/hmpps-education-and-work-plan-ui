@@ -168,6 +168,10 @@
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {
       "esbuild": "$esbuild"
-    }
+    },
+    "mocha": {
+      "serialize-javascript": "^7.0.3"
+    },
+    "@opentelemetry/core": "^2.8.0"
   }
 }
