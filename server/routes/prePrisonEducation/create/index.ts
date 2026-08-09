@@ -27,7 +27,9 @@ import retrieveVerifiedQualifications from '../../routerRequestHandlers/retrieve
  * Route definitions for creating a prisoner's qualifications before an Induction
  *
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { curiousService, educationAndWorkPlanService, journeyDataService, learnerRecordsService, prisonService } =
     services
   const highestLevelOfEducationCreateController = new HighestLevelOfEducationCreateController()
@@ -35,55 +37,53 @@ export default (router: Router, services: Services) => {
   const qualificationDetailsCreateController = new QualificationDetailsCreateController()
   const qualificationsListCreateController = new QualificationsListCreateController(educationAndWorkPlanService)
 
-  router.use('/prisoners/:prisonNumber/create-education', [
+  router.use('/create-education', [
     checkUserHasPermissionTo(ApplicationAction.RECORD_EDUCATION),
     insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/create-education' - eg: '/prisoners/A1234BC/create-education/473e9ee4-37d6-4afb-92a2-5729b10cc60f/highest-level-of-education'
   ])
-  router.use('/prisoners/:prisonNumber/create-education/:journeyId', [setupJourneyData(journeyDataService)])
+  router.use('/create-education/:journeyId', [setupJourneyData(journeyDataService)])
 
-  router.get('/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education', [
+  router.get('/create-education/:journeyId/highest-level-of-education', [
     createEmptyEducationDtoIfNotInJourneyData,
     asyncMiddleware(highestLevelOfEducationCreateController.getHighestLevelOfEducationView),
   ])
-  router.post('/prisoners/:prisonNumber/create-education/:journeyId/highest-level-of-education', [
+  router.post('/create-education/:journeyId/highest-level-of-education', [
     validate(highestLevelOfEducationSchema),
     asyncMiddleware(highestLevelOfEducationCreateController.submitHighestLevelOfEducationForm),
   ])
 
-  router.use('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
-    checkEducationDtoExistsInJourneyData,
-  ])
-  router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
+  router.use('/create-education/:journeyId/qualification-level', [checkEducationDtoExistsInJourneyData])
+  router.get('/create-education/:journeyId/qualification-level', [
     asyncMiddleware(qualificationLevelCreateController.getQualificationLevelView),
   ])
-  router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualification-level', [
+  router.post('/create-education/:journeyId/qualification-level', [
     validate(qualificationLevelSchema),
     asyncMiddleware(qualificationLevelCreateController.submitQualificationLevelForm),
   ])
 
-  router.use('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
-    checkEducationDtoExistsInJourneyData,
-  ])
-  router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
+  router.use('/create-education/:journeyId/qualification-details', [checkEducationDtoExistsInJourneyData])
+  router.get('/create-education/:journeyId/qualification-details', [
     asyncMiddleware(qualificationDetailsCreateController.getQualificationDetailsView),
   ])
-  router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualification-details', [
+  router.post('/create-education/:journeyId/qualification-details', [
     validate(qualificationDetailsSchema),
     asyncMiddleware(qualificationDetailsCreateController.submitQualificationDetailsForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
+  router.get('/create-education/:journeyId/qualifications', [
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
     retrieveVerifiedQualifications(learnerRecordsService),
     asyncMiddleware(qualificationsListCreateController.getQualificationsListView),
   ])
-  router.post('/prisoners/:prisonNumber/create-education/:journeyId/qualifications', [
+  router.post('/create-education/:journeyId/qualifications', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Create Pre-prison Qualifications',
       redirectTo: '/plan/:prisonNumber/view/education-and-training',
     }),
     asyncMiddleware(qualificationsListCreateController.submitQualificationsListView),
   ])
+
+  return router
 }

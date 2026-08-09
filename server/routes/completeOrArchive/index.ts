@@ -9,18 +9,22 @@ import retrieveGoal from '../routerRequestHandlers/retrieveGoal'
 /**
  * Route definitions for the pages relating to Completing A Goal
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { educationAndWorkPlanService } = services
   const completeOrArchiveGoalController = new CompleteOrArchiveGoalController()
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [
+  router.use('/goals/:goalReference/complete-or-archive', [
     checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
   ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [
+  router.get('/goals/:goalReference/complete-or-archive', [
     retrieveGoal(educationAndWorkPlanService),
     asyncMiddleware(completeOrArchiveGoalController.getCompleteOrArchiveGoalView),
   ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/complete-or-archive', [
+  router.post('/goals/:goalReference/complete-or-archive', [
     asyncMiddleware(completeOrArchiveGoalController.submitCompleteOrArchiveGoalForm),
   ])
+
+  return router
 }

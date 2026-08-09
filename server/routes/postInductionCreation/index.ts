@@ -6,12 +6,14 @@ import retrieveActionPlan from '../routerRequestHandlers/retrieveActionPlan'
 /**
  * Definitions for the route immediately following the Induction creation.
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
   /**
    * The Induction screens redirect to '/plan/:prisonNumber/induction-created' after creating the Induction.
    * This route handler redirects to the relevant PLP route depending on whether the prisoner already has goals or not.
    */
-  router.get('/plan/:prisonNumber/induction-created', [
+  const router = Router({ mergeParams: true })
+
+  router.get('/induction-created', [
     retrieveActionPlan(services.educationAndWorkPlanService),
     asyncMiddleware(async (req, res, next) => {
       const { prisonNumber } = req.params
@@ -27,4 +29,6 @@ export default (router: Router, services: Services) => {
         : res.redirect(`/plan/${prisonNumber}/goals/create`) // Action Plan goals do not exist yet. Redirect to the Create Goals flow routes.
     }),
   ])
+
+  return router
 }

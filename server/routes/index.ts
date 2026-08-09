@@ -10,7 +10,10 @@ import postInductionCreation from './postInductionCreation'
 import exemptInduction from './induction/exemption'
 import createInduction from './induction/create'
 import updateInduction from './induction/update'
-import inPrisonCoursesAndQualifications from './inPrisonCoursesAndQualifications'
+import {
+  plpUserInPrisonCoursesAndQualifications,
+  dpsUserInPrisonCoursesAndQualifications,
+} from './inPrisonCoursesAndQualifications'
 import retrievePrisonerSummary from './routerRequestHandlers/retrievePrisonerSummary'
 import { checkPageViewAuditted } from '../middleware/auditMiddleware'
 import archiveGoal from './archiveGoal'
@@ -39,38 +42,43 @@ export default function routes(services: Services): Router {
   router.get(/(.*)/, [populateActiveCaseloadPrisonName(services.prisonService)])
 
   // Application routes
-  inPrisonCoursesAndQualifications(router, services)
+  router.use('/prisoner/:prisonNumber', [dpsUserInPrisonCoursesAndQualifications(services)])
 
-  router.use('/plan/:prisonNumber/', [functionalSkillsRoutes(services), lrsQualificationsRoutes(services)])
-  router.use('/plan/:prisonNumber/employability-skills/:skillType', employabilitySkillsRoutes(services))
+  router.use('/plan/:prisonNumber', [
+    overview(services),
+    employabilitySkillsRoutes(services),
+    functionalSkillsRoutes(services),
+    lrsQualificationsRoutes(services),
+    plpUserInPrisonCoursesAndQualifications(services),
+    postInductionCreation(services),
+    // Goals routes
+    createGoal(services),
+    updateGoal(services),
+    archiveGoal(services),
+    unarchiveGoal(services),
+    completeGoal(services),
+    completeOrArchiveGoal(services),
+    // Review routes
+    reviewPlanRoutes(services),
+  ])
+  router.use('/prisoners/:prisonNumber', [
+    // Setup of Induction exemption routes MUST happen before setup of Update Induction routes.
+    // The routes share a common path pattern (/prisoners/:prisonNumber/induction), but Update Induction defines a middleware on /prisoners/:prisonNumber/induction/** to ensure the Induction exists - you cannot update an Induction that does not exist!
+    // Conversely, exempting an Induction requires that there is NOT an induction, as you cannot exempt an Induction you have already completed.
+    exemptInduction(services),
+    createInduction(services),
+    updateInduction(services),
+    // Pre-prison education routes
+    createPrePrisonEducation(services),
+    updatePrePrisonEducation(services),
+  ])
 
-  overview(router, services)
-  createGoal(router, services)
-  updateGoal(router, services)
-  archiveGoal(router, services)
-  unarchiveGoal(router, services)
-  completeGoal(router, services)
-  completeOrArchiveGoal(router, services)
-
-  createPrePrisonEducation(router, services)
-  updatePrePrisonEducation(router, services)
-
-  // Setup of Induction exemption routes MUST happen before setup of Update Induction routes.
-  // The routes share a common path pattern (/prisoners/:prisonNumber/induction), but Update Induction defines a middleware on /prisoners/:prisonNumber/induction/** to ensure the Induction exists - you cannot update an Induction that does not exist!
-  // Conversely, exempting an Induction requires that there is NOT an induction, as you cannot exempt an Induction you have already completed.
-  exemptInduction(router, services)
-  createInduction(router, services)
-  updateInduction(router, services)
-  postInductionCreation(router, services)
-
-  reviewPlanRoutes(router, services)
-
-  sessionListRoutes(router, services)
+  router.use('/sessions', sessionListRoutes(services))
 
   // Landing page route MUST be defined before session summary and prisoner list(search) routes due to the nature of the "forward" within the landing page route
-  landingPageRoutes(router)
-  sessionSummaryRoutes(router, services)
-  prisonerListRoutes(router, services)
+  router.use('/', landingPageRoutes())
+  router.use('/sessions', sessionSummaryRoutes(services))
+  router.use('/search', prisonerListRoutes(services))
 
   return router
 }

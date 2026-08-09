@@ -14,34 +14,34 @@ import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandler
 /**
  * Route definitions for the pages relating to Updating A Goal
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { auditService, educationAndWorkPlanService } = services
   const updateGoalController = new UpdateGoalController(educationAndWorkPlanService, auditService)
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/update', [
-    checkUserHasPermissionTo(ApplicationAction.UPDATE_GOALS),
-  ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/update', [
+  router.use('/goals/:goalReference/update', [checkUserHasPermissionTo(ApplicationAction.UPDATE_GOALS)])
+  router.get('/goals/:goalReference/update', [
     retrieveGoals(services.educationAndWorkPlanService, GoalStatusValue.ACTIVE),
     asyncMiddleware(updateGoalController.getUpdateGoalView),
   ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/update', [
+  router.post('/goals/:goalReference/update', [
     validate(updateGoalSchema),
     asyncMiddleware(updateGoalController.submitUpdateGoalForm),
   ])
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/update/review', [
+  router.use('/goals/:goalReference/update/review', [
     checkUserHasPermissionTo(ApplicationAction.UPDATE_GOALS),
     checkUpdateGoalFormExistsInSession,
   ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/update/review', [
-    asyncMiddleware(updateGoalController.getReviewUpdateGoalView),
-  ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/update/review', [
+  router.get('/goals/:goalReference/update/review', [asyncMiddleware(updateGoalController.getReviewUpdateGoalView)])
+  router.post('/goals/:goalReference/update/review', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Goal',
       redirectTo: '/plan/:prisonNumber/view/overview',
     }),
     asyncMiddleware(updateGoalController.submitReviewUpdateGoal),
   ])
+
+  return router
 }

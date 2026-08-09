@@ -10,22 +10,26 @@ import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandler
 /**
  * Route definitions for the pages relating to Unarchiving A Goal
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { auditService, educationAndWorkPlanService } = services
   const unarchiveGoalController = new UnarchiveGoalController(educationAndWorkPlanService, auditService)
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/unarchive', [
+  router.use('/goals/:goalReference/unarchive', [
     checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
   ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/unarchive', [
+  router.get('/goals/:goalReference/unarchive', [
     retrieveGoal(educationAndWorkPlanService),
     asyncMiddleware(unarchiveGoalController.getUnarchiveGoalView),
   ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/unarchive', [
+  router.post('/goals/:goalReference/unarchive', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Unarchive Goal',
       redirectTo: '/plan/:prisonNumber/view/overview',
     }),
     asyncMiddleware(unarchiveGoalController.submitUnarchiveGoalForm),
   ])
+
+  return router
 }

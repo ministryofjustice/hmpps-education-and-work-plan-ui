@@ -1,4 +1,4 @@
-import type { Router } from 'express'
+import { Router } from 'express'
 import { Services } from '../../services'
 import InPrisonCoursesAndQualificationsController from './inPrisonCoursesAndQualificationsController'
 import retrieveCuriousInPrisonCourses from '../routerRequestHandlers/retrieveCuriousInPrisonCourses'
@@ -18,21 +18,34 @@ import retrievePrisonNamesById from '../routerRequestHandlers/retrievePrisonName
  * There are subtle differences in the rendered view as well, with the PLP view using terms such as "learning plan" and
  * linking to other PLP pages, and the DPS view linking back to the prisoner's DPS profile page.
  */
-export default (router: Router, services: Services) => {
+export function plpUserInPrisonCoursesAndQualifications(services: Services) {
+  const router = Router({ mergeParams: true })
+
   const { curiousService, prisonService } = services
   const inPrisonCoursesAndQualificationsController = new InPrisonCoursesAndQualificationsController()
 
   // Route for use when being linked to from within PLP within the context of a prisoner's PLP plan
-  router.get('/plan/:prisonNumber/in-prison-courses-and-qualifications', [
+  router.get('/in-prison-courses-and-qualifications', [
     retrievePrisonNamesById(prisonService),
     retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsViewForPlp),
   ])
 
+  return router
+}
+
+export function dpsUserInPrisonCoursesAndQualifications(services: Services) {
+  const router = Router({ mergeParams: true })
+
+  const { curiousService, prisonService } = services
+  const inPrisonCoursesAndQualificationsController = new InPrisonCoursesAndQualificationsController()
+
   // Route for use when being linked to from DPS Prisoner Profile within the context of a prisoner's Work and Skills section of their Prisoner Profile
-  router.get('/prisoner/:prisonNumber/work-and-skills/in-prison-courses-and-qualifications', [
+  router.get('/work-and-skills/in-prison-courses-and-qualifications', [
     retrievePrisonNamesById(prisonService),
     retrieveCuriousInPrisonCourses(curiousService),
     asyncMiddleware(inPrisonCoursesAndQualificationsController.getInPrisonCoursesAndQualificationsViewForDps),
   ])
+
+  return router
 }

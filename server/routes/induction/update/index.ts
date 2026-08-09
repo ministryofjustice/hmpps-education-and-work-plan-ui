@@ -42,7 +42,9 @@ import { checkRedirectAtEndOfJourneyIsNotPending } from '../../routerRequestHand
  * All routes adopt the pattern:
  * /prisoners/<prison-number>/induction/<page-or-section-id>
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { inductionService, journeyDataService } = services
   const hopingToWorkOnReleaseController = new HopingToWorkOnReleaseUpdateController(inductionService)
   const inPrisonWorkUpdateController = new InPrisonWorkUpdateController(inductionService)
@@ -59,21 +61,21 @@ export default (router: Router, services: Services) => {
   const workInterestRolesUpdateController = new WorkInterestRolesUpdateController(inductionService)
   const additionalTrainingUpdateController = new AdditionalTrainingUpdateController(inductionService)
 
-  router.use('/prisoners/:prisonNumber/induction', [
+  router.use('/induction', [
     checkUserHasPermissionTo(ApplicationAction.UPDATE_INDUCTION),
     insertJourneyIdentifier({ insertIdAfterElement: 3 }), // insert journey ID immediately after '/prisoners/:prisonNumber/induction' - eg: '/prisoners/A1234BC/induction/473e9ee4-37d6-4afb-92a2-5729b10cc60f/hoping-to-work-on-release'
   ])
-  router.use('/prisoners/:prisonNumber/induction/:journeyId', [
+  router.use('/induction/:journeyId', [
     setupJourneyData(journeyDataService),
     retrieveInductionIfNotInJourneyData(services.inductionService),
     setCurrentPageInPageFlowQueue,
   ])
 
   // In Prison Training
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/in-prison-training', [
+  router.get('/induction/:journeyId/in-prison-training', [
     asyncMiddleware(inPrisonTrainingUpdateController.getInPrisonTrainingView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/in-prison-training', [
+  router.post('/induction/:journeyId/in-prison-training', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction In-prison Training',
       redirectTo: '/plan/:prisonNumber/view/education-and-training',
@@ -83,10 +85,10 @@ export default (router: Router, services: Services) => {
   ])
 
   // Personal Skills and Interests
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/personal-interests', [
+  router.get('/induction/:journeyId/personal-interests', [
     asyncMiddleware(personalInterestsUpdateController.getPersonalInterestsView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/personal-interests', [
+  router.post('/induction/:journeyId/personal-interests', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Personal Interests',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -95,10 +97,8 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(personalInterestsUpdateController.submitPersonalInterestsForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/skills', [
-    asyncMiddleware(skillsUpdateController.getSkillsView),
-  ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/skills', [
+  router.get('/induction/:journeyId/skills', [asyncMiddleware(skillsUpdateController.getSkillsView)])
+  router.post('/induction/:journeyId/skills', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Personal Skills',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -108,10 +108,10 @@ export default (router: Router, services: Services) => {
   ])
 
   // Previous Work Experience
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/has-worked-before', [
+  router.get('/induction/:journeyId/has-worked-before', [
     asyncMiddleware(workedBeforeUpdateController.getWorkedBeforeView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/has-worked-before', [
+  router.post('/induction/:journeyId/has-worked-before', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Has Worked Before',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -120,10 +120,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workedBeforeUpdateController.submitWorkedBeforeForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience', [
+  router.get('/induction/:journeyId/previous-work-experience', [
     asyncMiddleware(previousWorkExperienceTypesUpdateController.getPreviousWorkExperienceTypesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience', [
+  router.post('/induction/:journeyId/previous-work-experience', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Previous Work Experience Types',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -132,10 +132,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(previousWorkExperienceTypesUpdateController.submitPreviousWorkExperienceTypesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
+  router.get('/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
     asyncMiddleware(previousWorkExperienceDetailUpdateController.getPreviousWorkExperienceDetailView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
+  router.post('/induction/:journeyId/previous-work-experience/:typeOfWorkExperience', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Previous Work Experience Detail',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -145,10 +145,10 @@ export default (router: Router, services: Services) => {
   ])
 
   // Work Interests
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release', [
+  router.get('/induction/:journeyId/hoping-to-work-on-release', [
     asyncMiddleware(hopingToWorkOnReleaseController.getHopingToWorkOnReleaseView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/hoping-to-work-on-release', [
+  router.post('/induction/:journeyId/hoping-to-work-on-release', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Hoping To Work On Release',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -157,10 +157,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(hopingToWorkOnReleaseController.submitHopingToWorkOnReleaseForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work', [
+  router.get('/induction/:journeyId/affect-ability-to-work', [
     asyncMiddleware(affectAbilityToWorkUpdateController.getAffectAbilityToWorkView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/affect-ability-to-work', [
+  router.post('/induction/:journeyId/affect-ability-to-work', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Affect Ability To Work',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -169,10 +169,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(affectAbilityToWorkUpdateController.submitAffectAbilityToWorkForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/work-interest-types', [
+  router.get('/induction/:journeyId/work-interest-types', [
     asyncMiddleware(workInterestTypesUpdateController.getWorkInterestTypesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-types', [
+  router.post('/induction/:journeyId/work-interest-types', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Work Interest Types',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -181,10 +181,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workInterestTypesUpdateController.submitWorkInterestTypesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles', [
+  router.get('/induction/:journeyId/work-interest-roles', [
     asyncMiddleware(workInterestRolesUpdateController.getWorkInterestRolesView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/work-interest-roles', [
+  router.post('/induction/:journeyId/work-interest-roles', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Work Interest Roles',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -193,10 +193,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(workInterestRolesUpdateController.submitWorkInterestRolesForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/in-prison-work', [
+  router.get('/induction/:journeyId/in-prison-work', [
     asyncMiddleware(inPrisonWorkUpdateController.getInPrisonWorkView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/in-prison-work', [
+  router.post('/induction/:journeyId/in-prison-work', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Work In-prison Work Interests',
       redirectTo: '/plan/:prisonNumber/view/work-and-interests',
@@ -205,10 +205,10 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(inPrisonWorkUpdateController.submitInPrisonWorkForm),
   ])
 
-  router.get('/prisoners/:prisonNumber/induction/:journeyId/additional-training', [
+  router.get('/induction/:journeyId/additional-training', [
     asyncMiddleware(additionalTrainingUpdateController.getAdditionalTrainingView),
   ])
-  router.post('/prisoners/:prisonNumber/induction/:journeyId/additional-training', [
+  router.post('/induction/:journeyId/additional-training', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Update Induction Additional Training',
       redirectTo: '/plan/:prisonNumber/view/education-and-training',
@@ -216,4 +216,6 @@ export default (router: Router, services: Services) => {
     validate(additionalTrainingSchema),
     asyncMiddleware(additionalTrainingUpdateController.submitAdditionalTrainingForm),
   ])
+
+  return router
 }

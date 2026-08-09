@@ -32,7 +32,8 @@ import EmployabilitySkillsController from './employabilitySkillsController'
 /**
  * Route definitions for the pages relating to the main Overview page
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
   const {
     curiousService,
     educationAndWorkPlanService,
@@ -52,9 +53,9 @@ export default (router: Router, services: Services) => {
   const viewGoalsController = new ViewGoalsController()
   const employabilitySkillsController = new EmployabilitySkillsController()
 
-  router.use('/plan/:prisonNumber/view', [removeFormDataFromSession])
+  router.use('/view', [removeFormDataFromSession])
 
-  router.get('/plan/:prisonNumber/view/overview', [
+  router.get('/view/overview', [
     retrieveAllGoalsForPrisoner(educationAndWorkPlanService),
     retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveActionPlanReviews(reviewService),
@@ -71,7 +72,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(overviewController.getOverviewView),
   ])
 
-  router.get('/plan/:prisonNumber/view/additional-needs', [
+  router.get('/view/additional-needs', [
     retrievePrisonNamesById(prisonService),
     retrieveSupportForAdditionalNeedsAlnScreeners(supportAdditionalNeedsService),
     retrieveSupportForAdditionalNeedsChallenges(supportAdditionalNeedsService),
@@ -82,7 +83,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(additionalNeedsController.getAdditionalNeedsView),
   ])
 
-  router.get('/plan/:prisonNumber/view/education-and-training', [
+  router.get('/view/education-and-training', [
     retrievePrisonNamesById(prisonService),
     retrieveCuriousFunctionalSkills(curiousService),
     retrieveCuriousInPrisonCourses(curiousService),
@@ -95,19 +96,16 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(educationAndTrainingController.getEducationAndTrainingView),
   ])
 
-  router.get('/plan/:prisonNumber/view/work-and-interests', [
+  router.get('/view/work-and-interests', [
     retrievePrisonNamesById(prisonService),
     retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     asyncMiddleware(workAndInterestsController.getWorkAndInterestsView),
   ])
 
-  router.get('/plan/:prisonNumber/view/history', [
-    retrieveTimeline(timelineService),
-    asyncMiddleware(timelineController.getHistoryView),
-  ])
+  router.get('/view/history', [retrieveTimeline(timelineService), asyncMiddleware(timelineController.getHistoryView)])
 
-  router.get('/plan/:prisonNumber/view/goals', [
+  router.get('/view/goals', [
     retrieveInductionSchedule(inductionService, { usingOldStyle: true }),
     retrieveInduction(inductionService, { usingOldStyle: true }),
     retrieveActionPlanReviews(reviewService),
@@ -115,10 +113,12 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(viewGoalsController.viewGoals),
   ])
 
-  router.get('/plan/:prisonNumber/view/employability-skills', [
+  router.get('/view/employability-skills', [
     checkUserHasPermissionTo(ApplicationAction.VIEW_EMPLOYABILITY_SKILLS),
     retrieveInduction(inductionService),
     retrieveInductionSchedule(inductionService),
     asyncMiddleware(employabilitySkillsController.getEmployabilitySkillsView),
   ])
+
+  return router
 }
