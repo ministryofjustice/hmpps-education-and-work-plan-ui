@@ -12,26 +12,24 @@ import { validate } from '../routerRequestHandlers/validationMiddleware'
 /**
  * Route definitions for the pages relating to Archiving A Goal
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { educationAndWorkPlanService, auditService } = services
   const archiveGoalController = new ArchiveGoalController(educationAndWorkPlanService, auditService)
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/archive', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/archive', [
+  router.use('/goals/:goalReference/archive', [checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS)])
+  router.get('/goals/:goalReference/archive', [
     retrieveGoal(educationAndWorkPlanService),
     asyncMiddleware(archiveGoalController.getArchiveGoalView),
   ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/archive', [
+  router.post('/goals/:goalReference/archive', [
     validate(archiveGoalSchema),
     asyncMiddleware(archiveGoalController.submitArchiveGoalForm),
   ])
 
-  router.get('/plan/:prisonNumber/goals/:goalReference/archive/review', [
-    asyncMiddleware(archiveGoalController.getReviewArchiveGoalView),
-  ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/archive/review', [
+  router.get('/goals/:goalReference/archive/review', [asyncMiddleware(archiveGoalController.getReviewArchiveGoalView)])
+  router.post('/goals/:goalReference/archive/review', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Archive Goal',
       redirectTo: '/plan/:prisonNumber/view/overview',
@@ -39,7 +37,7 @@ export default (router: Router, services: Services) => {
     asyncMiddleware(archiveGoalController.submitReviewArchiveGoal),
   ])
 
-  router.get('/plan/:prisonNumber/goals/:goalReference/archive/cancel', [
-    asyncMiddleware(archiveGoalController.cancelArchiveGoal),
-  ])
+  router.get('/goals/:goalReference/archive/cancel', [asyncMiddleware(archiveGoalController.cancelArchiveGoal)])
+
+  return router
 }

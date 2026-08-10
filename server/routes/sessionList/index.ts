@@ -8,29 +8,32 @@ import retrieveSessionsSummary from '../routerRequestHandlers/retrieveSessionsSu
 import sessionListSearch from '../routerRequestHandlers/sessionListSearch'
 import SessionStatusValue from '../../enums/sessionStatusValue'
 
-const sessionListRoutes = (router: Router, services: Services) => {
+const sessionListRoutes = (services: Services) => {
+  const router = Router({ mergeParams: true })
   const { sessionService } = services
   const sessionListController = new SessionListController()
 
-  router.use('/sessions', [
+  router.use('/', [
     checkUserHasPermissionTo(ApplicationAction.VIEW_SESSION_SUMMARIES),
     retrieveSessionsSummary(sessionService),
   ])
 
-  router.get('/sessions/due', [
+  router.get('/due', [
     sessionListSearch(sessionService, SessionStatusValue.DUE),
     asyncMiddleware(sessionListController.getDueSessionsView),
   ])
 
-  router.get('/sessions/overdue', [
+  router.get('/overdue', [
     sessionListSearch(sessionService, SessionStatusValue.OVERDUE),
     asyncMiddleware(sessionListController.getOverdueSessionsView),
   ])
 
-  router.get('/sessions/on-hold', [
+  router.get('/on-hold', [
     sessionListSearch(sessionService, SessionStatusValue.ON_HOLD),
     asyncMiddleware(sessionListController.getOnHoldSessionsView),
   ])
+
+  return router
 }
 
 export default sessionListRoutes

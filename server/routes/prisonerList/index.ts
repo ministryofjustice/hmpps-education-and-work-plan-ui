@@ -20,14 +20,14 @@ import prisonerListSearch from '../routerRequestHandlers/prisonerListSearch'
  * The supporting code (controllers, services, views etc) however still use the original terminology of "prisoner list";
  * perhaps this could be refactored one day.
  */
-const prisonerListRoutes = (router: Router, services: Services) => {
+const prisonerListRoutes = (services: Services) => {
+  const router = Router({ mergeParams: true })
   const { searchService } = services
   const prisonerListController = new PrisonerListController()
 
-  router.get('/search', [
-    prisonerListSearch(searchService),
-    asyncMiddleware(prisonerListController.getPrisonerListView),
-  ])
+  router.get('/', [prisonerListSearch(searchService), asyncMiddleware(prisonerListController.getPrisonerListView)])
+
+  return router
 }
 
 export default prisonerListRoutes

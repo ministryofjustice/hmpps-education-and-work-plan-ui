@@ -10,22 +10,24 @@ import { checkRedirectAtEndOfJourneyIsNotPending } from '../routerRequestHandler
 /**
  * Route definitions for the pages relating to Completing A Goal
  */
-export default (router: Router, services: Services) => {
+export default (services: Services) => {
+  const router = Router({ mergeParams: true })
+
   const { auditService, educationAndWorkPlanService } = services
   const completeGoalController = new CompleteGoalController(educationAndWorkPlanService, auditService)
 
-  router.use('/plan/:prisonNumber/goals/:goalReference/complete', [
-    checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS),
-  ])
-  router.get('/plan/:prisonNumber/goals/:goalReference/complete', [
+  router.use('/goals/:goalReference/complete', [checkUserHasPermissionTo(ApplicationAction.COMPLETE_AND_ARCHIVE_GOALS)])
+  router.get('/goals/:goalReference/complete', [
     retrieveGoal(educationAndWorkPlanService),
     asyncMiddleware(completeGoalController.getCompleteGoalView),
   ])
-  router.post('/plan/:prisonNumber/goals/:goalReference/complete', [
+  router.post('/goals/:goalReference/complete', [
     checkRedirectAtEndOfJourneyIsNotPending({
       journey: 'Complete Goal',
       redirectTo: '/plan/:prisonNumber/view/overview',
     }),
     asyncMiddleware(completeGoalController.submitCompleteGoalForm),
   ])
+
+  return router
 }
