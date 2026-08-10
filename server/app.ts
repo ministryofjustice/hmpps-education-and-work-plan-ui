@@ -25,6 +25,7 @@ import auditMiddleware from './middleware/auditMiddleware'
 import successMessageMiddleware from './middleware/successMessageMiddleware'
 import errorMessageMiddleware from './middleware/errorMessageMiddleware'
 import apiErrorMiddleware from './middleware/apiErrorMiddleware'
+import { forAllGetRequests } from './middleware/requestMatchers'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -49,14 +50,15 @@ export default function createApp(services: Services): express.Application {
   app.use(successMessageMiddleware)
   app.use(errorMessageMiddleware)
 
-  app.get(
-    /(.*)/,
-    getFrontendComponents({
-      componentApiConfig: config.apis.componentApi,
-      dpsUrl: config.newDpsUrl,
-      logger,
-      requestOptions: { useFallbacksByDefault: true },
-    }),
+  app.use(
+    forAllGetRequests(
+      getFrontendComponents({
+        componentApiConfig: config.apis.componentApi,
+        dpsUrl: config.newDpsUrl,
+        logger,
+        requestOptions: { useFallbacksByDefault: true },
+      }),
+    ),
   )
 
   app.get('/accessibility-statement', async (req, res, next) => {

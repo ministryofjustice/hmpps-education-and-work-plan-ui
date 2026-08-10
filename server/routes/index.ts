@@ -15,7 +15,7 @@ import {
   dpsUserInPrisonCoursesAndQualifications,
 } from './inPrisonCoursesAndQualifications'
 import retrievePrisonerSummary from './routerRequestHandlers/retrievePrisonerSummary'
-import { checkPageViewAuditted } from '../middleware/auditMiddleware'
+import { checkPageViewAudited } from '../middleware/auditMiddleware'
 import archiveGoal from './archiveGoal'
 import unarchiveGoal from './unarchiveGoal'
 import completeGoal from './completegoal'
@@ -29,17 +29,18 @@ import populateActiveCaseloadPrisonName from './routerRequestHandlers/populateAc
 import sessionListRoutes from './sessionList'
 import lrsQualificationsRoutes from './lrsQualifications'
 import employabilitySkillsRoutes from './employabilitySkills'
+import { forAllGetRequests } from '../middleware/requestMatchers'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
   // Checks page has been audited, if no audit event has been raised router will be skipped
-  checkPageViewAuditted(router)
+  checkPageViewAudited(router)
 
   // Route middleware
   prisonerSummarySetup(router, services)
 
-  router.get(/(.*)/, [populateActiveCaseloadPrisonName(services.prisonService)])
+  router.use(forAllGetRequests(populateActiveCaseloadPrisonName(services.prisonService)))
 
   // Application routes
   router.use('/prisoner/:prisonNumber', [dpsUserInPrisonCoursesAndQualifications(services)])
