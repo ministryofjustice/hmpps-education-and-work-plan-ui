@@ -1,4 +1,5 @@
 import { PermissionsService as PrisonPermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { ApplicationInfo, dataAccess } from '../data'
 import AuditService from './auditService'
 import UserService from './userService'
@@ -24,7 +25,6 @@ import logger from '../../logger'
 export const services = () => {
   const {
     applicationInfo,
-    telemetryClient,
     hmppsAuthClient,
     hmppsAuditClient,
     manageUsersApiClient,
@@ -43,7 +43,7 @@ export const services = () => {
     prisonerSearchConfig: config.apis.prisonerSearch,
     authenticationClient: hmppsAuthClient,
     logger,
-    telemetryClient,
+    telemetryClient: telemetry,
   })
 
   const auditService = new AuditService(hmppsAuditClient)
