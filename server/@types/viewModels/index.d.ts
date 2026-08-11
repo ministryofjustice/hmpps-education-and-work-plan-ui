@@ -19,6 +19,7 @@ declare module 'viewModels' {
     overdueSessionCount: number
     dueSessionCount: number
     onHoldSessionCount: number
+    screenerPendingCount: number
   }
 
   /**

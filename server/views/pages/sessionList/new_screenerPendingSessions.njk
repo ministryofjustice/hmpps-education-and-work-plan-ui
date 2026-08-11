@@ -3,8 +3,8 @@
 {% from "./macros/nonJavascriptTabBar.njk" import nonJavascriptTabBar %}
 {% from "./macros/new_searchResultsTable.njk" import searchResultsTable %}
 
-{% set pageId = 'due-sessions-list-page' %}
-{% set pageTitle = "Due sessions" %}
+{% set pageId = 'screener-pending-sessions-list-page' %}
+{% set pageTitle = "Prisoners with screeners pending" %}
 
 {% block beforeMainContent %}
   <nav class="govuk-breadcrumbs govuk-!-display-none-print" aria-label="Breadcrumb">
@@ -23,7 +23,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-l">Due sessions</h1>
+      <h1 class="govuk-heading-l">Prisoners with screeners pending</h1>
 
       {% if sessionsSummary.isFulfilled() %}
         {% set sessionsSummary = sessionsSummary.value %}
@@ -31,21 +31,19 @@
         {%set nameHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'name', headerText: 'Prisoner' }) }}{% endset %}
         {%set locationHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'location', headerText: 'Location' }) }}{% endset %}
         {%set releaseDateHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'release-date', headerText: 'Release date' }) }}{% endset %}
-        {%set sessionTypeHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'session-type', headerText: 'Session type' }) }}{% endset %}
-        {%set dueByHeader %}{{ sortableTableHeader({ sortBy: searchOptions.sortBy, sortOrder: searchOptions.sortOrder, fieldName: 'due-by', headerText: 'Due by' }) }}{% endset %}
 
         {% set tabContent %}
-          {% include './_newSearchBox.njk' %}
+          {% include './_screenerPendingSearchBox.njk' %}
 
           {{ searchResultsTable({
-            columnHeadings: [nameHeader, locationHeader, releaseDateHeader, sessionTypeHeader, dueByHeader],
+            columnHeadings: [nameHeader, locationHeader, releaseDateHeader],
             sessionListSearchResults: sessionListSearchResults,
             searchOptions: searchOptions
           }) }}
         {% endset %}
 
         {{ nonJavascriptTabBar({
-          activeTab: 'DUE_SESSIONS',
+          activeTab: 'SCREENER_PENDING_SESSIONS',
           overdueSessionCount: sessionsSummary.overdueSessionCount,
           dueSessionCount: sessionsSummary.dueSessionCount,
           onHoldSessionCount: sessionsSummary.onHoldSessionCount,
@@ -54,7 +52,7 @@
         }) }}
 
       {% else %}
-        <h2 class="govuk-heading-m" data-qa="due-sessions-unavailable-message">We cannot show these details right now</h2>
+        <h2 class="govuk-heading-m" data-qa="screener-pending-sessions-unavailable-message">We cannot show these details right now</h2>
         <p class="govuk-body">Reload the page or try again later. Other parts of this service may still be available.</p>
       {% endif %}
 

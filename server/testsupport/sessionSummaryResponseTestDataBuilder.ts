@@ -7,6 +7,7 @@ const aValidSessionSummaryResponse = (options?: {
   dueInductions?: number
   exemptReviews?: number
   exemptInductions?: number
+  screenerPendingInductions?: number
 }): SessionSummaryResponse => ({
   overdueReviews: options?.overdueReviews || 1,
   overdueInductions: options?.overdueInductions || 2,
@@ -14,6 +15,7 @@ const aValidSessionSummaryResponse = (options?: {
   dueInductions: options?.dueInductions || 4,
   exemptReviews: options?.exemptReviews || 5,
   exemptInductions: options?.exemptInductions || 6,
+  screenerPendingInductions: options?.screenerPendingInductions || 7,
 })
 
 export default aValidSessionSummaryResponse

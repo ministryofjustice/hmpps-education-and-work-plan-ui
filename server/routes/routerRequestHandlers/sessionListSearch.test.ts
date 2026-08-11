@@ -155,4 +155,87 @@ describe('sessionListSearch', () => {
       )
     })
   })
+
+  describe('sort options for a list with its own default and restricted sort fields', () => {
+    const requestHandler = sessionListSearch(sessionService, SessionStatusValue.SCREENER_PENDING, {
+      defaultSortField: SessionSortBy.NAME,
+      allowedSortFields: [SessionSortBy.NAME, SessionSortBy.LOCATION, SessionSortBy.RELEASE_DATE],
+    })
+
+    it('should use the specified default sort field given no query string parameters and nothing in the session', async () => {
+      // Given
+      sessionService.searchSessionsInPrison.mockResolvedValue(aSessionSearch())
+
+      // When
+      await requestHandler(req, res, next)
+
+      // Then
+      expect(res.locals.searchOptions).toEqual(
+        expect.objectContaining({ sortBy: SessionSortBy.NAME, sortOrder: SortOrder.ASCENDING }),
+      )
+      expect(req.session.sessionListSortOptions).toEqual('name,ascending')
+      expect(sessionService.searchSessionsInPrison).toHaveBeenCalledWith(
+        prisonId,
+        username,
+        1, // page number
+        50, // page size
+        SessionSortBy.NAME,
+        SortOrder.ASCENDING,
+        SessionStatusValue.SCREENER_PENDING,
+        undefined, // search term
+        undefined, // filter session type
+      )
+    })
+
+    it('should fall back to the default sort field given the session holds a sort field this list has no column for', async () => {
+      // Given
+      // the user last sorted a different tab by 'due by', which this list does not offer a column for
+      req.session.sessionListSortOptions = `${SessionSortBy.DUE_BY},${SortOrder.DESCENDING}`
+      sessionService.searchSessionsInPrison.mockResolvedValue(aSessionSearch())
+
+      // When
+      await requestHandler(req, res, next)
+
+      // Then
+      expect(res.locals.searchOptions).toEqual(
+        expect.objectContaining({ sortBy: SessionSortBy.NAME, sortOrder: SortOrder.ASCENDING }),
+      )
+      expect(sessionService.searchSessionsInPrison).toHaveBeenCalledWith(
+        prisonId,
+        username,
+        1,
+        50,
+        SessionSortBy.NAME,
+        SortOrder.ASCENDING,
+        SessionStatusValue.SCREENER_PENDING,
+        undefined,
+        undefined,
+      )
+    })
+
+    it('should honour a sort field that this list does have a column for', async () => {
+      // Given
+      req.query = { sort: `${SessionSortBy.RELEASE_DATE},${SortOrder.DESCENDING}` }
+      sessionService.searchSessionsInPrison.mockResolvedValue(aSessionSearch())
+
+      // When
+      await requestHandler(req, res, next)
+
+      // Then
+      expect(res.locals.searchOptions).toEqual(
+        expect.objectContaining({ sortBy: SessionSortBy.RELEASE_DATE, sortOrder: SortOrder.DESCENDING }),
+      )
+      expect(sessionService.searchSessionsInPrison).toHaveBeenCalledWith(
+        prisonId,
+        username,
+        1,
+        50,
+        SessionSortBy.RELEASE_DATE,
+        SortOrder.DESCENDING,
+        SessionStatusValue.SCREENER_PENDING,
+        undefined,
+        undefined,
+      )
+    })
+  })
 })

@@ -15,4 +15,13 @@ export default class SessionListController {
     const { sessionListSearchResults, searchOptions } = res.locals
     return res.render('pages/sessionList/new_onHoldSessions', { sessionListSearchResults, searchOptions })
   }
+
+  getScreenerPendingSessionsView: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    const { sessionListSearchResults, searchOptions } = res.locals
+    return res.render('pages/sessionList/new_screenerPendingSessions', { sessionListSearchResults, searchOptions })
+  }
 }

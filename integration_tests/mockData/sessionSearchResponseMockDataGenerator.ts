@@ -23,7 +23,9 @@ const sessionSearchResponseMockDataGenerator = (options?: {
     dateOfBirth: randomDateOfBirth(),
     cellLocation: generateRandomLocation(),
     releaseDate: randomReleaseDate(),
-    sessionType: randomReviewType(),
+    // screener pending only ever applies to Inductions
+    sessionType:
+      sessionStatus === SessionStatusValue.SCREENER_PENDING ? SessionTypeValue.INDUCTION : randomReviewType(),
     deadlineDate:
       sessionStatus === SessionStatusValue.OVERDUE ? randomDeadlineDateInThePast() : randomDeadlineDateInTheFuture(),
     ...randomExemption(sessionStatus),

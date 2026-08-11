@@ -39,6 +39,7 @@ describe('SessionService', () => {
         dueInductions: 4,
         exemptReviews: 5,
         exemptInductions: 6,
+        screenerPendingInductions: 7,
       })
       educationAndWorkPlanClient.getSessionSummary.mockResolvedValue(sessionSummaryResponse)
 
@@ -46,6 +47,7 @@ describe('SessionService', () => {
         overdueSessionCount: 3,
         dueSessionCount: 7,
         onHoldSessionCount: 11,
+        screenerPendingCount: 7,
       })
 
       // When

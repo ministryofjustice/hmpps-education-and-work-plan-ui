@@ -23,6 +23,7 @@ const stubGetSessionSummary = (): SuperAgentRequest =>
         dueInductions: 4,
         exemptReviews: 5,
         exemptInductions: 6,
+        screenerPendingInductions: 7,
       },
     },
   })
@@ -68,7 +69,10 @@ const stubGetSessionSummary500Error = (): SuperAgentRequest =>
 const stubSearchSessionsByPrison = (options?: {
   prisonId?: string
   prisonerNameOrNumber?: string
-  sessionType: SessionTypeValue
+  /* the sessionType filter expected on the query string - the Screener Pending list does not send one */
+  sessionType?: SessionTypeValue
+  /* the session type of the generated result rows, when it differs from the sessionType filter above */
+  resultsSessionType?: SessionTypeValue
   sessionStatusType?: SessionStatusValue
   page?: number
   pageSize?: number
@@ -76,6 +80,8 @@ const stubSearchSessionsByPrison = (options?: {
   sortDirection?: SearchSortDirection
   pageOfSessions?: Array<SessionSearchResponse>
   totalRecords?: number
+  /* screener pending sessions carry no exemption, so the generated rows can omit it */
+  withExemption?: boolean
 }): SuperAgentRequest => {
   const prisonId = options?.prisonId || 'BXI'
   const page = options?.page || 1
@@ -96,9 +102,10 @@ const stubSearchSessionsByPrison = (options?: {
         releaseDate: prisoner.releaseDate,
         cellLocation: prisoner.cellLocation,
         deadlineDate: '2026-01-10',
-        exemptionDate: '2025-12-20',
-        exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY',
-        sessionType: options?.sessionType || SessionTypeValue.REVIEW,
+        ...(options?.withExemption === false
+          ? {}
+          : { exemptionDate: '2025-12-20', exemptionReason: 'EXEMPT_PRISONER_DRUG_OR_ALCOHOL_DEPENDENCY' }),
+        sessionType: options?.resultsSessionType || options?.sessionType || SessionTypeValue.REVIEW,
       }))
   const totalElements = options?.totalRecords || returnedSessions.length
   const totalPages = Math.ceil(totalElements / pageSize)
@@ -144,7 +151,7 @@ const stubSearchSessionsByPrison = (options?: {
 const stubSearchSessionsByPrison500Error = (options?: {
   prisonId?: string
   prisonerNameOrNumber?: string
-  sessionType: SessionTypeValue
+  sessionType?: SessionTypeValue
   sessionStatusType?: SessionStatusValue
   page?: number
   pageSize?: number
