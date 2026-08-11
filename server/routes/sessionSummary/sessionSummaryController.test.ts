@@ -34,6 +34,7 @@ describe('sessionSummaryController', () => {
         onHoldSessionCount: 6,
         dueSessionCount: 107,
         overdueSessionCount: 19,
+        screenerPendingCount: 3,
       },
     }
 

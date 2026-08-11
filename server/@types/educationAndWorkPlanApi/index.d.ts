@@ -1662,6 +1662,12 @@ export interface components {
        * @example 0
        */
       exemptInductions?: number | null
+      /**
+       * Format: int32
+       * @description Number of inductions awaiting the prisoner's initial screening and assessments from Curious
+       * @example 0
+       */
+      screenerPendingInductions?: number | null
     }
     PaginationMetaData: {
       /**

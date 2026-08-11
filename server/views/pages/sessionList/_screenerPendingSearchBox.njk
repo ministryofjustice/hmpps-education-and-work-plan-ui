@@ -1,0 +1,35 @@
+{#
+  Search box for the Screener Pending session list page.
+
+  Deliberately does not reuse `_newSearchBox.njk`: that partial leads with a "Filter by session type"
+  radio group, which is meaningless on this page because every screener pending session is an Induction.
+#}
+<section class="dps-homepage-search govuk-!-display-none-print">
+
+  <form class="form" method="get">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Search for a prisoner</legend>
+
+      <div class="govuk-form-group govuk-form-group--inline govuk-!-margin-bottom-3">
+        <div class="govuk-form-group govuk-form-group__item">
+          <label class="govuk-label" for="searchTerm">
+            Prisoner's name or prison number
+          </label>
+          <input class="govuk-input hmpps-width-20"
+            id="searchTerm"
+            name="searchTerm"
+            type="search"
+            value="{{ searchOptions.searchTerm }}"
+            maxlength="200" />
+        </div>
+
+        <div class="govuk-form-group__button">
+          <button type="submit" class="govuk-button" data-module="govuk-button" data-prevent-double-click="true" data-qa="submit-button">
+            Apply filters
+          </button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+</section>

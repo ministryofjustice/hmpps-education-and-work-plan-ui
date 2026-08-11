@@ -12,12 +12,14 @@ describe('sessionsSummaryMapper', () => {
       dueInductions: 4,
       exemptReviews: 5,
       exemptInductions: 6,
+      screenerPendingInductions: 7,
     })
 
     const expected = aValidSessionsSummary({
       overdueSessionCount: 3,
       dueSessionCount: 7,
       onHoldSessionCount: 11,
+      screenerPendingCount: 7,
     })
 
     // When
@@ -25,5 +27,18 @@ describe('sessionsSummaryMapper', () => {
 
     // Then
     expect(actual).toEqual(expected)
+  })
+
+  it('should map screenerPendingInductions to zero given the API response does not contain the field', () => {
+    // Given
+    // an API deployed before the screener pending change omits the field altogether
+    const sessionSummaryResponse = aValidSessionSummaryResponse()
+    delete sessionSummaryResponse.screenerPendingInductions
+
+    // When
+    const actual = toSessionsSummary(sessionSummaryResponse)
+
+    // Then
+    expect(actual.screenerPendingCount).toEqual(0)
   })
 })

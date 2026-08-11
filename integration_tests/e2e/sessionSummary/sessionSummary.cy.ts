@@ -25,6 +25,7 @@ context(`Display the Sessions Summary screen`, () => {
       .hasNumberOfSessionsDue(7)
       .hasNumberOfSessionsOverdue(3)
       .hasNumberOfSessionsOnHold(11)
+      .hasNumberOfScreenersPending(7)
   })
 
   it('should be able to navigate directly to the session summary page', () => {

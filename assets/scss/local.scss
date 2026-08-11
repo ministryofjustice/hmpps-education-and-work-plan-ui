@@ -42,11 +42,42 @@
   display: grid;
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-flow: column;
+  // The 3 rows of each card: the label, the count and tag, and the link
+  grid-template-rows: auto auto auto;
   gap: 16px;
 
   .govuk-grid-item {
     padding: 16px 16px 16px 0;
     border-right: 1px solid $govuk-border-colour;
+
+    // Line the label, count and link up across every card. Without this, a card whose label wraps
+    // onto two lines (e.g. "Exempt prisoners with sessions on hold") pushes its own count and link
+    // down, out of line with the cards whose label fits on one line.
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+
+    // The link is the only inline child; keep its clickable area to the width of its text rather
+    // than letting it stretch across the whole column as a grid item.
+    a {
+      justify-self: start;
+      align-self: start;
+    }
+  }
+
+  // Fallback for browsers without subgrid: reserve two lines for every label so the counts still
+  // line up at the widths where the longer labels wrap.
+  @supports not (grid-template-rows: subgrid) {
+    grid-template-rows: none;
+
+    .govuk-grid-item {
+      display: block;
+      grid-row: auto;
+
+      .govuk-hint {
+        min-height: 2.5em;
+      }
+    }
   }
 
   .govuk-grid-item:last-child {

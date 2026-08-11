@@ -37,6 +37,13 @@ export default class SessionsSummaryPage extends Page {
 
   clickToGoToOnHoldSessionsPage = () => this.onHoldSessionsButton().click()
 
+  hasNumberOfScreenersPending(expected: number): SessionsSummaryPage {
+    this.screenerPendingSessionsCount().should('contain.text', expected)
+    return this
+  }
+
+  clickToGoToScreenerPendingSessionsPage = () => this.screenerPendingSessionsButton().click()
+
   private searchTermField = (): PageElement => cy.get('#searchTerm')
 
   private linkToPrisonerListPage = (): PageElement => cy.get('[data-qa=link-to-search-page]')
@@ -52,4 +59,8 @@ export default class SessionsSummaryPage extends Page {
   private onHoldSessionsCount = (): PageElement => cy.get('[data-qa=on-hold-sessions-count]')
 
   private onHoldSessionsButton = (): PageElement => cy.get('[data-qa=view-on-hold-sessions-button]')
+
+  private screenerPendingSessionsCount = (): PageElement => cy.get('[data-qa=screener-pending-sessions-count]')
+
+  private screenerPendingSessionsButton = (): PageElement => cy.get('[data-qa=view-screener-pending-sessions-button]')
 }

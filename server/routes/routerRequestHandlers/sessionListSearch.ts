@@ -20,8 +20,22 @@ const DEFAULT_SORT_DIRECTION = SortOrder.ASCENDING
  *                                 search results and pagination data
  *    * searchOptions - A simple object containing the search options from the request so that the view can render them
  *                      (searchTerm, sessionType, sortBy, sortOrder, and page)
+ *
+ *  The optional `options` argument lets a given Session List tab override the sort behaviour:
+ *    * defaultSortField - the field to sort by when the request and session carry no sort preference
+ *    * allowedSortFields - the fields this tab actually renders a sortable column header for. The last used sort
+ *                          options are remembered in the session and shared by every tab, so without this a sort
+ *                          applied on one tab (e.g. 'due by') would be replayed on a tab that has no such column,
+ *                          leaving the list sorted by a field the user can neither see nor change.
  */
-const sessionListSearch = (sessionService: SessionService, sessionStatusType: SessionStatusValue): RequestHandler => {
+const sessionListSearch = (
+  sessionService: SessionService,
+  sessionStatusType: SessionStatusValue,
+  options?: { defaultSortField?: SessionSortBy; allowedSortFields?: Array<SessionSortBy> },
+): RequestHandler => {
+  const defaultSortField = options?.defaultSortField || DEFAULT_SORT_FIELD
+  const { allowedSortFields } = options || {}
+
   return async (req: Request, res: Response, next: NextFunction) => {
     const prisonId = (res.locals.user as PrisonUser).activeCaseLoadId
     const { username } = req.user
@@ -32,9 +46,13 @@ const sessionListSearch = (sessionService: SessionService, sessionStatusType: Se
     const sortQueryStringValue = // sort options should be from query string, session, or defaults; in that order of preference
       (req.query.sort as string) ||
       req.session.sessionListSortOptions ||
-      `${DEFAULT_SORT_FIELD},${DEFAULT_SORT_DIRECTION}`
-    const sortOptions = toSortOptions(sortQueryStringValue)
-    const { sortBy, sortOrder } = sortOptions
+      `${defaultSortField},${DEFAULT_SORT_DIRECTION}`
+    const sortOptions = toSortOptions(sortQueryStringValue, defaultSortField)
+    // Fall back to this tab's default if the resolved sort field is not one this tab offers a column for
+    const { sortBy, sortOrder } =
+      allowedSortFields && !allowedSortFields.includes(sortOptions.sortBy)
+        ? { sortBy: defaultSortField, sortOrder: DEFAULT_SORT_DIRECTION }
+        : sortOptions
     req.session.sessionListSortOptions = `${sortBy},${sortOrder}` // save last sort options to session so that they are remembered when coming back to Session List screen
 
     const searchTerm = req.query.searchTerm as string
@@ -72,9 +90,13 @@ const sessionListSearch = (sessionService: SessionService, sessionStatusType: Se
  * constructed from parsing the specified query string value which is expected to be a comma-delimited value
  * of field name (to sort by) and sort order.
  *
- * If the query string cannot be parsed, an object is returned describing the default sort field and direction.
+ * If the query string cannot be parsed, an object is returned describing the specified default sort field and
+ * the default sort direction.
  */
-const toSortOptions = (queryStringValue: string): { sortBy: SessionSortBy; sortOrder: SortOrder } => {
+const toSortOptions = (
+  queryStringValue: string,
+  defaultSortField: SessionSortBy,
+): { sortBy: SessionSortBy; sortOrder: SortOrder } => {
   const options = queryStringValue
     .trim()
     .split(',')
@@ -85,7 +107,7 @@ const toSortOptions = (queryStringValue: string): { sortBy: SessionSortBy; sortO
     return { sortBy, sortOrder }
   }
   // Could not determine valid sort options from the query string value, return the default sort options
-  return { sortBy: DEFAULT_SORT_FIELD, sortOrder: DEFAULT_SORT_DIRECTION }
+  return { sortBy: defaultSortField, sortOrder: DEFAULT_SORT_DIRECTION }
 }
 
 export default sessionListSearch

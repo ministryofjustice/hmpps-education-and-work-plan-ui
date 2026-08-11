@@ -6,10 +6,11 @@
     and to link via a regular href between them
 
     `config` argument is an object with the following properties:
-      * activeTab - OVERDUE_SESSIONS | DUE_SESSIONS | ON_HOLD_SESSIONS
+      * activeTab - OVERDUE_SESSIONS | DUE_SESSIONS | ON_HOLD_SESSIONS | SCREENER_PENDING_SESSIONS
       * overdueSessionCount - the number of overdue sessions
       * dueSessionCount - the number of due sessions
       * onHoldSessionCount - the number of on-hold sessions
+      * screenerPendingCount - the number of prisoners with screeners pending
       * content - the content of the tab
     ------------------------------------------------------------- #}
 {% macro nonJavascriptTabBar(config) %}
@@ -31,6 +32,13 @@
           On hold ({{ config.onHoldSessionCount }} session{{ 's' if config.onHoldSessionCount !== 1 }})
         </a>
       </li>
+      {% if featureToggles.pesContractsEnabled %}
+        <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if config.activeTab == 'SCREENER_PENDING_SESSIONS' }}" role="presentation">
+          <a class="govuk-tabs__tab" href="/sessions/screener-pending" id="tab_screener-pending-sessions" role="tab" aria-selected="{{ 'true' if config.activeTab == 'SCREENER_PENDING_SESSIONS' else 'false' }}" tabindex="{{ '0' if config.activeTab == 'SCREENER_PENDING_SESSIONS' else '-1' }}">
+            Screeners pending ({{ config.screenerPendingCount }})
+          </a>
+        </li>
+      {% endif %}
     </ul>
 
     {%- set activeTabId -%}
@@ -40,6 +48,8 @@
         tab_due-sessions
       {%- elseif config.activeTab == 'ON_HOLD_SESSIONS' -%}
         tab_on-hold-sessions
+      {%- elseif config.activeTab == 'SCREENER_PENDING_SESSIONS' -%}
+        tab_screener-pending-sessions
       {%- endif -%}
     {%- endset -%}
     <div class="govuk-tabs__panel govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-padding-top-4 govuk-!-padding-bottom-4" role="tabpanel" aria-labelledby="{{ activeTabId }}">

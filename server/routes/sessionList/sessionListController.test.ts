@@ -96,4 +96,29 @@ describe('sessionListController', () => {
       })
     })
   })
+
+  describe('getScreenerPendingSessionsView', () => {
+    it('should screener pending sessions view', async () => {
+      // Given
+      const sessionListSearchResults = aSessionSearch()
+      const searchOptions = {
+        searchTerm: 'John',
+        sessionType: SessionTypeValue.TRANSFER_REVIEW,
+        sortBy: SessionSortBy.NAME,
+        sortOrder: SortOrder.ASCENDING,
+        page: 1,
+      }
+      res.locals.sessionListSearchResults = sessionListSearchResults
+      res.locals.searchOptions = searchOptions
+
+      // When
+      await controller.getScreenerPendingSessionsView(req, res, next)
+
+      // Then
+      expect(res.render).toHaveBeenCalledWith('pages/sessionList/new_screenerPendingSessions', {
+        sessionListSearchResults,
+        searchOptions,
+      })
+    })
+  })
 })
