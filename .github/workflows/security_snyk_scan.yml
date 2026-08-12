@@ -1,7 +1,7 @@
 name: Security Snyk dependency check
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   schedule:
     - cron: "37 6 * * MON-FRI"  #6:37am on weekdays
       timezone: "Europe/London"
