@@ -78,16 +78,16 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1103.0",
+    "@aws-sdk/client-sqs": "^3.1106.0",
     "@date-fns/utc": "^2.1.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.3",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@ministryofjustice/frontend": "^10.0.1",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
-    "@ministryofjustice/hmpps-connect-dps-components": "^6.3.1",
+    "@ministryofjustice/hmpps-connect-dps-components": "^6.3.2",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
-    "@ministryofjustice/hmpps-prison-permissions-lib": "4.2.0",
+    "@ministryofjustice/hmpps-prison-permissions-lib": "4.2.1",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "agentkeepalive": "^4.6.0",
     "body-parser": "^2.3.0",
@@ -170,9 +170,9 @@
       "esbuild": "$esbuild"
     },
     "mocha": {
-      "serialize-javascript": "^7.0.7"
+      "serialize-javascript": "^7.1.0"
     },
-    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/api": "1.9.1",
     "@opentelemetry/core": "2.10.0",
     "@opentelemetry/resources": "2.10.0",
     "@opentelemetry/sdk-trace-base": "2.10.0",
