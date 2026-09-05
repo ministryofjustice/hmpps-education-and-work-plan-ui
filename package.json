@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1120.0",
+    "@aws-sdk/client-sqs": "^3.1122.0",
     "@date-fns/utc": "^2.1.1",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.4.3",
     "@microsoft/applicationinsights-web": "^3.4.3",
@@ -112,7 +112,7 @@
     "superagent": "^10.3.0",
     "url-value-parser": "^2.2.0",
     "uuid": "^14.0.2",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
@@ -135,8 +135,8 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/superagent": "^8.1.11",
     "@types/supertest": "^7.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.68.0",
-    "@typescript-eslint/parser": "^8.68.0",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "^1.2.0",
@@ -170,12 +170,12 @@
       "esbuild": "$esbuild"
     },
     "mocha": {
-      "serialize-javascript": "^7.1.0"
+      "serialize-javascript": "^7.1.1"
     },
     "@opentelemetry/api": "1.9.1",
-    "@opentelemetry/core": "2.10.0",
-    "@opentelemetry/resources": "2.10.0",
-    "@opentelemetry/sdk-trace-base": "2.10.0",
-    "@opentelemetry/sdk-trace-web": "2.10.0"
+    "@opentelemetry/core": "2.11.0",
+    "@opentelemetry/resources": "2.11.0",
+    "@opentelemetry/sdk-trace-base": "2.11.0",
+    "@opentelemetry/sdk-trace-web": "2.11.0"
   }
 }
