@@ -56,7 +56,7 @@ generic-service:
     PRISONER_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
     SESSION_LIST_UI_DEFAULT_PAGINATION_PAGE_SIZE: "50"
     FEEDBACK_URL: "https://www.smartsurvey.co.uk/s/LWPusersatisfaction"
-    AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan"
+    AUDIT_SERVICE_NAME: "hmpps-education-and-work-plan-ui"
     AUDIT_ENABLED: "true"
     LRS_INTEGRATION_ENABLED: true
     CIAG_KPI_PROCESSING_RULE: "PES" # Set to PEF or PES depending on Curious support
