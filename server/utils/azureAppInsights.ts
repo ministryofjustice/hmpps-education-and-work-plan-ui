@@ -1,4 +1,5 @@
 import { initialiseTelemetry, flushTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import logger from '../../logger'
 
 initialiseTelemetry({
   serviceName: 'hmpps-education-and-work-plan-ui',
@@ -10,10 +11,11 @@ initialiseTelemetry({
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
   .startRecording()
 
-const shutdown = async () => {
+const shutdown = async (signal: string) => {
+  logger.info(`${signal} received, shutting down...`)
   await flushTelemetry()
   process.exit(0)
 }
 
-process.on('SIGTERM', () => shutdown())
-process.on('SIGINT', () => shutdown())
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT', () => shutdown('SIGINT'))
