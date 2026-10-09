@@ -31,6 +31,7 @@ const testUserWithManagerRole = {
   firstName: 'first',
   lastName: 'last',
   userId: 'id',
+  userUuid: '11111111-1111-1111-1111-111111111111',
   token: createUserToken(['ROLE_LWP_MANAGER']),
   username: 'user1',
   displayName: 'First Last',
