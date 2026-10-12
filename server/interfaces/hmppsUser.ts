@@ -1,3 +1,5 @@
+import { UUID } from 'crypto'
+
 export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
 
 /**
@@ -7,6 +9,7 @@ export interface BaseUser {
   authSource: AuthSource
   username: string
   userId: string
+  userUuid: UUID | undefined // This is a UUID created by HMPPS Auth upon first user login that is unique to the user across all authSources
   name: string
   displayName: string
   userRoles: string[]

@@ -2,6 +2,7 @@ import express from 'express'
 
 import createError from 'http-errors'
 import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -24,7 +25,7 @@ import auditMiddleware from './middleware/auditMiddleware'
 import successMessageMiddleware from './middleware/successMessageMiddleware'
 import errorMessageMiddleware from './middleware/errorMessageMiddleware'
 import apiErrorMiddleware from './middleware/apiErrorMiddleware'
-import addUsernameAndCaseloadToTelemetry from './utils/appInsightsCustomTelemetry'
+import addCaseloadToTelemetry from './utils/appInsightsCustomTelemetry'
 import { forAllGetRequests } from './middleware/requestMatchers'
 
 export default function createApp(services: Services): express.Application {
@@ -45,11 +46,12 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
+  app.use(telemetryMiddleware.addUserMetadataToTelemetry())
   app.use(apiErrorMiddleware())
   app.use(successMessageMiddleware)
   app.use(errorMessageMiddleware)
 
-  app.use(addUsernameAndCaseloadToTelemetry())
+  app.use(addCaseloadToTelemetry())
 
   app.use(
     forAllGetRequests(

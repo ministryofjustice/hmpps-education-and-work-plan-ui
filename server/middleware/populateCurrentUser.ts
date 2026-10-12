@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express'
+import { UUID } from 'crypto'
 import { jwtDecode } from 'jwt-decode'
 import logger from '../../logger'
 import UserService from '../services/userService'
@@ -11,12 +12,14 @@ export function populateCurrentUser(): RequestHandler {
       const {
         name,
         user_id: userId,
+        user_uuid: userUuid,
         user_name: username,
         auth_source: authSource,
         authorities: roles = [],
       } = jwtDecode(res.locals.user.token) as {
         name?: string
         user_id?: string
+        user_uuid?: UUID
         user_name?: string
         auth_source?: 'nomis' | 'delius' | 'external' | 'azuread'
         authorities?: string[]
@@ -25,6 +28,7 @@ export function populateCurrentUser(): RequestHandler {
       res.locals.user = {
         ...res.locals.user,
         userId,
+        userUuid,
         name,
         authSource: authSource as never,
         username,
