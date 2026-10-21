@@ -87,7 +87,7 @@
     "@ministryofjustice/hmpps-azure-telemetry": "^1.1.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^6.3.4",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
-    "@ministryofjustice/hmpps-prison-permissions-lib": "4.3.0",
+    "@ministryofjustice/hmpps-prison-permissions-lib": "5.3.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "agentkeepalive": "^4.6.0",
     "body-parser": "^2.3.0",
