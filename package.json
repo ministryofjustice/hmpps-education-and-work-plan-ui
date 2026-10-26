@@ -170,7 +170,7 @@
       "esbuild": "$esbuild"
     },
     "@eslint/eslintrc": {
-      "js-yaml": "4.3.2"
+      "js-yaml": "5.5.0"
     },
     "mocha": {
       "serialize-javascript": "^7.1.0"
