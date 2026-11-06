@@ -58,7 +58,12 @@
       }
     }) }}
 
-    {% if pageHasApiErrors %}
+    {% if featureToggles.displayCuriousOutageBanner %}
+      <div class="hmpps-api-error-banner" data-qa="api-error-banner">
+        <p>Curious is not available right now</p>
+        <p>Other parts of this service may be available.</p>
+      </div>
+    {% elif pageHasApiErrors %}
       <div class="hmpps-api-error-banner" data-qa="api-error-banner">
         <p>Sorry, there is a problem with the service</p>
         <p>Some information on this page may be unavailable. Try again later.</p>

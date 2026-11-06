@@ -184,8 +184,9 @@ This UI service sends events to HMPP Audit for the following user actions:
 
 Features can be toggled by setting the relevant environment variable.
 
-| Name                      | Default Value | Type     | Description                                                              |
-|---------------------------|---------------|----------|--------------------------------------------------------------------------|
-| SOME_TOGGLE_ENABLED       | false         | Boolean  | Example feature toggle, for demonstration purposes.                      |
-| LRS_INTEGRATION_ENABLED   | false         | Boolean  | Set to true to show qualifications from LRS                              |
-| CIAG_KPI_PROCESSING_RULE  | PEF           | String   | Set to PEF or PES. Setting to PES enables features that are PES specific |
+| Name                           | Default Value | Type     | Description                                                                                                                  |
+|--------------------------------|---------------|----------|------------------------------------------------------------------------------------------------------------------------------|
+| SOME_TOGGLE_ENABLED            | false         | Boolean  | Example feature toggle, for demonstration purposes.                                                                          |
+| LRS_INTEGRATION_ENABLED        | false         | Boolean  | Set to true to show qualifications from LRS                                                                                  |
+| CIAG_KPI_PROCESSING_RULE       | PEF           | String   | Set to PEF or PES. Setting to PES enables features that are PES specific                                                     |
+| DISPLAY_CURIOUS_OUTAGE_BANNER  | false         | Boolean  | Set to true when there is a prolonged Curious outage to enable the display of a Curious outage banner on all pages of the UI |

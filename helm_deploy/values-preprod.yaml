@@ -29,6 +29,7 @@ generic-service:
     SUPPORT_ADDITIONAL_NEEDS_API_URL: 'https://support-for-additional-needs-api-preprod.hmpps.service.justice.gov.uk'
     SUPPORT_ADDITIONAL_NEEDS_UI_URL: "https://support-for-additional-needs-preprod.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: "PRE-PRODUCTION"
+    DISPLAY_CURIOUS_OUTAGE_BANNER: true
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-support-additional-needs-preprod

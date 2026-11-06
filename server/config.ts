@@ -210,5 +210,6 @@ export default {
     // someToggleEnabled: toBoolean(get('SOME_TOGGLE_ENABLED', false)),
     lrsIntegrationEnabled: toBoolean(get('LRS_INTEGRATION_ENABLED', false, requiredInProduction)),
     pesContractsEnabled: get('CIAG_KPI_PROCESSING_RULE', false, requiredInProduction) === 'PES',
+    displayCuriousOutageBanner: toBoolean(get('DISPLAY_CURIOUS_OUTAGE_BANNER', false, requiredInProduction)),
   },
 }
